@@ -11,10 +11,11 @@ ext{
 
   dependVersion = [
       androidSupportSdkVersion: "26.0.2",
-      retrofitSdkVersion      : "2.3.0",
-      glideSdkVersion         : "4.0.0",
-      rxJava                  : "2.1.5",
-      rxAndroid               : "2.0.1"
+      retrofitSdkVersion      : "2.4.0",
+      glideSdkVersion         : "4.8.0",
+      rxJava                  : "2.2.1",
+      rxAndroid               : "2.1.0",
+      rxKotlin                 : "2.2.0"
   ]
 
   supportDeps = [
