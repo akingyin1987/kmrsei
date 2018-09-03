@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import java.util.*
 
 /**
  * @ Description:
@@ -18,7 +19,7 @@ import android.support.v4.app.FragmentPagerAdapter
 class BaseFragmentAdapter : FragmentPagerAdapter{
 
 
-    private   var  fragmentlist:List<Fragment>?=ArrayList()
+    private   var  fragmentlist:List<Fragment>?= ArrayList()
 
     private   var  mTitles:List<String>?=null
 

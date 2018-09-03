@@ -24,15 +24,50 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
-}
 
+  sourceSets {
+    main {
+      jniLibs.srcDirs = ['libs']
+    }
+
+    // Move the build types to build-types/<type>
+    // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
+    // This moves them out of them default location under src/<type>/... which would
+    // conflict with src/ being used by the main source set.
+    // Adding new build types or product flavors should be accompanied
+    // by a similar customization.
+    debug.setRoot('build-types/debug')
+    release.setRoot('build-types/release')
+  }
+}
+//为Dagger创建了需要的自生成类
+kapt {
+  generateStubs = true
+}
 dependencies {
-  implementation fileTree(dir: 'libs', include: ['*.jar'])
-  implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-  implementation 'com.android.support:appcompat-v7:28.0.0-beta01'
+  implementation fileTree(include: ['*.jar'], dir: 'libs')
+  implementation 'com.android.support:appcompat-v7:28.0.0-rc02'
+  implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
   testImplementation 'junit:junit:4.12'
   androidTestImplementation 'com.android.support.test:runner:1.0.2'
   androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
   api rootProject.ext.rxJavaLibs
   api 'com.classic.common:multiple-status-view:1.5.1'
+  api 'com.google.dagger:dagger-android:2.16'
+  api 'com.google.dagger:dagger-android-support:2.16'
+  // if you use the support libraries
+  annotationProcessor 'com.google.dagger:dagger-android-processor:2.16'
+  api 'com.jakewharton.timber:timber:4.7.1'
+  debugImplementation('com.readystatesoftware.chuck:library:1.1.0') {
+    exclude group: 'com.android.support'
+  }
+  releaseImplementation('com.readystatesoftware.chuck:library-no-op:1.1.0') {
+    exclude group: 'com.android.support'
+  }
+  debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
+  releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
+  // Optional, if you use support library fragments:
+  debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
+  api 'com.github.tbruyelle:rxpermissions:0.10.2'
+  implementation files('libs/rfidapi.jar')
 }

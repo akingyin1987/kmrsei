@@ -8,6 +8,9 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.classic.common.MultipleStatusView
+import dagger.android.AndroidInjection
+import javax.inject.Inject
+
 
 /**
  * 基础类
@@ -16,14 +19,24 @@ import com.classic.common.MultipleStatusView
  * @ Date 2018/8/3 16:16
  * @version V1.0
  */
-abstract  class BaseActivity : AppCompatActivity() {
+abstract  class BaseActivity<T : BasePresenter<IBaseView>> : AppCompatActivity(),IBaseView {
 
 
     protected   var multipleStatusView : MultipleStatusView?=null
+    // Log tag
+    protected var TAG_LOG: String? = null
+
+    @Inject
+    lateinit var mPresenter: T
+    protected var mContext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppManager.getInstance()!!.addActivity(this)
+        TAG_LOG = this.localClassName
         setContentView(getLayoutId())
+        mContext = this
+        initInjection()
         initializationData(savedInstanceState)
         initView()
         startRequest()
@@ -37,6 +50,12 @@ abstract  class BaseActivity : AppCompatActivity() {
     }
 
 
+    /**
+     * dagger2注入
+     */
+    private   fun   initInjection(){
+        AndroidInjection.inject(this)
+    }
 
     private   fun   initStatusViewListion(){
         multipleStatusView?.setOnClickListener(mRetryClickListener)
