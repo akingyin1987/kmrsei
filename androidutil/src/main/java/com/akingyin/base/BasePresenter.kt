@@ -9,13 +9,16 @@ import io.reactivex.disposables.Disposable
  * @ Date 2018/8/3 15:59
  * @version V1.0
  */
-open  class BasePresenter<T:IBaseView> :IPresenter<T>{
+open  class  BasePresenter<T:IBaseView> :IPresenter<T>{
 
+    constructor()
 
     var mRootView: T? = null
         private set
 
     private var compositeDisposable = CompositeDisposable()
+
+
 
 
     override fun attachView(mRootView: T) {
@@ -26,7 +29,6 @@ open  class BasePresenter<T:IBaseView> :IPresenter<T>{
         mRootView = null
 
         //保证activity结束时取消所有正在执行的订阅
-
         if (!compositeDisposable.isDisposed) {
             compositeDisposable.clear()
         }
@@ -45,8 +47,6 @@ open  class BasePresenter<T:IBaseView> :IPresenter<T>{
     }
 
     private class MvpViewNotAttachedException internal constructor() : RuntimeException("Please call IPresenter.attachView(IBaseView) before" + " requesting data to the IPresenter")
-
-
 
 
 

@@ -1,5 +1,6 @@
 package com.akingyin.base
 
+import android.app.Fragment
 import android.content.Context
 import android.os.Bundle
 import android.support.annotation.LayoutRes
@@ -9,7 +10,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.classic.common.MultipleStatusView
 import dagger.android.AndroidInjection
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasFragmentInjector
+import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
+
+
 
 
 /**
@@ -19,15 +25,20 @@ import javax.inject.Inject
  * @ Date 2018/8/3 16:16
  * @version V1.0
  */
-abstract  class BaseActivity<T : BasePresenter<IBaseView>> : AppCompatActivity(),IBaseView {
+abstract  class BaseActivity : AppCompatActivity(),IBaseView, HasFragmentInjector, HasSupportFragmentInjector {
+
+    @Inject
+    var supportFragmentInjector: DispatchingAndroidInjector<android.support.v4.app.Fragment>? = null
+    @Inject
+    var frameworkFragmentInjector: DispatchingAndroidInjector<android.app.Fragment>? = null
+
 
 
     protected   var multipleStatusView : MultipleStatusView?=null
     // Log tag
     protected var TAG_LOG: String? = null
 
-    @Inject
-    lateinit var mPresenter: T
+
     protected var mContext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -114,6 +125,51 @@ abstract  class BaseActivity<T : BasePresenter<IBaseView>> : AppCompatActivity()
         imm.hideSoftInputFromWindow(mEditText.windowToken,0)
     }
 
+    override fun showMessage(msg: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
+    override fun showSucces(msg: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
+    override fun showError(msg: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showWarning(msg: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun close() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showTips(msg: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showLoadDialog(msg: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun hideLoadDialog() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showLoading() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun dismissLoading() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun fragmentInjector(): DispatchingAndroidInjector<Fragment>? {
+        return   frameworkFragmentInjector
+    }
+
+    override fun supportFragmentInjector(): DispatchingAndroidInjector<android.support.v4.app.Fragment>? {
+        return  supportFragmentInjector
+    }
 }

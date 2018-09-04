@@ -6,7 +6,7 @@ package com.akingyin.base
  * @ Date 2018/9/3 15:30
  * @version V1.0
  */
- abstract class BaseNfcTagActivity  :BaseActivity() {
+ abstract class BaseNfcTagActivity<T : BasePresenter<IBaseView>>  :BaseActivity() {
 
 
 

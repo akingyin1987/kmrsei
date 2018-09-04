@@ -3,30 +3,37 @@ package com.zlcdgroup.mrsei.di.component
 import com.zlcdgroup.mrsei.MrmseiApp
 import com.zlcdgroup.mrsei.di.module.ActivityModule
 import com.zlcdgroup.mrsei.di.module.AppModule
-import dagger.android.AndroidInjector
+import com.zlcdgroup.mrsei.di.module.DataModule
 import dagger.BindsInstance
 import dagger.Component
+import dagger.android.AndroidInjectionModule
+import dagger.android.AndroidInjector
+import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
-
 
 /**
  * @ Description:
  * @author king
- * @ Date 2018/9/3 18:18
+ * @ Date 2018/9/4 10:36
  * @version V1.0
  */
 
+
 @Singleton
-@Component(modules = arrayOf(ActivityModule::class,AppModule::class)
- interface AppComponent : AndroidInjector(com.zlcdgroup.mrsei.MrmseiApp)(){
+@Component(modules = arrayOf(AppModule::class
+                      ,ActivityModule::class,
+                  DataModule::class,
+                AndroidInjectionModule::class,
+                AndroidSupportInjectionModule::class))
+interface AppComponent :AndroidInjector<MrmseiApp>{
+
+
     @Component.Builder
-    interface Builder {
+    interface  Builder{
 
         @BindsInstance
-        fun application(application: MrmseiApp): AppComponent.Builder
+       fun   application(app:MrmseiApp):AppComponent.Builder
 
-        //  AppComponent.Builder dataModel(DataModule  dataModule);
-        fun build(): AppComponent
+       fun   build():AppComponent
     }
-
 }

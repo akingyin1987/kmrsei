@@ -11,6 +11,6 @@ import com.akingyin.base.BaseApp
 class MrmseiApp :BaseApp() {
 
     override fun initInjection() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 }
