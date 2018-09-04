@@ -14,9 +14,9 @@ import javax.inject.Inject
 
 
 
-class UserListPresenterImpl :BasePresenter<UserListContract.View>(),UserListContract.Presenter {
+class UserListPresenterImpl @Inject constructor():BasePresenter<UserListContract.View>(),UserListContract.Presenter {
 
-    @Inject constructor()
+
 
 
     override fun getUserList(): List<UserEntity> {

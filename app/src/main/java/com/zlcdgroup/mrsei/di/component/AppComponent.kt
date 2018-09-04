@@ -22,7 +22,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = arrayOf(AppModule::class
                       ,ActivityModule::class,
-                  DataModule::class,
+                  DataModule::class, ActivityModule::class,
                 AndroidInjectionModule::class,
                 AndroidSupportInjectionModule::class))
 interface AppComponent :AndroidInjector<MrmseiApp>{

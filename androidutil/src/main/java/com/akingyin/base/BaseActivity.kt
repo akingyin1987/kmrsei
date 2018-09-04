@@ -28,9 +28,9 @@ import javax.inject.Inject
 abstract  class BaseActivity : AppCompatActivity(),IBaseView, HasFragmentInjector, HasSupportFragmentInjector {
 
     @Inject
-    var supportFragmentInjector: DispatchingAndroidInjector<android.support.v4.app.Fragment>? = null
+    lateinit var supportFragmentInjector: DispatchingAndroidInjector<android.support.v4.app.Fragment>
     @Inject
-    var frameworkFragmentInjector: DispatchingAndroidInjector<android.app.Fragment>? = null
+    lateinit var frameworkFragmentInjector: DispatchingAndroidInjector<android.app.Fragment>
 
 
 

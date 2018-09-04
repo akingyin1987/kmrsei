@@ -1,6 +1,8 @@
 package com.zlcdgroup.mrsei
 
 import com.akingyin.base.BaseApp
+import com.zlcdgroup.mrsei.di.component.DaggerAppComponent
+
 
 /**
  * @ Description:
@@ -11,6 +13,6 @@ import com.akingyin.base.BaseApp
 class MrmseiApp :BaseApp() {
 
     override fun initInjection() {
-
+      DaggerAppComponent.builder().application(this)
     }
 }

@@ -3,15 +3,17 @@ package com.akingyin.base
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
+
 /**
  * @ Description:
  * @author king
  * @ Date 2018/8/3 15:59
  * @version V1.0
  */
-open  class  BasePresenter<T:IBaseView> :IPresenter<T>{
+open  class  BasePresenter <T:IBaseView> :IPresenter<T>{
 
-    constructor()
+
+
 
     var mRootView: T? = null
         private set
