@@ -21,7 +21,7 @@ class UserListActivity  : BaseActivity(),UserListContract.View {
 
 
     init {
-        print("userListPresenterImpl = "+(null == userListPresenterImpl))
+
         userListPresenterImpl.attachView(this)
     }
 

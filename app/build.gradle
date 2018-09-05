@@ -45,4 +45,6 @@ dependencies {
 
     kapt 'com.google.dagger:dagger-android-processor:2.16'
     kapt 'com.google.dagger:dagger-compiler:2.16'
+
+  implementation 'com.stepstone.stepper:material-stepper:4.3.1'
 }
