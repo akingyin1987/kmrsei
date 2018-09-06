@@ -6,9 +6,12 @@ import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import com.zlcdgroup.mrsei.di.qualifier.ActivityContext
 import com.zlcdgroup.mrsei.di.scope.PerActivity
+import com.zlcdgroup.mrsei.presenter.UserModule
+import com.zlcdgroup.mrsei.ui.UserListActivity
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.android.ContributesAndroidInjector
 import javax.inject.Singleton
 
 
@@ -33,8 +36,13 @@ abstract class ActivityModule {
 
     @Binds
     @ActivityContext
-     abstract fun bindActivityContext(activity: AppCompatActivity): Context
+     abstract fun bindActivityContext(activity: Activity): Context
 
+
+
+    @ContributesAndroidInjector(modules = arrayOf(UserModule::class))
+    @PerActivity
+    abstract   fun contributeUserActivitytInjector():UserListActivity
 
     @Module(includes = arrayOf(ActivityModule ::class))
     class ApplicationProvidesModule {

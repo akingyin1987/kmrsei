@@ -4,6 +4,7 @@ import com.zlcdgroup.mrsei.data.db.dao.UserEntityDao
 import com.zlcdgroup.mrsei.data.entity.UserEntity
 import com.zlcdgroup.mrsei.data.source.IUserSource
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * @ Description:
@@ -11,7 +12,9 @@ import javax.inject.Inject
  * @ Date 2018/9/5 18:05
  * @version V1.0
  */
-class UserLocalSource @Inject constructor(private  var  userEntityDao: UserEntityDao) : IUserSource {
+
+@Singleton
+class UserLocalSource @Inject constructor( var  userEntityDao: UserEntityDao) : IUserSource {
     override fun getUserList(): List<UserEntity> {
        return   userEntityDao.queryBuilder().list()
     }

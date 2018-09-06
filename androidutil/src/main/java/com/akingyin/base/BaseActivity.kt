@@ -8,11 +8,13 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import com.classic.common.MultipleStatusView
 import dagger.android.AndroidInjection
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasFragmentInjector
 import dagger.android.support.HasSupportFragmentInjector
+import es.dmoral.toasty.Toasty
 import javax.inject.Inject
 
 
@@ -42,12 +44,13 @@ abstract  class BaseActivity : AppCompatActivity(),IBaseView, HasFragmentInjecto
     protected var mContext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initInjection()
         super.onCreate(savedInstanceState)
         AppManager.getInstance()!!.addActivity(this)
         TAG_LOG = this.localClassName
         setContentView(getLayoutId())
         mContext = this
-        initInjection()
+
         initializationData(savedInstanceState)
         initView()
         startRequest()
@@ -125,31 +128,39 @@ abstract  class BaseActivity : AppCompatActivity(),IBaseView, HasFragmentInjecto
         imm.hideSoftInputFromWindow(mEditText.windowToken,0)
     }
 
-    override fun showMessage(msg: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun showMessage(msg: String?) {
+        if (msg != null) {
+            Toasty.info(this,msg,Toast.LENGTH_SHORT).show()
+        }
     }
 
-    override fun showSucces(msg: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun showSucces(msg: String?) {
+        if (msg != null) {
+            Toasty.success(this,msg,Toast.LENGTH_SHORT).show()
+        }
     }
 
-    override fun showError(msg: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun showError(msg: String?) {
+        if (msg != null) {
+            Toasty.error(this,msg,Toast.LENGTH_SHORT).show()
+        }
     }
 
-    override fun showWarning(msg: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun showWarning(msg: String?) {
+        if (msg != null) {
+            Toasty.warning(this,msg,Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun close() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun showTips(msg: String) {
+    override fun showTips(msg: String?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun showLoadDialog(msg: String) {
+    override fun showLoadDialog(msg: String?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
