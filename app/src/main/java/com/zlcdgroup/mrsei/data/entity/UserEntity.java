@@ -18,7 +18,7 @@ public class UserEntity  implements Serializable{
   private static final long serialVersionUID = 196217012358394317L;
 
   @Id(autoincrement = true)
-  private   long    id;
+  private   Long    id;
 
 
   @Property
