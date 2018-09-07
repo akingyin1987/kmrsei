@@ -25,7 +25,7 @@ class UserListAdapter @Inject constructor(@ActivityContext var  context: Context
     }
 
     override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): UserViewHolder {
-       return  UserViewHolder(layoutInflater.inflate(R.layout.item_user,null))
+       return  UserViewHolder(layoutInflater.inflate(R.layout.item_user,parent,false))
     }
 
 

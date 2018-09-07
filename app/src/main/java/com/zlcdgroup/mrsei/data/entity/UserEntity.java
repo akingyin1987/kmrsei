@@ -27,24 +27,17 @@ public class UserEntity  implements Serializable{
   @Property
   private    int    age;
 
-  @Generated(hash = 337519408)
-  public UserEntity(long id, String name, int age) {
-      this.id = id;
-      this.name = name;
-      this.age = age;
-  }
+  @Generated(hash = 1186854390)
+public UserEntity(Long id, String name, int age) {
+    this.id = id;
+    this.name = name;
+    this.age = age;
+}
 
-  @Generated(hash = 1433178141)
+@Generated(hash = 1433178141)
   public UserEntity() {
   }
 
-  public long getId() {
-      return this.id;
-  }
-
-  public void setId(long id) {
-      this.id = id;
-  }
 
   public String getName() {
       return this.name;
@@ -61,4 +54,12 @@ public class UserEntity  implements Serializable{
   public void setAge(int age) {
       this.age = age;
   }
+
+public void setId(Long id) {
+    this.id = id;
+}
+
+public Long getId() {
+    return this.id;
+}
 }

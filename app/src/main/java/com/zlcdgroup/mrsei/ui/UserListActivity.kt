@@ -11,6 +11,7 @@ import com.zlcdgroup.mrsei.presenter.UserListContract
 import com.zlcdgroup.mrsei.presenter.UserListPresenterImpl
 import com.zlcdgroup.mrsei.ui.adapter.UserListAdapter
 import kotlinx.android.synthetic.main.activity_userlist.*
+import kotlinx.android.synthetic.main.include_toolbar.*
 import java.util.*
 import javax.inject.Inject
 
@@ -31,10 +32,12 @@ class UserListActivity  : BaseActivity(),UserListContract.View {
     override fun getLayoutId(): Int = R.layout.activity_userlist
 
     override fun initializationData(savedInstanceState: Bundle?) {
+        setToolBar(toolbar,"测试")
         userListPresenterImpl.attachView(this)
         recycle.layoutManager = LinearLayoutManager(this)
         recycle.itemAnimator = DefaultItemAnimator()
         recycle.adapter = userListAdapter
+        userListAdapter.setNewData(userListPresenterImpl.getUserList())
         userListAdapter.onItemClickListener = BaseQuickAdapter.OnItemClickListener {
             adapter, view, position ->
             showSucces(userListAdapter.getItem(position)?.name)

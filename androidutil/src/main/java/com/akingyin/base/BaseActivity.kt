@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -63,6 +64,17 @@ abstract  class BaseActivity : AppCompatActivity(),IBaseView, HasFragmentInjecto
         onSaveInstanceData(outState)
     }
 
+    protected fun setToolBar(toolbar: Toolbar, title: String) {
+        toolbar.setTitle(title)
+
+        setSupportActionBar(toolbar)
+        if (null != supportActionBar) {
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+            supportActionBar!!.setDisplayShowHomeEnabled(true)
+            toolbar.setNavigationOnClickListener(View.OnClickListener { onBackPressed() })
+        }
+
+    }
 
     /**
      * dagger2注入
@@ -182,5 +194,10 @@ abstract  class BaseActivity : AppCompatActivity(),IBaseView, HasFragmentInjecto
 
     override fun supportFragmentInjector(): DispatchingAndroidInjector<android.support.v4.app.Fragment>? {
         return  supportFragmentInjector
+    }
+
+    override fun onDestroy() {
+        AppManager.getInstance()?.finishActivity(this)
+        super.onDestroy()
     }
 }

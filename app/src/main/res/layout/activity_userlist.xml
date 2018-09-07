@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -12,15 +13,19 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:id="@+id/recycle"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+      tools:listitem="@layout/item_user"
+      tools:itemCount ="12"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"
+     />
 
   <android.support.design.widget.FloatingActionButton
       android:layout_width="wrap_content"
       android:id="@+id/fab"
-      android:layout_margin="6dp"
+
       app:layout_behavior="@string/appbar_scrolling_view_behavior"
-      app:layout_anchor="@id/recycle"
+      android:layout_marginRight="@dimen/dp_10"
       android:src="@android:drawable/ic_input_add"
       android:layout_gravity="bottom|right"
+      android:layout_marginBottom="60dp"
       android:layout_height="wrap_content"/>
 </android.support.design.widget.CoordinatorLayout>
