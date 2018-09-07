@@ -1,12 +1,13 @@
 package com.akingyin.base
 
 import android.os.Bundle
-import android.support.annotation.LayoutRes
-import android.support.v4.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
 import com.classic.common.MultipleStatusView
+import dagger.android.support.AndroidSupportInjection
+import es.dmoral.toasty.Toasty
+
+
 
 /**
  * @ Description:
@@ -14,7 +15,7 @@ import com.classic.common.MultipleStatusView
  * @ Date 2018/8/3 17:56
  * @version V1.0
  */
-abstract class BaseFragment :Fragment(){
+abstract class BaseFragment :SimpleFragment(),IBaseView{
     /**
      * 视图是否加载完毕
      */
@@ -28,9 +29,6 @@ abstract class BaseFragment :Fragment(){
      */
     protected var mLayoutStatusView: MultipleStatusView? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(getLayoutId(),null)
-    }
 
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -41,6 +39,8 @@ abstract class BaseFragment :Fragment(){
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        AndroidSupportInjection.inject(this)
+
         super.onViewCreated(view, savedInstanceState)
          isViewPrepare = true
         initView()
@@ -63,11 +63,7 @@ abstract class BaseFragment :Fragment(){
     }
 
 
-    /**
-     * 加载布局
-     */
-    @LayoutRes
-    abstract fun getLayoutId():Int
+
 
     /**
      * 初始化 ViewI
@@ -79,4 +75,52 @@ abstract class BaseFragment :Fragment(){
      */
     abstract fun lazyLoad()
 
+
+    override fun showMessage(msg: String?) {
+        if (msg != null && null != mContext) {
+            Toasty.info(mContext!!,msg, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun showSucces(msg: String?) {
+        if (msg != null && null != mContext) {
+            Toasty.success(mContext!!,msg, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun showError(msg: String?) {
+        if (msg != null && null != mContext) {
+            Toasty.error(mContext!!,msg, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun showWarning(msg: String?) {
+        if (msg != null && null != mContext) {
+            Toasty.warning(mContext!!,msg, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun close() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showTips(msg: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showLoadDialog(msg: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun hideLoadDialog() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showLoading() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun dismissLoading() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

@@ -6,7 +6,7 @@ package com.akingyin.base
  * @ Date 2018/8/3 15:57
  * @version V1.0
  */
-interface IBaseView {
+interface IBaseView  {
 
 
     /**
