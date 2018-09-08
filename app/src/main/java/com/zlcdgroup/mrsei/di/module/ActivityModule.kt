@@ -14,7 +14,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
-import javax.inject.Singleton
 
 
 /**
@@ -36,8 +35,8 @@ abstract class ActivityModule {
 
 
 
-    @Binds
-    @ActivityContext
+     @Binds
+     @ActivityContext
      abstract fun bindActivityContext(activity: Activity): Context
 
 
@@ -53,9 +52,10 @@ abstract class ActivityModule {
 
     @Module(includes = arrayOf(ActivityModule ::class))
     class SupportFragmentManagerModule {
-        @Singleton
+
         @Provides
-        fun provideContent(activity: AppCompatActivity):FragmentManager{
+        @PerActivity
+        fun provideFragmentManager(activity: AppCompatActivity):FragmentManager{
             return activity.supportFragmentManager
         }
     }

@@ -1,5 +1,6 @@
 package com.zlcdgroup.mrsei.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
@@ -70,7 +71,11 @@ class UserListActivity  : BaseActivity(),UserListContract.View {
     }
 
     override fun showAddUser(userEntity: UserEntity) {
-        userListAdapter.addData(userEntity)
+       // userListAdapter.addData(userEntity)
+        var  intent :Intent = Intent()
+        intent.setClass(this,SteperActivity::class.java)
+        startActivity(intent)
+
     }
 
     override fun showDelect(userEntity: UserEntity, postion: Int) {

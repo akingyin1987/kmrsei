@@ -1,10 +1,12 @@
 package com.zlcdgroup.mrsei.ui
-
 import android.os.Bundle
-import com.akingyin.base.SimpleActivity
+import android.support.v4.app.FragmentManager
+import android.view.View
+import com.akingyin.base.BaseActivity
+import com.stepstone.stepper.StepperLayout
+import com.stepstone.stepper.VerificationError
 import com.zlcdgroup.mrsei.R
-import com.zlcdgroup.mrsei.ui.fragment.UserListFragment
-import dagger.android.AndroidInjection
+import com.zlcdgroup.mrsei.ui.fragment.OnNavigationBarListener
 import javax.inject.Inject
 
 /**
@@ -15,19 +17,19 @@ import javax.inject.Inject
  */
 
 
-class SteperActivity : SimpleActivity() {
+class SteperActivity : BaseActivity() , StepperLayout.StepperListener, OnNavigationBarListener {
+
+//      @Inject
+//      lateinit var sampleStepAdapter: SampleStepAdapter
 
     @Inject
-    lateinit var userListFragment: UserListFragment
-
-    override fun initInjection() {
-         AndroidInjection.inject(this)
-    }
+    lateinit var  fragmentManager: FragmentManager
 
     override fun getLayoutId(): Int = R.layout.activity_stepper
 
     override fun initializationData(savedInstanceState: Bundle?) {
-
+//        stepperLayout.adapter = sampleStepAdapter
+//        stepperLayout.setListener(this)
     }
 
     override fun onSaveInstanceData(outState: Bundle?) {
@@ -38,5 +40,25 @@ class SteperActivity : SimpleActivity() {
     }
 
     override fun startRequest() {
+    }
+
+    override fun onStepSelected(newStepPosition: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onError(verificationError: VerificationError?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onReturn() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onCompleted(completeButton: View?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onChangeEndButtonsEnabled(enabled: Boolean) {
+
     }
 }

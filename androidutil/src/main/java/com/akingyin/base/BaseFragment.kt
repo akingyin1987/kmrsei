@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.Toast
 import com.classic.common.MultipleStatusView
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
@@ -26,7 +25,7 @@ abstract class BaseFragment :SimpleFragment(),HasSupportFragmentInjector,IBaseVi
     lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
 
     override fun onAttach(context: Context?) {
-         AndroidSupportInjection.inject(this)
+         injection()
         super.onAttach(context)
     }
 
@@ -59,8 +58,10 @@ abstract class BaseFragment :SimpleFragment(),HasSupportFragmentInjector,IBaseVi
         }
     }
 
+    abstract   fun  injection()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        AndroidSupportInjection.inject(this)
+
 
         super.onViewCreated(view, savedInstanceState)
          isViewPrepare = true

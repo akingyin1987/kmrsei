@@ -1,5 +1,6 @@
 package com.zlcdgroup.mrsei.ui.fragment
 
+import android.content.Context
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -9,12 +10,15 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.akingyin.base.BaseFragment
 import com.akingyin.base.dialog.DialogUtil
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.stepstone.stepper.Step
+import com.stepstone.stepper.VerificationError
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.entity.UserEntity
 import com.zlcdgroup.mrsei.presenter.UserListFragmentContract
 import com.zlcdgroup.mrsei.presenter.UserListFragmentPresenterImpl
 import com.zlcdgroup.mrsei.ui.adapter.UserListAdapter
 import com.zlcdgroup.mrsei.ui.adapter.UserViewHolder
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_userlist.*
 import javax.inject.Inject
 
@@ -26,13 +30,36 @@ import javax.inject.Inject
  */
 
 
-class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentContract.View {
+class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentContract.View , Step {
+    companion object {
+
+        private const val CLICKS_KEY = "clicks"
+
+        private const val TAP_THRESHOLD = 2
+
+        private const val LAYOUT_RESOURCE_ID_ARG_KEY = "messageResourceId"
+
+
+    }
 
     @Inject
     lateinit var userListFragmentPresenterImpl: UserListFragmentPresenterImpl
 
-    @Inject
+
     lateinit var userListAdapter: UserListAdapter
+
+    lateinit   var  onNavigationBarListener:OnNavigationBarListener
+
+
+
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if(context is OnNavigationBarListener){
+            onNavigationBarListener = context
+        }
+        userListAdapter = UserListAdapter(context!!)
+    }
 
     override fun showUserList(userEntitys: List<UserEntity>?) {
        userListAdapter.setNewData(userEntitys)
@@ -90,6 +117,7 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
     }
 
     override fun initView() {
+
         userListFragmentPresenterImpl.attachView(this)
         recycle.layoutManager=LinearLayoutManager(mContext)
         recycle.itemAnimator = DefaultItemAnimator()
@@ -115,9 +143,32 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
     override fun initEventAndData() {
 
     }
+    override fun onSelected() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun verifyStep(): VerificationError? {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onError(error: VerificationError) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     override fun onDestroy() {
         userListFragmentPresenterImpl.detachView()
         super.onDestroy()
+    }
+
+    private var i = 0
+    private val isAboveThreshold: Boolean
+        get() = i >= TAP_THRESHOLD
+
+    private fun updateNavigationBar() {
+        onNavigationBarListener.onChangeEndButtonsEnabled(isAboveThreshold)
+    }
+
+    override fun injection() {
+        AndroidSupportInjection.inject(this)
     }
 }
