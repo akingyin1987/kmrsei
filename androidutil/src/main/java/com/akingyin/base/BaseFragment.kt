@@ -1,12 +1,16 @@
 package com.akingyin.base
 
+import android.content.Context
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.view.View
 import android.widget.Toast
 import com.classic.common.MultipleStatusView
+import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
+import dagger.android.support.HasSupportFragmentInjector
 import es.dmoral.toasty.Toasty
-
+import javax.inject.Inject
 
 
 /**
@@ -15,10 +19,27 @@ import es.dmoral.toasty.Toasty
  * @ Date 2018/8/3 17:56
  * @version V1.0
  */
-abstract class BaseFragment :SimpleFragment(),IBaseView{
+abstract class BaseFragment :SimpleFragment(),HasSupportFragmentInjector,IBaseView{
+
+
+    @Inject
+    lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+
+    override fun onAttach(context: Context?) {
+         AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
+
+
+    override fun supportFragmentInjector(): DispatchingAndroidInjector<Fragment> {
+        return childFragmentInjector
+    }
+
     /**
      * 视图是否加载完毕
      */
+
+
     private var isViewPrepare = false
     /**
      * 数据是否加载过了

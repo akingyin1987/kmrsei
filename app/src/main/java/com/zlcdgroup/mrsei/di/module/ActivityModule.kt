@@ -6,7 +6,9 @@ import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import com.zlcdgroup.mrsei.di.qualifier.ActivityContext
 import com.zlcdgroup.mrsei.di.scope.PerActivity
+import com.zlcdgroup.mrsei.presenter.StepModule
 import com.zlcdgroup.mrsei.presenter.UserModule
+import com.zlcdgroup.mrsei.ui.SteperActivity
 import com.zlcdgroup.mrsei.ui.UserListActivity
 import dagger.Binds
 import dagger.Module
@@ -44,8 +46,13 @@ abstract class ActivityModule {
     @PerActivity
     abstract   fun contributeUserActivitytInjector():UserListActivity
 
+
+    @ContributesAndroidInjector(modules = arrayOf(StepModule::class))
+    @PerActivity
+    abstract   fun contributeStepActivitytInjector():SteperActivity
+
     @Module(includes = arrayOf(ActivityModule ::class))
-    class ApplicationProvidesModule {
+    class SupportFragmentManagerModule {
         @Singleton
         @Provides
         fun provideContent(activity: AppCompatActivity):FragmentManager{

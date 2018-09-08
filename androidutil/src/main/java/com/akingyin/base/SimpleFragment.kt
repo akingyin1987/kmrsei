@@ -3,10 +3,10 @@ package com.akingyin.base
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import me.yokeyword.fragmentation.SupportFragment
 
 
 /**
@@ -15,7 +15,7 @@ import me.yokeyword.fragmentation.SupportFragment
  * @ Date 2018/9/7 15:33
  * @version V1.0
  */
-abstract class SimpleFragment :SupportFragment(){
+abstract class SimpleFragment :Fragment(){
 
     protected var mView: View? = null
     protected var mActivity: Activity? = null
@@ -35,10 +35,11 @@ abstract class SimpleFragment :SupportFragment(){
         return mView
     }
 
-    override fun onLazyInitView(savedInstanceState: Bundle?) {
-        super.onLazyInitView(savedInstanceState)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         isInited = true
         initEventAndData()
+        super.onViewCreated(view, savedInstanceState)
     }
 
     abstract  fun  getLayoutId():Int

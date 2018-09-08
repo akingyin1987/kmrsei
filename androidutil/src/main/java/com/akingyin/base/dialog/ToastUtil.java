@@ -3,7 +3,7 @@ package com.akingyin.base.dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
-import com.zlcdgroup.base.toasty.Toasty;
+import es.dmoral.toasty.Toasty;
 
 /**
  * Created by Administrator on 2017/8/29.

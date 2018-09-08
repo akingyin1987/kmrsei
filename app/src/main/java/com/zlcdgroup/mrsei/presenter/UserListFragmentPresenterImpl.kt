@@ -58,7 +58,7 @@ open class UserListFragmentPresenterImpl @Inject constructor(var userRepository:
         }
         var   result :Boolean =  userRepository.addUser(userEntity)
         if(result){
-            mRootView?.getAdapter()?.notifyItemChanged(postion)
+            mRootView?.getAdapter()?.setData(postion,userEntity)
         }else{
             mRootView?.showError("修改数据失败")
         }
