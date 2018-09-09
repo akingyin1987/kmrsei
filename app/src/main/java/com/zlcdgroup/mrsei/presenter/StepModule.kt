@@ -1,12 +1,15 @@
 package com.zlcdgroup.mrsei.presenter
 
 import android.app.Activity
+import android.support.v4.app.FragmentManager
+import android.support.v7.app.AppCompatActivity
 import com.zlcdgroup.mrsei.di.scope.PerActivity
 import com.zlcdgroup.mrsei.di.scope.PerFragment
 import com.zlcdgroup.mrsei.ui.SteperActivity
 import com.zlcdgroup.mrsei.ui.fragment.UserListFragment
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 
 /**
@@ -27,6 +30,21 @@ abstract class StepModule {
     @ContributesAndroidInjector
     @PerFragment
     abstract fun  fragment(): UserListFragment
+
+
+
+    @Module(includes = arrayOf(StepModule ::class))
+    class StepModuleFragmentManagerModule {
+
+        @Provides
+        @PerActivity
+        fun provideFragmentManager(activity: SteperActivity):FragmentManager{
+            return activity.supportFragmentManager
+        }
+    }
+
+
+
 
 
     @Binds

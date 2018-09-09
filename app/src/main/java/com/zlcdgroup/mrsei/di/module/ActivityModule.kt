@@ -41,24 +41,25 @@ abstract class ActivityModule {
 
 
 
+
     @ContributesAndroidInjector(modules = arrayOf(UserModule::class))
     @PerActivity
     abstract   fun contributeUserActivitytInjector():UserListActivity
 
 
-    @ContributesAndroidInjector(modules = arrayOf(StepModule::class))
+    @ContributesAndroidInjector(modules = arrayOf(StepModule::class, StepModule.StepModuleFragmentManagerModule::class))
     @PerActivity
     abstract   fun contributeStepActivitytInjector():SteperActivity
 
-    @Module(includes = arrayOf(ActivityModule ::class))
-    class SupportFragmentManagerModule {
-
-        @Provides
-        @PerActivity
-        fun provideFragmentManager(activity: AppCompatActivity):FragmentManager{
-            return activity.supportFragmentManager
-        }
-    }
+//    @Module(includes = arrayOf(ActivityModule ::class))
+//    class SupportFragmentManagerModule {
+//
+//        @Provides
+//        @PerActivity
+//        fun provideFragmentManager(activity: AppCompatActivity):FragmentManager{
+//            return activity.supportFragmentManager
+//        }
+//    }
 
 
 //    companion object {
@@ -70,7 +71,7 @@ abstract class ActivityModule {
 //     }
 //    }
 
-//
+
 //    @Provides
 //    @PerActivity
 //    fun activityFragmentManager(activity: AppCompatActivity): FragmentManager {

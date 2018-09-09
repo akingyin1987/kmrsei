@@ -25,7 +25,7 @@ import javax.inject.Singleton
                   DataModule::class,
                 ActivityModule::class,
                 DataModule.DataProvidesModule::class,
-                ActivityModule.SupportFragmentManagerModule::class,
+
                 AndroidInjectionModule::class,
                 AndroidSupportInjectionModule::class))
 interface AppComponent :AndroidInjector<MrmseiApp>{
