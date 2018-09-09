@@ -2,6 +2,7 @@ package com.zlcdgroup.mrsei.presenter
 
 import com.akingyin.base.BasePresenter
 import com.zlcdgroup.mrsei.data.entity.UserEntity
+import com.zlcdgroup.mrsei.data.source.UserRepository
 import javax.inject.Inject
 
 /**
@@ -14,21 +15,22 @@ import javax.inject.Inject
 
 
 
-class UserListPresenterImpl @Inject constructor():BasePresenter<UserListContract.View>(),UserListContract.Presenter {
+class UserListPresenterImpl @Inject constructor(var  userRepository: UserRepository):BasePresenter<UserListContract.View>(),UserListContract.Presenter {
 
 
 
 
-    override fun getUserList(): List<UserEntity> {
-
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getUserList(): List<UserEntity>? {
+        return  userRepository.getUserList()
     }
 
     override fun addUser(userEntity: UserEntity): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var  result:Boolean = userRepository.addUser(userEntity)
+        mRootView?.showAddUser(userEntity)
+        return  result
     }
 
     override fun delectUser(userEntity: UserEntity): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return  userRepository.delectUser(userEntity)
     }
 }

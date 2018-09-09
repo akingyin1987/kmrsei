@@ -13,18 +13,18 @@ import com.zlcdgroup.mrsei.data.entity.UserEntity
 interface UserListContract {
 
      interface  View  : IBaseView{
-          fun    showUserList(userEntitys: List<UserEntity> )
+          fun    showUserList(userEntitys: List<UserEntity>? )
 
           fun    showAddUser( userEntity: UserEntity)
 
-          fun    showDelect(userEntity: UserEntity)
+          fun    showDelect(userEntity: UserEntity,  postion:Int)
      }
 
 
       interface   Presenter :IPresenter<View>{
 
 
-          fun   getUserList():List<UserEntity>
+          fun   getUserList():List<UserEntity>?
 
           fun   addUser(userEntity: UserEntity):Boolean
 

@@ -13,12 +13,12 @@ interface IUserSource {
     /**
      * 获取所有用户
      */
-    fun   getUserList():List<UserEntity>
+    fun   getUserList():List<UserEntity>?
 
     /**
      * 通过ID获取用户
      */
-    fun   getUserById(id:Long):UserEntity
+    fun   getUserById(id:Long):UserEntity?
 
 
     /**
