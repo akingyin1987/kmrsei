@@ -18,7 +18,6 @@ import timber.log.Timber
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
             initLeakCanary()
-
         }
     }
 

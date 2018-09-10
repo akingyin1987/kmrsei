@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
+
     android:layout_height="match_parent">
+
+  <include layout="@layout/include_toolbar"/>
+
   <com.stepstone.stepper.StepperLayout xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       android:id="@+id/stepperLayout"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       app:ms_showBackButtonOnFirstStep="true"
-      app:ms_stepperType="dots" />
-</FrameLayout>
+      app:ms_nextButtonText="下一个"
+      app:ms_completeButtonText="完成"
+      app:ms_backButtonText="返回"
+      app:ms_tabNavigationEnabled="false"
+      app:ms_stepperType="tabs" />
+
+</android.support.design.widget.CoordinatorLayout>

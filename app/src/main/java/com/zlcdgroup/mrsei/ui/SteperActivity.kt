@@ -10,6 +10,7 @@ import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.ui.adapter.SampleStepAdapter
 import com.zlcdgroup.mrsei.ui.fragment.OnNavigationBarListener
 import kotlinx.android.synthetic.main.activity_stepper.*
+import kotlinx.android.synthetic.main.include_toolbar.*
 import javax.inject.Inject
 
 /**
@@ -32,6 +33,7 @@ class SteperActivity : BaseActivity() , StepperLayout.StepperListener, OnNavigat
 
     override fun initializationData(savedInstanceState: Bundle?) {
         stepperLayout.adapter = sampleStepAdapter
+
         stepperLayout.setListener(this)
     }
 
@@ -39,29 +41,41 @@ class SteperActivity : BaseActivity() , StepperLayout.StepperListener, OnNavigat
     }
 
     override fun initView() {
-
+       setToolBar(toolbar,"测试2")
     }
 
     override fun startRequest() {
     }
 
     override fun onStepSelected(newStepPosition: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        println("onStepSelected $newStepPosition")
+
     }
 
     override fun onError(verificationError: VerificationError?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        println("onError ${verificationError?.errorMessage}")
     }
 
     override fun onReturn() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        println("onReturn")
     }
 
     override fun onCompleted(completeButton: View?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        println("onCompleted ")
     }
 
     override fun onChangeEndButtonsEnabled(enabled: Boolean) {
+
+    }
+
+    override fun onBackPressed() {
+        val currentStepPosition = stepperLayout.currentStepPosition
+        if (currentStepPosition > 0) {
+            stepperLayout.onBackClicked()
+        } else {
+            super.onBackPressed()
+        }
 
     }
 }

@@ -26,6 +26,7 @@ class UserLocalSource @Inject constructor( var  userEntityDao: UserEntityDao) : 
     override fun addUser(userEntity: UserEntity): Boolean {
         try {
             userEntityDao.save(userEntity)
+            return true
         }catch (e :Exception){
             e.printStackTrace()
         }
@@ -35,6 +36,7 @@ class UserLocalSource @Inject constructor( var  userEntityDao: UserEntityDao) : 
     override fun delectUser(userEntity: UserEntity): Boolean {
         try {
             userEntityDao.delete(userEntity)
+            return true
         }catch (e :Exception){
             e.printStackTrace()
         }
@@ -44,6 +46,7 @@ class UserLocalSource @Inject constructor( var  userEntityDao: UserEntityDao) : 
     override fun modeiyUser(userEntity: UserEntity): Boolean {
         try {
             userEntityDao.save(userEntity)
+            return true
         }catch (e :Exception){
             e.printStackTrace()
         }

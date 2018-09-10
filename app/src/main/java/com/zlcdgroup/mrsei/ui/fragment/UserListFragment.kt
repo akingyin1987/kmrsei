@@ -20,6 +20,7 @@ import com.zlcdgroup.mrsei.ui.adapter.UserListAdapter
 import com.zlcdgroup.mrsei.ui.adapter.UserViewHolder
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_userlist.*
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -45,7 +46,7 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
     @Inject
     lateinit var userListFragmentPresenterImpl: UserListFragmentPresenterImpl
 
-
+    @Inject
     lateinit var userListAdapter: UserListAdapter
 
     lateinit   var  onNavigationBarListener:OnNavigationBarListener
@@ -58,7 +59,7 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
         if(context is OnNavigationBarListener){
             onNavigationBarListener = context
         }
-        userListAdapter = UserListAdapter(context!!)
+
     }
 
     override fun showUserList(userEntitys: List<UserEntity>?) {
@@ -132,6 +133,10 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
              true
 
         }
+        fab.setOnClickListener {
+            view-> showAddUserDialog()
+
+        }
     }
 
     override fun lazyLoad() {
@@ -139,20 +144,21 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
     }
 
     override fun getLayoutId(): Int = R.layout.fragment_userlist
-
+    var  string:String ? = null
     override fun initEventAndData() {
-
+      string =arguments?.getString("postion")
     }
     override fun onSelected() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        showMessage(if (string.isNullOrEmpty())"select" else "select $string")
     }
 
     override fun verifyStep(): VerificationError? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var i :Int = Random().nextInt(100)
+        return if(i % 2 == 0) null else VerificationError("error $string")
     }
 
     override fun onError(error: VerificationError) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        showError(error.errorMessage)
     }
 
     override fun onDestroy() {
