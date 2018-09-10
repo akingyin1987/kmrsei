@@ -6,7 +6,10 @@ import com.akingyin.base.BaseActivity
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
 import com.zlcdgroup.mrsei.R
+
+import com.zlcdgroup.mrsei.ui.adapter.SampleStepAdapter
 import com.zlcdgroup.mrsei.ui.fragment.OnNavigationBarListener
+import kotlinx.android.synthetic.main.activity_stepper.*
 import javax.inject.Inject
 
 /**
@@ -19,8 +22,8 @@ import javax.inject.Inject
 
 class SteperActivity : BaseActivity() , StepperLayout.StepperListener, OnNavigationBarListener {
 
-//      @Inject
-//      lateinit var sampleStepAdapter: SampleStepAdapter
+      @Inject
+      lateinit var sampleStepAdapter: SampleStepAdapter
 
     @Inject
     lateinit var  fragmentManager: FragmentManager
@@ -28,8 +31,8 @@ class SteperActivity : BaseActivity() , StepperLayout.StepperListener, OnNavigat
     override fun getLayoutId(): Int = R.layout.activity_stepper
 
     override fun initializationData(savedInstanceState: Bundle?) {
-//        stepperLayout.adapter = sampleStepAdapter
-//        stepperLayout.setListener(this)
+        stepperLayout.adapter = sampleStepAdapter
+        stepperLayout.setListener(this)
     }
 
     override fun onSaveInstanceData(outState: Bundle?) {

@@ -84,6 +84,7 @@ public class RxUtil {
 
 
 
+
   public  void   test(){
    Disposable disposable = Observable.just(1)
         .compose(RxUtil.<Integer>IO_Main())

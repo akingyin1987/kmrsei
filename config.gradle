@@ -12,6 +12,7 @@ ext{
   dependVersion = [
       androidSupportSdkVersion: "27.1.1",
       retrofitSdkVersion      : "2.4.0",
+      okhttpSdkVersion        : "3.11.0",
       glideSdkVersion         : "4.8.0",
       rxJava                  : "2.2.1",
       rxAndroid               : "2.1.0",
@@ -33,7 +34,12 @@ ext{
       retrofit                : "com.squareup.retrofit2:retrofit:$dependVersion.retrofitSdkVersion",
       retrofitConverterGson   : "com.squareup.retrofit2:converter-gson:$dependVersion.retrofitSdkVersion",
       retrofitAdapterRxjava2  : "com.squareup.retrofit2:adapter-rxjava2:$dependVersion.retrofitSdkVersion",
-      okhttp3LoggerInterceptor: 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+
+  ]
+
+  okhttp = [
+      okhttp               : "com.squareup.okhttp3:okhttp:$dependVersion.okhttpSdkVersion",
+      okhttp3LoggerInterceptor: "com.squareup.okhttp3:logging-interceptor:$dependVersion.okhttpSdkVersion"
   ]
 
   rxJava = [
@@ -50,7 +56,7 @@ ext{
 
 
   supportLibs = supportDeps.values()
-  networkLibs = retrofit.values()
+  networkLibs = [retrofit.values(),okhttp.values()]
   rxJavaLibs = rxJava.values()
   otherLibs = [glide]
 
