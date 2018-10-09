@@ -1,8 +1,9 @@
-package com.zlcdgroup.mrsei.presenter
+package com.zlcdgroup.mrsei.presenter.impl
 
 import com.akingyin.base.BasePresenter
 import com.zlcdgroup.mrsei.data.entity.UserEntity
 import com.zlcdgroup.mrsei.data.source.UserRepository
+import com.zlcdgroup.mrsei.presenter.UserListContract
 import javax.inject.Inject
 
 /**
@@ -15,7 +16,7 @@ import javax.inject.Inject
 
 
 
-class UserListPresenterImpl @Inject constructor(var  userRepository: UserRepository):BasePresenter<UserListContract.View>(),UserListContract.Presenter {
+class UserListPresenterImpl @Inject constructor(var  userRepository: UserRepository):BasePresenter<UserListContract.View>(), UserListContract.Presenter {
 
 
 

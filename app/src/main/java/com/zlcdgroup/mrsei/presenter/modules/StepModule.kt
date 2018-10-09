@@ -1,10 +1,11 @@
-package com.zlcdgroup.mrsei.presenter
+package com.zlcdgroup.mrsei.presenter.modules
 
 import android.app.Activity
 import android.support.v4.app.FragmentManager
-import android.support.v7.app.AppCompatActivity
 import com.zlcdgroup.mrsei.di.scope.PerActivity
 import com.zlcdgroup.mrsei.di.scope.PerFragment
+import com.zlcdgroup.mrsei.presenter.UserListFragmentContract
+import com.zlcdgroup.mrsei.presenter.impl.UserListFragmentPresenterImpl
 import com.zlcdgroup.mrsei.ui.SteperActivity
 import com.zlcdgroup.mrsei.ui.fragment.UserListFragment
 import dagger.Binds
@@ -33,7 +34,7 @@ abstract class StepModule {
 
 
 
-    @Module(includes = arrayOf(StepModule ::class))
+    @Module(includes = arrayOf(StepModule::class))
     class StepModuleFragmentManagerModule {
 
         @Provides
@@ -49,5 +50,5 @@ abstract class StepModule {
 
     @Binds
     @PerActivity
-    abstract  fun  tackPresenter(presenter: UserListFragmentPresenterImpl):UserListFragmentContract.Presenter
+    abstract  fun  tackPresenter(presenter: UserListFragmentPresenterImpl): UserListFragmentContract.Presenter
 }

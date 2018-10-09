@@ -1,7 +1,9 @@
-package com.zlcdgroup.mrsei.presenter
+package com.zlcdgroup.mrsei.presenter.modules
 
 import android.app.Activity
 import com.zlcdgroup.mrsei.di.scope.PerActivity
+import com.zlcdgroup.mrsei.presenter.UserListContract
+import com.zlcdgroup.mrsei.presenter.impl.UserListPresenterImpl
 import com.zlcdgroup.mrsei.ui.UserListActivity
 import dagger.Binds
 import dagger.Module
@@ -21,5 +23,5 @@ import dagger.Module
 
      @Binds
      @PerActivity
-    abstract  fun    tackPresenter(presenterImpl: UserListPresenterImpl):UserListContract.Presenter
+    abstract  fun    tackPresenter(presenterImpl: UserListPresenterImpl): UserListContract.Presenter
 }

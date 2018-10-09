@@ -44,7 +44,7 @@ public class TaskShowDialog {
     public void showLoadDialog(Context context,int  max, String message) {
         isAutomatic = false;
         this.context = context;
-        this.msg = msg;
+        this.msg = message;
         try {
             if (isLoading()) {
                 return;
@@ -59,7 +59,7 @@ public class TaskShowDialog {
             currentTime = System.currentTimeMillis();
             loadingDialog.setMaxProgress(max);
             if (!TextUtils.isEmpty(message)) {
-                loadingDialog.setContent(message+" .耗时("+((System.currentTimeMillis()-currentTime)/1000)+"s"+")");
+                loadingDialog.setContent(message+" ,耗时("+((System.currentTimeMillis()-currentTime)/1000)+"s"+")");
             } else {
                 loadingDialog.setContent("处理中...耗时("+(System.currentTimeMillis()-currentTime)/1000+"s"+")");
             }
@@ -88,7 +88,7 @@ public class TaskShowDialog {
                     @Override
                     public void accept(Long aLong) throws Exception {
                         if (!TextUtils.isEmpty(msg)) {
-                            loadingDialog.setContent(msg+" .耗时("+((System.currentTimeMillis()-currentTime)/1000)+"s"+")");
+                            loadingDialog.setContent(msg+" ,耗时("+((System.currentTimeMillis()-currentTime)/1000)+"s"+")");
                         } else {
                             loadingDialog.setContent("处理中...耗时("+(System.currentTimeMillis()-currentTime)/1000+"s"+")");
                         }

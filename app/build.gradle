@@ -33,6 +33,10 @@ android {
     exclude 'lib/mips64/*.so'
     exclude 'lib/mips/*.so'
   }
+
+  lintOptions {
+    disable 'GoogleAppIndexingWarning'
+  }
     buildTypes {
         release {
             minifyEnabled false

@@ -9,7 +9,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.entity.UserEntity
 import com.zlcdgroup.mrsei.presenter.UserListContract
-import com.zlcdgroup.mrsei.presenter.UserListPresenterImpl
+import com.zlcdgroup.mrsei.presenter.impl.UserListPresenterImpl
 import com.zlcdgroup.mrsei.ui.adapter.UserListAdapter
 import kotlinx.android.synthetic.main.activity_userlist.*
 import kotlinx.android.synthetic.main.include_toolbar.*

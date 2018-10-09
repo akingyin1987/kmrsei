@@ -2,17 +2,14 @@ package com.zlcdgroup.mrsei.di.module
 
 import android.app.Activity
 import android.content.Context
-import android.support.v4.app.FragmentManager
-import android.support.v7.app.AppCompatActivity
 import com.zlcdgroup.mrsei.di.qualifier.ActivityContext
 import com.zlcdgroup.mrsei.di.scope.PerActivity
-import com.zlcdgroup.mrsei.presenter.StepModule
-import com.zlcdgroup.mrsei.presenter.UserModule
+import com.zlcdgroup.mrsei.presenter.modules.StepModule
+import com.zlcdgroup.mrsei.presenter.modules.UserModule
 import com.zlcdgroup.mrsei.ui.SteperActivity
 import com.zlcdgroup.mrsei.ui.UserListActivity
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 
 

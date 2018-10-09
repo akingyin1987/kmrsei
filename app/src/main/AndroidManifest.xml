@@ -8,7 +8,7 @@
       android:supportsRtl="true"
       android:theme="@style/AppTheme">
     <activity
-        android:name=".ui.UserListActivity"
+        android:name=".ui.LoginActivity"
         android:configChanges="orientation|keyboardHidden|screenSize"
         android:screenOrientation="portrait"
        >
@@ -20,6 +20,6 @@
     </activity>
 
     <activity android:name=".ui.SteperActivity"/>
-
+     <activity android:name=".ui.UserListActivity"/>
       </application>
 </manifest>

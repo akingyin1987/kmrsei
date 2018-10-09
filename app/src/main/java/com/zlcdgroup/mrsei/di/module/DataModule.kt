@@ -1,9 +1,12 @@
 package com.zlcdgroup.mrsei.di.module
 
 import com.zlcdgroup.mrsei.data.db.dao.DaoSession
+import com.zlcdgroup.mrsei.data.db.dao.PersonEntityDao
 import com.zlcdgroup.mrsei.data.db.dao.UserEntityDao
 import com.zlcdgroup.mrsei.data.db.help.DbCore
+import com.zlcdgroup.mrsei.data.source.local.PersonLocalSource
 import com.zlcdgroup.mrsei.data.source.local.UserLocalSource
+import com.zlcdgroup.mrsei.data.source.remote.PersonRemoteSource
 import com.zlcdgroup.mrsei.data.source.remote.UserRemoteSource
 import com.zlcdgroup.mrsei.di.qualifier.Local
 import com.zlcdgroup.mrsei.di.qualifier.Remote
@@ -22,8 +25,6 @@ import javax.inject.Singleton
 @Module
 abstract class DataModule {
 
-
-
     @Module(includes = arrayOf(DataModule ::class))
     class DataProvidesModule {
         @Singleton
@@ -37,8 +38,25 @@ abstract class DataModule {
         fun  getUserDao(daoSession: DaoSession): UserEntityDao {
             return daoSession.userEntityDao
         }
+
+        @Singleton
+        @Provides
+        fun getPersonDao(daoSession: DaoSession):PersonEntityDao{
+            return  daoSession.personEntityDao
+        }
     }
 
+
+    @Local
+    @Singleton
+    @Binds
+    abstract  fun  providePersonLocalDataSource(personLocalSource: PersonLocalSource):PersonLocalSource
+
+
+    @Remote
+    @Singleton
+    @Binds
+    abstract  fun providePersonRemoteDataSource(personRemoteSource: PersonRemoteSource):PersonRemoteSource
 
     @Local
     @Singleton

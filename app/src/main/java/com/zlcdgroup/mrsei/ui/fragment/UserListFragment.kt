@@ -1,8 +1,6 @@
 package com.zlcdgroup.mrsei.ui.fragment
 
 import android.content.Context
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
@@ -10,16 +8,16 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.akingyin.base.BaseFragment
 import com.akingyin.base.dialog.DialogUtil
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.stepstone.stepper.Step
+import com.stepstone.stepper.BlockingStep
+import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.entity.UserEntity
 import com.zlcdgroup.mrsei.presenter.UserListFragmentContract
-import com.zlcdgroup.mrsei.presenter.UserListFragmentPresenterImpl
+import com.zlcdgroup.mrsei.presenter.impl.UserListFragmentPresenterImpl
 import com.zlcdgroup.mrsei.ui.adapter.UserListAdapter
 import com.zlcdgroup.mrsei.ui.adapter.UserViewHolder
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_userlist.*
 import java.util.*
 import javax.inject.Inject
 
@@ -31,7 +29,7 @@ import javax.inject.Inject
  */
 
 
-class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentContract.View , Step {
+class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentContract.View , BlockingStep {
     companion object {
 
         private const val CLICKS_KEY = "clicks"
@@ -67,7 +65,6 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
     }
 
     override fun showAddUserDialog() {
-
 
         MaterialDialog.Builder(mContext!!).title("用户信息修改")
                 .positiveText("确定")
@@ -120,9 +117,10 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
     override fun initView() {
 
         userListFragmentPresenterImpl.attachView(this)
-        recycle.layoutManager=LinearLayoutManager(mContext)
-        recycle.itemAnimator = DefaultItemAnimator()
-        recycle.adapter = userListAdapter
+
+//        recycle.layoutManager= LinearLayoutManager(mContext)
+//        recycle.itemAnimator = DefaultItemAnimator()
+//        recycle.adapter = userListAdapter
         userListAdapter.setOnItemClickListener{
             adapter, view, position ->
             showModifyUser(userListAdapter.getItem(position)!!,position)
@@ -133,10 +131,10 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
              true
 
         }
-        fab.setOnClickListener {
-            view-> showAddUserDialog()
-
-        }
+//        fab.setOnClickListener {
+//            view-> showAddUserDialog()
+//
+//        }
     }
 
     override fun lazyLoad() {
@@ -176,5 +174,17 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
 
     override fun injection() {
         AndroidSupportInjection.inject(this)
+    }
+
+    override fun onBackClicked(callback: StepperLayout.OnBackClickedCallback?) {
+
+    }
+
+    override fun onCompleteClicked(callback: StepperLayout.OnCompleteClickedCallback?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onNextClicked(callback: StepperLayout.OnNextClickedCallback?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

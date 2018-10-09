@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<include layout="@layout/include_toolbar"/>
+
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_margin="10dp"
+      android:padding="8dp"
+      android:gravity="center"
+      android:id="@+id/tv_webinfo"
+      android:textColor="@color/white"
+      android:background="@color/theme_color_primary"
+      android:layout_height="wrap_content"/>
+
+  <android.support.v7.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:cardElevation="5dp"
+      android:layout_margin="5dp"
+      android:id="@+id/cv_queryinfo"
+      app:cardBackgroundColor="@color/white"
+      android:padding="3dp"
+      android:foreground="?attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ll_serch"
+        android:padding="3dp"
+        android:orientation="vertical" >
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical"
+            android:text="     IP："
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/edit_ip"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:digits="1234567890."
+            android:maxLength="15"
+            android:maxLines="1"
+
+            android:background="@drawable/edittext_background_rounded"
+
+            android:hint="如：114.215.108.130"
+            android:paddingLeft="10dp"
+
+            android:textSize="14sp" >
+        </EditText>
+      </LinearLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_marginTop="10dp"
+          android:layout_height="wrap_content" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical"
+            android:text="端口："
+
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/edit_port"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edittext_background_rounded"
+            android:maxLines="1"
+            android:maxLength="6"
+            android:hint="如：8080"
+            android:paddingLeft="10dp"
+            android:inputType="numberSigned"
+            android:textSize="14sp" >
+        </EditText>
+      </LinearLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_marginTop="10dp"
+          android:layout_height="wrap_content" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical"
+            android:text="项目："
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/edit_project"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edittext_background_rounded"
+            android:maxLength="15"
+            android:inputType="text"
+            android:hint="如：CAIMS"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textSize="14sp" >
+        </EditText>
+      </LinearLayout>
+
+
+      <Button
+          android:id="@+id/btn_serach"
+          android:layout_width="match_parent"
+          android:layout_height="45dp"
+          android:layout_marginTop="15dp"
+
+          android:background="@drawable/selector_login"
+          android:gravity="center"
+          android:text="保存"
+          android:textColor="@color/white"
+          android:textSize="@dimen/textsize_large" />
+    </LinearLayout>
+
+  </android.support.v7.widget.CardView>
+
+
+
+</LinearLayout>

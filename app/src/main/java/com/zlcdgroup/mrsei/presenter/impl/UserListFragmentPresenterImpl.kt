@@ -1,7 +1,8 @@
-package com.zlcdgroup.mrsei.presenter
+package com.zlcdgroup.mrsei.presenter.impl
 
 import com.zlcdgroup.mrsei.data.entity.UserEntity
 import com.zlcdgroup.mrsei.data.source.UserRepository
+import com.zlcdgroup.mrsei.presenter.UserListFragmentContract
 import javax.inject.Inject
 
 /**
@@ -11,9 +12,9 @@ import javax.inject.Inject
  * @version V1.0
  */
 open class UserListFragmentPresenterImpl @Inject constructor(var userRepository: UserRepository)
-    :UserListFragmentContract.Presenter {
+    : UserListFragmentContract.Presenter {
 
-     var  mRootView:UserListFragmentContract.View?=null
+     var  mRootView: UserListFragmentContract.View?=null
 
     override fun attachView(mRootView: UserListFragmentContract.View) {
        this.mRootView = mRootView
