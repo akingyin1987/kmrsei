@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.InputType;
 import android.text.Spanned;
 import android.text.TextUtils;

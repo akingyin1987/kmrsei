@@ -9,8 +9,8 @@
 package com.akingyin.base.rx;
 
 import android.Manifest;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import com.akingyin.base.call.AppCallBack;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import io.reactivex.disposables.Disposable;

@@ -18,6 +18,7 @@ import com.zlcdgroup.mrsei.presenter.impl.UserListFragmentPresenterImpl
 import com.zlcdgroup.mrsei.ui.adapter.UserListAdapter
 import com.zlcdgroup.mrsei.ui.adapter.UserViewHolder
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.fragment_userlist.*
 import java.util.*
 import javax.inject.Inject
 
@@ -103,7 +104,7 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
          MaterialDialog.Builder(mContext!!).title("用户信息修改")
                 .positiveText("确定")
                 .negativeText("取消")
-                .onPositive { dialog, which ->
+                .onPositive { _, _ ->
 
                     userEntity.age = age.text.toString().trim().toInt()
                     userEntity.name = name.text.toString().trim()
@@ -118,23 +119,23 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
 
         userListFragmentPresenterImpl.attachView(this)
 
-//        recycle.layoutManager= LinearLayoutManager(mContext)
-//        recycle.itemAnimator = DefaultItemAnimator()
-//        recycle.adapter = userListAdapter
+        recycle.layoutManager= androidx.recyclerview.widget.LinearLayoutManager(mContext)
+        recycle.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
+        recycle.adapter = userListAdapter
         userListAdapter.setOnItemClickListener{
-            adapter, view, position ->
+            _, _, position ->
             showModifyUser(userListAdapter.getItem(position)!!,position)
         }
         userListAdapter.setOnItemLongClickListener {
-            adapter, view, position ->
+            _, _, position ->
              showDelectUserDialog(userListAdapter.getItem(position)!!,position)
              true
 
         }
-//        fab.setOnClickListener {
-//            view-> showAddUserDialog()
-//
-//        }
+        fab.setOnClickListener {
+            view-> showAddUserDialog()
+
+        }
     }
 
     override fun lazyLoad() {

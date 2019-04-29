@@ -1,5 +1,6 @@
 package com.akingyin.base
 
+import com.akingyin.base.ext.Ext
 import com.squareup.leakcanary.LeakCanary
 import dagger.android.DaggerApplication
 import timber.log.Timber
@@ -25,7 +26,7 @@ import timber.log.Timber
         if (!LeakCanary.isInAnalyzerProcess(this)) {
             LeakCanary.install(this)
         }
-
+        Ext.with(this)
     }
 
 

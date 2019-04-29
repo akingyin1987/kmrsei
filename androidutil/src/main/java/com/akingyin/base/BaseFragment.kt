@@ -2,7 +2,7 @@ package com.akingyin.base
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
 import com.classic.common.MultipleStatusView
@@ -22,7 +22,7 @@ abstract class BaseFragment :SimpleFragment(),HasSupportFragmentInjector,IBaseVi
 
 
     @Inject
-    lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var childFragmentInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
 
     override fun onAttach(context: Context?) {
          injection()
@@ -30,7 +30,7 @@ abstract class BaseFragment :SimpleFragment(),HasSupportFragmentInjector,IBaseVi
     }
 
 
-    override fun supportFragmentInjector(): DispatchingAndroidInjector<Fragment> {
+    override fun supportFragmentInjector(): DispatchingAndroidInjector<androidx.fragment.app.Fragment> {
         return childFragmentInjector
     }
 

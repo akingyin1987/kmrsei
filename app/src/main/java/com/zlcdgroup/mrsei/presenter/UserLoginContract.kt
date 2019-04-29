@@ -28,5 +28,7 @@ interface UserLoginContract {
 
         fun  login(name:String,pass :String)
 
+        fun cancelSubscribe()
+
     }
 }

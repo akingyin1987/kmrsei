@@ -10,7 +10,7 @@ package com.akingyin.base.taskmanager;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.akingyin.base.taskmanager.enums.TaskManagerStatusEnum;
 import com.akingyin.base.taskmanager.enums.TaskStatusEnum;
 import com.akingyin.base.taskmanager.enums.ThreadTypeEnum;

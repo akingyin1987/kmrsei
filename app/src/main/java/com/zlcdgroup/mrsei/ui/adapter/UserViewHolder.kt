@@ -19,6 +19,7 @@ class UserViewHolder (var  view: View?) : BaseViewHolder(view) {
 
 
     fun bind( userEntity: UserEntity?){
+
         name?.text=userEntity?.name
         age?.text = userEntity?.age.toString()
     }

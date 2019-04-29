@@ -3,7 +3,7 @@ package com.akingyin.base
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +15,7 @@ import android.view.ViewGroup
  * @ Date 2018/9/7 15:33
  * @version V1.0
  */
-abstract class SimpleFragment :Fragment(){
+abstract class SimpleFragment : androidx.fragment.app.Fragment(){
 
     protected var mView: View? = null
     protected var mActivity: Activity? = null

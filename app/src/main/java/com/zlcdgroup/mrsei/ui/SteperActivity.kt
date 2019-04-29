@@ -1,12 +1,11 @@
 package com.zlcdgroup.mrsei.ui
+
 import android.os.Bundle
-import android.support.v4.app.FragmentManager
 import android.view.View
 import com.akingyin.base.BaseActivity
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
 import com.zlcdgroup.mrsei.R
-
 import com.zlcdgroup.mrsei.ui.adapter.SampleStepAdapter
 import com.zlcdgroup.mrsei.ui.fragment.OnNavigationBarListener
 import kotlinx.android.synthetic.main.activity_stepper.*
@@ -27,7 +26,7 @@ class SteperActivity : BaseActivity() , StepperLayout.StepperListener, OnNavigat
       lateinit var sampleStepAdapter: SampleStepAdapter
 
     @Inject
-    lateinit var  fragmentManager: FragmentManager
+    lateinit var  fragmentManager: androidx.fragment.app.FragmentManager
 
     override fun getLayoutId(): Int = R.layout.activity_stepper
 

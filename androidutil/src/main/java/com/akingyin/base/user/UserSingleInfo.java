@@ -1,6 +1,6 @@
 package com.akingyin.base.user;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 
 /**

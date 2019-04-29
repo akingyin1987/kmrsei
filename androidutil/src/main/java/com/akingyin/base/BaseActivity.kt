@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.akingyin.base
 
 import android.app.Fragment
@@ -20,12 +22,13 @@ import javax.inject.Inject
 abstract  class BaseActivity : SimpleActivity(), HasFragmentInjector, HasSupportFragmentInjector {
 
     @Inject
-    lateinit var supportFragmentInjector: DispatchingAndroidInjector<android.support.v4.app.Fragment>
+    lateinit var supportFragmentInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
     @Inject
     lateinit var frameworkFragmentInjector: DispatchingAndroidInjector<android.app.Fragment>
 
 
     override fun initInjection() {
+
         AndroidInjection.inject(this)
     }
 
@@ -33,7 +36,7 @@ abstract  class BaseActivity : SimpleActivity(), HasFragmentInjector, HasSupport
         return   frameworkFragmentInjector
     }
 
-    override fun supportFragmentInjector(): DispatchingAndroidInjector<android.support.v4.app.Fragment>? {
+    override fun supportFragmentInjector(): DispatchingAndroidInjector<androidx.fragment.app.Fragment>? {
         return  supportFragmentInjector
     }
 

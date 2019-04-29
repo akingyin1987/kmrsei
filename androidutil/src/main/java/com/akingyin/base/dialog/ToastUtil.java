@@ -1,7 +1,7 @@
 package com.akingyin.base.dialog;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.widget.Toast;
 import es.dmoral.toasty.Toasty;
 

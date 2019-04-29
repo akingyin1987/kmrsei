@@ -30,6 +30,7 @@ class UserLoginPersenterImpl @Inject constructor(var personRepository: PersonRep
     }
 
     override fun login(name: String, pass: String) {
+
         if(name.isEmpty()){
             mRootView!!.showError("用户名不可为空！")
             return
@@ -49,5 +50,9 @@ class UserLoginPersenterImpl @Inject constructor(var personRepository: PersonRep
                 mRootView!!.showError(msg)
            }
        })
+    }
+
+    override fun cancelSubscribe() {
+        personRepository.cancelSubscribe()
     }
 }

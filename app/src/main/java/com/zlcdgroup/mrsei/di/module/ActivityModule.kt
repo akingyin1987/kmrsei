@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.Context
 import com.zlcdgroup.mrsei.di.qualifier.ActivityContext
 import com.zlcdgroup.mrsei.di.scope.PerActivity
+import com.zlcdgroup.mrsei.presenter.modules.LoginModule
 import com.zlcdgroup.mrsei.presenter.modules.StepModule
 import com.zlcdgroup.mrsei.presenter.modules.UserModule
+import com.zlcdgroup.mrsei.ui.LoginActivity
 import com.zlcdgroup.mrsei.ui.SteperActivity
 import com.zlcdgroup.mrsei.ui.UserListActivity
 import dagger.Binds
@@ -37,12 +39,13 @@ abstract class ActivityModule {
      abstract fun bindActivityContext(activity: Activity): Context
 
 
-
-
     @ContributesAndroidInjector(modules = arrayOf(UserModule::class))
     @PerActivity
     abstract   fun contributeUserActivitytInjector():UserListActivity
 
+    @ContributesAndroidInjector(modules = arrayOf(LoginModule::class))
+    @PerActivity
+    abstract   fun  contributeLoginActivityInjector():LoginActivity
 
     @ContributesAndroidInjector(modules = arrayOf(StepModule::class, StepModule.StepModuleFragmentManagerModule::class))
     @PerActivity

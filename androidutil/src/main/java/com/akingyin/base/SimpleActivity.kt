@@ -2,13 +2,17 @@ package com.akingyin.base
 
 import android.content.Context
 import android.os.Bundle
-import android.support.annotation.LayoutRes
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.StackingBehavior
+
 import com.classic.common.MultipleStatusView
 import es.dmoral.toasty.Toasty
 
@@ -146,27 +150,43 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
     }
 
     override fun close() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun showTips(msg: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (msg != null) {
+            Toasty.info(this,msg, Toast.LENGTH_SHORT).show()
+        }
     }
 
+
+    var loadingDialog: MaterialDialog? = null
     override fun showLoadDialog(msg: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if(null != loadingDialog && loadingDialog!!.isShowing){
+            loadingDialog!!.dismiss()
+        }
+         loadingDialog = MaterialDialog.Builder(this)
+                .content(msg!!)
+                .progress(false, 0)
+                .stackingBehavior(StackingBehavior.ADAPTIVE).build()
+
+         loadingDialog!!.setOnDismissListener {
+             dismissLoading()
+         }
+        loadingDialog!!.show()
+
     }
 
     override fun hideLoadDialog() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if(null != loadingDialog && loadingDialog!!.isShowing){
+            loadingDialog!!.dismiss()
+        }
     }
 
     override fun showLoading() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        showLoadDialog("处理中..")
     }
 
     override fun dismissLoading() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 

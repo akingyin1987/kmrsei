@@ -2,8 +2,6 @@ package com.zlcdgroup.mrsei.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
 import com.akingyin.base.BaseActivity
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.zlcdgroup.mrsei.R
@@ -35,16 +33,16 @@ class UserListActivity  : BaseActivity(),UserListContract.View {
     override fun initializationData(savedInstanceState: Bundle?) {
         setToolBar(toolbar,"测试")
         userListPresenterImpl.attachView(this)
-        recycle.layoutManager = LinearLayoutManager(this)
-        recycle.itemAnimator = DefaultItemAnimator()
+        recycle.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        recycle.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
         recycle.adapter = userListAdapter
         userListAdapter.setNewData(userListPresenterImpl.getUserList())
         userListAdapter.onItemClickListener = BaseQuickAdapter.OnItemClickListener {
-            adapter, view, position ->
+            _, _, position ->
             showSucces(userListAdapter.getItem(position)?.name)
         }
         fab.setOnClickListener {
-            view ->         var  random :Random = Random()
+                            var  random :Random = Random()
                             var   userEntity: UserEntity = UserEntity()
                             userEntity.name="name1"+random.nextInt(100)
                             userEntity.age = random.nextInt(100)

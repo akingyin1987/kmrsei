@@ -1,7 +1,7 @@
 package com.zlcdgroup.mrsei.presenter.modules
 
 import android.app.Activity
-import android.support.v4.app.FragmentManager
+import androidx.fragment.app.FragmentManager
 import com.zlcdgroup.mrsei.di.scope.PerActivity
 import com.zlcdgroup.mrsei.di.scope.PerFragment
 import com.zlcdgroup.mrsei.presenter.UserListFragmentContract
@@ -39,7 +39,7 @@ abstract class StepModule {
 
         @Provides
         @PerActivity
-        fun provideFragmentManager(activity: SteperActivity):FragmentManager{
+        fun provideFragmentManager(activity: SteperActivity): androidx.fragment.app.FragmentManager {
             return activity.supportFragmentManager
         }
     }

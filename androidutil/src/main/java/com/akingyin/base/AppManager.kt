@@ -1,7 +1,6 @@
 package com.akingyin.base
 
 import android.app.Activity
-import android.content.Context
 import java.util.*
 /**
  * @ Description:
@@ -102,13 +101,11 @@ class  AppManager  private  constructor(){ //私有的主构造器
     /**
      * 退出应用程序
      */
-    fun AppExit(context: Context) {
+    fun AppExit() {
         try {
             finishAllActivity()
             android.os.Process.killProcess(android.os.Process.myPid())
-            //ActivityManager activityMgr =
-            //    (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-            //activityMgr.restartPackage(context.getPackageName());
+
             System.exit(0)
         } catch (e: Exception) {
             e.printStackTrace()

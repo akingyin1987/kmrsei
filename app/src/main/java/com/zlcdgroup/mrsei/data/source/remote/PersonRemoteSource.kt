@@ -64,6 +64,7 @@ class PersonRemoteSource @Inject constructor()  : IPersonSource{
 
         }catch (e:Exception){
             e.printStackTrace()
+            callBack.onError("出错了"+e.message)
         }
 
     }

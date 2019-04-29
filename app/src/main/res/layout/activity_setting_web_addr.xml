@@ -17,7 +17,7 @@
       android:background="@color/theme_color_primary"
       android:layout_height="wrap_content"/>
 
-  <android.support.v7.widget.CardView
+  <androidx.cardview.widget.CardView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:cardElevation="5dp"
@@ -57,7 +57,7 @@
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
             android:digits="1234567890."
-            android:maxLength="15"
+            android:inputType="" android:maxLength="15"
             android:maxLines="1"
 
             android:background="@drawable/edittext_background_rounded"
@@ -150,7 +150,7 @@
           android:textSize="@dimen/textsize_large" />
     </LinearLayout>
 
-  </android.support.v7.widget.CardView>
+  </androidx.cardview.widget.CardView>
 
 
 

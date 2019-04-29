@@ -9,7 +9,7 @@
 package com.akingyin.base.net.utils;
 
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.util.Log;
 import com.akingyin.base.net.exception.ApiException;
 import com.akingyin.base.net.mode.ApiResult;

@@ -3,6 +3,7 @@ package com.zlcdgroup.mrsei.ui
 import android.os.Bundle
 import com.akingyin.base.BaseActivity
 import com.akingyin.base.dialog.DialogUtil
+import com.akingyin.base.ext.click
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
@@ -23,19 +24,28 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
     override fun getLayoutId(): Int = R.layout.activity_login
 
     override fun initializationData(savedInstanceState: Bundle?) {
+        userLoginPersenterImpl.attachView(this)
     }
 
     override fun onSaveInstanceData(outState: Bundle?) {
     }
 
     override fun initView() {
-        btn_login.setOnClickListener {
+        println("btn_login2")
+        btn_login.click {
             userLoginPersenterImpl.login(et_mobile.text.toString(),et_password.text.toString())
         }
+
     }
 
     override fun startRequest() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+
+    }
+
+    override fun dismissLoading() {
+        super.dismissLoading()
+        userLoginPersenterImpl.cancelSubscribe()
     }
 
     override fun showConfigDialog(message: String) {

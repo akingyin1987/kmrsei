@@ -4,6 +4,8 @@ import com.akingyin.base.net.mode.ApiResult
 import com.zlcdgroup.mrsei.data.source.remote.model.LoginResultModel
 import io.reactivex.Observable
 import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.POST
 
 /**
  * @ Description:
@@ -16,6 +18,9 @@ interface LoginServerApi {
     /**
      * 登录
      */
+
+    @FormUrlEncoded
+    @POST("api/v4")
     fun   login(@Field("data")data:String,@Field("token")token:String):Observable<ApiResult<LoginResultModel>>
 
     /**

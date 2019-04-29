@@ -17,8 +17,13 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode rootProject.ext.android.versionCode
         versionName rootProject.ext.android.versionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
   packagingOptions {
     exclude 'META-INF/DEPENDENCIES.txt'
     exclude 'META-INF/LICENSE.txt'
@@ -65,13 +70,13 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
   testImplementation 'junit:junit:4.12'
-  androidTestImplementation ('com.android.support.test:runner:1.0.2'){
+  androidTestImplementation ('androidx.test:runner:1.1.0'){
     exclude group: 'com.android.support', module: 'support-annotations'
   }
-  androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1') {
+  androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0') {
     exclude group: 'com.android.support', module: 'support-annotations'
   }
-  implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.42'
+  implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.46'
   implementation project(':androidutil')
 
   implementation 'org.greenrobot:greendao:3.2.2' // add library
@@ -80,6 +85,6 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.16'
 
   implementation 'com.stepstone.stepper:material-stepper:4.3.1'
-  debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
+  debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
 }
