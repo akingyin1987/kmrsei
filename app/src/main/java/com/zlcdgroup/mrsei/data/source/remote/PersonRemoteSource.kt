@@ -50,7 +50,7 @@ class PersonRemoteSource @Inject constructor()  : IPersonSource{
             dataMap.put("account",name)
             dataMap.put("password", pass)
             val json = RQ.getJsonData("zlcd_mrmsei_login", "", imei, dataMap.toMap())
-          disposable =   serverApi.login(json,RQ.getToken(json)).compose(RxUtil.IO_Main())
+            disposable =   serverApi.login(json,RQ.getToken(json)).compose(RxUtil.IO_Main())
                   .subscribe({
                      if(it.status == 0){
                       callBack.call(it.data)

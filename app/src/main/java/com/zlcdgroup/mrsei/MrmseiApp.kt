@@ -22,6 +22,7 @@ class MrmseiApp :BaseApp() {
 
     override fun onCreate() {
         super.onCreate()
+
         showDebugDBAddressLogToast(this)
         ApiHost.setHost("http://114.215.108.130:38280/mrmsei/")
     }

@@ -19,6 +19,7 @@ import javax.inject.Singleton
 class UserRepository @Inject constructor(@Local var userlocal :UserLocalSource
                                             ,@Remote var userRemoteSource: UserRemoteSource):IUserSource {
 
+
     override fun getUserList(): List<UserEntity>? {
        return  userlocal.getUserList()
     }

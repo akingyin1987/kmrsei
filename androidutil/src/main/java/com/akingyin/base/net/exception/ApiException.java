@@ -44,11 +44,16 @@ public class ApiException extends Exception {
 
     private static boolean ignoreSomeIssue(int code) {
         switch (code) {
-            case ApiCode.Response.TIMESTAMP_ERROR://时间戳过期
-            case ApiCode.Response.ACCESS_TOKEN_EXPIRED://AccessToken错误或已过期
-            case ApiCode.Response.REFRESH_TOKEN_EXPIRED://RefreshToken错误或已过期
-            case ApiCode.Response.OTHER_PHONE_LOGINED: //帐号在其它手机已登录
-            case ApiCode.Response.SIGN_ERROR://签名错误
+            //时间戳过期
+            case ApiCode.Response.TIMESTAMP_ERROR:
+                //AccessToken错误或已过期
+            case ApiCode.Response.ACCESS_TOKEN_EXPIRED:
+                //RefreshToken错误或已过期
+            case ApiCode.Response.REFRESH_TOKEN_EXPIRED:
+                //帐号在其它手机已登录
+            case ApiCode.Response.OTHER_PHONE_LOGINED:
+                //签名错误
+            case ApiCode.Response.SIGN_ERROR:
                 return true;
             default:
                 return false;
@@ -92,7 +97,7 @@ public class ApiException extends Exception {
             return ex;
         } else {
             ex = new ApiException(e, ApiCode.Request.UNKNOWN);
-            ex.message = "UNKNOWN";
+            ex.message = "UNKNOWN"+e.getMessage();
             return ex;
         }
     }
@@ -101,7 +106,7 @@ public class ApiException extends Exception {
         return code;
     }
 
-    public String getMessage() {
+    public String getMsg() {
         return message;
     }
 

@@ -10,16 +10,16 @@ package com.akingyin.base.net;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.util.Log;
 import android.widget.Toast;
 import com.akingyin.base.net.exception.ApiException;
 import com.akingyin.base.net.mode.ApiResult;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import java.lang.ref.WeakReference;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import timber.log.Timber;
 
 /**
  *  对观察者进行简单封装
@@ -31,7 +31,7 @@ import java.net.UnknownHostException;
 
 public abstract class BaseObserver<T>  implements Observer<ApiResult<T>> {
 
-  private Context mContext;
+  private WeakReference<Context> mContextWeakReference;
   private ProgressDialog mDialog;
   private Disposable mDisposable;
   private final int SUCCESS_CODE = 0;
@@ -41,20 +41,16 @@ public abstract class BaseObserver<T>  implements Observer<ApiResult<T>> {
   }
 
   public BaseObserver(Context context, ProgressDialog dialog) {
-    mContext = context;
+    mContextWeakReference = new WeakReference<>(context);
     mDialog = dialog;
 
-    mDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-      @Override
-      public void onCancel(DialogInterface dialog) {
-        mDisposable.dispose();
-      }
-    });
+    mDialog.setOnCancelListener(dialog1 -> mDisposable.dispose());
   }
 
   @Override
   public void onSubscribe(Disposable d) {
     mDisposable = d;
+    System.out.println(Thread.currentThread().getId()+":"+Thread.currentThread().getName());
   }
 
   @Override
@@ -92,7 +88,7 @@ public abstract class BaseObserver<T>  implements Observer<ApiResult<T>> {
 
   @Override
   public void onComplete() {
-    Log.d("gesanri", "onComplete");
+    Timber.tag("gesanri").d("onComplete");
 
     if(mDialog != null && mDialog.isShowing()){
       mDialog.dismiss();
@@ -102,11 +98,15 @@ public abstract class BaseObserver<T>  implements Observer<ApiResult<T>> {
     }
   }
 
-   public abstract void onHandleSuccess(T t);
+  /**
+   * 2
+   * @param t
+   */
+   abstract void onHandleSuccess(T t);
 
- public void onHandleError(int code, String message) {
-    if(null != mContext){
-      Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
+    protected void onHandleError(int code, String message) {
+    if(null != mContextWeakReference && null != mContextWeakReference.get()){
+      Toast.makeText(mContextWeakReference.get(), message, Toast.LENGTH_LONG).show();
     }
 
   }

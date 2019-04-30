@@ -70,7 +70,7 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
         MaterialDialog.Builder(mContext!!).title("用户信息修改")
                 .positiveText("确定")
                 .negativeText("取消")
-                .onPositive { dialog, which ->
+                .onPositive { dialog, _ ->
                     var  name:EditText = dialog.findViewById(R.id.edit_name) as EditText
                     var  age :EditText = dialog.findViewById(R.id.edit_age) as EditText
                     var userEntity :UserEntity = UserEntity()
@@ -133,7 +133,7 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
 
         }
         fab.setOnClickListener {
-            view-> showAddUserDialog()
+             showAddUserDialog()
 
         }
     }

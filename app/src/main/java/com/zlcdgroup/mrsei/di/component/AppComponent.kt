@@ -1,15 +1,15 @@
 package com.zlcdgroup.mrsei.di.component
 
 import com.zlcdgroup.mrsei.MrmseiApp
-import com.zlcdgroup.mrsei.di.module.ActivityModule
-import com.zlcdgroup.mrsei.di.module.AppModule
-import com.zlcdgroup.mrsei.di.module.DataModule
+import com.zlcdgroup.mrsei.di.module.*
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
+
+
 
 /**
  * @ Description:
@@ -25,7 +25,10 @@ import javax.inject.Singleton
                   DataModule::class,
                 ActivityModule::class,
                 DataModule.DataProvidesModule::class,
-
+                ClientModule::class,
+                ClientModule.ClientProvideModule::class,
+                GlobalConfigModule::class,
+                GlobalConfigModule.GlobalProvideModule::class,
                 AndroidInjectionModule::class,
                 AndroidSupportInjectionModule::class))
 interface AppComponent :AndroidInjector<MrmseiApp>{
@@ -37,6 +40,18 @@ interface AppComponent :AndroidInjector<MrmseiApp>{
         @BindsInstance
        fun   application(app:MrmseiApp):AppComponent.Builder
 
+
+       fun   globalConfigModule(globalConfigModule: GlobalConfigModule.GlobalProvideModule):AppComponent.Builder
+
        fun   build():AppComponent
+
+
+//        fun okHttpClient(): OkHttpClient
+//
+//        fun executorService(): ExecutorService
     }
+
+
+
+
 }

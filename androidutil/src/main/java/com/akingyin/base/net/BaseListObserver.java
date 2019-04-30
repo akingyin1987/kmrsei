@@ -11,7 +11,6 @@ package com.akingyin.base.net;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.util.Log;
 import android.widget.Toast;
 import com.akingyin.base.net.mode.ApiListResult;
 import io.reactivex.Observer;
@@ -22,10 +21,11 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.text.MessageFormat;
 import java.util.List;
+import timber.log.Timber;
 
 /**
  * @ Description:
- * @ Author king
+ * @author king
  * @ Date 2016/12/31 17:06
  * @ Version V1.0
  */
@@ -69,7 +69,7 @@ public abstract class BaseListObserver<T> implements Observer<ApiListResult<T>>{
 
   @Override
   public void onError(Throwable e) {
-    Log.d("gesanri", MessageFormat.format("error:{0}", e.toString()));
+    Timber.d(MessageFormat.format("error:{0}", e.toString()));
 
     if(mDialog != null && mDialog.isShowing()){
       mDialog.dismiss();
@@ -94,7 +94,7 @@ public abstract class BaseListObserver<T> implements Observer<ApiListResult<T>>{
 
   @Override
   public void onComplete() {
-    Log.d("gesanri", "onComplete");
+    Timber.tag("gesanri").d("onComplete");
 
     if(mDialog != null && mDialog.isShowing()){
       mDialog.dismiss();
@@ -104,9 +104,13 @@ public abstract class BaseListObserver<T> implements Observer<ApiListResult<T>>{
     }
   }
 
-  public abstract void onHandleSuccess(List<T>  datas);
+  /**
+   *
+   * @param datas
+   */
+   abstract void onHandleSuccess(List<T>  datas);
 
-  void onHandleError(int code, String message) {
+   protected   void onHandleError(int code, String message) {
     if(null != mContext){
       Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
     }

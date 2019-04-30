@@ -18,7 +18,7 @@ import dagger.android.AndroidInjectionModule
 @Module(includes = arrayOf(AndroidInjectionModule::class))
 abstract class AppModule {
 
-    @Binds
-    @ApplicationContext
-     abstract fun bindContext(application: Application): Context
+      @Binds
+      @ApplicationContext
+      abstract fun bindContext(application: Application): Context
 }
