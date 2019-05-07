@@ -29,6 +29,7 @@ class MrmseiApp :BaseApp() {
             }
         }).retrofitConfiguration(object :ClientModule.ClientProvideModule.RetrofitConfiguration{
             override fun configRetrofit(context: Context, builder: Retrofit.Builder) {
+
               println("configRetrofit")
             }
         }).addInterceptor(HttpLoggingInterceptor())
@@ -60,6 +61,6 @@ class MrmseiApp :BaseApp() {
     }
 
     override fun initInjection() {
-
+     // applicationInjector()
     }
 }

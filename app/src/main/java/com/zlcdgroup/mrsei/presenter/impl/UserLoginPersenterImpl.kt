@@ -39,6 +39,8 @@ class UserLoginPersenterImpl @Inject constructor(var personRepository: PersonRep
     }
 
     override fun login(name: String, pass: String) {
+        println("configOkhttp="+(null == okHttpClient))
+
         var loginServerApi =  retrofit.create(LoginServerApi::class.java)
         if(name.isEmpty()){
             mRootView!!.showError("用户名不可为空！")

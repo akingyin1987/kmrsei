@@ -50,6 +50,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+
+  sourceSets {
+    main {
+      manifest.srcFile 'src/main/AndroidManifest.xml'
+      java.srcDirs = ['src/main/java']
+      res.srcDirs = ['src/main/res']
+      jniLibs.srcDirs = ['libs']
+      assets.srcDirs = ['src/main/assets']
+    }
+
+  }
 }
 greendao {
   schemaVersion 1
@@ -67,6 +79,8 @@ greendao {
 //    }
 //  }
 //}
+
+
 dependencies {
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -83,10 +97,13 @@ dependencies {
 
   implementation 'org.greenrobot:greendao:3.2.2' // add library
 
-    kapt 'com.google.dagger:dagger-android-processor:2.16'
-    kapt 'com.google.dagger:dagger-compiler:2.16'
+    kapt 'com.google.dagger:dagger-android-processor:2.22.1'
+    kapt 'com.google.dagger:dagger-compiler:2.22.1'
 
   implementation 'com.stepstone.stepper:material-stepper:4.3.1'
   debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
-
+  implementation files('libs/umeng-common-2.0.2.jar')
+  implementation files('libs/umeng-share-core-6.9.4.jar')
+  implementation files('libs/umeng-share-wechat-simplify-6.9.4.jar')
+  implementation files('libs/umeng-sharetool-6.9.4.jar')
 }

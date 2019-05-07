@@ -7,13 +7,11 @@ import com.akingyin.base.net.retrofitConverter.FastJsonConverterFactory
 import com.zlcdgroup.mrsei.MrmseiApp
 import dagger.Module
 import dagger.Provides
-import okhttp3.Dispatcher
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -62,8 +60,7 @@ abstract class ClientModule {
         @Singleton
         @Provides
         fun  provideOkhttp(  configuration: OkhttpConfiguration,
-                           builder: OkHttpClient.Builder,  interceptors:MutableList<Interceptor>,
-                           executorService : ExecutorService):OkHttpClient{
+                           builder: OkHttpClient.Builder,  interceptors:MutableList<Interceptor>):OkHttpClient{
             builder.connectTimeout(TIME_OUT, TimeUnit.SECONDS)
                     .readTimeout(TIME_OUT, TimeUnit.SECONDS)
 
@@ -72,9 +69,7 @@ abstract class ClientModule {
                     builder.addInterceptor(interceptor)
                 }
             }
-                executorService.let {
-                    builder.dispatcher(Dispatcher(executorService))
-                }
+
                 configuration.configOkhttp(app,builder)
 
              return  builder.build()

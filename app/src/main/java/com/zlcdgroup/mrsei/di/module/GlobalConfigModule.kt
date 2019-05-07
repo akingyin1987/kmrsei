@@ -7,14 +7,9 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
-import okhttp3.internal.Util
 import java.io.File
 import java.util.concurrent.ExecutorService
-import java.util.concurrent.SynchronousQueue
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import kotlin.properties.Delegates
 
 
 /**
@@ -36,10 +31,10 @@ abstract class  GlobalConfigModule  {
          var interceptors: MutableList<Interceptor> = mutableListOf()
 
          var cacheFile: File? = null
-         var retrofitConfiguration: ClientModule.ClientProvideModule.RetrofitConfiguration by Delegates.notNull()
-         var okhttpConfiguration: ClientModule.ClientProvideModule.OkhttpConfiguration  by Delegates.notNull()
+        lateinit var retrofitConfiguration: ClientModule.ClientProvideModule.RetrofitConfiguration
+        lateinit var okhttpConfiguration: ClientModule.ClientProvideModule.OkhttpConfiguration
 
-         var executorService: ExecutorService by Delegates.notNull()
+         var executorService: ExecutorService?=null
 
         fun baseurl(baseUrl: String): Builder {//基础url
             if (TextUtils.isEmpty(baseUrl)) {
@@ -114,10 +109,10 @@ abstract class  GlobalConfigModule  {
         var mInterceptors: MutableList<Interceptor> = mutableListOf()
 
         var mCacheFile: File? = null
-        var mRetrofitConfiguration: ClientModule.ClientProvideModule.RetrofitConfiguration by Delegates.notNull()
-        var mOkhttpConfiguration: ClientModule.ClientProvideModule.OkhttpConfiguration by Delegates.notNull()
+       lateinit var mRetrofitConfiguration: ClientModule.ClientProvideModule.RetrofitConfiguration
+       lateinit var mOkhttpConfiguration: ClientModule.ClientProvideModule.OkhttpConfiguration
 
-        var mExecutorService: ExecutorService by Delegates.notNull()
+        var mExecutorService: ExecutorService? = null
 
 
 
@@ -156,11 +151,12 @@ abstract class  GlobalConfigModule  {
         fun  provideOkhttpConfiguration():ClientModule.ClientProvideModule.OkhttpConfiguration{
             return mOkhttpConfiguration
         }
+
+
         @Singleton
         @Provides
-        fun provideExecutorService():ExecutorService{
-            return if(null == mExecutorService) ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
-                    SynchronousQueue<Runnable>(), Util.threadFactory("Arms Executor", false)) else mExecutorService
+        fun provideExecutorService():ExecutorService?{
+            return  mExecutorService
         }
 
 

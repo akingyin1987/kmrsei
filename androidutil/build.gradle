@@ -65,11 +65,11 @@ dependencies {
   api rootProject.ext.networkLibs
   api 'com.bilibili:magicasakura:0.1.8@aar'
   api 'com.classic.common:multiple-status-view:1.5.1'
-  api 'com.google.dagger:dagger-android:2.16'
-  api 'com.google.dagger:dagger-android-support:2.16'
+  api 'com.google.dagger:dagger-android:2.22.1'
+  api 'com.google.dagger:dagger-android-support:2.22.1'
   // if you use the support libraries
-  kapt 'com.google.dagger:dagger-android-processor:2.16'
-  kapt 'com.google.dagger:dagger-compiler:2.16'
+  kapt 'com.google.dagger:dagger-android-processor:2.22.1'
+  kapt 'com.google.dagger:dagger-compiler:2.22.1'
   api 'com.jakewharton.timber:timber:4.7.1'
   //  debugApi('com.readystatesoftware.chuck:library:1.1.0') {
   //    exclude group: 'com.android.support'
