@@ -21,4 +21,7 @@ abstract class AppModule {
       @Binds
       @ApplicationContext
       abstract fun bindContext(application: Application): Context
+
+
+
 }

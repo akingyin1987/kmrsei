@@ -40,17 +40,14 @@ interface AppComponent :AndroidInjector<MrmseiApp>{
         @BindsInstance
        fun   application(app:MrmseiApp):AppComponent.Builder
 
-
+       @BindsInstance
        fun   globalConfigModule(globalConfigModule: GlobalConfigModule.GlobalProvideModule):AppComponent.Builder
 
        fun   build():AppComponent
 
 
-//        fun okHttpClient(): OkHttpClient
-//
-//        fun executorService(): ExecutorService
-    }
 
+    }
 
 
 

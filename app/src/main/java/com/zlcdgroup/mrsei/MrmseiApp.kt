@@ -3,10 +3,16 @@ package com.zlcdgroup.mrsei
 import android.content.Context
 import android.widget.Toast
 import com.akingyin.base.BaseApp
+import com.akingyin.base.ext.Ext
 import com.akingyin.base.net.mode.ApiHost
 import com.zlcdgroup.mrsei.di.component.DaggerAppComponent
+import com.zlcdgroup.mrsei.di.module.ClientModule
+import com.zlcdgroup.mrsei.di.module.GlobalConfigModule
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
 
 
 /**
@@ -17,12 +23,23 @@ import dagger.android.DaggerApplication
  */
 class MrmseiApp :BaseApp() {
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-       return  DaggerAppComponent.builder().application(this).build()
+        var  configmodel : GlobalConfigModule.GlobalProvideModule =GlobalConfigModule.Builder().okhttpConfiguration(object :ClientModule.ClientProvideModule.OkhttpConfiguration{
+            override fun configOkhttp(context: Context, builder: OkHttpClient.Builder) {
+                println("configOkhttp")
+            }
+        }).retrofitConfiguration(object :ClientModule.ClientProvideModule.RetrofitConfiguration{
+            override fun configRetrofit(context: Context, builder: Retrofit.Builder) {
+              println("configRetrofit")
+            }
+        }).addInterceptor(HttpLoggingInterceptor())
+                .build()
+       return  DaggerAppComponent.builder().application(this).globalConfigModule(configmodel).build()
     }
 
     override fun onCreate() {
         super.onCreate()
 
+        Ext.with(this)
         showDebugDBAddressLogToast(this)
         ApiHost.setHost("http://114.215.108.130:38280/mrmsei/")
     }

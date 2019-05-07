@@ -14,8 +14,7 @@ import java.util.concurrent.SynchronousQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-
-
+import kotlin.properties.Delegates
 
 
 /**
@@ -34,13 +33,13 @@ abstract class  GlobalConfigModule  {
          var apiUrl: HttpUrl? = null
          var baseUrl: BaseUrl? = null
 
-         var interceptors: MutableList<Interceptor> ? = null
+         var interceptors: MutableList<Interceptor> = mutableListOf()
 
          var cacheFile: File? = null
-         var retrofitConfiguration: ClientModule.ClientProvideModule.RetrofitConfiguration? = null
-         var okhttpConfiguration: ClientModule.ClientProvideModule.OkhttpConfiguration? = null
+         var retrofitConfiguration: ClientModule.ClientProvideModule.RetrofitConfiguration by Delegates.notNull()
+         var okhttpConfiguration: ClientModule.ClientProvideModule.OkhttpConfiguration  by Delegates.notNull()
 
-         var executorService: ExecutorService? = null
+         var executorService: ExecutorService by Delegates.notNull()
 
         fun baseurl(baseUrl: String): Builder {//基础url
             if (TextUtils.isEmpty(baseUrl)) {
@@ -58,11 +57,9 @@ abstract class  GlobalConfigModule  {
 
         //动态添加任意个interceptor
         fun addInterceptor(interceptor: Interceptor): Builder {
-            interceptors?.let {
-                interceptors = ArrayList()
-            }
 
-            this.interceptors!!.add(interceptor)
+
+            this.interceptors.add(interceptor)
             return this
         }
 
@@ -97,9 +94,9 @@ abstract class  GlobalConfigModule  {
     }
 
     @Module(includes = arrayOf(GlobalConfigModule::class))
-    class GlobalProvideModule{
+    class GlobalProvideModule constructor(){
 
-        constructor(builder: Builder){
+        constructor(builder: Builder) : this() {
             this.mApiUrl = builder.apiUrl
             this.mBaseUrl = builder.baseUrl
             this.mInterceptors = builder.interceptors
@@ -108,22 +105,25 @@ abstract class  GlobalConfigModule  {
             this.mOkhttpConfiguration = builder.okhttpConfiguration
             this.mExecutorService = builder.executorService
         }
+
+
+
         var mApiUrl: HttpUrl? = null
         var mBaseUrl: BaseUrl? = null
 
-        var mInterceptors: MutableList<Interceptor>? = null
+        var mInterceptors: MutableList<Interceptor> = mutableListOf()
 
         var mCacheFile: File? = null
-        var mRetrofitConfiguration: ClientModule.ClientProvideModule.RetrofitConfiguration? = null
-        var mOkhttpConfiguration: ClientModule.ClientProvideModule.OkhttpConfiguration? = null
+        var mRetrofitConfiguration: ClientModule.ClientProvideModule.RetrofitConfiguration by Delegates.notNull()
+        var mOkhttpConfiguration: ClientModule.ClientProvideModule.OkhttpConfiguration by Delegates.notNull()
 
-        var mExecutorService: ExecutorService? = null
+        var mExecutorService: ExecutorService by Delegates.notNull()
 
 
 
         @Singleton
         @Provides
-        fun  provideInterceptors():List<Interceptor>?{
+        fun  provideInterceptors():List<Interceptor>{
             return mInterceptors
         }
 
@@ -146,26 +146,36 @@ abstract class  GlobalConfigModule  {
 
         @Singleton
         @Provides
-        fun  provideRetrofitConfiguration(): ClientModule.ClientProvideModule.RetrofitConfiguration? {
+        fun  provideRetrofitConfiguration(): ClientModule.ClientProvideModule.RetrofitConfiguration {
             return mRetrofitConfiguration
         }
 
 
         @Singleton
         @Provides
-        fun  provideOkhttpConfiguration():ClientModule.ClientProvideModule.OkhttpConfiguration?{
+        fun  provideOkhttpConfiguration():ClientModule.ClientProvideModule.OkhttpConfiguration{
             return mOkhttpConfiguration
         }
         @Singleton
         @Provides
-        fun provideExecutorService():ExecutorService?{
+        fun provideExecutorService():ExecutorService{
             return if(null == mExecutorService) ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
                     SynchronousQueue<Runnable>(), Util.threadFactory("Arms Executor", false)) else mExecutorService
         }
+
+
+
     }
 
     fun builder(): Builder {
         return Builder()
     }
+
+
+//    @Singleton
+//    @Binds
+//   abstract  fun   provideOkhttp(okHttpClient: OkHttpClient):OkHttpClient
+
+
 
 }

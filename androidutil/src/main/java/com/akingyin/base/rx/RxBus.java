@@ -6,7 +6,6 @@ import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
-
 /**
  * Created by xiaguangcheng on 16/5/17.
  */
@@ -63,6 +62,7 @@ public class RxBus {
      * @param o
      */
     public void post(int code, Object o){
+
         _bus.onNext(new RxBusBaseMessage(code,o));
 
     }

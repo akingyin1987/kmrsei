@@ -1,11 +1,10 @@
 package com.zlcdgroup.mrsei.di.module
 
-import android.app.Application
 import android.content.Context
 import androidx.annotation.NonNull
-import androidx.annotation.Nullable
+import com.akingyin.base.ext.app
 import com.akingyin.base.net.retrofitConverter.FastJsonConverterFactory
-import dagger.Binds
+import com.zlcdgroup.mrsei.MrmseiApp
 import dagger.Module
 import dagger.Provides
 import okhttp3.Dispatcher
@@ -48,13 +47,13 @@ abstract class ClientModule {
          */
         @Singleton
         @Provides
-        fun   getRetrofit(application: Application, @NonNull configuration: RetrofitConfiguration,builder:Retrofit.Builder,
-                          okHttpClient: OkHttpClient,httpUrl: HttpUrl):Retrofit{
+        fun   getRetrofit(context: MrmseiApp, @NonNull configuration: RetrofitConfiguration, builder:Retrofit.Builder,
+                          okHttpClient: OkHttpClient, httpUrl: HttpUrl):Retrofit{
             builder.baseUrl(httpUrl)
                     .client(okHttpClient)
             builder.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(FastJsonConverterFactory.create())
-            configuration.configRetrofit(application,builder)
+            configuration.configRetrofit(context,builder)
             return  builder.build()
         }
 
@@ -62,21 +61,21 @@ abstract class ClientModule {
 
         @Singleton
         @Provides
-        fun  provideOkhttp(application: Application,configuration: OkhttpConfiguration,
-                           builder: OkHttpClient.Builder,@Nullable interceptors:List<Interceptor>,
+        fun  provideOkhttp(  configuration: OkhttpConfiguration,
+                           builder: OkHttpClient.Builder,  interceptors:MutableList<Interceptor>,
                            executorService : ExecutorService):OkHttpClient{
             builder.connectTimeout(TIME_OUT, TimeUnit.SECONDS)
                     .readTimeout(TIME_OUT, TimeUnit.SECONDS)
 
-                interceptors.let {
-                   for (interceptor in it){
-                       builder.addInterceptor(interceptor)
-                   }
+            interceptors.let {
+                for (interceptor in it){
+                    builder.addInterceptor(interceptor)
                 }
+            }
                 executorService.let {
                     builder.dispatcher(Dispatcher(executorService))
                 }
-                configuration.configOkhttp(application,builder)
+                configuration.configOkhttp(app,builder)
 
              return  builder.build()
 
@@ -107,8 +106,7 @@ abstract class ClientModule {
     }
 
 
-   @Binds
-   abstract  fun   bindInterceptor(interceptor: Interceptor):Interceptor
+
 
 
 
