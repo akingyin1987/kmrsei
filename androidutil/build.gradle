@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android-extensions' //扩展插件
 
 apply plugin: 'kotlin-kapt'  //kapt3插件
 
-apply plugin: 'com.getkeepsafe.dexcount'
+//apply plugin: 'com.getkeepsafe.dexcount'
 android {
   compileSdkVersion rootProject.ext.android.compileSdkVersion
 
