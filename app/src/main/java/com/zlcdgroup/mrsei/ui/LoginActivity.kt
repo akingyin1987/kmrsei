@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.akingyin.base.BaseActivity
 import com.akingyin.base.dialog.DialogUtil
 import com.akingyin.base.ext.click
+import com.akingyin.base.ext.goActivity
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
@@ -21,6 +22,8 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
     @Inject
     lateinit var userLoginPersenterImpl: UserLoginPersenterImpl
 
+
+
     override fun getLayoutId(): Int = R.layout.activity_login
 
     override fun initializationData(savedInstanceState: Bundle?) {
@@ -31,10 +34,12 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
     }
 
     override fun initView() {
+
         println("btn_login2")
         btn_login.click {
             userLoginPersenterImpl.login(et_mobile.text.toString(),et_password.text.toString())
         }
+
 
     }
 
@@ -55,5 +60,9 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
         }
 
         }
+    }
+
+    override fun goToMainActivity() {
+        goActivity<UserListActivity>()
     }
 }

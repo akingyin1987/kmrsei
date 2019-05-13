@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+     
+    <item android:state_enabled="false"><shape>
+            <solid android:color="@color/bbutton_default_disabled" />
+
+            <stroke android:width="2dp" android:color="#f6f6f6" />
+
+            <corners android:radius="3sp" />
+        </shape></item>
+    <item><shape>
+            <solid android:color="#ad0101" />
+
+            <stroke android:width="2dp" android:color="#ad0101" />
+
+            <corners android:radius="3px" />
+        </shape></item>
+
+</selector>

@@ -86,12 +86,18 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
   testImplementation 'junit:junit:4.12'
-  androidTestImplementation ('androidx.test:runner:1.1.0'){
-    exclude group: 'com.android.support', module: 'support-annotations'
-  }
-  androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0') {
-    exclude group: 'com.android.support', module: 'support-annotations'
-  }
+
+  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.1.0'
+  androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.1.0'
+  androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.1.0'
+  androidTestImplementation 'com.android.support.test:runner:1.1.0'
+  androidTestImplementation 'com.android.support.test:rules:1.1.0'
+//  androidTestImplementation ('androidx.test:runner:1.1.0'){
+//    exclude group: 'com.android.support', module: 'support-annotations'
+//  }
+//  androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0') {
+//    exclude group: 'com.android.support', module: 'support-annotations'
+//  }
   implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.46'
   implementation project(':androidutil')
 
@@ -102,8 +108,14 @@ dependencies {
 
   implementation 'com.stepstone.stepper:material-stepper:4.3.1'
   debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
-  implementation files('libs/umeng-common-2.0.2.jar')
-  implementation files('libs/umeng-share-core-6.9.4.jar')
-  implementation files('libs/umeng-share-wechat-simplify-6.9.4.jar')
+
+
   implementation files('libs/umeng-sharetool-6.9.4.jar')
+
+  implementation  'com.umeng.umsdk:common:2.0.2'
+  implementation  'com.umeng.umsdk:utdid:1.1.5.3'
+  implementation  'com.umeng.umsdk:share-core:6.9.4'
+  implementation files('libs/umeng-share-wechat-full-6.9.4.jar')
+  implementation files('libs/wechat-sdk-android-without-mta-5.1.4.jar')
+  implementation files('libs\\umeng-share-QQ-simplify-6.9.4.jar')
 }

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="drawableText">
+        <attr name="leftDrawable" format="reference|integer" />
+        <attr name="rightDrawable" format="reference|integer" />
+        <attr name="topDrawable" format="reference|integer" />
+        <attr name="bottomDrawable" format="reference|integer" />
+        <attr name="drawableWidth" format="dimension" />
+        <attr name="drawableHeight" format="dimension" />
+    </declare-styleable>
+
+
+    <declare-styleable name="Banner">
+        <attr name="delay_time" format="integer" />
+        <attr name="scroll_time" format="integer" />
+        <attr name="is_auto_play" format="boolean" />
+        <attr name="title_background" format="color|reference" />
+        <attr name="title_textcolor" format="color" />
+        <attr name="title_textsize" format="dimension" />
+        <attr name="title_height" format="dimension" />
+        <attr name="indicator_width" format="dimension" />
+        <attr name="indicator_height" format="dimension" />
+        <attr name="indicator_margin" format="dimension" />
+        <attr name="indicator_drawable_selected" format="reference" />
+        <attr name="indicator_drawable_unselected" format="reference" />
+        <attr name="banner_layout" format="reference"/>
+        <attr name="banner_default_image" format="reference"/>
+        <attr name="image_scale_type" format="enum">
+            <enum name="center" value="0" />
+            <enum name="center_crop" value="1" />
+            <enum name="center_inside" value="2" />
+            <enum name="fit_center" value="3" />
+            <enum name="fit_end" value="4" />
+            <enum name="fit_start" value="5" />
+            <enum name="fit_xy" value="6" />
+            <enum name="matrix" value="7" />
+        </attr>
+        <!--<attr name="indicator_animator" format="reference" />-->
+        <!--<attr name="indicator_animator_reverse" format="reference" />-->
+    </declare-styleable>
+
+
+    <declare-styleable name="LinesEditView">
+        <attr name="classic_maxCount" format="integer"/>
+        <attr name="classic_ignoreCnOrEn" format="boolean"/>
+        <attr name="classic_hintText" format="string|reference"/>
+        <attr name="classic_hintTextColor" format="color|reference"/>
+        <attr name="classic_contentText" format="string|reference"/>
+        <attr name="classic_contentTextSize" format="dimension|reference"/>
+        <attr name="classic_contentTextColor" format="color|reference"/>
+        <attr name="classic_contentViewHeight" format="dimension|reference"/>
+    </declare-styleable>
+
+    <!-- SettingView -->
+    <declare-styleable name="SettingView">
+        <attr name="iOSStyle" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="SettingViewItem">
+        <attr name="title" format="string" />
+        <attr name="subTitle" format="string" />
+        <attr name="titleColor" format="reference" />
+        <attr name="subTitleColor" format="reference" />
+        <attr name="titleSize" format="reference|dimension" />
+        <attr name="subTitleSize" format="reference|dimension" />
+        <attr name="drawable" format="reference" />
+        <attr name="arrow" format="reference" />
+        <attr name="check" format="reference" />
+        <attr name="image" format="reference" />
+        <attr name="clickable" format="boolean" />
+        <attr name="checked" format="boolean" />
+        <attr name="background" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="XEditText">
+        <attr name="x_separator" format="string"/>
+        <attr name="x_disableClear" format="boolean"/>
+        <attr name="x_clearDrawable" format="reference"/>
+        <attr name="x_showPwdDrawable" format="reference"/>
+        <attr name="x_hidePwdDrawable" format="reference"/>
+        <attr name="x_disableEmoji" format="boolean"/>
+    </declare-styleable>
+
+
+</resources>

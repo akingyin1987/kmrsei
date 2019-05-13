@@ -39,7 +39,7 @@ class UserLoginPersenterImpl @Inject constructor(var personRepository: PersonRep
     }
 
     override fun login(name: String, pass: String) {
-        println("configOkhttp="+(null == okHttpClient))
+
 
         var loginServerApi =  retrofit.create(LoginServerApi::class.java)
         if(name.isEmpty()){
@@ -58,8 +58,14 @@ class UserLoginPersenterImpl @Inject constructor(var personRepository: PersonRep
            }
 
            override fun onError(msg: String) {
-                mRootView!!.hideLoadDialog()
-                mRootView!!.showError(msg)
+                mRootView?.let {
+                    it.hideLoadDialog()
+                    it.showError(msg)
+                    it.goToMainActivity()
+                }
+
+
+
            }
        })
     }

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="#fff5f5f5"
+    android:padding="3dp"
+    android:layout_margin="4dp"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+  <RelativeLayout android:id="@+id/app_item_app"
+      android:background="@drawable/common_card_app_list_item_bg"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="-1.0px"
+      android:minHeight="66.0dip">
+
+
+    <ImageButton
+        android:id="@+id/app_action"
+        android:background="@drawable/appitem_action_img_bg"
+        android:layout_width="54dp"
+        android:layout_height="50dp"
+        android:src="@drawable/libui_common_myapp_item_action_smart_update_image"
+        android:layout_marginTop="10.0dip"
+        android:layout_marginRight="8.0dip"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"/>
+
+    <TextView android:layout_width="54.0dip"
+        android:layout_height="54.0dip"
+        android:layout_marginRight="8.0dip"
+        android:gravity="center"
+        android:layout_marginTop="-15dp"
+        android:layout_below="@+id/app_action"
+        android:id="@+id/app_action_info"
+        android:layout_alignParentRight="true"
+        android:text="暂停"/>
+    <ImageView android:id="@+id/expand_slidemenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5.0dip"
+        android:src="@drawable/update_down_arrow"
+        android:scaleType="fitXY"
+        android:layout_toLeftOf="@id/app_action"
+        android:layout_centerVertical="true"/>
+    <RelativeLayout android:id="@+id/update_main" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_marginTop="20.0dip"
+        android:layout_marginRight="15.0dip" android:layout_toLeftOf="@id/expand_slidemenu"
+
+        android:layout_alignParentTop="true">
+      <ProgressBar
+          android:id="@+id/appitem_progressbar"
+          style="?android:attr/progressBarStyleHorizontal"
+
+          android:layout_width="fill_parent"
+          android:max="100"
+          android:progress="50"
+          android:layout_height="6.0dip" android:layout_marginTop="8.0dip"
+          android:layout_below="@+id/appitem_title"/>
+      <TextView android:textSize="16sp"
+          android:textColor="#ffffffff"
+          android:id="@+id/progressbar_cursor"
+          android:background="@drawable/progressbar_cursor"
+          android:visibility="visible"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="1.0dip"
+          android:text="2222222222222222222"
+          android:includeFontPadding="false"
+          android:layout_below="@+id/appitem_progressbar"
+          android:layout_alignLeft="@+id/appitem_progressbar"/>
+      <TextView android:textSize="18sp"
+          android:textColor="#ffde3231"
+          android:gravity="right"
+          android:id="@+id/appitem_appsize"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="2.0dip"
+          android:includeFontPadding="false"
+          android:visibility="visible"
+
+          android:layout_below="@+id/progressbar_cursor"
+
+          android:text="2222222222"/>
+      <TextView android:textSize="12.0dip"
+          android:textColor="#ff62ba31"
+          android:id="@+id/nonflow_hint"
+          android:visibility="gone"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="2.0dip"
+          android:text="11dfdfdafdfdfdfd11111"
+          android:includeFontPadding="false"
+          android:layout_toLeftOf="@id/appitem_appsize"
+          android:layout_alignBottom="@id/appitem_appsize"/>
+      <TextView android:textSize="10.0dip"
+          android:textColor="#ff999999"
+          android:ellipsize="marquee"
+          android:visibility="gone"
+          android:id="@+id/appitem_update_date"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="2.0dip"
+          android:layout_marginRight="12.0dip"
+          android:maxLines="1"
+          android:includeFontPadding="false"
+          android:layout_toLeftOf="@id/appitem_appsize"
+          android:layout_below="@id/appitem_progressbar"
+           android:text="111111"
+          android:layout_alignParentLeft="true"/>
+      <TextView android:id="@+id/appitem_title"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:maxLines="1"
+
+          android:includeFontPadding="false"
+          android:layout_alignParentTop="true"
+          style="@style/app_item_app_title_style"/>
+    </RelativeLayout>
+  </RelativeLayout>
+  <LinearLayout android:gravity="center" android:id="@+id/slide_menu_layout"
+      android:background="@drawable/common_card_app_list_item_normal_bg"
+      android:visibility="gone" android:layout_width="fill_parent"
+      android:layout_height="55.0dip" android:layout_marginTop="-1.0px">
+    <TextView android:textSize="12.0dip" android:textColor="#ff999999"
+        android:gravity="center_vertical" android:id="@+id/delete"
+        android:background="@drawable/common_button_colors_bg" android:paddingLeft="48.0dip"
+        android:layout_width="0.0px" android:layout_height="fill_parent"
+        android:text="取消" android:includeFontPadding="false"
+        android:drawableLeft="@drawable/common_cancel_download" android:drawablePadding="6.0dip"
+        android:layout_weight="1.0"/>
+    <TextView android:textSize="12.0dip" android:textColor="#ff999999"
+        android:gravity="center_vertical" android:id="@+id/detail"
+        android:background="@drawable/common_button_colors_bg" android:paddingLeft="65.0dip"
+        android:layout_width="0.0px" android:layout_height="fill_parent"
+        android:text="详情" android:includeFontPadding="false"
+        android:drawableLeft="@drawable/common_detail" android:drawablePadding="6.0dip"
+        android:layout_weight="1.0"/>
+  </LinearLayout>
+</LinearLayout>

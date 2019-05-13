@@ -22,8 +22,8 @@ import javax.inject.Inject
 
 class SteperActivity : BaseActivity() , StepperLayout.StepperListener, OnNavigationBarListener {
 
-      @Inject
-      lateinit var sampleStepAdapter: SampleStepAdapter
+    @Inject
+    lateinit var sampleStepAdapter: SampleStepAdapter
 
     @Inject
     lateinit var  fragmentManager: androidx.fragment.app.FragmentManager

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="3dp"
+    android:background="@null"
+    android:orientation="horizontal"
+    android:padding="3dp" >
+
+  <TextView
+      android:id="@+id/property_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="@color/dark_font"
+      android:text="2222222"
+      android:textSize="14sp" />
+
+  <TextView
+      android:id="@+id/property_value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:minHeight="25dp"
+      android:text="11111111122222"
+      android:layout_weight="1"
+      android:textColor="@color/dark_font"
+      android:textSize="14sp"/>
+
+
+
+    <RelativeLayout android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/rl_arrow"
+        android:layout_gravity="center">
+
+
+      <ImageView android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/setting_view_arrow"
+               android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+
+
+
+
+</LinearLayout>

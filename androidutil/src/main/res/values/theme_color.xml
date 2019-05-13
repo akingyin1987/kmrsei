@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<resources>
+    <color name="theme_color_primary">#3F51B5</color>
+    <color name="theme_color_primary_dark">#303F9F</color>
+    <color name="theme_color_primary_trans">#FF4081</color>
+    <color name="theme_color_secondary">#3F51B5</color>
+    <!--<color name="theme_color_primary">@color/green</color>-->
+    <!--<color name="theme_color_primary_dark">@color/green_dark</color>-->
+    <!--<color name="theme_color_primary_trans">@color/green_trans</color>-->
+    <!--<color name="theme_color_secondary">@color/green</color>-->
+    <color name="text_primary_color">#2d2d2d</color>
+    <color name="window_background">#eaeaea</color>
+
+    <color name="black_light">#333333</color>
+
+    <!--<color name="white">#FFFFFFFF</color>-->
+    <!--<color name="white_trans">#99ffffff</color>-->
+
+    <color name="gray">#bbbbbb</color>
+    <color name="gray_dark">#999999</color>
+    <color name="gray_trans">#44999999</color>
+    <color name="gray_light">#dcdcdc</color>
+
+    <!-- theme color -->
+    <color name="pink">#fb7299</color>
+    <color name="pink_dark">#b85671</color>
+    <color name="pink_trans">#99f0486c</color>
+
+    <color name="blue">#3F51B5</color>
+    <color name="blue_dark">#303F9F</color>
+    <color name="blue_trans">#FF4081</color>
+
+
+    <color name="white">#FFFFFF</color>
+    <color name="white_dark">#FFFFFF</color>
+    <color name="white_trans">#DB3937</color>
+    <!--<color name="blue">#2196F3</color>-->
+    <!--<color name="blue_dark">#1565C0</color>-->
+    <!--<color name="blue_trans">#B41A78C3</color>-->
+
+    <color name="purple">#673AB7</color>
+    <color name="purple_dark">#4A148C</color>
+    <color name="purple_trans">#99673AB7</color>
+
+    <color name="green">#4CAF50</color>
+    <color name="green_dark">#2E7D32</color>
+    <color name="green_trans">#994CAF50</color>
+
+    <color name="green_light">#8BC34A</color>
+    <color name="green_light_dark">#558B2F</color>
+    <color name="green_light_trans">#998BC34A</color>
+
+    <color name="yellow">#FDD835</color>
+    <color name="yellow_dark">#FBC02D</color>
+    <color name="yellow_trans">#99FDD835</color>
+
+    <color name="orange">#FF9800</color>
+    <color name="orange_dark">#EF6C00</color>
+    <color name="orange_trans">#99FF9800</color>
+
+    <color name="red">#F44336</color>
+    <color name="red_dark">#C62828</color>
+    <color name="red_trans">#99F44336</color>
+
+
+    <color name="black">#000000</color>
+    <color name="black_dark">#000000</color>
+    <color name="black_trans">#99000000</color>
+</resources>

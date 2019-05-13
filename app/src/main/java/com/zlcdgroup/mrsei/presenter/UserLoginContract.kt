@@ -15,6 +15,8 @@ interface UserLoginContract {
     interface  View  : IBaseView {
 
         fun   showConfigDialog(  message:String)
+
+        fun   goToMainActivity()
     }
 
 

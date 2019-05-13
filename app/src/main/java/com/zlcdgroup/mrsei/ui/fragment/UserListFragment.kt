@@ -179,13 +179,13 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
 
     override fun onBackClicked(callback: StepperLayout.OnBackClickedCallback?) {
 
+
     }
 
     override fun onCompleteClicked(callback: StepperLayout.OnCompleteClickedCallback?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onNextClicked(callback: StepperLayout.OnNextClickedCallback?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        callback?.goToNextStep()
     }
 }

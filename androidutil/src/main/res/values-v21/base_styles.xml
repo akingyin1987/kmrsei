@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    <item name="android:statusBarColor">@android:color/transparent</item>
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+  </style>
+
+  <style name="Theme.TranslucentNavigationBar" parent="Theme.AppCompat.Light.NoActionBar">
+
+    <item name="android:windowTranslucentStatus">false</item>
+    <item name="android:windowFullscreen">true</item>
+  </style>
+  <!--&lt;!&ndash; Base application theme. &ndash;&gt;-->
+  <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
+
+
+
+    <!--&lt;!&ndash; for library use when is in night theme&ndash;&gt;-->
+    <!--<item name="themeColorSecondary">@color/theme_color_secondary</item>-->
+    <!--&lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+    <!--<item name="android:colorPrimary">@color/theme_color_primary</item>-->
+    <!--<item name="android:colorPrimaryDark">@color/theme_color_primary_dark</item>-->
+    <!--<item name="android:colorAccent">@color/theme_color_primary_dark</item>-->
+    <!--<item name="android:colorControlActivated">@color/theme_color_primary</item>-->
+    <!--<item name="android:colorControlHighlight">@color/gray_trans</item>-->
+    <!--<item name="android:colorControlNormal">@android:color/white</item>-->
+    <!--<item name="android:colorEdgeEffect">@color/gray_trans</item>-->
+
+    <!--<item name="android:windowBackground">@color/window_background</item>-->
+    <!--<item name="android:textColorPrimary">@color/text_primary_color</item>-->
+
+
+
+    <!--<item name="android:textAllCaps">false</item>-->
+    <!--<item name="android:windowActionBar">false</item>-->
+    <!--<item name="windowActionBar">false</item>-->
+    <!--<item name="windowNoTitle">true</item>-->
+    <!--<item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>-->
+    <!--<item name="android:windowAnimationStyle">@style/AnimationActivity</item>-->
+    <!--<item name="android:windowIsTranslucent">true</item>-->
+
+
+
+  <!--</style>-->
+  <!-- Base application theme. -->
+  <style name="AppTheme_zlcd" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!-- for library use when is in night theme-->
+    <!--<item name="themeColorSecondary">@color/theme_color_secondary</item>-->
+    <!-- Customize your theme here. -->
+    <item name="android:colorPrimary">@color/theme_color_primary</item>
+    <item name="android:colorPrimaryDark">@color/theme_color_primary_dark</item>
+    <item name="android:colorAccent">@color/theme_color_primary_dark</item>
+    <item name="android:colorControlActivated">@color/theme_color_primary</item>
+    <item name="android:colorControlHighlight">@color/gray_trans</item>
+    <item name="android:colorControlNormal">@android:color/white</item>
+    <item name="android:colorEdgeEffect">@color/gray_trans</item>
+
+    <item name="android:windowBackground">@color/window_background</item>
+    <item name="android:textColorPrimary">@color/text_primary_color</item>
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+    <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+  </style>
+
+
+
+</resources>

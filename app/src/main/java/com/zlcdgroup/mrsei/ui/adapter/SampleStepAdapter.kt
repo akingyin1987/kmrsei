@@ -1,11 +1,10 @@
 package com.zlcdgroup.mrsei.ui.adapter
 
-import android.content.Context
+import android.app.Activity
 import android.os.Bundle
 import com.stepstone.stepper.Step
 import com.stepstone.stepper.adapter.AbstractFragmentStepAdapter
 import com.stepstone.stepper.viewmodel.StepViewModel
-import com.zlcdgroup.mrsei.di.qualifier.ActivityContext
 import com.zlcdgroup.mrsei.ui.fragment.UserListFragment
 import javax.inject.Inject
 
@@ -15,7 +14,7 @@ import javax.inject.Inject
  * @ Date 2018/9/8 12:05
  * @version V1.0
  */
-class SampleStepAdapter  @Inject constructor(@ActivityContext context: Context,fragmentManager: androidx.fragment.app.FragmentManager) : AbstractFragmentStepAdapter(fragmentManager,context) {
+class SampleStepAdapter  @Inject constructor(context: Activity, fragmentManager: androidx.fragment.app.FragmentManager) : AbstractFragmentStepAdapter(fragmentManager,context) {
 
     @Inject
     lateinit var  userListFragment1: UserListFragment

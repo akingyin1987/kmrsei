@@ -46,7 +46,7 @@ public class RxPermissionsUtil {
       }
 
       //拍视频 权限
-      public  static   Disposable   applyTackVideoAuth(@NonNull AppCompatActivity  activity,AppCallBack<Boolean>  appCallBack){
+      public  static   Disposable   applyTackVideoAuth(@NonNull AppCompatActivity activity,AppCallBack<Boolean>  appCallBack){
             RxPermissions   rxPermissions = new RxPermissions(activity);
           return   rxPermissions.request(Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO,

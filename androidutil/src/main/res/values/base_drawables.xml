@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <drawable name="progress_bar_bg">#80FFFFFF</drawable>
+   <item type="drawable" name="libui_transparent_background">#00000000</item>
+    <item type="drawable" name="theme_shop_v6_transparent">#00000000</item>
+    <item type="drawable" name="app_item_bg_common_list_divider">#ffe3e3e3</item>
+    <item type="drawable" name="app_item_bg_not_pressed">#fff9f9f9</item>
+    <item type="drawable" name="app_item_bg_pressed">#fff2f2f2</item>
+    <item type="drawable" name="common_wirte">#ffffffff</item>
+    <item type="drawable" name="topic_card_bg_blue">#ff4b85b9</item>
+    <item type="drawable" name="topic_card_bg_gray">#fff5f5f5</item>
+    <item type="drawable" name="drawable_common_btn_pressed">#fff2f2f2</item>
+    <item type="drawable" name="transparent">#00000000</item>
+    <item type="drawable" name="group_app_bg_normal">#ffffffff</item>
+    <item type="drawable" name="group_app_bg_pressed">#fffafafa</item>
+    <item type="drawable" name="feature_card_cover_normal">#00ffffff</item>
+    <item type="drawable" name="feature_card_cover_pressed">#44fafafa</item>
+    <item type="drawable" name="pk_progress_red">#fff36160</item>
+    <item type="drawable" name="pk_progress_blue">#ff62abec</item>
+    <item type="drawable" name="ringtone_item_bg_focused">#66000000</item>
+    <item type="drawable" name="ringtone_item_bg_normal">#00000000</item>
+    <item type="drawable" name="float_search_item_select_color">#99161619</item>
+    <item type="drawable" name="search_hot_word_normal">#ffffffff</item>
+    <item type="drawable" name="search_hot_word_pressed">#fffafafa</item>
+    <item type="drawable" name="clean_trash_head_green">#ff73ae01</item>
+    <item type="drawable" name="clean_trash_head_red">#ffde3231</item>
+</resources>

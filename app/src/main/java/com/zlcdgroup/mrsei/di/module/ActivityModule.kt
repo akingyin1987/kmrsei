@@ -4,9 +4,11 @@ import android.app.Activity
 import android.content.Context
 import com.zlcdgroup.mrsei.di.qualifier.ActivityContext
 import com.zlcdgroup.mrsei.di.scope.PerActivity
+import com.zlcdgroup.mrsei.presenter.modules.AuthModule
 import com.zlcdgroup.mrsei.presenter.modules.LoginModule
 import com.zlcdgroup.mrsei.presenter.modules.StepModule
 import com.zlcdgroup.mrsei.presenter.modules.UserModule
+import com.zlcdgroup.mrsei.ui.AuthActivity
 import com.zlcdgroup.mrsei.ui.LoginActivity
 import com.zlcdgroup.mrsei.ui.SteperActivity
 import com.zlcdgroup.mrsei.ui.UserListActivity
@@ -39,6 +41,7 @@ abstract class ActivityModule {
      abstract fun bindActivityContext(activity: Activity): Context
 
 
+
     @ContributesAndroidInjector(modules = arrayOf(UserModule::class))
     @PerActivity
     abstract   fun contributeUserActivitytInjector():UserListActivity
@@ -50,6 +53,20 @@ abstract class ActivityModule {
     @ContributesAndroidInjector(modules = arrayOf(StepModule::class, StepModule.StepModuleFragmentManagerModule::class))
     @PerActivity
     abstract   fun contributeStepActivitytInjector():SteperActivity
+
+    @ContributesAndroidInjector(modules = arrayOf(AuthModule::class))
+    @PerActivity
+    abstract  fun contributeAuthActivitytInjector():AuthActivity
+
+
+//    @Module(includes = arrayOf(ActivityModule::class))
+//     class   ActivityContextModule{
+//        @Provides
+//        @ActivityContext
+//        fun    getActivityContext(activity: Activity):Context{
+//            return   activity
+//        }
+//     }
 
 //    @Module(includes = arrayOf(ActivityModule ::class))
 //    class SupportFragmentManagerModule {

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<resources>
+    <dimen name="setting_view_lr_padding">10dp</dimen>
+    <dimen name="setting_view_tb_padding">5dp</dimen>
+    <dimen name="setting_view_title_size">16sp</dimen>
+    <dimen name="setting_view_subtitle_size">14sp</dimen>
+    <dimen name="switch_button_width">50dp</dimen>
+    <dimen name="switch_button_height">30dp</dimen>
+    <dimen name="setting_view_min_height">55dp</dimen>
+
+</resources>

@@ -1,0 +1,24 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="one_px">1px</dimen>
+
+    <dimen name="splash_bottom_padding">10dp</dimen>
+    <dimen name="splash_middle_top_margin">10dp</dimen>
+    <dimen name="splash_bottom_margin">40dp</dimen>
+    <dimen name="splash_top_margin">130dp</dimen>
+
+    <dimen name="cardview_margin">8dp</dimen>
+    <dimen name="bbuton_rounded_corner_radius">5dp</dimen>
+
+    <dimen name="textsize_large">18sp</dimen>
+    <dimen name="textsize_normal">16sp</dimen>
+    <dimen name="textsize_small">14sp</dimen>
+
+    <dimen name="padding_half">8dp</dimen>
+
+    <dimen name="tab_height">48dp</dimen>
+</resources>
