@@ -5,6 +5,7 @@ import com.akingyin.base.BaseActivity
 import com.akingyin.base.dialog.DialogUtil
 import com.akingyin.base.ext.click
 import com.akingyin.base.ext.goActivity
+import com.akingyin.base.ext.isEmptyOrNull
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
@@ -34,9 +35,14 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
     }
 
     override fun initView() {
-
+        val person = userLoginPersenterImpl.getLastPerson()
+        person?.let {
+            et_mobile.setText(person.personAccount.isEmptyOrNull())
+            et_password.setText(person.personPassword.isEmptyOrNull())
+        }
         println("btn_login2")
         btn_login.click {
+
             userLoginPersenterImpl.login(et_mobile.text.toString(),et_password.text.toString())
         }
 

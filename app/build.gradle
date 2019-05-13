@@ -7,6 +7,8 @@ apply plugin: 'kotlin-android-extensions' //扩展插件
 apply plugin: 'kotlin-kapt'  //kapt3插件
 
 apply plugin: 'org.greenrobot.greendao' // apply plugin
+apply plugin: 'com.getkeepsafe.dexcount'
+apply from: '../global_config.gradle'
 
 android {
   compileSdkVersion rootProject.ext.android.compileSdkVersion
@@ -44,13 +46,40 @@ android {
     abortOnError false
 
   }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+  buildTypes {
+    release {
+      signingConfig signingConfigs.release
+      // buildConfigField "int", "AppCode", "1"
+      //混淆
+      minifyEnabled true
+      //Zipalign优化
+      zipAlignEnabled true
+      // 移除无用的resource文件
+      // shrinkResources true
+      //前一部分代表系统默认的android程序的混淆文件，该文件已经包含了基本的混淆声明
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      pseudoLocalesEnabled true
 
+    }
+    debug {
+      resValue("string", "PORT_NUMBER", "8082")
+      signingConfig signingConfigs.debug
+      minifyEnabled true
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      zipAlignEnabled true
+      // versionNameSuffix "-debug"
+      pseudoLocalesEnabled true
+    }
+  }
+
+
+
+  // Always show the result of every unit test, even if it passes.
+  testOptions.unitTests.all {
+    testLogging {
+      events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+    }
+  }
 
   sourceSets {
     main {
@@ -62,6 +91,8 @@ android {
     }
 
   }
+
+
 }
 greendao {
   schemaVersion 1
@@ -69,23 +100,18 @@ greendao {
   targetGenDir 'src/main/java'
 }
 
-//subprojects {
-//  project.configurations.all {
-//    resolutionStrategy.eachDependency { details ->
-//      if (details.requested.group == 'com.android.support'
-//          && !details.requested.name.contains('multidex') ) {
-//        details.useVersion '28.0.0-rc02'//这个版本号设置为你想要的版本
-//      }
-//    }
-//  }
-//}
 
 
 dependencies {
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-  testImplementation 'junit:junit:4.12'
+
+  // Dependencies for local unit tests
+  testImplementation "junit:junit:$rootProject.ext.junitVersion"
+  testImplementation "org.mockito:mockito-core:$rootProject.ext.mockitoVersion"
+  testImplementation "org.hamcrest:hamcrest-all:$rootProject.ext.hamcrestVersion"
+
 
   androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.1.0'
   androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.1.0'
@@ -102,13 +128,13 @@ dependencies {
   implementation project(':androidutil')
 
   implementation 'org.greenrobot:greendao:3.2.2' // add library
+ // implementation 'net.zetetic:android-database-sqlcipher:4.1.3@aar'
 
     kapt 'com.google.dagger:dagger-android-processor:2.22.1'
     kapt 'com.google.dagger:dagger-compiler:2.22.1'
 
   implementation 'com.stepstone.stepper:material-stepper:4.3.1'
   debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
-
 
   implementation files('libs/umeng-sharetool-6.9.4.jar')
 
@@ -117,5 +143,5 @@ dependencies {
   implementation  'com.umeng.umsdk:share-core:6.9.4'
   implementation files('libs/umeng-share-wechat-full-6.9.4.jar')
   implementation files('libs/wechat-sdk-android-without-mta-5.1.4.jar')
-  implementation files('libs\\umeng-share-QQ-simplify-6.9.4.jar')
+  implementation files('libs/umeng-share-QQ-simplify-6.9.4.jar')
 }

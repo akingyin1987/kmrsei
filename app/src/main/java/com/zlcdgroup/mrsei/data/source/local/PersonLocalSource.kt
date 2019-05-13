@@ -32,6 +32,8 @@ class PersonLocalSource @Inject constructor( var  personEntityDao: PersonEntityD
     }
 
     override fun getLastPerson(): PersonEntity? {
+        val observable =  personEntityDao.queryBuilder().rx()
+
         val   persons = personEntityDao.queryBuilder().orderDesc(PersonEntityDao.Properties.LoginTime).build().list()
         if(persons.size>0){
             return persons[0]

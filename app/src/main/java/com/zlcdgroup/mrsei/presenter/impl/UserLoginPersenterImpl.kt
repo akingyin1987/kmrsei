@@ -4,11 +4,8 @@ import com.akingyin.base.BasePresenter
 import com.akingyin.base.call.ApiCallBack
 import com.zlcdgroup.mrsei.data.entity.PersonEntity
 import com.zlcdgroup.mrsei.data.source.PersonRepository
-import com.zlcdgroup.mrsei.data.source.remote.api.LoginServerApi
 import com.zlcdgroup.mrsei.data.source.remote.model.LoginResultModel
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
 import javax.inject.Inject
 
 /**
@@ -20,11 +17,11 @@ import javax.inject.Inject
 class UserLoginPersenterImpl @Inject constructor(var personRepository: PersonRepository): BasePresenter<UserLoginContract.View>(), UserLoginContract.Presenter {
 
 
-    @Inject
-    lateinit var okHttpClient: OkHttpClient
-
-    @Inject
-    lateinit var retrofit : Retrofit
+//    @Inject
+//    lateinit var okHttpClient: OkHttpClient
+//
+//    @Inject
+//    lateinit var retrofit : Retrofit
 
     override fun getListPersons(): List<PersonEntity> {
         return  personRepository.getAllPersons()
@@ -41,7 +38,7 @@ class UserLoginPersenterImpl @Inject constructor(var personRepository: PersonRep
     override fun login(name: String, pass: String) {
 
 
-        var loginServerApi =  retrofit.create(LoginServerApi::class.java)
+
         if(name.isEmpty()){
             mRootView!!.showError("用户名不可为空！")
             return

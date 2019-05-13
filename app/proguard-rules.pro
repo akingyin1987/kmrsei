@@ -29,7 +29,7 @@
 #
 
 # 指定代码的压缩级别 0 - 7(指定代码进行迭代优化的次数，在Android里面默认是5，这条指令也只有在可以优化时起作用。)
--optimizationpasses 5
+#-optimizationpasses 5
 # 混淆时不会产生形形色色的类名(混淆时不使用大小写混合类名)
 -dontusemixedcaseclassnames
 # 指定不去忽略非公共的库类(不跳过library中的非public的类)
@@ -44,7 +44,7 @@
 -ignorewarnings
 # 指定混淆是采用的算法，后面的参数是一个过滤器
 # 这个过滤器是谷歌推荐的算法，一般不做更改
--optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+#-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 # 保护代码中的Annotation不被混淆
 -keepattributes *Annotation*
 # 避免混淆泛型, 这在JSON实体映射时非常重要
@@ -97,11 +97,11 @@
 }
 
 #忽略警告
--ignorewarning
+#-ignorewarning
 
 ##记录生成的日志数据,gradle build时在本项目根目录输出##
 #apk 包内所有 class 的内部结构
--dump proguard/class_files.txt
+#-dump proguard/class_files.txt
 #未混淆的类和成员
 -printseeds proguard/seeds.txt
 #列出从 apk 中删除的代码
@@ -115,7 +115,14 @@
 
 ####混淆保护自己项目的部分代码以及引用的第三方jar包library-end####
 
-
+##androidX
+-keep class com.google.android.material.** {*;}
+-keep class androidx.** {*;}
+-keep public class * extends androidx.**
+-keep interface androidx.** {*;}
+-dontwarn com.google.android.material.**
+-dontnote com.google.android.material.**
+-dontwarn androidx.*
 
 #保持 native 方法不被混淆
 -keepclasseswithmembernames class * {
@@ -195,16 +202,107 @@
 
 ##################################APP内部################################################
 ################混淆保护自己项目的部分代码以及引用的第三方jar包library#########################
--libraryjars libs/rfidapi.jar
+
 -libraryjars libs/umeng-share-QQ-simplify-6.9.4.jar
 -libraryjars libs/umeng-share-wechat-full-6.9.4.jar
 -libraryjars libs/wechat-sdk-android-without-mta-5.1.4.jar
 -keep class com.zlcdgroup.mrmsei.data.**{*;}
+-keep class com.akingyin.base.**{*;}
 
 
 
 
 #######################   第三方模块的混淆选项         ###################################
+##友盟分享混淆配置
+-dontshrink
+-dontoptimize
+-dontwarn com.google.android.maps.**
+-dontwarn android.webkit.WebView
+-dontwarn com.umeng.**
+-dontwarn com.tencent.weibo.sdk.**
+-dontwarn com.facebook.**
+-keep public class javax.**
+-keep public class android.webkit.**
+-dontwarn android.support.v4.**
+-keep enum com.facebook.**
+-keepattributes Exceptions,InnerClasses,Signature
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+
+-keep public interface com.facebook.**
+-keep public interface com.tencent.**
+-keep public interface com.umeng.socialize.**
+-keep public interface com.umeng.socialize.sensor.**
+-keep public interface com.umeng.scrshot.**
+
+-keep public class com.umeng.socialize.* {*;}
+
+-keep class com.facebook.**
+-keep class com.facebook.** { *; }
+-keep class com.umeng.scrshot.**
+-keep public class com.tencent.** {*;}
+-keep class com.umeng.socialize.sensor.**
+-keep class com.umeng.socialize.handler.**
+-keep class com.umeng.socialize.handler.*
+-keep class com.umeng.weixin.handler.**
+-keep class com.umeng.weixin.handler.*
+-keep class com.umeng.qq.handler.**
+-keep class com.umeng.qq.handler.*
+-keep class UMMoreHandler{*;}
+-keep class com.tencent.mm.sdk.modelmsg.WXMediaMessage {*;}
+-keep class com.tencent.mm.sdk.modelmsg.** implements com.tencent.mm.sdk.modelmsg.WXMediaMessage$IMediaObject {*;}
+-keep class im.yixin.sdk.api.YXMessage {*;}
+-keep class im.yixin.sdk.api.** implements im.yixin.sdk.api.YXMessage$YXMessageData{*;}
+-keep class com.tencent.mm.sdk.** {
+   *;
+}
+-keep class com.tencent.mm.opensdk.** {
+   *;
+}
+-keep class com.tencent.wxop.** {
+   *;
+}
+-keep class com.tencent.mm.sdk.** {
+   *;
+}
+-dontwarn twitter4j.**
+-keep class twitter4j.** { *; }
+
+-keep class com.tencent.** {*;}
+-dontwarn com.tencent.**
+-keep class com.kakao.** {*;}
+-dontwarn com.kakao.**
+-keep public class com.umeng.com.umeng.soexample.R$*{
+    public static final int *;
+}
+-keep public class com.linkedin.android.mobilesdk.R$*{
+    public static final int *;
+}
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+-keep class com.tencent.open.TDialog$*
+-keep class com.tencent.open.TDialog$* {*;}
+-keep class com.tencent.open.PKDialog
+-keep class com.tencent.open.PKDialog {*;}
+-keep class com.tencent.open.PKDialog$*
+-keep class com.tencent.open.PKDialog$* {*;}
+-keep class com.umeng.socialize.impl.ImageImpl {*;}
+-keep class com.sina.** {*;}
+-dontwarn com.sina.**
+-keep class  com.alipay.share.sdk.** {
+   *;
+}
+
+-keepnames class * implements android.os.Parcelable {
+    public static final ** CREATOR;
+}
+
+-keep class com.linkedin.** { *; }
+-keep class com.android.dingtalk.share.ddsharemodule.** { *; }
+-keepattributes Signature
 
 #友盟
 -keep class com.umeng.**{*;}

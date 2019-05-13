@@ -1,5 +1,6 @@
 package com.akingyin.base.ext
 
+import android.text.TextUtils
 import java.security.MessageDigest
 
 /**
@@ -8,6 +9,14 @@ import java.security.MessageDigest
  * @ Date 2019/4/29 15:24
  * @version V1.0
  */
+
+fun String.isEmptyOrNull():String{
+   if(TextUtils.isEmpty(this)){
+       return ""
+   }
+   return this
+}
+
 fun String.toast(isShortToast: Boolean = true) = toast(this, isShortToast)
 
 fun String.md5() = encrypt(this, "MD5")

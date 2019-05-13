@@ -66,5 +66,6 @@ class MrmseiApp :BaseApp() {
 
     override fun initInjection() {
      // applicationInjector()
+
     }
 }
