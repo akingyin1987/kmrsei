@@ -24,13 +24,13 @@ import retrofit2.Retrofit
  */
 class MrmseiApp :BaseApp() {
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        var  configmodel : GlobalConfigModule.GlobalProvideModule =GlobalConfigModule.Builder().okhttpConfiguration(object :ClientModule.ClientProvideModule.OkhttpConfiguration{
+        val  configmodel : GlobalConfigModule.GlobalProvideModule =GlobalConfigModule.Builder().okhttpConfiguration(object :ClientModule.ClientProvideModule.OkhttpConfiguration{
             override fun configOkhttp(context: Context, builder: OkHttpClient.Builder) {
                 println("configOkhttp")
             }
         }).retrofitConfiguration(object :ClientModule.ClientProvideModule.RetrofitConfiguration{
             override fun configRetrofit(context: Context, builder: Retrofit.Builder) {
-
+              builder.baseUrl(ApiHost.getHost())
               println("configRetrofit")
             }
         }).addInterceptor(HttpLoggingInterceptor())

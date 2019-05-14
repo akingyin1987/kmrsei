@@ -14,14 +14,14 @@ import javax.inject.Inject
 open class UserListFragmentPresenterImpl @Inject constructor(var userRepository: UserRepository)
     : UserListFragmentContract.Presenter {
 
-     var  mRootView: UserListFragmentContract.View?=null
+    private var  mRootView: UserListFragmentContract.View?=null
 
     override fun attachView(mRootView: UserListFragmentContract.View) {
        this.mRootView = mRootView
     }
 
     override fun detachView() {
-        mRootView=null
+        mRootView = null
     }
 
     override fun getUserList(): List<UserEntity>? {
@@ -30,15 +30,18 @@ open class UserListFragmentPresenterImpl @Inject constructor(var userRepository:
 
     override fun addUser(userEntity: UserEntity): Boolean {
         if (userEntity.name.isEmpty()){
-            mRootView?.showError("用户名不可为空")
-            mRootView?.hideLoadDialog()
+            mRootView?.let {
+                it.showError("用户名不可为空")
+                it.hideLoadDialog()
+            }
+
             return false
         }
         if(userEntity.age<=0){
             mRootView?.showError("年龄不可为空")
             return false
         }
-        var   result :Boolean =  userRepository.addUser(userEntity)
+        val   result = userRepository.addUser(userEntity)
         if(result){
             mRootView?.getAdapter()?.addData(userEntity)
         }else{
@@ -49,15 +52,19 @@ open class UserListFragmentPresenterImpl @Inject constructor(var userRepository:
 
     override fun modifyUser(userEntity: UserEntity, postion: Int): Boolean {
         if (userEntity.name.isEmpty()){
-            mRootView?.showError("用户名不可为空")
-            mRootView?.hideLoadDialog()
+            mRootView?.let {
+                it.showError("用户名不可为空")
+                it.hideLoadDialog()
+            }
+
+
             return false
         }
         if(userEntity.age<=0){
             mRootView?.showError("年龄不可为空")
             return false
         }
-        var   result :Boolean =  userRepository.addUser(userEntity)
+        val   result  =  userRepository.addUser(userEntity)
         if(result){
             mRootView?.getAdapter()?.setData(postion,userEntity)
         }else{

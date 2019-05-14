@@ -2,7 +2,6 @@ package com.akingyin.base
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
 import com.classic.common.MultipleStatusView
@@ -99,50 +98,44 @@ abstract class BaseFragment :SimpleFragment(),HasSupportFragmentInjector,IBaseVi
 
 
     override fun showMessage(msg: String?) {
-        if (msg != null && null != mContext) {
-            Toasty.info(mContext!!,msg, Toast.LENGTH_SHORT).show()
+        if (msg != null ) {
+            Toasty.info(mContext,msg, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun showSucces(msg: String?) {
-        if (msg != null && null != mContext) {
-            Toasty.success(mContext!!,msg, Toast.LENGTH_SHORT).show()
+        if (msg != null ) {
+            Toasty.success(mContext,msg, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun showError(msg: String?) {
-        if (msg != null && null != mContext) {
-            Toasty.error(mContext!!,msg, Toast.LENGTH_SHORT).show()
+        if (msg != null ) {
+            Toasty.error(mContext,msg, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun showWarning(msg: String?) {
-        if (msg != null && null != mContext) {
-            Toasty.warning(mContext!!,msg, Toast.LENGTH_SHORT).show()
+        if (msg != null ) {
+            Toasty.warning(mContext,msg, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun close() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun showTips(msg: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun showLoadDialog(msg: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun hideLoadDialog() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun showLoading() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun dismissLoading() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

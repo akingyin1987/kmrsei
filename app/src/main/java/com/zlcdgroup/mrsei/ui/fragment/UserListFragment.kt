@@ -32,14 +32,7 @@ import javax.inject.Inject
 
 class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentContract.View , BlockingStep {
     companion object {
-
-        private const val CLICKS_KEY = "clicks"
-
         private const val TAP_THRESHOLD = 2
-
-        private const val LAYOUT_RESOURCE_ID_ARG_KEY = "messageResourceId"
-
-
     }
 
     @Inject
@@ -67,13 +60,13 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
 
     override fun showAddUserDialog() {
 
-        MaterialDialog.Builder(mContext!!).title("用户信息修改")
+        MaterialDialog.Builder(mContext).title("用户信息修改")
                 .positiveText("确定")
                 .negativeText("取消")
                 .onPositive { dialog, _ ->
-                    var  name:EditText = dialog.findViewById(R.id.edit_name) as EditText
-                    var  age :EditText = dialog.findViewById(R.id.edit_age) as EditText
-                    var userEntity :UserEntity = UserEntity()
+                    val name:EditText = dialog.findViewById(R.id.edit_name) as EditText
+                    val age :EditText = dialog.findViewById(R.id.edit_age) as EditText
+                    val userEntity  = UserEntity()
                     userEntity.age = age.text.toString().trim().toInt()
                     userEntity.name = name.text.toString().trim()
                     userListFragmentPresenterImpl.addUser(userEntity)
@@ -95,13 +88,13 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
     }
 
     override fun showModifyUser(userEntity: UserEntity, postion: Int) {
-        var   view : View = LayoutInflater.from(mContext).inflate(R.layout.dialog_edit_user,null)
-        var  name:EditText = view.findViewById(R.id.edit_name) as EditText
-        var  age :EditText = view.findViewById(R.id.edit_age) as EditText
+        val view : View = LayoutInflater.from(mContext).inflate(R.layout.dialog_edit_user,null)
+        val name:EditText = view.findViewById(R.id.edit_name)
+        val age :EditText = view.findViewById(R.id.edit_age)
          name.setText(userEntity.name)
          age.setText(userEntity.age.toString())
 
-         MaterialDialog.Builder(mContext!!).title("用户信息修改")
+         MaterialDialog.Builder(mContext).title("用户信息修改")
                 .positiveText("确定")
                 .negativeText("取消")
                 .onPositive { _, _ ->
@@ -152,7 +145,7 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
     }
 
     override fun verifyStep(): VerificationError? {
-        var i :Int = Random().nextInt(100)
+        val i :Int = Random().nextInt(100)
         return if(i % 2 == 0) null else VerificationError("error $string")
     }
 

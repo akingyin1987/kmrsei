@@ -3,7 +3,6 @@ package com.akingyin.base
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +17,8 @@ import android.view.ViewGroup
 abstract class SimpleFragment : androidx.fragment.app.Fragment(){
 
     protected var mView: View? = null
-    protected var mActivity: Activity? = null
-    protected var mContext: Context? = null
+    protected lateinit var mActivity: Activity
+    protected lateinit var mContext: Context
     protected var isInited = false
 
     override fun onAttach(context: Context?) {
