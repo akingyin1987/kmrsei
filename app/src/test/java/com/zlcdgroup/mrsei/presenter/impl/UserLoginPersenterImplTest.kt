@@ -1,16 +1,15 @@
 package com.zlcdgroup.mrsei.presenter.impl
 
+import com.akingyin.base.call.ApiCallBack
+import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.zlcdgroup.mrsei.data.entity.PersonEntity
 import com.zlcdgroup.mrsei.data.source.PersonRepository
+import com.zlcdgroup.mrsei.data.source.remote.model.LoginResultModel
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
-
+import org.mockito.*
 
 
 /**
@@ -27,6 +26,9 @@ class UserLoginPersenterImplTest {
     @Mock
     lateinit var view: UserLoginContract.View
 
+    @Captor
+    lateinit var callBack: ArgumentCaptor<ApiCallBack<LoginResultModel>>
+
     lateinit var userLoginPersenterImpl: UserLoginPersenterImpl
 
     @Before
@@ -35,9 +37,7 @@ class UserLoginPersenterImplTest {
         userLoginPersenterImpl = UserLoginPersenterImpl(personRepository)
         userLoginPersenterImpl.attachView(view)
 
-        `when`(view.showError("")).then {
-            println("test--->>>>>>>")
-        }
+
     }
 
     @After
@@ -46,17 +46,19 @@ class UserLoginPersenterImplTest {
 
     @Test
     fun getListPersons() {
-        var  list = mutableListOf<PersonEntity>()
-        var personEntity = PersonEntity()
+        val  list = mutableListOf<PersonEntity>()
+        val personEntity = PersonEntity()
         personEntity.personAccount="test"
+        list.add(personEntity)
+        Mockito.`when`(personRepository.getAllPersons()).thenReturn(list)
 
-        `when`(personRepository.getAllPersons()).thenReturn(list)
-       var personEntity1 = Mockito.verify(userLoginPersenterImpl.getListPersons()).last()
-        assert(personEntity1.personAccount.equals("test"))
+        println(personRepository.getAllPersons()[0].personAccount)
+      //  Mockito.verify(personRepository.getAllPersons())[0]
     }
 
     @Test
     fun delectOutTowMothsPersons() {
+
     }
 
     @Test
@@ -65,5 +67,17 @@ class UserLoginPersenterImplTest {
 
     @Test
     fun login() {
+        userLoginPersenterImpl.login("test","")
+        Mockito.verify(userLoginPersenterImpl.mRootView)?.showError("密码不可为空！")
+        userLoginPersenterImpl.login("","22")
+        Mockito.verify(userLoginPersenterImpl.mRootView)?.showError("用户名不可为空！")
+        userLoginPersenterImpl.login("test","22")
+        val captor = argumentCaptor<ApiCallBack<LoginResultModel>>()
+        val name  = argumentCaptor<String>()
+        val pass = argumentCaptor<String>()
+        Mockito.verify(userLoginPersenterImpl.personRepository).login(name.capture() ,pass.capture(), captor.capture() )
+        assert(name.firstValue.equals("test"))
+        println("name=${name.lastValue}:${pass.lastValue}")
+        println(captor.allValues)
     }
 }

@@ -111,6 +111,13 @@ dependencies {
   testImplementation "junit:junit:$rootProject.ext.junitVersion"
   testImplementation "org.mockito:mockito-core:$rootProject.ext.mockitoVersion"
   testImplementation "org.hamcrest:hamcrest-all:$rootProject.ext.hamcrestVersion"
+  // 如果需要 mock final 类或方法的话，还要引入 mockito-inline 依赖
+  testImplementation "org.mockito:mockito-inline:$rootProject.ext.mockitoVersion"
+  testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
+  testImplementation "org.robolectric:robolectric:4.2.1"
+  testImplementation 'com.android.support.test:runner:1.1.0'
+  testImplementation 'com.android.support.test:rules:1.1.0'
+
 
 
   androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.1.0'

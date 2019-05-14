@@ -45,7 +45,7 @@ class UserRepositoryTest {
         userEntity.name="test"
         userEntity.age = 1
         userRepository.addUser(userEntity)
-
+        println("id=${userEntity.id}")
     }
 
     @Test

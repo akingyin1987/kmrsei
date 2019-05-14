@@ -20,7 +20,7 @@ interface LoginServerApi {
      */
 
     @FormUrlEncoded
-    @POST("api/v4")
+    @POST("login")
     fun   login(@Field("data")data:String,@Field("token")token:String):Observable<ApiResult<LoginResultModel>>
 
     /**

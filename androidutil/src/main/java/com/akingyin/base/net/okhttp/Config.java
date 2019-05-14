@@ -13,7 +13,7 @@ package com.akingyin.base.net.okhttp;
  */
 public class Config {
 
-    public  static  final   boolean  DEBUG = false;
+    public  static  final   boolean  DEBUG = true;
 
     public  static final   String RESPONSE_CACHE="http_cache";
 
