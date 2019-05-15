@@ -51,7 +51,7 @@ class RepositoryManager :IRepositoryManager {
 
     private inline fun <reified T> getRetrofitMethod(@NonNull service: T, method: Method): Method {
 
-        var  serviceClass = T::class.java
+        val  serviceClass = T::class.java
         return serviceClass.getMethod(method.name, *method.parameterTypes)
     }
     fun <T>getRetrofitService(serviceClass :Class<T>):T{

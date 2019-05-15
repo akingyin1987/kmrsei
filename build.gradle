@@ -9,8 +9,10 @@ buildscript {
         jcenter()
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         maven { url 'https://dl.bintray.com/umsdk/release' }
+
     }
     dependencies {
+
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.6'
         classpath 'com.android.tools.build:gradle:3.4.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -29,6 +31,7 @@ allprojects {
         }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         maven { url 'https://dl.bintray.com/umsdk/release' }
+      
     }
 }
 

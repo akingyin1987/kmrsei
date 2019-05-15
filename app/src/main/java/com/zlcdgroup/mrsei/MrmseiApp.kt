@@ -2,6 +2,7 @@ package com.zlcdgroup.mrsei
 
 import android.content.Context
 import android.widget.Toast
+import androidx.multidex.MultiDex
 import com.akingyin.base.BaseApp
 import com.akingyin.base.ext.Ext
 import com.akingyin.base.net.mode.ApiHost
@@ -46,6 +47,13 @@ class MrmseiApp :BaseApp() {
         ApiHost.setHost("http://114.215.108.130:38280/mrmsei/")
         UMConfigure.setLogEnabled(true)
         UMConfigure.init(this,UMConfigure.DEVICE_TYPE_PHONE,"5cd152274ca357112b000a24")
+
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+
+        MultiDex.install(base)
 
     }
 
