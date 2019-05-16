@@ -4,13 +4,13 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_ffffff"
+
     android:clipToPadding="true"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
-
+<!-- android:background="@color/color_ffffff"-->
   <RelativeLayout android:layout_width="match_parent"
       android:layout_height="wrap_content">
     <ImageView
@@ -68,7 +68,7 @@
         android:paddingLeft="13dp">
 
 
-
+      <!--android:textCursorDrawable="@drawable/edittext_cursor"-->
       <AutoCompleteTextView
           android:id="@+id/et_mobile"
           android:layout_width="0dp"
@@ -86,7 +86,7 @@
           android:drawablePadding="@dimen/padding_half"
 
           android:padding="@dimen/padding_half"
-          android:textCursorDrawable="@drawable/edittext_cursor"
+
 
           android:textSize="@dimen/textsize_normal" />
 
@@ -129,7 +129,6 @@
           android:drawableStart="@drawable/ic_lock_outline_white_24dp"
           android:drawablePadding="@dimen/padding_half"
           android:padding="@dimen/padding_half"
-          android:textCursorDrawable="@drawable/edittext_cursor"
 
           android:textSize="@dimen/textsize_normal" />
 
@@ -272,5 +271,11 @@
           android:textColor="@color/color_b0b8b2"
           android:textSize="14dp" />
     </LinearLayout>
+    <Switch
+        android:text="默认主题"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:id="@+id/app_theme"/>
   </RelativeLayout>
 </LinearLayout>

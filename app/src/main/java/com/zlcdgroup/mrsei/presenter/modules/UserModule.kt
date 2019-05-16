@@ -5,8 +5,10 @@ import com.zlcdgroup.mrsei.di.scope.PerActivity
 import com.zlcdgroup.mrsei.presenter.UserListContract
 import com.zlcdgroup.mrsei.presenter.impl.UserListPresenterImpl
 import com.zlcdgroup.mrsei.ui.UserListActivity
+import com.zlcdgroup.mrsei.ui.UserListDataBindActivity
 import dagger.Binds
 import dagger.Module
+import javax.inject.Named
 
 /**
  * @ Description:
@@ -20,6 +22,12 @@ import dagger.Module
     @Binds
     @PerActivity
     abstract  fun   activity(activity: UserListActivity):Activity
+
+
+    @Binds
+    @PerActivity
+    @Named("binduser")
+    abstract  fun   bindUserActivity(activity: UserListDataBindActivity):Activity
 
      @Binds
      @PerActivity

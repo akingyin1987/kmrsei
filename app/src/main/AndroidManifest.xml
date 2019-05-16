@@ -7,7 +7,7 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:supportsRtl="true"
       android:networkSecurityConfig="@xml/network_security_config"
-      android:theme="@style/AppTheme_zlcd">
+      android:theme="@style/DarkThemeApp">
 
     <meta-data android:value="5cd152274ca357112b000a24" android:name="UMENG_APPKEY"/>
     <provider
@@ -35,6 +35,7 @@
      <activity android:name=".ui.SteperActivity"/>
      <activity android:name=".ui.UserListActivity"/>
     <activity android:name=".ui.AuthActivity"/>
+    <activity android:name=".ui.UserListDataBindActivity"/>
     <activity
         android:name="com.tencent.tauth.AuthActivity"
         android:launchMode="singleTask"

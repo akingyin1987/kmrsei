@@ -3,12 +3,11 @@ package com.zlcdgroup.mrsei.ui
 import android.os.Bundle
 import com.akingyin.base.BaseActivity
 import com.akingyin.base.dialog.DialogUtil
-import com.akingyin.base.ext.click
-import com.akingyin.base.ext.goActivity
-import com.akingyin.base.ext.isEmptyOrNull
+import com.akingyin.base.ext.*
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
+import com.zlcdgroup.mrsei.utils.ThemeHelper
 import kotlinx.android.synthetic.main.activity_login.*
 import javax.inject.Inject
 
@@ -35,6 +34,7 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
     }
 
     override fun initView() {
+
         val person = userLoginPersenterImpl.getLastPerson()
         person?.let {
             et_mobile.setText(person.personAccount.isEmptyOrNull())
@@ -45,7 +45,14 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
 
             userLoginPersenterImpl.login(et_mobile.text.toString(),et_password.text.toString())
         }
+        app_theme.click {
 
+            app_theme.isChecked.yes {
+                userLoginPersenterImpl.saveAppTheme(ThemeHelper.DARK_MODE)
+            }.no {
+                userLoginPersenterImpl.saveAppTheme(ThemeHelper.LIGHT_MODE)
+            }
+        }
 
     }
 
@@ -70,5 +77,23 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
 
     override fun goToMainActivity() {
         goActivity<UserListActivity>()
+    }
+
+    override fun setAppTheme(theme: String) {
+        when(theme){
+            ThemeHelper.LIGHT_MODE -> {
+                app_theme.setText("Light")
+                app_theme.isChecked = false
+            }
+
+            ThemeHelper.DARK_MODE ->{
+                app_theme.setText("DARK")
+                app_theme.isChecked = true
+            }
+            else ->{
+                app_theme.setText("DEFAULT")
+                app_theme.isChecked = false
+            }
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.akingyin.base
 
-import android.annotation.SuppressLint
-import java.util.*
+
 
 /**
  * @ Description:
@@ -16,40 +15,39 @@ import java.util.*
 class BaseFragmentAdapter : androidx.fragment.app.FragmentPagerAdapter {
 
 
-    private   var  fragmentlist:List<androidx.fragment.app.Fragment>?= ArrayList()
+    private   var  fragmentlist:List<androidx.fragment.app.Fragment>
+     get() =  mutableListOf()
 
     private   var  mTitles:List<String>?=null
 
-    constructor(fm: androidx.fragment.app.FragmentManager?, fragmentlist: List<androidx.fragment.app.Fragment>?) : super(fm) {
+    constructor(fm: androidx.fragment.app.FragmentManager, fragmentlist: List<androidx.fragment.app.Fragment>) : super(fm) {
         this.fragmentlist = fragmentlist
     }
 
-    constructor(fm: androidx.fragment.app.FragmentManager?, fragmentlist: List<androidx.fragment.app.Fragment>?, mTitles: List<String>?) : super(fm) {
+    constructor(fm: androidx.fragment.app.FragmentManager, fragmentlist: List<androidx.fragment.app.Fragment>, mTitles: List<String>?) : super(fm) {
         this.fragmentlist = fragmentlist
         this.mTitles = mTitles
     }
 
     //刷新fragment
-    @SuppressLint("CommitTransaction")
+
     private fun setFragments(fm: androidx.fragment.app.FragmentManager, fragments: List<androidx.fragment.app.Fragment>, mTitles: List<String>) {
         this.mTitles = mTitles
-        if (this.fragmentlist != null) {
-            val ft = fm.beginTransaction()
-            fragmentlist?.forEach {
-                ft.remove(it)
-            }
-            ft.commitAllowingStateLoss()
-            fm.executePendingTransactions()
+        val ft = fm.beginTransaction()
+        fragmentlist.forEach {
+            ft.remove(it)
         }
+        ft.commitAllowingStateLoss()
+        fm.executePendingTransactions()
         this.fragmentlist = fragments
         notifyDataSetChanged()
     }
     override fun getItem(p0: Int): androidx.fragment.app.Fragment {
-        return  fragmentlist!![p0]
+        return  fragmentlist[p0]
     }
 
     override fun getCount(): Int {
-      return   fragmentlist!!.size
+      return   fragmentlist.size
     }
 
     override fun getPageTitle(position: Int): CharSequence? {

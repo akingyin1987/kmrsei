@@ -21,12 +21,15 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(){
     protected lateinit var mContext: Context
     protected var isInited = false
 
-    override fun onAttach(context: Context?) {
 
+
+    override fun onAttach(context: Context) {
         super.onAttach(context)
+
         mActivity = context as Activity
         mContext = context
     }
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

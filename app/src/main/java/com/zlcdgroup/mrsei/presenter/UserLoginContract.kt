@@ -17,6 +17,8 @@ interface UserLoginContract {
         fun   showConfigDialog(  message:String)
 
         fun   goToMainActivity()
+
+        fun   setAppTheme(theme:String)
     }
 
 
@@ -29,6 +31,13 @@ interface UserLoginContract {
         fun  getLastPerson():PersonEntity?
 
         fun  login(name:String,pass :String)
+
+        fun  getTheme():String
+
+        fun  saveAppTheme(theme:String)
+
+
+
 
         fun cancelSubscribe()
 

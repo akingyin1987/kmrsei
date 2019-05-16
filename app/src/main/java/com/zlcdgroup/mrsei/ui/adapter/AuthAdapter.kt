@@ -1,7 +1,6 @@
 package com.zlcdgroup.mrsei.ui.adapter
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.afollestad.materialdialogs.MaterialDialog
 import com.umeng.socialize.UMAuthListener
 import com.umeng.socialize.UMShareAPI
 import com.umeng.socialize.bean.SHARE_MEDIA
@@ -29,7 +29,8 @@ class AuthAdapter @Inject constructor(var context: Activity) :BaseAdapter(){
 
     var mutableList: MutableList<SnsPlatform> = mutableListOf()
 
-     var   dialog:ProgressDialog = ProgressDialog(context)
+    var   dialog: MaterialDialog = MaterialDialog.Builder(context)
+             .progress(false, 0).build()
 
     override fun getView(position: Int, convertView1: View?, parent: ViewGroup?): View {
         var   convertView = convertView1

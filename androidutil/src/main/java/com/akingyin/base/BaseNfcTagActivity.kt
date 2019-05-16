@@ -106,12 +106,12 @@ import com.zlcdgroup.nfcsdk.RfidInterface
 
   if (null != intent && NfcAdapter.ACTION_TECH_DISCOVERED == intent.action) {
    tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
-   mf = MifareClassic.get(tagFromIntent)
+    mf = MifareClassic.get(tagFromIntent)
   }
  }
 
 
- var mainHandler: Handler = object : Handler(Looper.getMainLooper()) {
+ var mainHandler = object : Handler(Looper.getMainLooper()) {
   override fun  handleMessage(msg: Message) {
    super.handleMessage(msg)
    if (msg.what == 1) {

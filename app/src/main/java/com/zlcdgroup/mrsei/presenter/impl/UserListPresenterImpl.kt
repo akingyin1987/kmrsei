@@ -26,12 +26,21 @@ class UserListPresenterImpl @Inject constructor(var  userRepository: UserReposit
     }
 
     override fun addUser(userEntity: UserEntity): Boolean {
-        var  result:Boolean = userRepository.addUser(userEntity)
+        val  result:Boolean = userRepository.addUser(userEntity)
         mRootView?.showAddUser(userEntity)
+        return  result
+    }
+
+    override fun modifyUser(userEntity: UserEntity, int: Int): Boolean {
+
+        val  result:Boolean = userRepository.addUser(userEntity)
+        mRootView?.notifyModifyUser(userEntity,int)
         return  result
     }
 
     override fun delectUser(userEntity: UserEntity): Boolean {
         return  userRepository.delectUser(userEntity)
     }
+
+
 }

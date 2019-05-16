@@ -23,7 +23,7 @@ abstract class BaseFragment :SimpleFragment(),HasSupportFragmentInjector,IBaseVi
     @Inject
     lateinit var childFragmentInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
          injection()
         super.onAttach(context)
     }

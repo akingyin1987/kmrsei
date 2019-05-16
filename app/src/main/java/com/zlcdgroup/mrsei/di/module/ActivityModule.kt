@@ -8,10 +8,7 @@ import com.zlcdgroup.mrsei.presenter.modules.AuthModule
 import com.zlcdgroup.mrsei.presenter.modules.LoginModule
 import com.zlcdgroup.mrsei.presenter.modules.StepModule
 import com.zlcdgroup.mrsei.presenter.modules.UserModule
-import com.zlcdgroup.mrsei.ui.AuthActivity
-import com.zlcdgroup.mrsei.ui.LoginActivity
-import com.zlcdgroup.mrsei.ui.SteperActivity
-import com.zlcdgroup.mrsei.ui.UserListActivity
+import com.zlcdgroup.mrsei.ui.*
 import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -45,6 +42,10 @@ abstract class ActivityModule {
     @ContributesAndroidInjector(modules = arrayOf(UserModule::class))
     @PerActivity
     abstract   fun contributeUserActivitytInjector():UserListActivity
+
+    @ContributesAndroidInjector(modules = arrayOf(UserModule::class))
+    @PerActivity
+    abstract   fun  contributeBindUserActivitytInjector():UserListDataBindActivity
 
     @ContributesAndroidInjector(modules = arrayOf(LoginModule::class))
     @PerActivity

@@ -203,12 +203,13 @@
 ##################################APP内部################################################
 ################混淆保护自己项目的部分代码以及引用的第三方jar包library#########################
 
--libraryjars libs/umeng-share-QQ-simplify-6.9.4.jar
--libraryjars libs/umeng-share-wechat-full-6.9.4.jar
--libraryjars libs/wechat-sdk-android-without-mta-5.1.4.jar
+#-libraryjars libs/umeng-share-QQ-simplify-6.9.4.jar
+#-libraryjars libs/umeng-share-wechat-full-6.9.4.jar
+#-libraryjars libs/umeng-sharetool-6.9.4.jar
+#-libraryjars libs/wechat-sdk-android-without-mta-5.1.4.jar
 -keep class com.zlcdgroup.mrmsei.data.**{*;}
 -keep class com.akingyin.base.**{*;}
-
+-ignorewarnings -keep class * { public private *; }
 
 
 

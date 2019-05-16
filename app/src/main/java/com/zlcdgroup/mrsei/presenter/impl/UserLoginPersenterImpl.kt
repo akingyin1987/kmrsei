@@ -2,6 +2,8 @@ package com.zlcdgroup.mrsei.presenter.impl
 
 import com.akingyin.base.BasePresenter
 import com.akingyin.base.call.ApiCallBack
+import com.akingyin.base.ext.spGetString
+import com.akingyin.base.ext.spSetString
 import com.zlcdgroup.mrsei.data.entity.PersonEntity
 import com.zlcdgroup.mrsei.data.source.PersonRepository
 import com.zlcdgroup.mrsei.data.source.remote.model.LoginResultModel
@@ -16,6 +18,11 @@ import javax.inject.Inject
  */
 class UserLoginPersenterImpl @Inject constructor(var personRepository: PersonRepository): BasePresenter<UserLoginContract.View>(), UserLoginContract.Presenter {
 
+
+
+    override fun initialization() {
+         mRootView?.setAppTheme(getTheme())
+    }
 
 //    @Inject
 //    lateinit var okHttpClient: OkHttpClient
@@ -65,6 +72,15 @@ class UserLoginPersenterImpl @Inject constructor(var personRepository: PersonRep
 
            }
        })
+    }
+
+    override fun getTheme(): String {
+        return  spGetString("themePref")
+    }
+
+    override fun saveAppTheme(theme: String) {
+        spSetString("themePref",theme)
+        mRootView?.setAppTheme(theme)
     }
 
     override fun cancelSubscribe() {

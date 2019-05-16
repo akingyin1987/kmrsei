@@ -29,14 +29,17 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
 
     protected var mContext: Context? = null
 
+    protected  var   useDataBind = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjection()
         super.onCreate(savedInstanceState)
         AppManager.getInstance()!!.addActivity(this)
         TAG_LOG = this.localClassName
-        setContentView(getLayoutId())
+        if(!useDataBind){
+            setContentView(getLayoutId())
+        }
         mContext = this
-
         initializationData(savedInstanceState)
         initView()
         startRequest()
@@ -44,7 +47,7 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
 
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         onSaveInstanceData(outState)
     }

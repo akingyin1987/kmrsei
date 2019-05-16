@@ -1,10 +1,13 @@
 package com.zlcdgroup.mrsei.data.entity;
 
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+import com.zlcdgroup.mrsei.BR;
 import java.io.Serializable;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @author king
@@ -14,7 +17,7 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 
 @Entity(nameInDb = "tb_user")
-public class UserEntity  implements Serializable{
+public class UserEntity extends BaseObservable implements Serializable{
   private static final long serialVersionUID = 196217012358394317L;
 
   @Id(autoincrement = true)
@@ -38,13 +41,15 @@ public UserEntity(Long id, String name, int age) {
   public UserEntity() {
   }
 
-
+  @Bindable
   public String getName() {
       return this.name;
   }
 
+
   public void setName(String name) {
       this.name = name;
+       notifyPropertyChanged(BR.name);
   }
 
   public int getAge() {

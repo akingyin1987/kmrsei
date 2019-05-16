@@ -1,40 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-  <include layout="@layout/include_toolbar"/>
-
-  <androidx.recyclerview.widget.RecyclerView
+    xmlns:tools="http://schemas.android.com/tools">
+  <data>
+    <import type="java.util.ArrayList" />
+    <variable
+        name="list"
+        type="ArrayList&lt;String&gt;" />
+    <variable name="fabName" type="String"/>
+  </data>
+  <androidx.coordinatorlayout.widget.CoordinatorLayout
+      android:orientation="vertical"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:id="@+id/recycle"
-      tools:listitem="@layout/item_user"
-      tools:itemCount ="12"
-      app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-     />
+      android:layout_height="match_parent">
 
-  <com.google.android.material.floatingactionbutton.FloatingActionButton
-      android:layout_width="wrap_content"
-      android:id="@+id/fab"
-      app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-      android:layout_marginRight="@dimen/dp_10"
-      android:src="@android:drawable/ic_input_add"
-      android:layout_gravity="bottom|right"
-      android:layout_marginBottom="60dp"
-      android:layout_height="wrap_content"/>
+    <include layout="@layout/include_toolbar"/>
 
-  <com.google.android.material.floatingactionbutton.FloatingActionButton
-      android:layout_width="wrap_content"
-      android:id="@+id/fab_share"
-      app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-      android:layout_marginRight="@dimen/dp_10"
-      android:src="@android:drawable/ic_menu_share"
-      android:layout_gravity="bottom|left"
-      android:layout_marginBottom="60dp"
-      android:layout_height="wrap_content"/>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recycle"
+        tools:listitem="@layout/item_user"
+        tools:itemCount="12"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+    />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:id="@+id/fab"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_marginRight="@dimen/dp_10"
+        android:src="@android:drawable/ic_input_add"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="60dp"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:id="@+id/fab_share"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_marginRight="@dimen/dp_10"
+        android:src="@android:drawable/ic_menu_share"
+        android:layout_gravity="bottom|left"
+        android:layout_marginBottom="60dp"
+
+        android:layout_height="wrap_content"/>
+  </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

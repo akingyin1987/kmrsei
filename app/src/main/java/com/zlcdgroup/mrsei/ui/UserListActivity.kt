@@ -105,8 +105,8 @@ class UserListActivity  : BaseActivity(),UserListContract.View, UMShareListener 
 //           var config = ShareBoardConfig()
 //            config.setShareboardPostion(ShareBoardConfig.SHAREBOARD_POSITION_CENTER)
 //            config.setMenuItemBackgroundShape(ShareBoardConfig.BG_SHAPE_CIRCULAR)
-//           shareAction.open()
-            goActivity<AuthActivity>()
+//
+            goActivity<UserListDataBindActivity>()
         }
 
     }
@@ -172,8 +172,11 @@ class UserListActivity  : BaseActivity(),UserListContract.View, UMShareListener 
     override fun onError(p0: SHARE_MEDIA?, p1: Throwable?) {
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         shareAction.close()
+    }
+
+    override fun notifyModifyUser(userEntity: UserEntity, postion: Int) {
     }
 }

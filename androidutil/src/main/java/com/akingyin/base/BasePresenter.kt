@@ -25,6 +25,7 @@ open  class  BasePresenter <T:IBaseView> :IPresenter<T>{
 
     override fun attachView(mRootView: T) {
         this.mRootView = mRootView
+        initialization()
     }
 
     override fun detachView() {
@@ -50,6 +51,7 @@ open  class  BasePresenter <T:IBaseView> :IPresenter<T>{
 
     private class MvpViewNotAttachedException internal constructor() : RuntimeException("Please call IPresenter.attachView(IBaseView) before" + " requesting data to the IPresenter")
 
+    override fun initialization() {
 
-
+    }
 }

@@ -18,6 +18,8 @@ interface UserListContract {
           fun    showAddUser( userEntity: UserEntity)
 
           fun    showDelect(userEntity: UserEntity,  postion:Int)
+
+          fun    notifyModifyUser(userEntity: UserEntity,postion:Int)
      }
 
 
@@ -27,6 +29,8 @@ interface UserListContract {
           fun   getUserList():List<UserEntity>?
 
           fun   addUser(userEntity: UserEntity):Boolean
+
+          fun   modifyUser(userEntity: UserEntity,int: Int):Boolean
 
           fun   delectUser(userEntity: UserEntity):Boolean
     }

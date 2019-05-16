@@ -25,7 +25,7 @@ class  AppManager  private  constructor(){ //私有的主构造器
         }
     }
 
-    private var activityStack: Stack<Activity>? = null
+     var activityStack: Stack<Activity>? = null
 
 
 
@@ -42,7 +42,7 @@ class  AppManager  private  constructor(){ //私有的主构造器
      */
     fun addActivity(activity: Activity) {
         if (activityStack == null) {
-            activityStack = Stack<Activity>()
+            activityStack = Stack()
         }
         activityStack!!.add(activity)
     }

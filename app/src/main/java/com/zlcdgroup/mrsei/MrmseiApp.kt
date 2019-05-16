@@ -1,15 +1,18 @@
 package com.zlcdgroup.mrsei
 
 import android.content.Context
+import android.text.TextUtils
 import android.widget.Toast
 import androidx.multidex.MultiDex
 import com.akingyin.base.BaseApp
 import com.akingyin.base.ext.Ext
+import com.akingyin.base.ext.spGetString
 import com.akingyin.base.net.mode.ApiHost
 import com.umeng.commonsdk.UMConfigure
 import com.zlcdgroup.mrsei.di.component.DaggerAppComponent
 import com.zlcdgroup.mrsei.di.module.ClientModule
 import com.zlcdgroup.mrsei.di.module.GlobalConfigModule
+import com.zlcdgroup.mrsei.utils.ThemeHelper
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 import okhttp3.OkHttpClient
@@ -45,6 +48,13 @@ class MrmseiApp :BaseApp() {
         Ext.with(this)
         showDebugDBAddressLogToast(this)
         ApiHost.setHost("http://114.215.108.130:38280/mrmsei/")
+        val  theme = spGetString("themePref")
+        println("theme=$theme")
+        if(TextUtils.isEmpty(theme)){
+            ThemeHelper.applyTheme(ThemeHelper.DEFAULT_MODE)
+        }else{
+            ThemeHelper.applyTheme(theme)
+        }
         UMConfigure.setLogEnabled(true)
         UMConfigure.init(this,UMConfigure.DEVICE_TYPE_PHONE,"5cd152274ca357112b000a24")
 

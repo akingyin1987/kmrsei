@@ -10,6 +10,7 @@ package com.akingyin.base
  */
 interface IPresenter< V:IBaseView> {
 
+    fun  initialization()
 
     fun attachView(mRootView: V)
 
