@@ -3,7 +3,11 @@ package com.zlcdgroup.mrsei.ui
 import android.os.Bundle
 import com.akingyin.base.BaseActivity
 import com.akingyin.base.dialog.DialogUtil
-import com.akingyin.base.ext.*
+import com.akingyin.base.ext.click
+import com.akingyin.base.ext.isEmptyOrNull
+import com.akingyin.base.ext.no
+import com.akingyin.base.ext.yes
+import com.alibaba.android.arouter.launcher.ARouter
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
@@ -17,6 +21,8 @@ import javax.inject.Inject
  * @ Date 2018/10/8 12:16
  * @version V1.0
  */
+
+
 class LoginActivity  : BaseActivity() ,UserLoginContract.View{
 
     @Inject
@@ -30,6 +36,7 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
         userLoginPersenterImpl.attachView(this)
     }
 
+
     override fun onSaveInstanceData(outState: Bundle?) {
     }
 
@@ -37,8 +44,9 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
 
         val person = userLoginPersenterImpl.getLastPerson()
         person?.let {
-            et_mobile.setText(person.personAccount.isEmptyOrNull())
-            et_password.setText(person.personPassword.isEmptyOrNull())
+
+            et_mobile.setText(it.personAccount.isEmptyOrNull())
+            et_password.setText(it.personPassword.isEmptyOrNull())
         }
         println("btn_login2")
         btn_login.click {
@@ -46,7 +54,9 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
             userLoginPersenterImpl.login(et_mobile.text.toString(),et_password.text.toString())
         }
         app_theme.click {
-
+            app_theme.isChecked.yes {
+                println("yes----------->>>>")
+            }
             app_theme.isChecked.yes {
                 userLoginPersenterImpl.saveAppTheme(ThemeHelper.DARK_MODE)
             }.no {
@@ -76,7 +86,9 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
     }
 
     override fun goToMainActivity() {
-        goActivity<UserListActivity>()
+        ARouter.getInstance().build("/user/list").withString("name","nametest")
+                .withInt("age",2).navigation()
+      //  goActivity<UserListActivity>()
     }
 
     override fun setAppTheme(theme: String) {

@@ -8,10 +8,15 @@ import com.akingyin.base.BaseApp
 import com.akingyin.base.ext.Ext
 import com.akingyin.base.ext.spGetString
 import com.akingyin.base.net.mode.ApiHost
+import com.alibaba.android.arouter.launcher.ARouter
+import com.orhanobut.logger.AndroidLogAdapter
+import com.orhanobut.logger.Logger
+import com.orhanobut.logger.PrettyFormatStrategy
 import com.umeng.commonsdk.UMConfigure
 import com.zlcdgroup.mrsei.di.component.DaggerAppComponent
 import com.zlcdgroup.mrsei.di.module.ClientModule
 import com.zlcdgroup.mrsei.di.module.GlobalConfigModule
+import com.zlcdgroup.mrsei.utils.RetrofitConfig
 import com.zlcdgroup.mrsei.utils.ThemeHelper
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
@@ -46,8 +51,21 @@ class MrmseiApp :BaseApp() {
         super.onCreate()
 
         Ext.with(this)
+        if(BuildConfig.DEBUG){
+            ARouter.openLog()
+            ARouter.openDebug()
+            val formatStrategy = PrettyFormatStrategy.newBuilder()
+                    .showThreadInfo(false)  //是否选择显示线程信息，默认为true
+                    .methodCount(0)         //方法数显示多少行，默认2行
+                    .methodOffset(5)        //隐藏方法内部调用到偏移量，默认5
+                    .tag("AndroidDev")        //自定义TAG全部标签，默认PRETTY_LOGGER
+                    .build()
+            Logger.addLogAdapter(AndroidLogAdapter(formatStrategy))
+        }
+        ARouter.init(this)
         showDebugDBAddressLogToast(this)
         ApiHost.setHost("http://114.215.108.130:38280/mrmsei/")
+        RetrofitConfig.getDefaultService()
         val  theme = spGetString("themePref")
         println("theme=$theme")
         if(TextUtils.isEmpty(theme)){

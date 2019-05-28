@@ -27,6 +27,9 @@ inline val app: Application
 inline val currentTimeMillis: Long
     get() = System.currentTimeMillis()
 
+inline val  appServerTime:Long
+    get() = AppTime.getAppTime()
+
 fun findColor(@ColorRes resId: Int) = ContextCompat.getColor(app, resId)
 
 fun findDrawable(@DrawableRes resId: Int): Drawable? = ContextCompat.getDrawable(app, resId)

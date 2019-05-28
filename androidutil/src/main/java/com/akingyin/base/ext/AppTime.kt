@@ -1,0 +1,43 @@
+package com.akingyin.base.ext
+
+import android.os.SystemClock
+
+/**
+ * @ Description:
+ * @author king
+ * @ Date 2019/5/28 11:21
+ * @version V1.0
+ */
+class AppTime{
+
+     private   var   serverTime : Long = 0L
+
+     private   var   elapsedRealtime : Long = 0L
+
+     companion object{
+         private val Instance: AppTime by lazy { AppTime() }
+
+         fun   getAppTime():Long{
+             if(Instance.serverTime == 0L){
+                 Instance.serverTime = spGetLong("serverTime",0L)
+             }
+             if(Instance.elapsedRealtime == 0L){
+                 Instance.serverTime = spGetLong("elapsedRealtime",0L)
+             }
+             if(Instance.serverTime == 0L || Instance.elapsedRealtime == 0L){
+                 return  System.currentTimeMillis()
+             }
+
+             return  Instance.serverTime + (SystemClock.elapsedRealtime() - Instance.elapsedRealtime)
+         }
+
+         fun   saveServerTime(server:Long){
+             Instance.serverTime = server
+             Instance.elapsedRealtime = SystemClock.elapsedRealtime()
+             spSetLong("serverTime",server)
+             spSetLong("elapsedRealtime", Instance.elapsedRealtime)
+         }
+     }
+
+
+}

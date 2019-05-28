@@ -1,5 +1,6 @@
 package com.zlcdgroup.mrsei.net
 
+import com.akingyin.base.ext.yes
 import com.akingyin.base.net.RetrofitUtils
 import com.akingyin.base.net.okhttp.OkHttpUtils
 import com.zlcdgroup.mrsei.data.source.remote.api.LoginServerApi
@@ -42,5 +43,18 @@ class ApiTest {
                  }, {
                      it.printStackTrace()
                  })
+    }
+
+
+    @Test
+    fun    testBoolean(){
+
+        val  random = java.util.Random().nextInt(10)
+
+        val  boolean = true
+        boolean.yes {
+            println("yes------------------")
+        }
+        println("random=$random:$boolean")
     }
 }

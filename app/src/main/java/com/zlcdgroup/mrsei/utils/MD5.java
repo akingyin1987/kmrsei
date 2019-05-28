@@ -41,7 +41,9 @@ public class MD5 {
 		return hexValue.toString();
 	}
 	public static String getFileMD5(final File file) {
-		if (file == null) return null;
+		if (file == null) {
+			return null;
+		}
 		DigestInputStream dis = null;
 		try {
 			FileInputStream fis = new FileInputStream(file);
@@ -51,7 +53,9 @@ public class MD5 {
 				dis = new DigestInputStream(fis, md);
 				byte[] buffer = new byte[1024 * 256];
 				while (true) {
-					if (!(dis.read(buffer) > 0)) break;
+					if ((dis.read(buffer) <= 0)) {
+						break;
+					}
 				}
 				md = dis.getMessageDigest();
 				return byte2HexString(md.digest()).toUpperCase();
@@ -91,12 +95,10 @@ public class MD5 {
 			e.printStackTrace();
 
 		} finally {
-			if(null != in) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+			try {
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 		return value;
@@ -105,9 +107,6 @@ public class MD5 {
 	public static String byte2HexString(byte[] bytes) {
 		StringBuilder ret = new StringBuilder();
 		if (bytes != null) {
-			// for (Byte b : bytes) {
-			// ret += String.format("%02X", b.intValue() & 0xFF);
-			// }
 			for (int i=0;i<bytes.length;i++) {
 				Byte b = bytes[i];
 				ret.append( String.format("%02X", b.intValue() & 0xFF));

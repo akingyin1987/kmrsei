@@ -2,6 +2,7 @@ package com.akingyin.base
 
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -11,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.StackingBehavior
+import com.akingyin.base.ext.no
+import com.akingyin.base.ext.yes
 import com.classic.common.MultipleStatusView
 import es.dmoral.toasty.Toasty
 
@@ -53,14 +56,16 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
     }
 
     protected fun setToolBar(toolbar: Toolbar, title: String) {
-        toolbar.setTitle(title)
-
+        toolbar.title = title
         setSupportActionBar(toolbar)
-        if (null != supportActionBar) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setDisplayShowHomeEnabled(true)
-            toolbar.setNavigationOnClickListener(View.OnClickListener { onBackPressed() })
+        supportActionBar?.let {
+            it.setDisplayHomeAsUpEnabled(true)
+            it.setDisplayShowHomeEnabled(true)
+            toolbar.setNavigationOnClickListener {
+                onBackPressed()
+            }
         }
+
 
     }
 
@@ -112,7 +117,7 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
      * 打开软键盘
      */
     fun   openKeyBord(mEditText: EditText, mContext: Context){
-        var imm = mContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = mContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(mEditText, InputMethodManager.RESULT_SHOWN)
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
 
@@ -162,11 +167,14 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
 
     var loadingDialog: MaterialDialog? = null
     override fun showLoadDialog(msg: String?) {
-        if(null != loadingDialog && loadingDialog!!.isShowing){
-            loadingDialog!!.dismiss()
+        loadingDialog?.let {
+            it.isShowing.yes {
+                it.dismiss()
+            }
         }
+
          loadingDialog = MaterialDialog.Builder(this)
-                .content(msg!!)
+                .content(TextUtils.isEmpty(msg).yes { "" }.no { msg!! })
                 .progress(false, 0)
                 .stackingBehavior(StackingBehavior.ADAPTIVE).build()
 
@@ -178,8 +186,10 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
     }
 
     override fun hideLoadDialog() {
-        if(null != loadingDialog && loadingDialog!!.isShowing){
-            loadingDialog!!.dismiss()
+        loadingDialog?.let {
+            it.isShowing.yes {
+                it.dismiss()
+            }
         }
     }
 

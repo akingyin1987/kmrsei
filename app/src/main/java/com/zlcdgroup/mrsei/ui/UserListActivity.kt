@@ -7,6 +7,9 @@ import android.widget.Toast
 import com.akingyin.base.BaseActivity
 import com.akingyin.base.ext.click
 import com.akingyin.base.ext.goActivity
+import com.alibaba.android.arouter.facade.annotation.Autowired
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.umeng.socialize.ShareAction
 import com.umeng.socialize.UMShareListener
@@ -36,6 +39,7 @@ import kotlin.properties.Delegates
  * @ Date 2018/9/4 10:52
  * @version V1.0
  */
+@Route(path = "/user/list")
 class UserListActivity  : BaseActivity(),UserListContract.View, UMShareListener {
 
     @Inject
@@ -44,12 +48,22 @@ class UserListActivity  : BaseActivity(),UserListContract.View, UMShareListener 
     @Inject
     lateinit var userListAdapter: UserListAdapter
 
+
+
+    @Autowired
+    @JvmField
+    var name: String? = null
+    @Autowired
+    @JvmField
+    var age: Int? = 0
+
     var   shareAction :ShareAction  by Delegates.notNull()
 
     override fun getLayoutId(): Int = R.layout.activity_userlist
 
     override fun initializationData(savedInstanceState: Bundle?) {
         setToolBar(toolbar,"测试")
+        println("name=$name")
         userListPresenterImpl.attachView(this)
         recycle.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         recycle.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
@@ -178,5 +192,10 @@ class UserListActivity  : BaseActivity(),UserListContract.View, UMShareListener 
     }
 
     override fun notifyModifyUser(userEntity: UserEntity, postion: Int) {
+    }
+
+    override fun initInjection() {
+        super.initInjection()
+        ARouter.getInstance().inject(this)
     }
 }

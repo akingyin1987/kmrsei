@@ -10,6 +10,12 @@ apply plugin: 'org.greenrobot.greendao' // apply plugin
 apply plugin: 'com.getkeepsafe.dexcount'
 apply from: '../global_config.gradle'
 
+
+kapt {
+  arguments {
+    arg("AROUTER_MODULE_NAME", project.getName())
+  }
+}
 android {
   compileSdkVersion rootProject.ext.android.compileSdkVersion
 
@@ -154,4 +160,7 @@ dependencies {
   implementation files('libs/umeng-share-wechat-full-6.9.4.jar')
   implementation files('libs/wechat-sdk-android-without-mta-5.1.4.jar')
   implementation files('libs/umeng-share-QQ-simplify-6.9.4.jar')
+
+  implementation 'com.alibaba:arouter-api:1.5.0'
+  kapt 'com.alibaba:arouter-compiler:1.2.2'
 }
