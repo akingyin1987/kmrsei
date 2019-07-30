@@ -48,8 +48,6 @@ class UserListActivity  : BaseActivity(),UserListContract.View, UMShareListener 
     @Inject
     lateinit var userListAdapter: UserListAdapter
 
-
-
     @Autowired
     @JvmField
     var name: String? = null

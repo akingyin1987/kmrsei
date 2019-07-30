@@ -7,7 +7,9 @@ import androidx.multidex.MultiDex
 import com.akingyin.base.BaseApp
 import com.akingyin.base.ext.Ext
 import com.akingyin.base.ext.spGetString
+import com.akingyin.base.ext.spSetString
 import com.akingyin.base.net.mode.ApiHost
+import com.akingyin.base.net.okhttp.OkHttpUtils
 import com.alibaba.android.arouter.launcher.ARouter
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
@@ -36,6 +38,8 @@ class MrmseiApp :BaseApp() {
         val  configmodel : GlobalConfigModule.GlobalProvideModule =GlobalConfigModule.Builder().okhttpConfiguration(object :ClientModule.ClientProvideModule.OkhttpConfiguration{
             override fun configOkhttp(context: Context, builder: OkHttpClient.Builder) {
                 println("configOkhttp")
+                builder.addInterceptor(OkHttpUtils.httpLoggingInterceptor)
+
             }
         }).retrofitConfiguration(object :ClientModule.ClientProvideModule.RetrofitConfiguration{
             override fun configRetrofit(context: Context, builder: Retrofit.Builder) {
@@ -51,6 +55,7 @@ class MrmseiApp :BaseApp() {
         super.onCreate()
 
         Ext.with(this)
+        spSetString("ApiUrl","http://114.215.108.130:38280/mrmsei/")
         if(BuildConfig.DEBUG){
             ARouter.openLog()
             ARouter.openDebug()

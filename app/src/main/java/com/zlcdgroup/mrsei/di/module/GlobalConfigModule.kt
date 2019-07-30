@@ -6,6 +6,7 @@ import com.akingyin.base.net.mode.BaseUrl
 import dagger.Module
 import dagger.Provides
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
 import java.io.File
 import java.util.concurrent.ExecutorService
@@ -40,7 +41,7 @@ abstract class  GlobalConfigModule  {
             if (TextUtils.isEmpty(baseUrl)) {
                 throw NullPointerException("BaseUrl can not be empty")
             }
-            this.apiUrl = HttpUrl.parse(baseUrl)
+            this.apiUrl = baseUrl.toHttpUrlOrNull()
             return this
         }
 
@@ -133,7 +134,7 @@ abstract class  GlobalConfigModule  {
             if(null != mApiUrl){
                 url = mApiUrl
             }else{
-                url  = HttpUrl.parse("https://api.github.com/")
+                url  = "https://api.github.com/".toHttpUrlOrNull()
             }
             return url!!
         }

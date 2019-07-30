@@ -1,5 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zlcdgroup.mrsei">
+
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
   <application android:allowBackup="true"
       android:label="@string/app_name"
       android:name=".MrmseiApp"
@@ -36,6 +40,10 @@
      <activity android:name=".ui.UserListActivity"/>
     <activity android:name=".ui.AuthActivity"/>
     <activity android:name=".ui.UserListDataBindActivity"/>
+    <activity android:name=".ui.CoroutinesDemo"/>
+    <activity android:name=".ui.CameraXActivity"
+        android:theme="@style/FullscreenTheme"
+      />
     <activity
         android:name="com.tencent.tauth.AuthActivity"
         android:launchMode="singleTask"

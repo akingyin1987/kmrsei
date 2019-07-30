@@ -189,7 +189,7 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
         loadingDialog?.let {
             it.isShowing.yes {
                 it.dismiss()
-            }
+            }.no {  }
         }
     }
 
@@ -200,6 +200,14 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
     override fun dismissLoading() {
     }
 
+
+    override fun onResume() {
+        super.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
 
     override fun onDestroy() {
         AppManager.getInstance()?.finishActivity(this)

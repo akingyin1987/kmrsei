@@ -3,6 +3,7 @@ package com.zlcdgroup.mrsei.data.source.remote
 import com.akingyin.base.call.ApiCallBack
 import com.akingyin.base.net.config.CommonConstants.imei
 import com.akingyin.base.rx.RxUtil
+import com.akingyin.base.rx.retryWithDelay
 import com.zlcdgroup.mrsei.data.entity.PersonEntity
 import com.zlcdgroup.mrsei.data.source.IPersonSource
 import com.zlcdgroup.mrsei.data.source.remote.api.LoginServerApi
@@ -55,8 +56,9 @@ class PersonRemoteSource @Inject constructor()  : IPersonSource{
             val dataMap =  mutableMapOf<String ,String>()
             dataMap["account"] = name
             dataMap["password"] = pass
+
             val json = RQ.getJsonData("zlcd_mrmsei_login", "", imei, dataMap.toMap())
-            disposable =   serverApi.login(json,RQ.getToken(json)).compose(RxUtil.IO_Main())
+            disposable =   serverApi.login(json,RQ.getToken(json)).retryWithDelay(2,3).compose(RxUtil.IO_Main())
                   .subscribe({
                      if(it.status == 0){
                       callBack.call(it.data)

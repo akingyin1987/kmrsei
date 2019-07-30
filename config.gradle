@@ -15,10 +15,10 @@ ext{
     androidXTestVersion = '1.1.1'
     androidXAnnotations = '1.0.1'
     androidXLegacySupport = '1.0.0'
-    materialVersion = '1.0.0'
+    materialVersion = '1.1.0-alpha09'
     cardVersion = '1.0.0'
-    recyclerViewVersion = '1.0.0'
-    appCompatVersion = '1.0.2'
+    recyclerViewVersion = '1.1.0-beta01'
+    appCompatVersion = '1.1.0-rc01'
     junitVersion = '4.12'
     mockitoVersion = '2.27.0'
     dexMaker = '1.2'
@@ -30,12 +30,12 @@ ext{
   }
   dependVersion = [
       androidSupportSdkVersion: "27.1.1",
-      retrofitSdkVersion      : "2.5.0",
-      okhttpSdkVersion        : "3.14.1",
+      retrofitSdkVersion      : "2.6.0",
+      okhttpSdkVersion        : "4.0.1",
       glideSdkVersion         : "4.9.0",
-      rxJava                  : "2.2.8",
+      rxJava                  : "2.2.10",
       rxAndroid               : "2.1.1",
-      rxKotlin                 : "2.3.0"
+      rxKotlin                 : "2.4.0"
   ]
 
   supportDeps = [
@@ -53,6 +53,7 @@ ext{
       retrofit                : "com.squareup.retrofit2:retrofit:$dependVersion.retrofitSdkVersion",
       retrofitConverterGson   : "com.squareup.retrofit2:converter-gson:$dependVersion.retrofitSdkVersion",
       retrofitAdapterRxjava2  : "com.squareup.retrofit2:adapter-rxjava2:$dependVersion.retrofitSdkVersion",
+      retrofitAdapterCoroutines : "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
 
   ]
 

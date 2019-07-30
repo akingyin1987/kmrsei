@@ -69,17 +69,19 @@ class RetrofitConfig private constructor(){
      * 初始化请求拦截，添加缓存头,与全局请求参数
      */
     private fun initRequestInterceptor() {
+
+
         mRequestInterceptor = Interceptor { chain ->
             //注意全局请求参数都是死的
             var  request  = chain.request()
-            request.headers().names().forEach{
-                println("header->>  key=$it  value=${request.headers().get(it)}")
+            request.headers.names().forEach{
+                println("header->>  key=$it  value=${request.headers.get(it)}")
             }
-            when(request.method()){
+            when(request.method){
                 "GET"->{
-                   val  parameterNames = request.url().queryParameterNames()
+                   val  parameterNames = request.url.queryParameterNames
                     parameterNames.forEach {
-                        println("key=$it value=${request.url().queryParameter(it)}")
+                        println("key=$it value=${request.url.queryParameter(it)}")
                     }
 
                 }
@@ -87,7 +89,7 @@ class RetrofitConfig private constructor(){
 
                 }
             }
-            val urlBuilder = chain.request().url()
+            val urlBuilder = chain.request().url
                     .newBuilder()
                     .setEncodedQueryParameter("udid", "d0f6190461864a3a978bdbcb3fe9b48709f1f390")
                     .setEncodedQueryParameter("vc", "225")

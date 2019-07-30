@@ -10,9 +10,8 @@ package com.zlcdgroup.mrsei.data.db.help;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import com.zlcdgroup.mrsei.data.db.dao.DaoMaster;
-
+import timber.log.Timber;
 
 public class UpgradeHelper  extends DaoMaster.OpenHelper {
 
@@ -39,7 +38,7 @@ public class UpgradeHelper  extends DaoMaster.OpenHelper {
         System.out.println("version="+i);
                 /* New instance of the class that migrates from i version to i++ version named DBMigratorHelper{version that the db has on this moment} */
         AbstractMigratorHelper migratorHelper = (AbstractMigratorHelper) Class.forName("com.zlcdgroup.mrsei.data.db.help.DBMigrationHelper" + i).newInstance();
-        System.out.println("migratorHelper="+(null == migratorHelper));
+
         if (migratorHelper != null) {
 
                     /* Upgrade de db */
@@ -48,7 +47,7 @@ public class UpgradeHelper  extends DaoMaster.OpenHelper {
 
       } catch (ClassNotFoundException | ClassCastException | IllegalAccessException | InstantiationException e) {
 
-        Log.e(TAG, "Could not migrate from schema from schema: " + i + " to " + i++);
+        Timber.e("Could not migrate from schema from schema: " + i + " to " + i++);
                 /* If something fail prevent the DB to be updated to future version if the previous version has not been upgraded successfully */
         break;
       }
