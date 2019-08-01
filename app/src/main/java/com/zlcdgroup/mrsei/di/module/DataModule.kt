@@ -1,13 +1,17 @@
 package com.zlcdgroup.mrsei.di.module
 
+import android.content.Context
 import com.zlcdgroup.mrsei.data.db.dao.DaoSession
+import com.zlcdgroup.mrsei.data.db.dao.NoticeDao
 import com.zlcdgroup.mrsei.data.db.dao.PersonEntityDao
 import com.zlcdgroup.mrsei.data.db.dao.UserEntityDao
+import com.zlcdgroup.mrsei.data.db.help.AppDataBaseHelper
 import com.zlcdgroup.mrsei.data.db.help.DbCore
 import com.zlcdgroup.mrsei.data.source.local.PersonLocalSource
 import com.zlcdgroup.mrsei.data.source.local.UserLocalSource
 import com.zlcdgroup.mrsei.data.source.remote.PersonRemoteSource
 import com.zlcdgroup.mrsei.data.source.remote.UserRemoteSource
+import com.zlcdgroup.mrsei.di.qualifier.ApplicationContext
 import com.zlcdgroup.mrsei.di.qualifier.Local
 import com.zlcdgroup.mrsei.di.qualifier.Remote
 import dagger.Binds
@@ -25,12 +29,24 @@ import javax.inject.Singleton
 @Module
 abstract class DataModule {
 
-    @Module(includes = arrayOf(DataModule ::class))
+    @Module(includes = arrayOf(DataModule ::class,AppModule::class))
     class DataProvidesModule {
         @Singleton
         @Provides
         fun  getDaoSession(): DaoSession {
             return   DbCore.getDaoSession()
+        }
+
+        @Singleton
+        @Provides
+        fun  getAppDataBaseHelp( @ApplicationContext context: Context): AppDataBaseHelper {
+            return  AppDataBaseHelper.getInstance(context)
+        }
+
+        @Singleton
+        @Provides
+        fun   getNoticeDao(appDataBaseHelper: AppDataBaseHelper): NoticeDao {
+            return  appDataBaseHelper.appDataBase.getNoticeDao()
         }
 
         @Singleton

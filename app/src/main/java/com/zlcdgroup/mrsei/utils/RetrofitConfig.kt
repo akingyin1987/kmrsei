@@ -5,6 +5,7 @@ import com.akingyin.base.ext.app
 import com.akingyin.base.ext.currentTimeMillis
 import com.akingyin.base.ext.spGetString
 import com.akingyin.base.net.retrofitConverter.FastJsonConverterFactory
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.zlcdgroup.mrsei.Constants
 import com.zlcdgroup.mrsei.data.source.remote.api.LoginServerApi
 import okhttp3.Cache
@@ -25,10 +26,12 @@ import java.util.concurrent.TimeUnit
 class RetrofitConfig private constructor(){
 
     private lateinit var mRetrofit: Retrofit
+    private lateinit var mCoroutineRetrofit:Retrofit
     private lateinit var mHttpLoggingInterceptor: HttpLoggingInterceptor
     private lateinit var mRequestInterceptor: Interceptor
 
     private lateinit var mOkHttpClient: OkHttpClient
+
     private lateinit var mCache: Cache
     private lateinit var baseUrl :String
 
@@ -47,6 +50,13 @@ class RetrofitConfig private constructor(){
             return Instance.apiService
         }
 
+        @JvmStatic
+        fun  getDefaultCoroutineServer():LoginServerApi{
+            return Instance.apiCoroutines
+        }
+
+
+
         fun onResetRetrofit(){
             Instance.initRetrofit()
         }
@@ -55,6 +65,8 @@ class RetrofitConfig private constructor(){
 
 
     private lateinit var apiService: LoginServerApi
+
+    private lateinit var apiCoroutines: LoginServerApi
 
     init {
         initRequestInterceptor()
@@ -142,6 +154,8 @@ class RetrofitConfig private constructor(){
                 .addInterceptor(mRequestInterceptor)
                 .addInterceptor(mHttpLoggingInterceptor)
                 .build()
+
+
     }
 
     /**
@@ -155,8 +169,15 @@ class RetrofitConfig private constructor(){
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(baseUrl)
                 .build()
-        apiService = mRetrofit.create(LoginServerApi::class.java)
 
+        mCoroutineRetrofit = Retrofit.Builder()
+                .client(mOkHttpClient)
+                .addConverterFactory(FastJsonConverterFactory.create())
+                .addCallAdapterFactory(CoroutineCallAdapterFactory())
+                .baseUrl(baseUrl)
+                .build()
+        apiService = mRetrofit.create(LoginServerApi::class.java)
+        apiCoroutines = mCoroutineRetrofit.create(LoginServerApi::class.java)
     }
 
 }

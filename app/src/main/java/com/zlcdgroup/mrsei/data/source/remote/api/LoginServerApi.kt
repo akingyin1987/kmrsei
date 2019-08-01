@@ -3,6 +3,7 @@ package com.zlcdgroup.mrsei.data.source.remote.api
 import com.akingyin.base.net.mode.ApiResult
 import com.zlcdgroup.mrsei.data.source.remote.model.LoginResultModel
 import io.reactivex.Observable
+import kotlinx.coroutines.Deferred
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
@@ -23,6 +24,10 @@ interface LoginServerApi {
     @POST("login")
     fun   login(@Field("data")data:String,@Field("token")token:String):Observable<ApiResult<LoginResultModel>>
 
+
+    @FormUrlEncoded
+    @POST("login")
+    fun    loginK(@Field("data")data:String,@Field("token") token:String):Deferred<ApiResult<LoginResultModel>>
     /**
      * 登出
      */

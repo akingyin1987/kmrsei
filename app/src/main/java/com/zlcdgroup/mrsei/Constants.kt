@@ -7,9 +7,12 @@ package com.zlcdgroup.mrsei
  * @version V1.0
  */
 object Constants {
+     const val PLANT_DATA_FILENAME = "plants.json"
+
+     var  IMEI :String =""
+
+     var  MODEL:String =""
 
 
-    lateinit var  IMEI :String
 
-    lateinit var  MODEL:String
 }

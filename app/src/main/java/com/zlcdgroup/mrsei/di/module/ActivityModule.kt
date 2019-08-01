@@ -4,10 +4,7 @@ import android.app.Activity
 import android.content.Context
 import com.zlcdgroup.mrsei.di.qualifier.ActivityContext
 import com.zlcdgroup.mrsei.di.scope.PerActivity
-import com.zlcdgroup.mrsei.presenter.modules.AuthModule
-import com.zlcdgroup.mrsei.presenter.modules.LoginModule
-import com.zlcdgroup.mrsei.presenter.modules.StepModule
-import com.zlcdgroup.mrsei.presenter.modules.UserModule
+import com.zlcdgroup.mrsei.presenter.modules.*
 import com.zlcdgroup.mrsei.ui.*
 import dagger.Binds
 import dagger.Module
@@ -59,6 +56,13 @@ abstract class ActivityModule {
     @PerActivity
     abstract  fun contributeAuthActivitytInjector():AuthActivity
 
+
+    @ContributesAndroidInjector(modules = arrayOf(CoroutinedDemoModule::class))
+    @PerActivity
+    abstract fun contributeCoroutinesActivityInjector():CoroutinesDemo
+//    @ContributesAndroidInjector
+//    @PerActivity
+//    abstract fun contributeCoroutinesActivityInjector():CoroutinesDemo
 
 //    @Module(includes = arrayOf(ActivityModule::class))
 //     class   ActivityContextModule{

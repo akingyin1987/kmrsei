@@ -28,6 +28,13 @@ android {
         versionName rootProject.ext.android.versionName
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+      javaCompileOptions {
+        annotationProcessorOptions {
+          arguments = ["room.schemaLocation":
+                           "$projectDir/schemas".toString()]
+        }
+      }
     }
   dataBinding {
     enabled true
@@ -102,7 +109,9 @@ android {
       res.srcDirs = ['src/main/res']
       jniLibs.srcDirs = ['libs']
       assets.srcDirs = ['src/main/assets']
+      androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
+
 
   }
 
@@ -131,7 +140,6 @@ dependencies {
   testImplementation "org.robolectric:robolectric:4.2.1"
   testImplementation 'com.android.support.test:runner:1.1.0'
   testImplementation 'com.android.support.test:rules:1.1.0'
-
 
 
   androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.1.0'
@@ -175,5 +183,8 @@ dependencies {
   def camerax_version = "1.0.0-alpha03"
   implementation "androidx.camera:camera-core:${camerax_version}"
   implementation "androidx.camera:camera-camera2:${camerax_version}"
+
+  def  workVersion = '2.1.0'
+  implementation "androidx.work:work-runtime-ktx:${workVersion}"
 }
 

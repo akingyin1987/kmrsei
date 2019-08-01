@@ -1,6 +1,7 @@
 package com.zlcdgroup.mrsei
 
 import android.content.Context
+import android.os.Build
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.multidex.MultiDex
@@ -78,6 +79,8 @@ class MrmseiApp :BaseApp() {
         }else{
             ThemeHelper.applyTheme(theme)
         }
+
+        Constants.MODEL = Build.MODEL
         UMConfigure.setLogEnabled(true)
         UMConfigure.init(this,UMConfigure.DEVICE_TYPE_PHONE,"5cd152274ca357112b000a24")
 

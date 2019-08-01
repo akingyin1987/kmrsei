@@ -595,7 +595,7 @@ public final class AppUtils {
   @SuppressLint("MissingPermission")
   public static String getImei(Context context) {
     try {
-      TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
+      TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
       return telephonyManager.getDeviceId();
 
