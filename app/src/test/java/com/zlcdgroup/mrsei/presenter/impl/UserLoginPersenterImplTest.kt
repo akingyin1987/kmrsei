@@ -1,6 +1,8 @@
 package com.zlcdgroup.mrsei.presenter.impl
 
+import android.app.Application
 import com.akingyin.base.call.ApiCallBack
+import com.akingyin.base.ext.Ext
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.zlcdgroup.mrsei.data.entity.PersonEntity
 import com.zlcdgroup.mrsei.data.source.PersonRepository
@@ -26,6 +28,9 @@ class UserLoginPersenterImplTest {
     @Mock
     lateinit var view: UserLoginContract.View
 
+    @Mock
+    lateinit var app : Application
+
     @Captor
     lateinit var callBack: ArgumentCaptor<ApiCallBack<LoginResultModel>>
 
@@ -34,6 +39,7 @@ class UserLoginPersenterImplTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
+        Ext.with(app)
         userLoginPersenterImpl = UserLoginPersenterImpl(personRepository)
         userLoginPersenterImpl.attachView(view)
 
@@ -56,12 +62,12 @@ class UserLoginPersenterImplTest {
       //  Mockito.verify(personRepository.getAllPersons())[0]
     }
 
-    @Test
+
     fun delectOutTowMothsPersons() {
 
     }
 
-    @Test
+
     fun getLastPerson() {
     }
 

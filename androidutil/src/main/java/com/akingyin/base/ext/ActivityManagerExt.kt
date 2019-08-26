@@ -24,16 +24,17 @@ object ActivityManagerExt {
     }
 
 
+    @Suppress("UNCHECKED_CAST")
     @Synchronized
     fun <T : Activity> findFirst(clazz: KClass<T>): T? = container.firstOrNull { it::class == clazz } as? T
 
-
+    @Suppress("UNCHECKED_CAST")
     @Synchronized
-    fun <T : Activity> findLast(clazz: KClass<T>) : T? = container.lastOrNull(){
+    fun <T : Activity> findLast(clazz: KClass<T>) : T? = container.lastOrNull {
         it :: class == clazz
     } as? T
 
-
+    @Suppress("UNCHECKED_CAST")
     @Synchronized
     fun <T : Activity> find(clazz: KClass<T>) : List<T>? = container.filter {
         it ::class == clazz

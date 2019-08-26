@@ -5,8 +5,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.classic.common.MultipleStatusView
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
 
@@ -17,21 +18,25 @@ import javax.inject.Inject
  * @ Date 2018/8/3 17:56
  * @version V1.0
  */
-abstract class BaseFragment :SimpleFragment(),HasSupportFragmentInjector,IBaseView{
+abstract class BaseFragment :SimpleFragment(),HasAndroidInjector,IBaseView{
 
 
     @Inject
-    lateinit var childFragmentInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
+    lateinit var childFragmentInjector: DispatchingAndroidInjector<Any>
 
     override fun onAttach(context: Context) {
          injection()
+
         super.onAttach(context)
     }
 
-
-    override fun supportFragmentInjector(): DispatchingAndroidInjector<androidx.fragment.app.Fragment> {
-        return childFragmentInjector
+    override fun androidInjector(): AndroidInjector<Any> {
+        return   childFragmentInjector
     }
+
+//    fun supportFragmentInjector(): DispatchingAndroidInjector<androidx.fragment.app.Fragment> {
+//        return childFragmentInjector
+//    }
 
     /**
      * 视图是否加载完毕

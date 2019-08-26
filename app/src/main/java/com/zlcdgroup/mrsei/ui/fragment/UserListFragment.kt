@@ -63,13 +63,23 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
         MaterialDialog.Builder(mContext).title("用户信息修改")
                 .positiveText("确定")
                 .negativeText("取消")
+                .autoDismiss(false)
                 .onPositive { dialog, _ ->
                     val name:EditText = dialog.findViewById(R.id.edit_name) as EditText
                     val age :EditText = dialog.findViewById(R.id.edit_age) as EditText
+                    if(age.text.isNullOrEmpty()){
+                        showError("不可为空")
+                        return@onPositive
+                    }
+                    if(age.text !is Number){
+                        showError("类型不正确")
+                        return@onPositive
+                    }
                     val userEntity  = UserEntity()
                     userEntity.age = age.text.toString().trim().toInt()
                     userEntity.name = name.text.toString().trim()
                     userListFragmentPresenterImpl.addUser(userEntity)
+                    dialog.dismiss()
                 }
                 .customView(R.layout.dialog_edit_user,false)
                 .show()

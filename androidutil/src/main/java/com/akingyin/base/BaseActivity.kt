@@ -2,11 +2,10 @@
 
 package com.akingyin.base
 
-import android.app.Fragment
 import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasFragmentInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
 
@@ -19,26 +18,30 @@ import javax.inject.Inject
  * @ Date 2018/8/3 16:16
  * @version V1.0
  */
-abstract  class BaseActivity : SimpleActivity(), HasFragmentInjector, HasSupportFragmentInjector {
+abstract  class BaseActivity : SimpleActivity(),HasAndroidInjector {
+
+//    @Inject
+//    lateinit var supportFragmentInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
+//    @Inject
+//    lateinit var frameworkFragmentInjector: DispatchingAndroidInjector<android.app.Fragment>
 
     @Inject
-    lateinit var supportFragmentInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
-    @Inject
-    lateinit var frameworkFragmentInjector: DispatchingAndroidInjector<android.app.Fragment>
-
-
+    lateinit var fragmentInjector :DispatchingAndroidInjector<Any>
     override fun initInjection() {
 
         AndroidInjection.inject(this)
     }
 
-    override fun fragmentInjector(): DispatchingAndroidInjector<Fragment>? {
-        return   frameworkFragmentInjector
+    override fun androidInjector(): AndroidInjector<Any> {
+        return  fragmentInjector
     }
-
-    override fun supportFragmentInjector(): DispatchingAndroidInjector<androidx.fragment.app.Fragment>? {
-        return  supportFragmentInjector
-    }
+//     fun fragmentInjector(): DispatchingAndroidInjector<Fragment>? {
+//        return   frameworkFragmentInjector
+//    }
+//
+//     fun supportFragmentInjector(): DispatchingAndroidInjector<androidx.fragment.app.Fragment>? {
+//        return  supportFragmentInjector
+//    }
 
 
 }

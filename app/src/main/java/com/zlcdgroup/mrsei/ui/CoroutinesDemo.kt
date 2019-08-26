@@ -41,12 +41,15 @@ class CoroutinesDemo :BaseActivity() {
     override fun initView() {
         setToolBar(toolbar,"协程测试")
 
-        var  noticeEntity = NoticeEntity().apply {
-            name="name"
-            demo="demo"
-            time= currentTimeMillis
+
+        GlobalScope.launch (IO){
+            var  noticeEntity = NoticeEntity().apply {
+                name="name"
+                demo="demo"
+                time= currentTimeMillis
+            }
+            noticeDao.insertNotice(noticeEntity)
         }
-        noticeDao.insertNotice(noticeEntity)
         btn_test.click {
             showLoading()
 

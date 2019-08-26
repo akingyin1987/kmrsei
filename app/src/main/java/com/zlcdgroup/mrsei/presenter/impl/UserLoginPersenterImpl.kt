@@ -21,7 +21,7 @@ class UserLoginPersenterImpl @Inject constructor(var personRepository: PersonRep
 
 
     override fun initialization() {
-         mRootView?.setAppTheme(getTheme())
+        // mRootView?.setAppTheme(getTheme())
     }
 
 //    @Inject

@@ -11,6 +11,7 @@ package com.zlcdgroup.mrsei.data.db.help;
 import android.content.Context;
 import com.zlcdgroup.mrsei.data.db.dao.DaoMaster;
 import com.zlcdgroup.mrsei.data.db.dao.DaoSession;
+import java.lang.ref.WeakReference;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -22,7 +23,7 @@ public class DbCore {
   private  static DaoMaster daoMaster;
   private  static DaoSession daoSession;
 
-  private static Context mContext;
+  private static WeakReference<Context> mContext;
   private static String DB_NAME;
 
   public static void init(Context context) {
@@ -34,16 +35,19 @@ public class DbCore {
     if (context == null) {
       throw new IllegalArgumentException("context can't be null");
     }
-    mContext = context.getApplicationContext();
+    mContext = new WeakReference<>(context.getApplicationContext());
     DB_NAME = dbName;
 
   }
 
   public static DaoMaster getDaoMaster() {
-    if (daoMaster == null) {
-      DaoMaster.OpenHelper helper = new UpgradeHelper(mContext,ENCRYPTED ? "encrypted-"+DB_NAME : DB_NAME);
-      Database db = ENCRYPTED ? helper.getEncryptedWritableDb(SECRET_KEY) : helper.getWritableDb();
-      daoMaster = new DaoMaster(db);
+    if (daoMaster == null ) {
+      if(null != mContext && null != mContext.get()){
+        DaoMaster.OpenHelper helper = new UpgradeHelper(mContext.get(),ENCRYPTED ? "encrypted-"+DB_NAME : DB_NAME);
+        Database db = ENCRYPTED ? helper.getEncryptedWritableDb(SECRET_KEY) : helper.getWritableDb();
+        daoMaster = new DaoMaster(db);
+      }
+
 
     }
     return daoMaster;

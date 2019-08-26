@@ -78,15 +78,17 @@ inline fun <reified T> Fragment.startActivityForResult(flag: Int = -1, bundle: A
     activity?.startActivityForResult<T>(flag, bundle, requestCode)
 }
 
-inline fun <reified T> Context.startActivity(flag: Int = -1, bundle: Array<out Pair<String, Any?>>? = null, requestCode: Int = -1) {
+inline fun <reified T> Context.startActivity(flag: Int = -1, bundle: Array<out Pair<String, Any?>>? = null) {
     val intent = Intent(this, T::class.java).apply {
         if (flag != -1) {
             this.addFlags(flag)
         } else if (this !is Activity) {
             this.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
+        bundle?.let {
+            putExtras(it.toBundle())
+        }
 
-        if (bundle != null) putExtras(bundle.toBundle())
     }
     startActivity(intent)
 }

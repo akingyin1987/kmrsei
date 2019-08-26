@@ -1,9 +1,13 @@
 package com.akingyin.base.mvvm.viewmodel
 
 import androidx.lifecycle.*
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.*
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
+
+
 
 /**
  * @ Description:
@@ -13,7 +17,10 @@ import kotlin.coroutines.CoroutineContext
  */
 open  class BaseViewModel :ViewModel(),LifecycleObserver, CoroutineScope {
 
+
     val mException: MutableLiveData<Throwable> = MutableLiveData()
+    private var mCompositeDisposable: CompositeDisposable? = null
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
@@ -61,7 +68,27 @@ open  class BaseViewModel :ViewModel(),LifecycleObserver, CoroutineScope {
         clearLaunchTask()
     }
 
+
+
+    protected fun addDisposable(disposable: Disposable) {
+        if (mCompositeDisposable == null) {
+            mCompositeDisposable = CompositeDisposable()
+        }
+        mCompositeDisposable?.add(disposable)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        mCompositeDisposable?.apply {
+            if(!isDisposed){
+                dispose()
+            }
+        }
+
+    }
+
     private fun clearLaunchTask() {
+
         mLaunchManager.clear()
     }
 }

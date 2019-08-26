@@ -1,7 +1,6 @@
 package com.zlcdgroup.mrsei.data
 
 import android.content.Context
-import androidx.annotation.NonNull
 import com.akingyin.base.net.IRepositoryManager
 import com.zlcdgroup.mrsei.MrmseiApp
 import dagger.Lazy
@@ -49,7 +48,7 @@ class RepositoryManager :IRepositoryManager {
     }
 
 
-    private inline fun <reified T> getRetrofitMethod(@NonNull service: T, method: Method): Method {
+    private inline fun <reified T> getRetrofitMethod( method: Method): Method {
 
         val  serviceClass = T::class.java
         return serviceClass.getMethod(method.name, *method.parameterTypes)

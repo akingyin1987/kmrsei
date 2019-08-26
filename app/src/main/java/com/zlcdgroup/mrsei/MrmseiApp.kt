@@ -16,6 +16,7 @@ import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
 import com.umeng.commonsdk.UMConfigure
+import com.zlcdgroup.mrsei.data.db.help.DbCore
 import com.zlcdgroup.mrsei.di.component.DaggerAppComponent
 import com.zlcdgroup.mrsei.di.module.ClientModule
 import com.zlcdgroup.mrsei.di.module.GlobalConfigModule
@@ -49,13 +50,16 @@ class MrmseiApp :BaseApp() {
             }
         }).addInterceptor(HttpLoggingInterceptor())
                 .build()
-       return  DaggerAppComponent.builder().application(this).globalConfigModule(configmodel).build()
+
+       return  DaggerAppComponent.builder().applicationContext(this).application(this).globalConfigModule(configmodel).build()
     }
 
     override fun onCreate() {
         super.onCreate()
 
         Ext.with(this)
+        DbCore.init(this)
+        DbCore.enableQueryBuilderLog()
         spSetString("ApiUrl","http://114.215.108.130:38280/mrmsei/")
         if(BuildConfig.DEBUG){
             ARouter.openLog()

@@ -77,7 +77,7 @@ infix inline fun <T> TernaryOperator<T>.no(falseValue: () -> T) = if (bool) true
  * 数组转bundle
  */
 @Suppress("UNCHECKED_CAST")
-fun Array<out Pair<String, Any?>>.toBundle(): Bundle? {
+fun Array<out Pair<String, Any?>>.toBundle(): Bundle {
     return Bundle().apply {
         forEach {
             when (val value = it.second) {
@@ -111,8 +111,17 @@ fun Array<out Pair<String, Any?>>.toBundle(): Bundle? {
         }
     }
 
+}
 
 
+inline fun tryCatch(tryBlock: () -> Unit, catchBlock: (Throwable) -> Unit = {}) {
+    try {
+        tryBlock()
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        catchBlock.invoke(t)
+
+    }
 }
 
 
