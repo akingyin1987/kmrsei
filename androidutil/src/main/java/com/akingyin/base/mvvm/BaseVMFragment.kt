@@ -3,7 +3,7 @@ package com.akingyin.base.mvvm
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.akingyin.base.SimpleFragment
 import com.akingyin.base.mvvm.viewmodel.BaseViewModel
 
@@ -26,7 +26,8 @@ abstract class BaseVMFragment<VM : BaseViewModel> :SimpleFragment(){
 
     private fun initVM() {
         providerVMClass()?.let {
-            mViewModel = ViewModelProviders.of(this).get(it)
+            mViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity!!.application).create(it)
+
             lifecycle.addObserver(mViewModel)
         }
     }

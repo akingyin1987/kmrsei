@@ -35,6 +35,7 @@ class AuthAdapter @Inject constructor(var context: Activity) :BaseAdapter(){
     override fun getView(position: Int, convertView1: View?, parent: ViewGroup?): View {
         var   convertView = convertView1
         if (convertView == null) {
+
             convertView = LayoutInflater.from(context).inflate(R.layout.app_authadapter_share, null)
         }
         val isauth = UMShareAPI.get(context).isAuthorize(context, mutableList[position].mPlatform)

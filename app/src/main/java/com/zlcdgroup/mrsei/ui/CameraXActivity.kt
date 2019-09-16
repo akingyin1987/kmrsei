@@ -208,12 +208,9 @@ class CameraXActivity  : SimpleActivity(), SensorEventListener {
 
     val  onImageCapturedListener = object :ImageCapture.OnImageSavedListener{
         override fun onImageSaved(file: File) {
-            println("拍照-》${file.absolutePath}")
-          //  preview.enableTorch(!preview.isTorchOn)
         }
 
-        override fun onError(useCaseError: ImageCapture.UseCaseError, message: String, cause: Throwable?) {
-            println("onError=$message")
+        override fun onError(imageCaptureError: ImageCapture.ImageCaptureError, message: String, cause: Throwable?) {
         }
     }
 

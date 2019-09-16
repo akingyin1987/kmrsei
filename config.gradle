@@ -1,10 +1,10 @@
 ext{
 
   android = [
-      compileSdkVersion: 28,
-      buildToolsVersion: "28.0.2",
+      compileSdkVersion: 29,
+      buildToolsVersion: "29.0.2",
       minSdkVersion    : 21,
-      targetSdkVersion : 28,
+      targetSdkVersion : 29,
       versionCode      : 1,
       versionName      : "1.0"
   ]
@@ -15,10 +15,10 @@ ext{
     androidXTestVersion = '1.1.1'
     androidXAnnotations = '1.0.1'
     androidXLegacySupport = '1.0.0'
-    materialVersion = '1.1.0-alpha09'
+    materialVersion = '1.1.0-alpha10'
     cardVersion = '1.0.0'
-    recyclerViewVersion = '1.1.0-beta01'
-    appCompatVersion = '1.1.0-rc01'
+    recyclerViewVersion = '1.1.0-beta04'
+    appCompatVersion = '1.1.0'
     junitVersion = '4.12'
     mockitoVersion = '2.27.0'
     dexMaker = '1.2'

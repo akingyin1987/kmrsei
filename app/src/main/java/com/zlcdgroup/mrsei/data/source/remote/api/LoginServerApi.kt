@@ -4,9 +4,8 @@ import com.akingyin.base.net.mode.ApiResult
 import com.zlcdgroup.mrsei.data.source.remote.model.LoginResultModel
 import io.reactivex.Observable
 import kotlinx.coroutines.Deferred
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import okhttp3.ResponseBody
+import retrofit2.http.*
 
 /**
  * @ Description:
@@ -32,4 +31,10 @@ interface LoginServerApi {
      * 登出
      */
     fun   logOut(@Field("data")data:String,@Field("token")token:String):Observable<String>
+
+    /**
+     * 下载文件
+     */
+    @GET
+    fun   downloadFile(@Url url:String):Observable<ResponseBody>
 }

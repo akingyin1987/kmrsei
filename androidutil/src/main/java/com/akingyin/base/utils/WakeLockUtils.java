@@ -1,5 +1,6 @@
 package com.akingyin.base.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.PowerManager;
 
@@ -35,6 +36,7 @@ public class WakeLockUtils {
    * @param context
    *     the context
    */
+  @SuppressLint("InvalidWakeLockTag")
   public static void holdWakeLock(Context context) {
     PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");

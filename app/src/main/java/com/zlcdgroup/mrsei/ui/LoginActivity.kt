@@ -1,13 +1,10 @@
 package com.zlcdgroup.mrsei.ui
 
 import android.os.Bundle
+import android.os.Environment
 import com.akingyin.base.BaseActivity
 import com.akingyin.base.dialog.DialogUtil
-import com.akingyin.base.ext.click
-import com.akingyin.base.ext.isEmptyOrNull
-import com.akingyin.base.ext.no
-import com.akingyin.base.ext.yes
-import com.alibaba.android.arouter.launcher.ARouter
+import com.akingyin.base.ext.*
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
@@ -88,12 +85,15 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
 
     override fun goToMainActivity() {
 
-        ARouter.getInstance().build("/user/list").withString("name","nametest")
-                .withInt("age",2).navigation()
+//        ARouter.getInstance().build("/user/list").withString("name","nametest")
+//                .withInt("age",2).navigation()
        //  goActivity<UserListActivity>()
        //   goActivity<CoroutinesDemo>()
        // goActivity<CameraXActivity>()
-       // startActivity<CameraXActivity>()
+        mContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.apply {
+            println("abs$absolutePath")
+        }
+       startActivity<CameraXActivity>()
     }
 
     override fun setAppTheme(theme: String) {

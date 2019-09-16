@@ -1,7 +1,7 @@
 package com.akingyin.base.ext
 
+import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 
 /**
  * @ Description:
@@ -10,8 +10,8 @@ import android.preference.PreferenceManager
  * @version V1.0
  */
 private inline val sp: SharedPreferences
-    get() = PreferenceManager.getDefaultSharedPreferences(app)
-
+    //get() = PreferenceManager.getDefaultSharedPreferences(app)
+    get() = app.getSharedPreferences("app_preferences",Context.MODE_PRIVATE)
 fun spSetInt(key: String, value: Int) = sp.edit().putInt(key, value).apply()
 
 fun spGetInt(key: String, defaultValue: Int = 0) = sp.getInt(key, defaultValue)
