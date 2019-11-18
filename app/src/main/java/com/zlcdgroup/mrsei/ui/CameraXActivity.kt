@@ -8,11 +8,9 @@ import android.hardware.SensorManager
 import android.hardware.display.DisplayManager
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
 import android.os.HandlerThread
 import android.util.DisplayMetrics
 import android.util.Log
-import android.util.Rational
 import android.view.OrientationEventListener
 import android.view.TextureView
 import android.view.View
@@ -27,6 +25,7 @@ import java.io.File
 import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
@@ -124,7 +123,9 @@ class CameraXActivity  : SimpleActivity(), SensorEventListener {
     private   fun  bindCameraUseCases(){
         // Get screen metrics used to setup camera for full screen resolution
         val metrics = DisplayMetrics().also { viewFind.display.getRealMetrics(it) }
-        val screenAspectRatio = Rational(metrics.widthPixels, metrics.heightPixels)
+
+        //val screenAspectRatio = Rational(metrics.widthPixels, metrics.heightPixels)
+        val screenAspectRatio = AspectRatio.RATIO_16_9
         Log.d(TAG, "Screen metrics: ${metrics.widthPixels} x ${metrics.heightPixels}")
         // Set up the view finder use case to display camera preview
 
@@ -162,24 +163,24 @@ class CameraXActivity  : SimpleActivity(), SensorEventListener {
             setLensFacing(CameraX.LensFacing.BACK)
             // Use a worker thread for image analysis to prevent preview glitches
             val analyzerThread = HandlerThread("LuminosityAnalysis").apply { start() }
-            setCallbackHandler(Handler(analyzerThread.looper))
+            //setCallbackHandler(Handler(analyzerThread.looper))
             // In our analysis, we care more about the latest image than analyzing *every* image
             setImageReaderMode(ImageAnalysis.ImageReaderMode.ACQUIRE_LATEST_IMAGE)
             // Set initial target rotation, we will have to call this again if rotation changes
             // during the lifecycle of this use case
             setTargetRotation(viewFind.display.rotation)
         }.build()
-
+        imageAnalyzer = ImageAnalysis(analyzerConfig)
         //图像分析
-        imageAnalyzer = ImageAnalysis(analyzerConfig).apply {
-            analyzer = LuminosityAnalyzer { luma ->
-                // Values returned from our analyzer are passed to the attached listener
-                // We log image analysis results here -- you should do something useful instead!
-                val fps = (analyzer as LuminosityAnalyzer).framesPerSecond
-                Log.d(TAG, "Average luminosity: $luma. " +
-                        "Frames per second: ${"%.01f".format(fps)}")
-            }
-        }
+//        imageAnalyzer = ImageAnalysis(analyzerConfig).apply {
+//            analyzer = LuminosityAnalyzer { luma ->
+//                // Values returned from our analyzer are passed to the attached listener
+//                // We log image analysis results here -- you should do something useful instead!
+//                val fps = (analyzer as LuminosityAnalyzer).framesPerSecond
+//                Log.d(TAG, "Average luminosity: $luma. " +
+//                        "Frames per second: ${"%.01f".format(fps)}")
+//            }
+//        }
 
 
         // Apply declared configs to CameraX using the same lifecycle owner
@@ -201,7 +202,9 @@ class CameraXActivity  : SimpleActivity(), SensorEventListener {
                 isReversedHorizontal = false
             }
 
-            imageCapture.takePicture(photoFile,onImageCapturedListener,metadata)
+            val  executor = Executors.newSingleThreadExecutor()
+
+            imageCapture.takePicture(photoFile,metadata,executor,onImageCapturedListener)
         }
     }
 

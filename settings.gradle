@@ -1,1 +1,1 @@
-include ':app', ':androidutil'
+include ':app', ':androidutil', ':zxingcamera'

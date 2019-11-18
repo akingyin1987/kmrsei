@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+  >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <SurfaceView
+            android:id="@+id/preview_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.ortiz.touchview.TouchImageView
+            android:id="@+id/viewfinder_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="#000000"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ImageView
+            android:id="@+id/iv_flash_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/ic_device_access_flash_automatic" />
+
+        <ImageView
+            android:id="@+id/iv_volume_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/iv_flash_model"
+            android:layout_marginEnd="30dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/ic_device_access_volume_on" />
+
+
+        <ImageView
+            android:id="@+id/iv_lock_land"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/iv_volume_model"
+            android:layout_marginEnd="30dp"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:src="@drawable/ic_screen_lock_landscape_white_36dp" />
+
+    </RelativeLayout>
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@null"
+      android:padding="4dip" >
+
+    <ImageButton android:layout_width="40dp"
+                  android:layout_height="40dp"
+                  android:layout_marginTop="5dp"
+                 android:layout_marginStart="15dp"
+                  android:contentDescription="无"
+                  android:background="@drawable/circle_frame_background_dark"
+                  android:src="@drawable/ic_settings_white_24dp"
+                  android:id="@+id/iv_camera_setting"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/operation_layout"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" >
+
+      <Button
+          android:id="@+id/btn_ok"
+          android:layout_width="55dp"
+          android:layout_height="55dp"
+          android:layout_alignParentBottom="true"
+          android:layout_centerHorizontal="true"
+          android:layout_marginStart="30dp"
+          android:background="@drawable/btn_style_save_2"
+          android:enabled="false"
+          android:textSize="14sp" />
+
+      <Button
+          android:id="@+id/btn_tackpic"
+          android:layout_width="55dp"
+          android:layout_height="55dp"
+          android:layout_alignParentBottom="true"
+          android:layout_centerHorizontal="true"
+
+          android:background="@drawable/btn_style_takepicture_2"
+          android:textSize="14sp" />
+
+      <Button
+          android:id="@+id/btn_cancel"
+          android:layout_width="55dp"
+          android:layout_height="55dp"
+          android:layout_alignParentBottom="true"
+          android:layout_alignParentStart="true"
+          android:layout_marginStart="30dp"
+          android:background="@drawable/btn_style_cancel_2"
+          android:textSize="14sp" />
+
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/operation_layout">
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textStyle="bold"
+          android:textColor="#80ad0101"
+          android:textSize="25sp"
+          android:id="@+id/tv_camera_info"
+          android:gravity="center"/>
+
+    </RelativeLayout>
+
+    <SeekBar
+        android:id="@+id/bar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+
+        android:max="100"
+        android:visibility="gone" />
+    <RelativeLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_above="@id/operation_layout"
+        android:layout_marginBottom="30dp"
+        android:id="@+id/rl_turn">
+
+      <ImageView android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_alignParentStart="true"
+          android:id="@+id/iv_turnleft"
+
+          android:src="@drawable/icon_turn_left"
+          android:layout_marginStart="20dp"
+          android:layout_marginTop="30dp"/>
+      <ImageView android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_centerHorizontal="true"
+          android:id="@+id/iv_turncenter"
+
+          android:src="@drawable/icon_turn_180"
+
+          android:layout_marginTop="30dp"/>
+      <ImageView android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_alignParentEnd="true"
+          android:id="@+id/iv_turnright"
+
+          android:src="@drawable/icon_turn_right"
+          android:layout_marginStart="20dp"
+          android:layout_marginTop="30dp"/>
+    </RelativeLayout>
+  </RelativeLayout>
+
+    <RelativeLayout android:layout_width="match_parent"
+
+        android:layout_height="match_parent">
+
+        <com.akingyin.zxingcamera.widget.RotateTextView
+                 android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/object_info"
+                  android:gravity="center"
+                  android:layout_marginTop="50dp"
+                  android:layout_alignParentTop="true"
+                  />
+
+    </RelativeLayout>
+</FrameLayout>

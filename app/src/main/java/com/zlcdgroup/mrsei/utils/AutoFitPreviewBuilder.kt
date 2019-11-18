@@ -73,26 +73,29 @@ class AutoFitPreviewBuilder private constructor(
         // Initialize public use-case with the given config
         useCase = Preview(config)
 
-        // Every time the view finder is updated, recompute layout
-        useCase.onPreviewOutputUpdateListener = Preview.OnPreviewOutputUpdateListener {
-            val viewFinder =
-                    viewFinderRef.get() ?: return@OnPreviewOutputUpdateListener
-            Log.d(TAG, "Preview output changed. " +
-                    "Size: ${it.textureSize}. Rotation: ${it.rotationDegrees}")
+        useCase.setOnPreviewOutputUpdateListener {
+            Preview.OnPreviewOutputUpdateListener {
+                val viewFinder =
+                        viewFinderRef.get() ?: return@OnPreviewOutputUpdateListener
+                Log.d(TAG, "Preview output changed. " +
+                        "Size: ${it.textureSize}. Rotation: ${it.rotationDegrees}")
 
-            // To update the SurfaceTexture, we have to remove it and re-add it
-            val parent = viewFinder.parent as ViewGroup
-            parent.removeView(viewFinder)
-            parent.addView(viewFinder, 0)
+                // To update the SurfaceTexture, we have to remove it and re-add it
+                val parent = viewFinder.parent as ViewGroup
+                parent.removeView(viewFinder)
+                parent.addView(viewFinder, 0)
 
-            // Update internal texture
-            viewFinder.surfaceTexture = it.surfaceTexture
+                // Update internal texture
+                viewFinder.surfaceTexture = it.surfaceTexture
 
-            // Apply relevant transformations
-            bufferRotation = it.rotationDegrees
-            val rotation = getDisplaySurfaceRotation(viewFinder.display)
-            updateTransform(viewFinder, rotation, it.textureSize, viewFinderDimens)
+                // Apply relevant transformations
+                bufferRotation = it.rotationDegrees
+                val rotation = getDisplaySurfaceRotation(viewFinder.display)
+                updateTransform(viewFinder, rotation, it.textureSize, viewFinderDimens)
+            }
+
         }
+        // Every time the view finder is updated, recompute layout
 
         // Every time the provided texture view changes, recompute layout
         viewFinder.addOnLayoutChangeListener { view, left, top, right, bottom, _, _, _, _ ->

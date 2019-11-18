@@ -14,9 +14,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import com.akingyin.base.utils.ConvertUtils
 import com.zlcdgroup.nfcsdk.ConStatus
 import com.zlcdgroup.nfcsdk.RfidConnectorInterface
 import com.zlcdgroup.nfcsdk.RfidInterface
+import java.lang.ref.WeakReference
 
 
 /**
@@ -43,6 +45,7 @@ import com.zlcdgroup.nfcsdk.RfidInterface
 
  override fun onCreate(savedInstanceState: Bundle?) {
   super.onCreate(savedInstanceState)
+  mainHandler = MyHandler(this)
   mAdapter = NfcAdapter.getDefaultAdapter(this)
   mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
   if(packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)){
@@ -106,31 +109,59 @@ import com.zlcdgroup.nfcsdk.RfidInterface
 
   if (null != intent && NfcAdapter.ACTION_TECH_DISCOVERED == intent.action) {
    tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
-    mf = MifareClassic.get(tagFromIntent)
+   tagFromIntent?.let {
+    handTag(ConvertUtils.bytes2HexStrReverse(it.id),null)
+   }
+
   }
  }
 
+ class MyHandler(activity: BaseNfcTagActivity) : Handler(Looper.getMainLooper()) {
+  private val mActivity: WeakReference<BaseNfcTagActivity> = WeakReference(activity)
 
- var mainHandler = object : Handler(Looper.getMainLooper()) {
-  override fun  handleMessage(msg: Message) {
-   super.handleMessage(msg)
-   if (msg.what == 1) {
+  override fun handleMessage(msg: Message) {
+   if (mActivity.get() == null) {
+    return
+   }
+   val activity = mActivity.get()
+   when (msg.what) {
+    0-> {
 
-    handTag(msg.obj.toString(), null)
+    }
+    else -> {
+    }
    }
   }
  }
 
- override fun onNewRfid(data: ByteArray?, p1: RfidInterface?) {
 
+
+ override fun onNewRfid(data: ByteArray?, rfidInterface: RfidInterface?) {
+   data?.let {
+    var msg = mainHandler.obtainMessage()
+    msg.apply {
+       what=1
+       obj = ConvertUtils.bytes2HexStrReverse(it)
+
+    }
+    mainHandler.sendMessage(msg)
+
+   }
  }
 
- override fun onConnectStatus(p0: ConStatus?) {
+ override fun onConnectStatus(conStatus: ConStatus?) {
  }
 
- override fun onElectricity(p0: Int) {
-  TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+ override fun onElectricity(electricity: Int) {
  }
+
+
+ lateinit var  mainHandler  :MyHandler
 
  abstract   fun    handTag( rfid:String?,rfidInterface: RfidInterface?)
+
+ override fun onDestroy() {
+  mainHandler.removeCallbacksAndMessages(null)
+  super.onDestroy()
+ }
 }

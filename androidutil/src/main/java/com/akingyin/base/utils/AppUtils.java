@@ -1,6 +1,6 @@
 package com.akingyin.base.utils;
 
-import android.annotation.SuppressLint;
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -8,10 +8,14 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import androidx.core.app.ActivityCompat;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @ Description:
@@ -592,17 +596,45 @@ public final class AppUtils {
     return true;
   }
 
-  @SuppressLint("MissingPermission")
-  public static String getImei(Context context) {
+  public static String getIMEI(Context context) {
+    String deviceId = null;
     try {
-      TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-      return telephonyManager.getDeviceId();
+      if (Build.VERSION.SDK_INT >= 29) {
+        deviceId = Settings.System.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-    }catch (Exception e){
+      } else {
+        // request old storage permission
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+          // TODO: Consider calling
+          //    ActivityCompat#requestPermissions
+          // here to request the missing permissions, and then overriding
+          //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+          //                                          int[] grantResults)
+          // to handle the case where the user grants the permission. See the documentation
+          // for ActivityCompat#requestPermissions for more details.
+          return null;
+        }
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        if(null != tm){
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            deviceId = tm.getImei();
+          }else{
+            deviceId = tm.getDeviceId();
+          }
+        }
+
+      }
+      if (deviceId == null || "".equals(deviceId)) {
+        return "";
+      }
+    } catch (Exception e) {
       e.printStackTrace();
-
+      if (deviceId == null || "".equals(deviceId)) {
+        return "";
+      }
     }
-     return  null;
+
+    return deviceId.toUpperCase(Locale.getDefault());
   }
 }

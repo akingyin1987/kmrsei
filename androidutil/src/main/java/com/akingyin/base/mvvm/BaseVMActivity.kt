@@ -1,11 +1,13 @@
 package com.akingyin.base.mvvm
 
 import android.os.Bundle
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.mvvm.viewmodel.BaseViewModel
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 
 /**
  * @ Description:
@@ -28,9 +30,6 @@ abstract class BaseVMActivity<VM:BaseViewModel>  :SimpleActivity(),LifecycleObse
     private  fun  initVM(){
        providerVMClass()?.let {
            mViewModel =  ViewModelProvider.AndroidViewModelFactory.getInstance(application).create(it)
-
-           mViewModel.let(lifecycle::addObserver)
-
        }
     }
 
@@ -46,9 +45,11 @@ abstract class BaseVMActivity<VM:BaseViewModel>  :SimpleActivity(),LifecycleObse
 
     override fun onDestroy() {
 
-        mViewModel.let {
-            lifecycle.removeObserver(it)
-        }
+
         super.onDestroy()
+    }
+
+    protected val scopeProvider: AndroidLifecycleScopeProvider by lazy {
+        AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)
     }
 }

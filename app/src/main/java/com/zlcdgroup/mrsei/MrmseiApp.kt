@@ -56,7 +56,7 @@ class MrmseiApp :BaseApp() {
 
     override fun onCreate() {
         super.onCreate()
-        
+
         Ext.with(this)
         DbCore.init(this)
         DbCore.enableQueryBuilderLog()

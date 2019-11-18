@@ -1,10 +1,9 @@
 package com.akingyin.base.mvvm.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.*
-import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 
@@ -15,7 +14,7 @@ import kotlin.coroutines.CoroutineContext
  * @ Date 2019/7/31 17:55
  * @version V1.0
  */
-open  class BaseViewModel :ViewModel(),LifecycleObserver, CoroutineScope {
+open  class BaseViewModel :AutoDisposeViewModel(), CoroutineScope {
 
 
     val mException: MutableLiveData<Throwable> = MutableLiveData()
@@ -62,11 +61,9 @@ open  class BaseViewModel :ViewModel(),LifecycleObserver, CoroutineScope {
             }
         }
     }
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestory() {
-        Timber.i("onDestory")
-        clearLaunchTask()
-    }
+
+
+
 
 
 
