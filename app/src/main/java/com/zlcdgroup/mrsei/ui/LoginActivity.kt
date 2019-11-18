@@ -93,7 +93,7 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
         mContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.apply {
             println("abs$absolutePath")
         }
-       startActivity<CameraXActivity>()
+        startActivity<SimpleCameraActivity>("1" to "2")
     }
 
     override fun setAppTheme(theme: String) {

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <declare-styleable name="GridSurfaceView">
+    <attr name="linesX" format="integer"/>
+    <attr name="linesY" format="integer" />
+  </declare-styleable>
+
+</resources>
