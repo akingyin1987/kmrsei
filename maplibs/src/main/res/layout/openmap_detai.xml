@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="3dp"
+    android:layout_marginLeft="3dp"
+    android:layout_marginRight="3dp"
+    app:cardElevation="3dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RelativeLayout android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:orientation="horizontal">
+            <TextView
+                android:id="@+id/btn_poidetail_showmap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2.0dip"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="8.0dip"
+                android:background="#00000000"
+                android:drawableLeft="@drawable/mylocation_detail"
+                android:singleLine="true"
+                android:text="详情"
+                android:textColor="#ff008afc"
+                android:textSize="16.0sp" />
+
+            <CheckBox android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="显示当前保护区"
+                       android:visibility="gone"
+
+                       android:layout_centerHorizontal="true"
+                       android:id="@+id/cb_show"/>
+        </RelativeLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="2dp"
+            android:orientation="horizontal" >
+
+            <ImageView android:layout_width="100dp"
+                       android:layout_height="wrap_content"
+                       android:scaleType="center"
+                       android:layout_gravity="center"
+                       android:id="@+id/detai_img"/>
+
+            <ScrollView android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content">
+
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+            <TextView
+                android:id="@+id/detai_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:visibility="visible"/>
+            <TextView
+                android:id="@+id/detai_info"
+                android:textColor="#000000"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5.0dip"
+                android:ellipsize="end"
+                android:maxLines="6"
+                android:textSize="12sp"
+                android:minLines="3"/>
+            </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:orientation="horizontal"
+            android:paddingLeft="6.0dip"
+            android:paddingRight="6.0dip" >
+
+            <TextView
+                android:id="@+id/openmap_detai_leftbtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="3dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="操作"
+                android:textColor="#3333FF"
+                android:textSize="14.0sp"/>
+
+            <TextView
+                android:id="@+id/openmap_detai_middlebtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="路径"
+                android:textColor="#303F9F"
+                android:textSize="14.0sp" />
+
+            <TextView
+                android:id="@+id/openmap_detai_rightbtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+
+                android:layout_marginRight="3dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="图文"
+                android:textColor="#303F9F"
+                android:textSize="14.0sp" />
+
+            <TextView
+                android:id="@+id/openmap_detai_other"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+
+                android:layout_marginRight="3dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="工单"
+                android:visibility="gone"
+                android:textColor="#303F9F"
+                android:textSize="14.0sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+</androidx.cardview.widget.CardView>

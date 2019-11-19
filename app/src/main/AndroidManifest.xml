@@ -67,7 +67,7 @@
 
        <activity android:name=".ui.SimpleCameraActivity"
            android:screenOrientation="portrait"
-           android:theme="@style/FullscreenTheme"
+           android:theme="@style/Theme.TranslucentNavigationBar"
            android:configChanges="orientation|keyboardHidden|screenSize"/>
 
   </application>

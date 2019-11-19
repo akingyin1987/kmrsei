@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    
+    
+    
+     <ImageButton
+        android:id="@+id/ib_center"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@null"
+        android:visibility="visible"
+        android:src="@drawable/position" />
+
+    <ImageButton
+        android:id="@+id/ib_right"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerVertical="true"
+        
+        android:layout_toRightOf="@+id/ib_center"
+        android:background="@null"
+        android:rotation="-90"
+        android:src="@drawable/down_f" />
+
+    <ImageButton
+        android:id="@+id/ib_up"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_above="@+id/ib_right"
+        android:layout_centerHorizontal="true"
+       
+        android:background="@null"
+        android:rotation="180"
+        android:src="@drawable/down_f" />
+
+    <ImageButton
+        android:id="@+id/ib_down"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/ib_center"
+        android:layout_centerHorizontal="true"
+        
+        android:background="@null"
+        android:src="@drawable/down_f" />
+
+    <ImageButton
+        android:id="@+id/ib_left"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_centerVertical="true"
+      
+        android:layout_toLeftOf="@+id/ib_center"
+        android:background="@null"
+        android:rotation="90"
+        android:src="@drawable/down_f" />
+
+</RelativeLayout>

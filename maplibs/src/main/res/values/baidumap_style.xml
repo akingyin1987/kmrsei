@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Bubble.TextAppearance.Dark" parent="android:TextAppearance.Medium">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#ff7f7f7f</item>
+    </style>
+
+    <style name="Bubble.TextAppearance.Light" parent="Bubble.TextAppearance.Dark">
+        <item name="android:textColor">#ffeeeeee</item>
+    </style>
+
+    <style name="ClusterIcon.TextAppearance" parent="android:TextAppearance">
+        <item name="android:textColor">#ffeeeeee</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="LocationProgressStyle" parent="@android:style/Widget.ProgressBar">
+        <item name="android:maxWidth">20.0dip</item>
+        <item name="android:maxHeight">20.0dip</item>
+        <item name="android:indeterminateOnly">true</item>
+        <item name="android:indeterminateDrawable">@drawable/loc_progress_bar</item>
+        <item name="android:indeterminateDuration">1200</item>
+        <item name="android:indeterminateBehavior">repeat</item>
+        <item name="android:minWidth">20.0dip</item>
+        <item name="android:minHeight">20.0dip</item>
+    </style>
+
+    <style name="baidu_AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+
+        <item name="android:textAllCaps">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <item name="android:windowIsTranslucent">true</item>
+
+    </style>
+
+
+    <style name="baidumap_AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#4CAF50</item>
+        <item name="colorPrimaryDark">#2E7D32</item>
+        <item name="colorAccent">#994CAF50</item>
+
+        <item name="android:textAllCaps">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <item name="android:windowIsTranslucent">true</item>
+
+
+
+    </style>
+
+</resources>

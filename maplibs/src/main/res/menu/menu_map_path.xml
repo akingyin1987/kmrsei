@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+  <item
+      android:id="@+id/item_driving"
+      android:icon="@drawable/icon_driving"
+      app:showAsAction="ifRoom"
+      android:orderInCategory="1"
+      android:title="驾车导航" />
+
+  <item
+      android:id="@+id/item_walking"
+      android:icon="@drawable/icon_walking"
+      app:showAsAction="ifRoom"
+      android:orderInCategory="2"
+      android:title="步行导航" />
+
+  <item
+      android:id="@+id/item_ar"
+      android:icon="@drawable/icon_ar"
+      app:showAsAction="ifRoom"
+      android:orderInCategory="3"
+      android:title="步行AR" />
+
+  <item
+      android:id="@+id/item_transport"
+      android:icon="@drawable/icon_transport"
+      app:showAsAction="ifRoom"
+      android:orderInCategory="4"
+      android:title="公交导航" />
+</menu>

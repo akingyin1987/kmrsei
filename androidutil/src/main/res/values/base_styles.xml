@@ -51,7 +51,7 @@
     <style name="Text" />
 
     <style name="Text.placeListItem_Primary" parent="@style/Text">
-        <item name="android:textSize">16.0dip</item>
+        <item name="android:textSize">16.0sp</item>
         <item name="android:textColor">#ff333333</item>
     </style>
     <style name="wrap_wrap">
@@ -147,8 +147,8 @@
     </style>
 
     <style name="mystyle" parent="android:Animation">
-        <item name="@android:windowEnterAnimation">@anim/slide_from_bottom</item>
-        <item name="@android:windowExitAnimation">@anim/slide_out_bottom</item>
+        <item name="android:windowEnterAnimation">@anim/slide_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
     </style>
     <style name="AppTheme_zlcd.ImagesDetail">
         <item name="android:windowNoTitle">true</item>
