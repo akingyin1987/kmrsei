@@ -278,7 +278,28 @@ public class ZxingCameraActivity  extends AppCompatActivity implements SurfaceHo
         mCameraManager.setVolueMode(VolumeMode.OFF);
       }
     }
+    mCameraManager.setResult(90);
+    mSensorCameraHelp.setOrientationChangeListener(new SensorCameraHelp.OrientationChangeListener() {
+      @Override public void onChange(int relativeRotation, int uiRotation) {
+        int  cameraRotation = uiRotation+90;
+        if(cameraRotation == 180){
+          cameraRotation = 0;
+        }
+        if(cameraRotation == 360){
+          cameraRotation = 180;
+        }
 
+        if( mCameraManager.getResult() != cameraRotation){
+          mCameraManager.setResult(cameraRotation);
+
+           object_info.setRotation(uiRotation);
+          btn_ok.setRotation(uiRotation);
+          btn_cancel.setRotation(uiRotation);
+          btn_tackpic.setRotation(uiRotation);
+
+        }
+      }
+    });
   }
 
   public   void    defaultCameraView(){
@@ -704,6 +725,7 @@ public class ZxingCameraActivity  extends AppCompatActivity implements SurfaceHo
 
   @Override public void onBackPressed() {
     try {
+      resultHandler.removeCallbacksAndMessages(null);
       viewfinder.setVisibility(View.GONE);
       viewfinder.setImageURI(null);
 

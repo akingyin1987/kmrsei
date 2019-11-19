@@ -5,11 +5,13 @@ import android.os.Environment
 import com.akingyin.base.BaseActivity
 import com.akingyin.base.dialog.DialogUtil
 import com.akingyin.base.ext.*
+import com.akingyin.base.utils.StringUtils
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
 import com.zlcdgroup.mrsei.utils.ThemeHelper
 import kotlinx.android.synthetic.main.activity_login.*
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -90,10 +92,10 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
        //  goActivity<UserListActivity>()
        //   goActivity<CoroutinesDemo>()
        // goActivity<CameraXActivity>()
-        mContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.apply {
+       var  localPath = mContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.apply {
             println("abs$absolutePath")
-        }
-        startActivity<SimpleCameraActivity>("1" to "2")
+        }?.absolutePath+File.separator+StringUtils.getUUID()+".jpg"
+        startActivity<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"))
     }
 
     override fun setAppTheme(theme: String) {

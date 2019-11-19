@@ -120,7 +120,7 @@ android {
 greendao {
   schemaVersion 1
   daoPackage 'com.zlcdgroup.mrsei.data.db.dao'
-//  targetGenDir 'src/main/java'
+  targetGenDir 'src/main/java'
 }
 
 
