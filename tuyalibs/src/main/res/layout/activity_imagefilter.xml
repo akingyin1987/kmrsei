@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/imagefilter_activity_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/imagefilter_activity_layout2"
+        android:layout_width="fill_parent"
+        android:layout_height="48dip"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/image_filter_title_bg"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@id/imagefilter_activity_clean"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/image_filter_title_text_btn_bg"
+            android:text="清屏"
+
+            android:textColor="#ffffff"
+            android:textSize="14sp" />
+
+        <ImageButton
+            android:id="@id/imagefilter_activity_left"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:src="@drawable/image_filter_action_back_arrow" />
+
+        <Button
+            android:id="@id/imagefilter_activity_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
+            android:background="@drawable/image_filter_title_text_btn_bg"
+            android:text="涂鸦设置"
+            android:textColor="#ffffff"
+            android:textSize="14sp" />
+
+        <ImageButton
+            android:id="@id/imagefilter_activity_right"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:src="@drawable/image_filter_action_forward_arrow" />
+
+        <Button
+            android:id="@id/imagefilter_activity_save"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/image_filter_title_text_btn_bg"
+            android:text="保存"
+            android:textColor="#ffffff"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+</LinearLayout>

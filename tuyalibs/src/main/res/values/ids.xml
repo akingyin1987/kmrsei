@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <item name="imagefilter_activity_left" type="id"/>
+  <item name="imagefilter_activity_right" type="id"/>
+  <item name="imagefilter_activity_clean" type="id"/>
+  <item name="imagefilter_activity_setting" type="id"/>
+  <item name="imagefilter_activity_save" type="id"/>
+</resources>
