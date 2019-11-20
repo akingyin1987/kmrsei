@@ -4,11 +4,9 @@
 
 package com.baidu.mapapi.clusterutil.clustering.algo;
 
-import android.support.v4.util.LruCache;
-
+import androidx.collection.LruCache;
 import com.baidu.mapapi.clusterutil.clustering.Cluster;
 import com.baidu.mapapi.clusterutil.clustering.ClusterItem;
-
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -29,6 +27,7 @@ public class PreCachingAlgorithmDecorator<T extends ClusterItem> implements Algo
         mAlgorithm = algorithm;
     }
 
+    @Override
     public void addItem(T item) {
         mAlgorithm.addItem(item);
         clearCache();
@@ -46,6 +45,7 @@ public class PreCachingAlgorithmDecorator<T extends ClusterItem> implements Algo
         clearCache();
     }
 
+    @Override
     public void removeItem(T item) {
         mAlgorithm.removeItem(item);
         clearCache();

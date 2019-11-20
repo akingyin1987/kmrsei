@@ -6,6 +6,7 @@ import com.akingyin.base.BaseActivity
 import com.akingyin.base.dialog.DialogUtil
 import com.akingyin.base.ext.*
 import com.akingyin.base.utils.StringUtils
+import com.akingyin.map.TestMarkerMapActivity
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
@@ -95,7 +96,8 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
        var  localPath = mContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.apply {
             println("abs$absolutePath")
         }?.absolutePath+File.separator+StringUtils.getUUID()+".jpg"
-        startActivity<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"))
+       // startActivity<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"))
+        startActivity<TestMarkerMapActivity>()
     }
 
     override fun setAppTheme(theme: String) {

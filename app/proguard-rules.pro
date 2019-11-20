@@ -124,6 +124,16 @@
 -dontnote com.google.android.material.**
 -dontwarn androidx.*
 
+
+-printconfiguration
+-keep,allowobfuscation @interface androidx.annotation.Keep
+
+-keep @androidx.annotation.Keep class *
+-keepclassmembers class * {
+    @androidx.annotation.Keep *;
+}
+
+
 #保持 native 方法不被混淆
 -keepclasseswithmembernames class * {
     native <methods>;
@@ -209,6 +219,7 @@
 #-libraryjars libs/wechat-sdk-android-without-mta-5.1.4.jar
 -keep class com.zlcdgroup.mrmsei.data.**{*;}
 -keep class com.akingyin.base.**{*;}
+
 -ignorewarnings -keep class * { public private *; }
 
 

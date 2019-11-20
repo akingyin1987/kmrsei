@@ -9,13 +9,15 @@
 package com.akingyin.map;
 
 import android.content.Intent;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioGroup;
+import androidx.appcompat.widget.Toolbar;
+import com.akingyin.map.base.BaiduPanoramaActivity;
+import com.akingyin.map.base.BaseMapActivity;
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.MyLocationData;
@@ -42,8 +44,6 @@ import com.baidu.mapapi.search.route.WalkingRoutePlanOption;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.utils.route.BaiduMapRoutePlan;
 import com.baidu.mapapi.utils.route.RouteParaOption;
-import com.zlcdgroup.baidumaplib.base.BaiduPanoramaActivity;
-import com.zlcdgroup.baidumaplib.base.BaseMapActivity;
 import info.hoang8f.android.segmented.SegmentedGroup;
 
 /**
@@ -56,7 +56,7 @@ import info.hoang8f.android.segmented.SegmentedGroup;
 
 public class MapPathPlanActivity  extends BaseMapActivity implements OnGetRoutePlanResultListener {
 
-  Toolbar   mToolbar;
+  Toolbar mToolbar;
 
   SegmentedGroup    mSegmentedGroup;
 
@@ -84,7 +84,7 @@ public class MapPathPlanActivity  extends BaseMapActivity implements OnGetRouteP
           showToast("当前没有位置信息无法查看");
           return;
         }
-        Intent intent = new Intent(MapPathPlanActivity.this,BaiduPanoramaActivity.class);
+        Intent intent = new Intent(MapPathPlanActivity.this, BaiduPanoramaActivity.class);
         intent.putExtra("lat",endNode.getLocation().latitude);
         intent.putExtra("lng",endNode.getLocation().longitude);
         intent.putExtra("addr",TextUtils.isEmpty(destination)?"":destination);

@@ -451,10 +451,9 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
           bundle.putInt("index", index);
           MarkerOptions  option = new MarkerOptions().animateType(getMarkerAnimateByMarker(iMarkerModel))
               .position(point)
-
               .draggable(isDragMarker(iMarkerModel))
               .icon(getMarkerBitmapDescriptor(iMarkerModel))
-              .title("index=" + index).extraInfo(bundle);
+              .extraInfo(bundle);
           overlayOptions.add(option);
           index++;
 
@@ -575,6 +574,7 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
         for (IMarkerModel iMarkerModel : iMarkerModels) {
           index++;
           if(null != iMarkerModel.getMarkes() && iMarkerModel.getMarkes().size()>0){
+            System.out.println("size="+iMarkerModel.getMarkes().size());
             iMarkerModel.setSortInfo("详情   "+iMarkerModels.size()+"-"+index+"("+(iMarkerModel.getMarkes().size()+1)+"-1)");
             showImarkers.add(iMarkerModel);
 
@@ -591,7 +591,7 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
 
         mInfoPagerAdapter = new MarkderInfoPagerAdapter(AbstractMapMarkersActivity.this,showImarkers);
         mInfoPagerAdapter.setIOperationListen(AbstractMapMarkersActivity.this);
-        mInfoPagerAdapter.setPathMarker(true);
+        mInfoPagerAdapter.setPathMarker(showPathPlan());
         mInfoPagerAdapter.setILoadImage(AbstractMapMarkersActivity.this);
         viewpager.removeOnPageChangeListener(mOnPageChangeListener);
         viewpager.addOnPageChangeListener(mOnPageChangeListener);
@@ -667,12 +667,9 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
       } else {
         mPopupBottonWindow.showAtLocation(closeButton, Gravity.BOTTOM, 0, 0);
       }
-    }catch (Exception  e){
-      e.printStackTrace();
-    }catch (Error  e){
+    }catch (Exception | Error e){
       e.printStackTrace();
     }
-
   }
 
   /**

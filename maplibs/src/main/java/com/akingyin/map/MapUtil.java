@@ -1,5 +1,7 @@
 package com.akingyin.map;
 
+import android.content.Context;
+import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.model.LatLng;
 import java.util.Collection;
 
@@ -53,5 +55,9 @@ public class MapUtil {
       }
     }
     return  new LatLng((minlat+maxlat)/2.0,(minlng+maxlng)/2.0);
+  }
+
+  public   static   void   initMap(Context  context){
+    SDKInitializer.initialize(context);
   }
 }

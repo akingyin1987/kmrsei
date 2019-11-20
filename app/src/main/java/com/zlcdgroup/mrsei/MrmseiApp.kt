@@ -11,6 +11,7 @@ import com.akingyin.base.ext.spGetString
 import com.akingyin.base.ext.spSetString
 import com.akingyin.base.net.mode.ApiHost
 import com.akingyin.base.net.okhttp.OkHttpUtils
+import com.akingyin.map.MapUtil
 import com.alibaba.android.arouter.launcher.ARouter
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
@@ -60,6 +61,7 @@ class MrmseiApp :BaseApp() {
         Ext.with(this)
         DbCore.init(this)
         DbCore.enableQueryBuilderLog()
+        MapUtil.initMap(this)
         spSetString("ApiUrl","http://114.215.108.130:38280/mrmsei/")
         if(BuildConfig.DEBUG){
             ARouter.openLog()

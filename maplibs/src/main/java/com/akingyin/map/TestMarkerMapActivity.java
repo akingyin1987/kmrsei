@@ -41,7 +41,8 @@ public class TestMarkerMapActivity  extends AbstractMapMarkersActivity {
   }
 
   @Override public void loadImageView(String path, Context context, ImageView imageView) {
-
+    System.out.println("loadImageView="+path);
+      imageView.setImageResource(R.drawable.error_img);
   }
 
   @Override protected List<IMarkerModel> onLoadMarkerDatas() {
@@ -167,11 +168,12 @@ public class TestMarkerMapActivity  extends AbstractMapMarkersActivity {
     }
 
     @Override public String getSortInfo() {
-      return null;
+      return sortInfo;
     }
 
+    private   String    sortInfo;
     @Override public void setSortInfo(String sortInfo) {
-
+       this.sortInfo = sortInfo;
     }
 
     @Override public String getTitle() {

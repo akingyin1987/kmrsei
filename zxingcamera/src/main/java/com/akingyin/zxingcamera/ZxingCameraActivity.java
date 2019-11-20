@@ -313,6 +313,8 @@ public class ZxingCameraActivity  extends AppCompatActivity implements SurfaceHo
     btn_cancel.setVisibility(View.VISIBLE);
     btn_ok.setVisibility(View.VISIBLE);
     btn_tackpic.setEnabled(false);
+    btn_cancel.setEnabled(true);
+    btn_ok.setEnabled(true);
     rl_turn.setVisibility(View.VISIBLE);
     tv_camera_info.setVisibility(View.GONE);
   }
