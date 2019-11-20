@@ -11,8 +11,6 @@ package com.akingyin.map;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import com.akingyin.map.base.BaseMapActivity;
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
@@ -35,7 +36,6 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
-import com.zlcdgroup.baidumaplib.base.BaseMapActivity;
 import java.text.MessageFormat;
 
 /**
@@ -61,7 +61,7 @@ public class MapCoordinatePickupActivity  extends BaseMapActivity implements Vie
   RelativeLayout  adjust_layout;
   LinearLayout   latlng_step;
   TextView   tv_lalnginfo;
-  Toolbar   mToolbar;
+  Toolbar mToolbar;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     currentLng = oldCurrentLng = getIntent().getDoubleExtra("lng",0);

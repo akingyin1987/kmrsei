@@ -70,5 +70,6 @@
            android:theme="@style/Theme.TranslucentNavigationBar"
            android:configChanges="orientation|keyboardHidden|screenSize"/>
 
+    <activity android:name="com.akingyin.map.TestMarkerMapActivity"/>
   </application>
 </manifest>
