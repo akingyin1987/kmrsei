@@ -118,6 +118,7 @@ public final class ScreenUtils {
         return 270;
         default:
     }
+    return 0;
   }
 
   /**

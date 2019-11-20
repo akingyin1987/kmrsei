@@ -125,7 +125,9 @@ public abstract class BaseTuYaActivity extends SimpleActivity implements TuyaLis
     directoryPath = getIntent().getStringExtra(KEY_PIC_DIRECTORYPATH);
     saveReName = getIntent().getStringExtra(KEY_SAVE_RENAME);
     originalPath = getIntent().getStringExtra(KEY_ORIGINALPATH);
-
+    if(TextUtils.isEmpty(saveReName)){
+      saveReName = getReName();
+    }
     default_tuya_model = getIntent().getIntExtra("default_tuya_model", -1);
 
     findView();
@@ -432,10 +434,10 @@ public abstract class BaseTuYaActivity extends SimpleActivity implements TuyaLis
     }
   }
 
-   abstract void saveTuYaBitmapSuccess(File outFile);
+  public   abstract void saveTuYaBitmapSuccess(File outFile);
 
 
-   abstract    long     getNowTime();
+  public  abstract    long     getNowTime();
 
 
   // 检查图片文件是否存在

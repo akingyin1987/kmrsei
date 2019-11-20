@@ -1,12 +1,15 @@
 package com.zlcdgroup.mrsei.ui
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import com.akingyin.base.BaseActivity
 import com.akingyin.base.dialog.DialogUtil
 import com.akingyin.base.ext.*
+import com.akingyin.base.utils.FileUtils
 import com.akingyin.base.utils.StringUtils
-import com.akingyin.map.TestMarkerMapActivity
+import com.akingyin.tuya.BaseTuYaActivity
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
@@ -96,8 +99,8 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
        var  localPath = mContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.apply {
             println("abs$absolutePath")
         }?.absolutePath+File.separator+StringUtils.getUUID()+".jpg"
-       // startActivity<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"))
-        startActivity<TestMarkerMapActivity>()
+        startActivityForResult<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"),requestCode = 100)
+       // startActivity<TestMarkerMapActivity>()
     }
 
     override fun setAppTheme(theme: String) {
@@ -115,6 +118,16 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
                 app_theme.setText("DEFAULT")
                 app_theme.isChecked = false
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 100 && resultCode == Activity.RESULT_OK){
+            val  imagePath = data?.getStringExtra("imgLocalPath")
+            val  name = FileUtils.getFileName(imagePath)
+            val  dir = FileUtils.getFolderName(imagePath)
+             startActivity<TuyaTestActivity>(bundle = arrayOf(BaseTuYaActivity.KEY_PIC_NAME to name,BaseTuYaActivity.KEY_PIC_DIRECTORYPATH to dir))
         }
     }
 }
