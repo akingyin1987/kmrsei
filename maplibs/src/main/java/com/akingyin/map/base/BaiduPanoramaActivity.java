@@ -3,14 +3,15 @@ package com.akingyin.map.base;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.akingyin.map.R;
+import com.baidu.lbsapi.panoramaview.ImageMarker;
+import com.baidu.lbsapi.panoramaview.OnTabMarkListener;
+import com.baidu.lbsapi.panoramaview.PanoramaView;
+import com.baidu.lbsapi.panoramaview.PanoramaViewListener;
+import com.baidu.lbsapi.tools.Point;
+import com.blankj.utilcode.util.ThreadUtils;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 百度街景图
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class BaiduPanoramaActivity extends AppCompatActivity {
 
     private PanoramaView mPanoView;
-    ImageMarker   imageMarker;
+    ImageMarker imageMarker;
     private ExecutorService singleThreadPool = null;
     //地址描述
     private String    addr;
@@ -35,12 +36,8 @@ public class BaiduPanoramaActivity extends AppCompatActivity {
         double  lat = getIntent().getDoubleExtra("lat",0);
         double  lng = getIntent().getDoubleExtra("lng",0);
         addr = getIntent().getStringExtra("addr");
-        singleThreadPool = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
-            @Override public Thread newThread(@NonNull Runnable r) {
-                return new Thread(r);
-            }
-        });
+
+        singleThreadPool = ThreadUtils.getIoPool();
 
         imageMarker = new ImageMarker();
         imageMarker.setMarkerPosition(new Point(lat, lng));
@@ -58,18 +55,21 @@ public class BaiduPanoramaActivity extends AppCompatActivity {
         imageMarker.setMarker(getResources().getDrawable(R.drawable.icon_openmap_mark));
         mPanoView.addMarker(imageMarker);
 
-        mPanoView.setPanoramaViewListener(new PanoramaViewListener() {
-            @Override
-            public void onLoadPanoramaBegin() {
-                System.out.println("onLoadPanoramaBegin");
-            }
-
-            @Override
-            public void onLoadPanoramaEnd(String s) {
-                System.out.println("s=" + s);
-            }
+        mPanoView.setPanoramaViewListener(new PanoramaViewListener(){
 
             @Override public void onDescriptionLoadEnd(String s) {
+
+            }
+
+            @Override public void onLoadPanoramaBegin() {
+
+            }
+
+            @Override public void onLoadPanoramaEnd(String s) {
+
+            }
+
+            @Override public void onLoadPanoramaError(String s) {
 
             }
 
@@ -81,9 +81,12 @@ public class BaiduPanoramaActivity extends AppCompatActivity {
 
             }
 
-            @Override
-            public void onLoadPanoramaError(final String s) {
-                System.out.println("onLoadPanoramaError="+s);
+            @Override public void onMoveStart() {
+
+            }
+
+            @Override public void onMoveEnd() {
+
             }
         });
         loadLatlng(lat, lng);

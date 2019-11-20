@@ -10,8 +10,6 @@ package com.akingyin.map.base;
 
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +19,9 @@ import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import com.akingyin.map.R;
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapStatus;
@@ -30,17 +31,17 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
-import com.zlcdgroup.baidumaplib.R;
+
 
 /**
  * @author king
  * @version V1.0
  * @ Description:
  *
- * Company:重庆中陆承大科技有限公司
+ *
  * @ Date 2017/11/24 12:37
  */
-public   abstract  class BaseMapFragment extends Fragment  implements ReceiveLocListion {
+public   abstract  class BaseMapFragment extends Fragment implements ReceiveLocListion {
 
       private MapView mMapView;
       private BaiduMap mBaiduMap;
@@ -98,7 +99,7 @@ public   abstract  class BaseMapFragment extends Fragment  implements ReceiveLoc
         // 开启定位图层
         mBaiduMap.setMyLocationEnabled(true);
         locConfig = new MyLocationConfiguration(mCurrentMode, true, null);
-        mBaiduMap.setMyLocationConfigeration(locConfig);
+        mBaiduMap.setMyLocationConfiguration(locConfig);
         double  lat = bundle.getDouble("lat",0);
         double  lng = bundle.getDouble("lng",0);
         LatLng   latLng = null;
@@ -128,7 +129,7 @@ public   abstract  class BaseMapFragment extends Fragment  implements ReceiveLoc
                     default:
                         break;
                 }
-                mBaiduMap.setMyLocationConfigeration(new MyLocationConfiguration(mCurrentMode, true, null));
+                mBaiduMap.setMyLocationConfiguration(new MyLocationConfiguration(mCurrentMode, true, null));
             }
         });
 

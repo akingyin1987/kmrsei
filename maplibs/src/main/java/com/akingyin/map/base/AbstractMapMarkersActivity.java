@@ -22,7 +22,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 import com.akingyin.map.MapPathPlanActivity;
@@ -44,6 +43,7 @@ import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.overlayutil.OverlayManager;
 import com.baidu.mapapi.utils.DistanceUtil;
+import com.blankj.utilcode.util.ThreadUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,10 +51,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -100,12 +96,7 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
   }
 
   @Override public void initialization() {
-    singleThreadPool = new  ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
-        new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
-      @Override public Thread newThread(@NonNull Runnable r) {
-        return new Thread(r);
-      }
-    });
+    singleThreadPool = ThreadUtils.getIoPool();
 
 
     mShowAction = AnimationUtils.loadAnimation(this, R.anim.layer_pop_in);

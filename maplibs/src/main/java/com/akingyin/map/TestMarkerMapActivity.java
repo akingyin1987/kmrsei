@@ -12,10 +12,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import com.akingyin.map.base.AbstractMapMarkersActivity;
+import com.akingyin.map.model.IMarkerModel;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.zlcdgroup.baidumaplib.base.AbstractMapMarkersActivity;
-import com.zlcdgroup.baidumaplib.model.IMarkerModel;
 import java.util.LinkedList;
 import java.util.List;
 

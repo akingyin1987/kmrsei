@@ -12,8 +12,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.annotation.NonNull;
-import com.zlcdgroup.baidumaplib.R;
+import androidx.annotation.NonNull;
+import com.akingyin.map.R;
 
 /**
  * @author king
@@ -25,7 +25,7 @@ import com.zlcdgroup.baidumaplib.R;
 public class MapLoadingDialog  extends Dialog {
 
   public MapLoadingDialog(@NonNull Context context) {
-    super(context,R.style.LocationProgressStyle);
+    super(context, R.style.LocationProgressStyle);
     getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     setContentView(R.layout.map_loading_dialog);
 
