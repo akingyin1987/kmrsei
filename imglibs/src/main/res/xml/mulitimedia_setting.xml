@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:key="parent"
+    android:title="设置页面">
+    <PreferenceCategory  android:title="相机、录像、录音"
+        >
+        <ListPreference
+            android:key="camera_key"
+            android:defaultValue="@string/mulitimedia_camera_default_values"
+            android:title="选择相机"
+            android:summary="选择相机"
+            android:entries="@array/mulitimedia_camera"
+            android:entryValues="@array/mulitimedia_camera_values"
+            android:dialogTitle="请选择相机类型" />
+        <ListPreference
+            android:key="video_key"
+            android:defaultValue="@string/mulitimedia_video_default_values"
+            android:title="选择录像"
+            android:summary="选择录像"
+            android:entries="@array/mulitimedia_video"
+            android:entryValues="@array/mulitimedia_video_values"
+            android:shouldDisableView="true"
+            android:dialogTitle="请选择录像类型" />
+
+
+        <ListPreference
+            android:key="audio_key"
+            android:defaultValue="@string/mulitimedia_camera_audio_default_values"
+            android:title="选择录音"
+            android:summary="选择录音"
+            android:entries="@array/mulitimedia_audit"
+            android:entryValues="@array/mulitimedia_camera_audio"
+            android:dialogTitle="请选择录音类型" />
+    </PreferenceCategory>
+
+
+
+
+
+</PreferenceScreen>

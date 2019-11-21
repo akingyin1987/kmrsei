@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.github.chrisbanes.photoview.PhotoView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="center"
+        android:id="@+id/pv_img"/>
+    <cn.jzvd.JzvdStd
+        android:id="@+id/videoplayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <RelativeLayout android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/card_pic_num"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_margin="5dp"
+            android:background="#5f000000"
+            android:drawableLeft="@drawable/card_photot"
+            android:drawablePadding="4dp"
+            android:gravity="center"
+            android:paddingLeft="6dp"
+            android:paddingRight="4dp"
+            android:text="6"
+            android:textColor="#fff" />
+
+        <ImageView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:focusable="true"
+                    android:src="@drawable/icon_video_marker_play"
+                    android:id="@+id/iv_marker_video"/>
+    </RelativeLayout>
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:gravity="center"
+
+        android:id="@+id/tv_text"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/black_de"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/white"
+            android:id="@+id/tv_pagenum"/>
+    </RelativeLayout>
+</FrameLayout>

@@ -7,9 +7,9 @@ package com.baidu.mapapi.clusterutil.ui;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.widget.TextView;
+import androidx.appcompat.widget.AppCompatTextView;
 
-public class SquareTextView extends TextView {
+public class SquareTextView extends AppCompatTextView {
     private int mOffsetTop = 0;
     private int mOffsetLeft = 0;
 

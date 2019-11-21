@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minHeight="100dp"
+    android:layout_margin="3dp"
+    android:padding="3dp"
+    android:background="@drawable/gridview_item"
+   >
+  <ImageView
+      android:id="@+id/iv_image"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+
+      android:src="@mipmap/default_image"/>
+
+  <TextView android:layout_width="match_parent"
+      android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="16sp"
+             android:textColor="@color/dark_font"
+            android:textStyle="bold"
+
+            android:id="@+id/tv_text"/>
+
+  <RelativeLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+    <ImageView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_centerInParent="true"
+               android:src="@mipmap/icon_small_video"
+              android:id="@+id/iv_marker_video"
+     />
+  </RelativeLayout>
+
+
+
+  <com.akingyin.img.widget.AudioPlayerView
+          android:layout_width="match_parent"
+          android:id="@+id/audio_player"
+          android:background="@android:color/holo_green_dark"
+          app:loadingText="loading..."
+          app:playText="play"
+          app:stopText="stop"
+          app:useIcons="false"
+          android:gravity="center"
+          android:layout_height="match_parent"/>
+  <View android:layout_width="match_parent"
+      android:layout_height="match_parent"
+  />
+  <View
+      android:id="@+id/mask"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="#88000000"
+      android:visibility="gone"/>
+
+
+  <com.akingyin.img.widget.SuperCheckBox
+      android:id="@+id/cb_check"
+      style="@style/SuperCheckboxTheme"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="top|right"
+      android:paddingLeft="10dp"
+      android:paddingTop="10dp"/>
+  <View android:layout_width="match_parent"
+        android:id="@+id/v_longclick"
+        android:layout_height="match_parent"/>
+
+</FrameLayout>

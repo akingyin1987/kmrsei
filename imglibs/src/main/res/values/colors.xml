@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<resources>
+  <color name="dark_font">#333</color>
+  <color name="gray_font">#ccc</color>
+
+  <color name="card_background">#ffffff</color>
+  <color name="card_shadow">#10000000</color>
+  <color name="black_de">#DE000000</color>
+  <color name="mstbprimarycolor">#d3d3d3</color>
+  <color name="mstbsecondarycolor">#303F9F</color>
+</resources>

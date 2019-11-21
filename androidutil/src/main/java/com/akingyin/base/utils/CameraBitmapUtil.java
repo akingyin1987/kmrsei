@@ -287,7 +287,7 @@ public class CameraBitmapUtil {
      * @param path
      * @return
      */
-    public   static boolean SysCameraZipImage(String path) {
+    public   static boolean SysCameraZipImage(String path,long  time) {
         int degree = 0;
         FileInputStream fis = null;
         Bitmap mbitmap = null;
@@ -353,7 +353,7 @@ public class CameraBitmapUtil {
             TextPaint paint = new TextPaint();
             paint.setTextSize(20f);
             paint.setColor(Color.RED);
-            canvas.drawText(getNowDate(), mbitmap.getWidth() - 210, mbitmap.getHeight() - 10, paint);
+            canvas.drawText(getNowDate(time), mbitmap.getWidth() - 210, mbitmap.getHeight() - 10, paint);
             canvas.save();
 
             FileOutputStream fos = new FileOutputStream(path);

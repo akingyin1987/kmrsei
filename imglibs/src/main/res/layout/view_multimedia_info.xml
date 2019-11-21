@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:id="@+id/fl_content"
+    android:background="@android:color/transparent"
+    android:layout_height="match_parent">
+
+
+  <TextView android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:textSize="28sp"
+           android:textStyle="bold"
+           android:gravity="center"
+
+           android:textColor="@android:color/black"
+           android:text="22222222222222222222"
+           android:id="@+id/multimedia_text"/>
+
+
+    <com.github.chrisbanes.photoview.PhotoView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:id="@+id/images_detail_smooth_image"
+        android:scaleType="fitCenter"/>
+
+  <cn.jzvd.JzvdStd
+      android:id="@+id/videoplayer"
+      android:layout_width="match_parent"
+
+      android:layout_height="match_parent"/>
+
+  <RelativeLayout android:layout_width="match_parent"
+      android:layout_height="match_parent">
+    <ImageView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/icon_big_video"
+        android:id="@+id/iv_marker_video"
+    />
+  </RelativeLayout>
+
+  <View
+      android:id="@+id/mask"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="#88000000"
+      android:visibility="gone"/>
+
+
+  <com.akingyin.img.widget.SuperCheckBox
+      android:id="@+id/cb_check"
+      style="@style/SuperCheckboxTheme"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="top|right"
+      android:paddingLeft="10dp"
+      android:layout_margin="10dp"
+      android:checked="true"
+      android:paddingTop="10dp"/>
+  <com.akingyin.img.widget.AudioPlayerView
+      android:layout_width="match_parent"
+      android:id="@+id/audio_player"
+      app:loadingText="loading..."
+      app:playText="play"
+      app:stopText="stop"
+      app:useIcons="true"
+      android:layout_height="match_parent"/>
+
+      <RelativeLayout android:layout_width="match_parent"
+          android:layout_height="match_parent">
+
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textColor="#ffffffff"
+            android:layout_centerHorizontal="true"
+
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+             android:id="@+id/tv_pageinfo"
+            android:text="1/222"/>
+      </RelativeLayout>
+
+</FrameLayout>

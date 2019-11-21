@@ -1,0 +1,58 @@
+<resources>
+    <string name="loadingIcon">播放中</string>
+    <string name="playIcon">播放</string>
+    <string name="stopIcon">停止</string>
+
+
+    <string-array name="planets_array">
+        <item>Mer</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+    </string-array>
+
+    <string-array name="mulitimedia_camera_values">
+        <item>0</item>
+        <item>1</item>
+        <!--<item>2</item>-->
+        <!--<item>3</item>-->
+        <!--<item>4</item>-->
+    </string-array>
+
+    <string name="mulitimedia_camera_default_values">0</string>
+    <string-array name="mulitimedia_camera">
+
+        <item>自定义相机1</item>
+        <item>系统相机</item>
+        <!--<item>自定义相机2</item>-->
+        <!--<item>google-camera</item>-->
+        <!--<item>涂图相机</item>-->
+
+    </string-array>
+    <string-array name="mulitimedia_video">
+
+        <item>系统录像</item>
+        <!--<item>自定义视频1</item>-->
+        <!--<item>自定义视频2</item>-->
+    </string-array>
+    <string name="mulitimedia_video_default_values">5</string>
+    <string-array name="mulitimedia_video_values">
+        <item>5</item>
+        <!--<item>6</item>-->
+        <!--<item>7</item>-->
+    </string-array>
+    <string name="mulitimedia_camera_audio_default_values">8</string>
+    <string-array name="mulitimedia_camera_audio">
+        <item>8</item>
+        <!--<item>9</item>-->
+        <!--<item>10</item>-->
+
+    </string-array>
+
+    <string-array name="mulitimedia_audit">
+        <item>系统录音</item>
+        <!--<item>自定义录音1</item>-->
+        <!--<item>自定义录音2</item>-->
+
+    </string-array>
+</resources>
