@@ -41,3 +41,19 @@
 -keep class tv.danmaku.ijk.media.player.** {*; }
 -dontwarn tv.danmaku.ijk.media.player.*
 -keep interface tv.danmaku.ijk.media.player.** { *; }
+
+
+# adapter
+-keep class com.chad.library.adapter.** {
+*;
+}
+-keep public class * extends com.chad.library.adapter.base.BaseQuickAdapter
+-keep public class * extends com.chad.library.adapter.base.BaseViewHolder
+-keepclassmembers  class **$** extends com.chad.library.adapter.base.BaseViewHolder {
+     <init>(...);
+}
+-keepattributes InnerClasses
+
+#6.photoview
+-keep class com.github.chrisbanes.photoview** { *; }
+-keep interface com.github.chrisbanes.photoview** { *; }

@@ -8,7 +8,6 @@
 
 package com.akingyin.img.multimedia;
 
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
@@ -517,8 +516,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
     if (item.getItemId() == R.id.action_setting) {
-      Intent intent = new Intent(BaseMultimediaActivity.this, MulitimediaSettingActivity.class);
-      startActivity(intent);
+      goToSettingActivity();
     } else if (item.getItemId() == R.id.action_preview) {
       if (adapter.getItemCount() == 0) {
         showMsg("没有可查看的数据");
@@ -1338,4 +1336,9 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
    * @param time
    */
   protected  abstract    void     onDataChange(long  time);
+
+  /**
+   * 导航到设置界面
+   */
+  protected   abstract    void     goToSettingActivity();
 }

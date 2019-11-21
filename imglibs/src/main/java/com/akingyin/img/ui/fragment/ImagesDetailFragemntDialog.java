@@ -9,16 +9,16 @@
 package com.akingyin.img.ui.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.zlcdgroup.imagebundle.ImageLoadUtil;
-import com.zlcdgroup.imagebundle.ImagesDetailActivity;
-import com.zlcdgroup.imagebundle.R;
-import com.zlcdgroup.imagebundle.widget.SmoothImageView;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+import com.akingyin.img.ImageLoadUtil;
+import com.akingyin.img.ImagesDetailActivity;
+import com.akingyin.img.R;
+import com.akingyin.img.widget.SmoothImageView;
 
 /**
  * @author king
@@ -56,7 +56,7 @@ public class ImagesDetailFragemntDialog  extends DialogFragment {
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     View   rootView = inflater.inflate(R.layout.activity_images_detail,container,false);
-    SmoothImageView   smoothImageView = (SmoothImageView) rootView.findViewById(R.id.images_detail_smooth_image);
+    SmoothImageView smoothImageView = (SmoothImageView) rootView.findViewById(R.id.images_detail_smooth_image);
     ImageLoadUtil.loadImage(url,getContext(),smoothImageView);
     return rootView;
   }
