@@ -131,7 +131,9 @@ class RetrofitConfig private constructor(){
      * 初始化日志拦截
      */
     private fun initLoggingInterceptor() {
-        mHttpLoggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        mHttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
     }
 
     /**

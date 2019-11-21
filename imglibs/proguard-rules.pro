@@ -20,6 +20,8 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-keep  class com.akingyin.img.model**{*;}
+
 # glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule
@@ -57,3 +59,7 @@
 #6.photoview
 -keep class com.github.chrisbanes.photoview** { *; }
 -keep interface com.github.chrisbanes.photoview** { *; }
+
+
+#6.MultiStateToggleButton
+-keep class org.honorato.multistatetogglebutton** { *; }
