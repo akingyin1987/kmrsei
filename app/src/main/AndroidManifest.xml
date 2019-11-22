@@ -78,5 +78,7 @@
         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
         android:theme="@style/Theme.TranslucentNavigationBar"
         android:screenOrientation="portrait"/>
+
+    <activity android:name=".ui.TestTuwenActivity"/>
   </application>
 </manifest>

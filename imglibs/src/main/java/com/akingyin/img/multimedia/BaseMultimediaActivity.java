@@ -48,6 +48,7 @@ import com.chad.library.adapter.base.callback.ItemDragAndSwipeCallback;
 import com.chad.library.adapter.base.listener.OnItemDragListener;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -434,7 +435,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
    * 初始化数据
    * @param datas
    */
-  protected abstract void initDatas(List<T> datas);
+  protected abstract void initDatas(@NonNull List<T> datas);
 
   /**
    * 获取标题名
@@ -550,7 +551,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
    * @param text
    * @param callBack3
    */
-  protected  abstract   void    onAddText(String   text,AppCallBack3<String> callBack3);
+  protected  abstract   void    onAddText(String   text,@NonNull AppCallBack3<String> callBack3);
 
   //添加文字
   public void addText(final Integer postion) {
@@ -595,7 +596,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
    * @param filePath
    * @param callBack3
    */
-  protected  abstract void   onTakePicture(String   filePath,AppCallBack3<File>  callBack3);
+  protected  abstract void   onTakePicture(@NonNull String   filePath,@NonNull AppCallBack3<File>  callBack3);
 
   //拍照
   public void photo(final Integer postion, final boolean isAdd) {
@@ -653,7 +654,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
    * @param newImg       涂鸦后新图片
    * @param callBack3
    */
-  protected  abstract void   onImageTuya(String   originalImg,String  currentImg,String  newImg,AppCallBack3<File>  callBack3);
+  protected  abstract void   onImageTuya(String   originalImg,@NonNull String  currentImg,@NonNull String  newImg,@NonNull AppCallBack3<File>  callBack3);
   //拍照
   public void TuYa(final Integer postion) {
     sOperationStateEnum = OperationStateEnum.TuYa;
@@ -686,7 +687,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
    * @param filePath
    * @param callBack3
    */
-  protected  abstract void   onSoundRecording(String   filePath,AppCallBack3<File>  callBack3);
+  protected  abstract void   onSoundRecording(@NonNull String   filePath,@NonNull AppCallBack3<File>  callBack3);
 
   private  void  voice(final  Integer postion,final  boolean  isAdd){
     localPath =getDirPath(MultimediaEnum.Audio)+File.separator+getFileName(MultimediaEnum.Audio);
@@ -731,7 +732,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
    * @param filePath
    * @param callBack3
    */
-  protected  abstract void   onVideoRecording(String   filePath,AppCallBack3<File>  callBack3);
+  protected  abstract void   onVideoRecording(@NonNull String   filePath,@NonNull AppCallBack3<File>  callBack3);
 
   private void video(final Integer postion, final boolean isAdd) {
 
@@ -973,7 +974,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
       showMsg("当前没有可粘贴的数据");
       return;
     }
-    Flowable.just(pastedatas)
+    Disposable  disposable =  Flowable.just(pastedatas)
         .map(new Function<List<T>, List<T>>() {
           @Override public List<T> apply(List<T> ts) throws Exception {
             List<T> pastestemp = new LinkedList<>();
@@ -997,7 +998,6 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
                     }
                   }
                 } catch (Exception e) {
-
                   e.printStackTrace();
                 }
               } else {
@@ -1038,7 +1038,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
 
   //复制数据
   public void copyDatas(List<T> copydatas) {
-    Flowable.just(copydatas)
+   Disposable  disposable = Flowable.just(copydatas)
         .map(new Function<List<T>, String>() {
           @Override public String apply(List<T> ts) throws Exception {
             int error = 0;
@@ -1272,19 +1272,19 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
    * 保存数据
    * @param t
    */
-  protected abstract void saveData(T t);
+  protected abstract void saveData(@NonNull T t);
 
   /**
    * 保存复制的数据
    * @param t
    */
-  protected abstract void saveCopyData(T t);
+  protected abstract void saveCopyData(@NonNull T t);
 
   /**
    * 删除数据
    * @param t
    */
-  protected abstract void delectData(T t);
+  protected abstract void delectData(@NonNull T t);
 
   /**
    * 获取粘贴数据
@@ -1297,21 +1297,22 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
    * @param multimediaEnum
    * @return
    */
-  protected abstract String getDirPath(MultimediaEnum multimediaEnum);
+  @NonNull
+  protected abstract String getDirPath(@NonNull MultimediaEnum multimediaEnum);
 
   /**
    * 获取粘贴的路径
    * @param multimediaEnum
    * @return
    */
-  protected abstract String getPastePath(MultimediaEnum multimediaEnum);
+  protected abstract String getPastePath(@NonNull MultimediaEnum multimediaEnum);
 
   /**
    * 获取保存的文件名
    * @param multimediaEnum
    * @return
    */
-  protected abstract String getFileName(MultimediaEnum multimediaEnum);
+  protected abstract String getFileName(@NonNull MultimediaEnum multimediaEnum);
 
   /**
    * 进入复制图文界面编辑
@@ -1322,6 +1323,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
    * 初始化默认添加 返回空则不操作
    * @return
    */
+  @Nullable
   protected  abstract   MultimediaEnum defaultAddMultimedia();
 
   /**
@@ -1329,7 +1331,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
    * @param datas
    * @return
    */
-  protected  abstract ValMessage onBackValData(List<T>  datas);
+  protected  abstract ValMessage onBackValData(@NonNull List<T>  datas);
 
   /**
    * 当数据发生改变时

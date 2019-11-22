@@ -99,8 +99,9 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
        var  localPath = mContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.apply {
             println("abs$absolutePath")
         }?.absolutePath+File.separator+StringUtils.getUUID()+".jpg"
-        startActivityForResult<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"),requestCode = 100)
+       // startActivityForResult<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"),requestCode = 100)
        // startActivity<TestMarkerMapActivity>()
+        startActivity<TuyaTestActivity>()
     }
 
     override fun setAppTheme(theme: String) {

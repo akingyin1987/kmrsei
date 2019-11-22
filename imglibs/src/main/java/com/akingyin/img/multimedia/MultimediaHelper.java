@@ -10,7 +10,9 @@ package com.akingyin.img.multimedia;
 
 import android.content.Context;
 import android.text.InputType;
+import android.text.TextUtils;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.akingyin.img.callback.AppCallBack;
@@ -59,11 +61,11 @@ public class MultimediaHelper {
    * @param message
    * @param cb
    */
-  public   static    void    showEditDialog(Context  context,String  message, final AppCallBack<String> cb){
+  public   static    void    showEditDialog(Context  context,@Nullable String  message, final AppCallBack<String> cb){
     new MaterialDialog.Builder(context).title("文字编辑")
         .inputType(InputType.TYPE_NULL)
         .inputRange(2,200)
-        .input("请输入", message, false, new MaterialDialog.InputCallback() {
+        .input("请输入", TextUtils.isEmpty(message)?"":message, false, new MaterialDialog.InputCallback() {
       @Override public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
         dialog.dismiss();
         if(null != cb){

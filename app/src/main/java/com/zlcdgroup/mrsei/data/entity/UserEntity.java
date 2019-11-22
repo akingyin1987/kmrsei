@@ -2,7 +2,6 @@ package com.zlcdgroup.mrsei.data.entity;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
-import com.zlcdgroup.mrsei.BR;
 import java.io.Serializable;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
@@ -49,7 +48,7 @@ public UserEntity(Long id, String name, int age) {
 
   public void setName(String name) {
       this.name = name;
-       notifyPropertyChanged(BR.name);
+      // notifyPropertyChanged(BR.name);
   }
 
   public int getAge() {

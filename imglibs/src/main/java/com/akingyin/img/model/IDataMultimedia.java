@@ -9,6 +9,7 @@
 package com.akingyin.img.model;
 
 import android.graphics.Rect;
+import androidx.annotation.Nullable;
 
 /**
 
@@ -29,6 +30,7 @@ public abstract class IDataMultimedia {
   /**
    * 本地文件路径
    */
+  @Nullable
   public abstract String getLocalPath();
 
   /**
@@ -39,14 +41,17 @@ public abstract class IDataMultimedia {
   /**
    * 服务器地址
    */
+  @Nullable
   public abstract String getServerPath();
 
   /**
    * 本地原始文件地址
    */
+  @Nullable
   public abstract String getLocalOriginalPath();
 
   //文本描述
+  @Nullable
   public abstract String getTextDes();
 
   //设置值
