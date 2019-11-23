@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.IntentFilter.MalformedMimeTypeException
 import android.content.pm.PackageManager
 import android.nfc.NfcAdapter
 import android.nfc.Tag
@@ -20,23 +19,23 @@ import com.zlcdgroup.nfcsdk.RfidConnectorInterface
 import com.zlcdgroup.nfcsdk.RfidInterface
 import java.lang.ref.WeakReference
 
-
 /**
+ * 读取标签
  * @ Description:
  * @author king
- * @ Date 2018/9/3 15:30
+ * @ Date 2019/11/23 11:04
  * @version V1.0
  */
- abstract class BaseNfcTagActivity  :BaseActivity(),RfidConnectorInterface {
+ abstract  class SimpleNfcTagActivity : SimpleActivity(), RfidConnectorInterface {
 
-  var mAdapter: NfcAdapter? = null
-  var mPendingIntent: PendingIntent? = null
-  var mFilters: Array<IntentFilter>? = null
-  var mTechLists: Array<Array<String>>? = null
-  var mf: MifareClassic? = null
-  var tagFromIntent: Tag? = null
-  var openNfc = 0
-  var isSupportBle = true
+ var mAdapter: NfcAdapter? = null
+ var mPendingIntent: PendingIntent? = null
+ var mFilters: Array<IntentFilter>? = null
+ var mTechLists: Array<Array<String>>? = null
+ var mf: MifareClassic? = null
+ var tagFromIntent: Tag? = null
+ var openNfc = 0
+ var isSupportBle = true
 
  var openBle = false
 
@@ -49,12 +48,12 @@ import java.lang.ref.WeakReference
   mAdapter = NfcAdapter.getDefaultAdapter(this)
   mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
   if(packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)){
-    isSupportBle = false
+   isSupportBle = false
   }
   if(null == mAdapter){
    showWarning("当前终端不支持NFC")
   }else{
-     mPendingIntent = PendingIntent.getActivity(this,0, Intent(this,javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),0)
+   mPendingIntent = PendingIntent.getActivity(this,0, Intent(this,javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),0)
    val ndef = IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED)
    try {
     ndef.addDataType("*/*")
@@ -66,7 +65,7 @@ import java.lang.ref.WeakReference
             arrayOf(NfcF::class.java.name),
             arrayOf(NfcV::class.java.name))
 
-   } catch (e: MalformedMimeTypeException) {
+   } catch (e: IntentFilter.MalformedMimeTypeException) {
     // TODO Auto-generated catch block
     e.printStackTrace()
    }
@@ -90,7 +89,7 @@ import java.lang.ref.WeakReference
 
  override fun onResume() {
   if(null != mAdapter){
-    mAdapter!!.enableForegroundDispatch(this,mPendingIntent,mFilters,mTechLists)
+   mAdapter!!.enableForegroundDispatch(this,mPendingIntent,mFilters,mTechLists)
   }
   super.onResume()
 
@@ -116,8 +115,8 @@ import java.lang.ref.WeakReference
   }
  }
 
- class MyHandler(activity: BaseNfcTagActivity) : Handler(Looper.getMainLooper()) {
-  private val mActivity: WeakReference<BaseNfcTagActivity> = WeakReference(activity)
+ class MyHandler(activity: SimpleActivity) : Handler(Looper.getMainLooper()) {
+  private val mActivity: WeakReference<SimpleActivity> = WeakReference(activity)
 
   override fun handleMessage(msg: Message) {
    if (mActivity.get() == null) {
@@ -137,16 +136,16 @@ import java.lang.ref.WeakReference
 
 
  override fun onNewRfid(data: ByteArray?, rfidInterface: RfidInterface?) {
-   data?.let {
-    var msg = mainHandler.obtainMessage()
-    msg.apply {
-       what=1
-       obj = ConvertUtils.bytes2HexStrReverse(it)
-
-    }
-    mainHandler.sendMessage(msg)
+  data?.let {
+   var msg = mainHandler.obtainMessage()
+   msg.apply {
+    what=1
+    obj = ConvertUtils.bytes2HexStrReverse(it)
 
    }
+   mainHandler.sendMessage(msg)
+
+  }
  }
 
  override fun onConnectStatus(conStatus: ConStatus?) {

@@ -189,6 +189,7 @@ dependencies {
   implementation "androidx.work:work-runtime-ktx:${workVersion}"
   implementation 'com.github.arimorty:floatingsearchview:2.1.1'
   implementation 'com.github.clans:fab:1.6.4'
+  implementation 'com.github.adrielcafe:AndroidAudioRecorder:0.3.0'
   implementation project(':androidutil')
   implementation project(path: ':zxingcamera')
   implementation project(path: ':maplibs')
