@@ -12,19 +12,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import androidx.appcompat.app.AppCompatActivity;
-import com.akingyin.base.utils.CameraBitmapUtil;
-import com.akingyin.base.utils.FileUtils;
 import com.akingyin.img.callback.AppCallBack3;
 import com.akingyin.img.model.MultimediaTypeEnum;
 import com.akingyin.img.model.OperationStateEnum;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import java.io.File;
 
 /**
@@ -69,73 +60,73 @@ public abstract class AbsCreateMultimediaActivity extends AppCompatActivity {
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
 
-    if(null != sOperationStateEnum && OperationStateEnum.NULL != sOperationStateEnum){
-      try {
-        if(sOperationStateEnum == OperationStateEnum.AddAudio ){
-
-          if(null != data ){
-            String  path = getAudioFilePathFromUri(data.getData());
-            if(!TextUtils.equals(path,localPath)){
-              FileUtils.copyFile(path,localPath);
-            }
-          }
-        }
-        final   File  file = new File(localPath);
-        if(file.exists()){
-          if(  sMultimediaTypeEnum == MultimediaTypeEnum.SysCamrea
-              && sOperationStateEnum == OperationStateEnum.AddImage){
-          Disposable disposable = Observable.just(file).map(new Function<File, Boolean>() {
-
-              @Override public Boolean apply(File file) throws Exception {
-                return CameraBitmapUtil.SysCameraZipImage(localPath,getNowTime());
-              }
-            }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-                .subscribe(new Consumer<Boolean>() {
-                  @Override public void accept(Boolean aBoolean) throws Exception {
-                    if(null != callBack){
-                      if(aBoolean){
-                        callBack.call(file);
-                      }else{
-                        callBack.onError(new Exception("内存不足"),"压缩图片失败，内存不足");
-                      }
-
-                      sMultimediaTypeEnum = null;
-                    }
-                  }
-                }, new Consumer<Throwable>() {
-                  @Override public void accept(Throwable throwable) throws Exception {
-                    if(null != callBack){
-                      callBack.onError(throwable,"压缩图片失败，内存不足");
-
-                      sMultimediaTypeEnum = null;
-                    }
-                  }
-                });
-          }else{
-            if(null != callBack){
-              callBack.call(file);
-
-              sMultimediaTypeEnum = null;
-            }
-          }
-
-
-        }else{
-          if(null != callBack){
-
-            callBack.onError(new Exception("拍照取消或失败"),(null == sOperationStateEnum?"当前":sOperationStateEnum.getName())+"操作已取消或失败");
-
-            sMultimediaTypeEnum = null;
-          }
-        }
-      }catch (Exception e){
-        e.printStackTrace();
-
-        sMultimediaTypeEnum = null;
-        localPath = null;
-
-      }
-    }
+    //if(null != sOperationStateEnum && OperationStateEnum.NULL != sOperationStateEnum){
+    //  try {
+    //    if(sOperationStateEnum == OperationStateEnum.AddAudio ){
+    //
+    //      if(null != data ){
+    //        String  path = getAudioFilePathFromUri(data.getData());
+    //        if(!TextUtils.equals(path,localPath)){
+    //          FileUtils.copyFile(path,localPath);
+    //        }
+    //      }
+    //    }
+    //    final   File  file = new File(localPath);
+    //    if(file.exists()){
+    //      if(  sMultimediaTypeEnum == MultimediaTypeEnum.SysCamrea
+    //          && sOperationStateEnum == OperationStateEnum.AddImage){
+    //      Disposable disposable = Observable.just(file).map(new Function<File, Boolean>() {
+    //
+    //          @Override public Boolean apply(File file) throws Exception {
+    //            return CameraBitmapUtil.SysCameraZipImage(localPath,getNowTime());
+    //          }
+    //        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+    //            .subscribe(new Consumer<Boolean>() {
+    //              @Override public void accept(Boolean aBoolean) throws Exception {
+    //                if(null != callBack){
+    //                  if(aBoolean){
+    //                    callBack.call(file);
+    //                  }else{
+    //                    callBack.onError(new Exception("内存不足"),"压缩图片失败，内存不足");
+    //                  }
+    //
+    //                  sMultimediaTypeEnum = null;
+    //                }
+    //              }
+    //            }, new Consumer<Throwable>() {
+    //              @Override public void accept(Throwable throwable) throws Exception {
+    //                if(null != callBack){
+    //                  callBack.onError(throwable,"压缩图片失败，内存不足");
+    //
+    //                  sMultimediaTypeEnum = null;
+    //                }
+    //              }
+    //            });
+    //      }else{
+    //        if(null != callBack){
+    //          callBack.call(file);
+    //
+    //          sMultimediaTypeEnum = null;
+    //        }
+    //      }
+    //
+    //
+    //    }else{
+    //      if(null != callBack){
+    //
+    //        callBack.onError(new Exception("拍照取消或失败"),(null == sOperationStateEnum?"当前":sOperationStateEnum.getName())+"操作已取消或失败");
+    //
+    //        sMultimediaTypeEnum = null;
+    //      }
+    //    }
+    //  }catch (Exception e){
+    //    e.printStackTrace();
+    //
+    //    sMultimediaTypeEnum = null;
+    //    localPath = null;
+    //
+    //  }
+    //}
   }
 
   @Override

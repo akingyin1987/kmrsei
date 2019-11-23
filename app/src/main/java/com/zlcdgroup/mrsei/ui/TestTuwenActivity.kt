@@ -25,10 +25,12 @@ import java.io.File
  * @version V1.0
  */
 class TestTuwenActivity : BaseMultimediaActivity<ImageTextEntity>() {
-     lateinit var  imageTextEntityDao:ImageTextEntityDao
+      val  imageTextEntityDao:ImageTextEntityDao by lazy {
+          DbCore.getDaoSession().imageTextEntityDao
+      }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        imageTextEntityDao = DbCore.getDaoSession().imageTextEntityDao
+       // imageTextEntityDao = DbCore.getDaoSession().imageTextEntityDao
     }
 
     override fun getStringTitle()="图文测试"
@@ -140,4 +142,8 @@ class TestTuwenActivity : BaseMultimediaActivity<ImageTextEntity>() {
            }
         }
     }
+
+    override fun haveAddText() = true
+
+    override fun haveAddImage() = true
 }

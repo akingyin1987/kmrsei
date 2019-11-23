@@ -101,7 +101,7 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
         }?.absolutePath+File.separator+StringUtils.getUUID()+".jpg"
        // startActivityForResult<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"),requestCode = 100)
        // startActivity<TestMarkerMapActivity>()
-        startActivity<TuyaTestActivity>()
+        startActivity<TestTuwenActivity>()
     }
 
     override fun setAppTheme(theme: String) {

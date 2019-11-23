@@ -48,6 +48,7 @@ public class ImageTextEntity  extends IDataMultimedia {
   }
 
   @Override public MultimediaEnum getMultimediaEnum() {
+    System.out.println("text="+TextUtils.isEmpty(text));
     return TextUtils.isEmpty(text)?MultimediaEnum.IMAGE:MultimediaEnum.TEXT;
   }
 

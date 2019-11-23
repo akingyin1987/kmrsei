@@ -171,7 +171,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
       @Override public void onClick(View v) {
         sOperationStateEnum = OperationStateEnum.AddText;
         endOperation();
-        addText(null);
+        addText(null,true);
       }
     });
     photo.setOnClickListener(new View.OnClickListener() {
@@ -395,10 +395,10 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
         dialog.dismiss();
         if (keyValueObject.value == 1) {
           sOperationStateEnum = OperationStateEnum.AddText;
-          addText(postion);
+          addText(postion,true);
         } else if (keyValueObject.value == 2) {
           sOperationStateEnum = OperationStateEnum.AddText;
-          addText(postion + 1);
+          addText(postion + 1,true);
         } else if (keyValueObject.value == 3) {
           sOperationStateEnum = OperationStateEnum.AddImage;
           photo(postion, true);
@@ -554,19 +554,15 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
   protected  abstract   void    onAddText(String   text,@NonNull AppCallBack3<String> callBack3);
 
   //添加文字
-  public void addText(final Integer postion) {
+  public void addText(final Integer postion,final boolean isAdd) {
      String  text = "";
     if(null != postion && postion>=0){
      text = adapter.getItem(postion).getTextDes();
     }
     onAddText(text, new AppCallBack3<String>() {
       @Override public void call(String s) {
-        T t = null;
-        if(null != postion){
-          t = adapter.getItem(postion);
-        }else{
-          t = createObject();
-        }
+        T t = isAdd ? createObject() : adapter.getItem(postion);
+
         if(null == t){
           return;
         }
@@ -578,8 +574,11 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
         if (null == postion) {
           adapter.addData(t);
         } else {
-          adapter.setData(postion, t);
-
+          if(isAdd){
+            adapter.addData(postion,t);
+          }else{
+            adapter.setData(postion, t);
+          }
         }
       }
 
