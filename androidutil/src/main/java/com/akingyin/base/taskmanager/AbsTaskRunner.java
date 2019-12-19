@@ -284,7 +284,6 @@ public  abstract class AbsTaskRunner implements Runnable ,ApiSonTaskCallBack{
         setSonTaskStatusEnum(taskStatusEnum);
         setErrorMsg(taskRunner.getErrorMsg());
         if(taskStatusEnum == TaskStatusEnum.SUCCESS){
-
             doSonTaskBackground();
         }else if(taskStatusEnum == TaskStatusEnum.ERROR ||
             taskStatusEnum == TaskStatusEnum.WAITING){

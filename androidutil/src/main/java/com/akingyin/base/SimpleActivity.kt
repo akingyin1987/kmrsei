@@ -2,7 +2,8 @@ package com.akingyin.base
 
 import android.content.Context
 import android.os.Bundle
-import android.text.TextUtils
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -10,12 +11,16 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.StackingBehavior
 import com.akingyin.base.ext.no
 import com.akingyin.base.ext.yes
 import com.classic.common.MultipleStatusView
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog.Builder.ICON_TYPE_LOADING
 import es.dmoral.toasty.Toasty
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.Job
+
 
 /**
  * @ Description:
@@ -24,10 +29,11 @@ import es.dmoral.toasty.Toasty
  * @version V1.0
  */
 abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
-
-    protected   var multipleStatusView : MultipleStatusView?=null
+    private var compositeDisposable = CompositeDisposable()
+    private   var mLaunchManager: MutableList<Job> = mutableListOf()
+    private   var multipleStatusView : MultipleStatusView?=null
     // Log tag
-    protected var TAG_LOG: String? = null
+    private var TAG_LOG: String? = null
 
 
     protected var mContext: Context? = null
@@ -36,6 +42,7 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjection()
+
         super.onCreate(savedInstanceState)
         AppManager.getInstance()!!.addActivity(this)
         TAG_LOG = this.localClassName
@@ -161,27 +168,36 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
     override fun showTips(msg: String?) {
         if (msg != null) {
             Toasty.info(this,msg, Toast.LENGTH_SHORT).show()
+
+           // QMUITipDialog.Builder(this).setTipWord(msg).setFollowSkin(true).create(true).show()
+
         }
     }
 
 
-    var loadingDialog: MaterialDialog? = null
+   private var loadingDialog: QMUITipDialog? = null
     override fun showLoadDialog(msg: String?) {
         loadingDialog?.let {
             it.isShowing.yes {
                 it.dismiss()
-            }
+            }.no {  }
         }
 
-         loadingDialog = MaterialDialog.Builder(this)
-                .content(TextUtils.isEmpty(msg).yes { "" }.no { msg!! })
-                .progress(false, 0)
-                .stackingBehavior(StackingBehavior.ADAPTIVE).build()
+         loadingDialog = QMUITipDialog.Builder(this).setFollowSkin(true)
+                 .setIconType(ICON_TYPE_LOADING).create(true)
 
-         loadingDialog!!.setOnDismissListener {
-             dismissLoading()
+         loadingDialog?.let {  dialog ->
+
+              dialog.setOnCancelListener {
+                  onCancelLoading()
+              }
+              dialog.setOnDismissListener {
+                  dismissLoading()
+              }
+              dialog.show()
          }
-        loadingDialog!!.show()
+
+
 
     }
 
@@ -194,12 +210,22 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
     }
 
     override fun showLoading() {
-        showLoadDialog("处理中..")
+        showLoadDialog(null)
     }
 
     override fun dismissLoading() {
     }
 
+    override fun onCancelLoading() {
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onResume() {
         super.onResume()
@@ -208,9 +234,24 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
     override fun onPause() {
         super.onPause()
     }
-
+    open fun addSubscription(disposable: Disposable) {
+        compositeDisposable.add(disposable)
+    }
+    fun addJob(job: Job){
+        mLaunchManager.add(job)
+    }
     override fun onDestroy() {
         AppManager.getInstance()?.finishActivity(this)
+        hideLoadDialog()
+        if (!compositeDisposable.isDisposed) {
+            compositeDisposable.clear()
+        }
+        mLaunchManager.forEach {
+            if(!it.isCancelled){
+                it.cancel()
+            }
+        }
+        mLaunchManager.clear()
         super.onDestroy()
     }
 

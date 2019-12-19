@@ -1702,21 +1702,21 @@ public class Base64 {
 	 * it.
 	 * </p>
 	 * 
-	 * @param filename
+	 * @param filePath
 	 *            Filename for reading binary data
 	 * @return base64-encoded string
 	 * @throws java.io.IOException
 	 *             if there is an error
 	 * @since 2.1
 	 */
-	public static String encodeFromFile(String filename)
+	public static String encodeFromFile(String filePath)
 			throws java.io.IOException {
 
 		String encodedData = null;
 		InputStream bis = null;
 		try {
 			// Set up some useful variables
-			java.io.File file = new java.io.File(filename);
+			java.io.File file = new java.io.File(filePath);
 			byte[] buffer = new byte[Math.max((int) (file.length() * 1.4 + 1),
 					40)]; // Need max() for math on small files (v2.2.1); Need
 							// +1 for a few corner cases (v2.3.5)

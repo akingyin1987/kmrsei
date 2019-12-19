@@ -30,6 +30,7 @@ abstract  class BaseActivity : SimpleActivity(),HasAndroidInjector {
     override fun initInjection() {
 
         AndroidInjection.inject(this)
+
     }
 
     override fun androidInjector(): AndroidInjector<Any> {

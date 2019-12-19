@@ -48,7 +48,7 @@ import java.lang.ref.WeakReference
   mainHandler = MyHandler(this)
   mAdapter = NfcAdapter.getDefaultAdapter(this)
   mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-  if(packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)){
+  if(!packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)){
     isSupportBle = false
   }
   if(null == mAdapter){
@@ -106,6 +106,7 @@ import java.lang.ref.WeakReference
 
  override fun onNewIntent(intent: Intent?) {
   super.onNewIntent(intent)
+  println("onNewIntent->>>>${intent?.action}")
 
   if (null != intent && NfcAdapter.ACTION_TECH_DISCOVERED == intent.action) {
    tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
@@ -128,6 +129,9 @@ import java.lang.ref.WeakReference
     0-> {
 
     }
+    1->{
+     activity?.handTag(msg.obj.toString(),null)
+    }
     else -> {
     }
    }
@@ -138,13 +142,10 @@ import java.lang.ref.WeakReference
 
  override fun onNewRfid(data: ByteArray?, rfidInterface: RfidInterface?) {
    data?.let {
-    var msg = mainHandler.obtainMessage()
-    msg.apply {
-       what=1
-       obj = ConvertUtils.bytes2HexStrReverse(it)
-
-    }
-    mainHandler.sendMessage(msg)
+    mainHandler.sendMessage(mainHandler.obtainMessage().apply {
+     what=1
+     obj = ConvertUtils.bytes2HexStrReverse(it)
+    })
 
    }
  }

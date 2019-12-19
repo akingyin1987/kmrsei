@@ -35,6 +35,7 @@ public class FastJsonRequestBodyConverter<T> implements Converter<T, RequestBody
 
     @Override
     public RequestBody convert(T value) throws IOException {
-        return RequestBody.create(MEDIA_TYPE, JSON.toJSONBytes(value));
+
+        return RequestBody.create( JSON.toJSONBytes(value),MEDIA_TYPE);
     }
 }

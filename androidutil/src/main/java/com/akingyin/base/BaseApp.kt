@@ -17,8 +17,9 @@ import timber.log.Timber
         super.onCreate()
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
-            initLeakCanary()
+           // initLeakCanary()
         }
+        initInjection()
     }
 
     private fun   initLeakCanary() {

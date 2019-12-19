@@ -12,10 +12,11 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import com.akingyin.base.livedata.LifecycleHandler
+
 
 /**
  * activity 扩展类
@@ -31,6 +32,11 @@ inline fun <reified T : Activity> Activity.goActivity(requestCode: Int) = startA
 inline fun <reified T : Service> Activity.goService() = startService(Intent(this, T::class.java))
 
 inline fun <reified T : Service> Activity.goService(sc: ServiceConnection, flags: Int = Context.BIND_AUTO_CREATE) = bindService(Intent(this, T::class.java), sc, flags)
+
+/**
+ * 获取颜色值--扩展函数
+ */
+fun Activity.getCompactColor(@ColorRes colorRes: Int): Int = ContextCompat.getColor(this, colorRes)
 
 fun Activity.hideInputMethod() = window.peekDecorView()?.let {
     inputMethodManager.hideSoftInputFromWindow(window.peekDecorView().windowToken, 0)
@@ -111,15 +117,3 @@ inline fun <reified T> Activity.startActivityForResult(flag: Int = -1, bundle: A
     startActivityForResult(intent, requestCode)
 }
 
-fun FragmentActivity.finishDelay(delay: Long = 1) {
-    LifecycleHandler(this).postDelayed({ finish() }, delay)
-}
-
-//post, postDelay
-fun FragmentActivity.post(action: ()->Unit){
-    LifecycleHandler(this).post { action() }
-}
-
-fun FragmentActivity.postDelay(delay:Long = 0, action: ()->Unit){
-    LifecycleHandler(this).postDelayed({ action() }, delay)
-}

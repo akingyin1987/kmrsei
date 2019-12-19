@@ -1,6 +1,7 @@
 package com.akingyin.base.utils;
 
 import android.annotation.SuppressLint;
+import androidx.annotation.Nullable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -114,7 +115,7 @@ public class DateUtil {
    * @param millis
    * @return
    */
-  public static String millis2String(Long millis) {
+  public static String millis2String(@Nullable Long millis) {
     if(null == millis){
       return StringUtils.DEFAULT_EMPTY;
     }
@@ -127,7 +128,7 @@ public class DateUtil {
    * @param pattern
    * @return
    */
-  public static String millis2String(Long millis, String pattern) {
+  public static String millis2String(@Nullable Long millis, String pattern) {
     if(null == millis){
       return  StringUtils.DEFAULT_EMPTY;
     }
@@ -278,7 +279,7 @@ public class DateUtil {
    */
   public static long millis2TimeSpan(long millis, TimeUnit unit) {
     switch (unit) {
-      default:
+
       case MSEC:
         return millis;
       case SEC:
@@ -289,6 +290,8 @@ public class DateUtil {
         return millis / HOUR;
       case DAY:
         return millis / DAY;
+      default:
+         return 0L;
     }
   }
   /**
@@ -390,6 +393,22 @@ public class DateUtil {
     }
   }
 
+  public  static   String   getCurrentFriendDay(Long  time){
+    Calendar  calendar =  Calendar.getInstance();
+    calendar.setTimeInMillis(null == time?System.currentTimeMillis():time);
+    int  hour = calendar.get(Calendar.HOUR_OF_DAY);
+    String  range = "凌晨";
+    if (hour >= 6 && hour < 11) {
+      range = "早晨";
+    } else if (hour >= 11 && hour < 14) {
+      range = "中午";
+    } else if (hour >= 14 && hour <= 18) {
+      range = "下午";
+    } else if (hour > 18 && hour < 24) {
+      range = "晚上";
+    }
+    return  range;
+  }
 
   /**
    * 当天的开始时间

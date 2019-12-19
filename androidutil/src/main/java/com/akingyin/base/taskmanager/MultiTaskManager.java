@@ -10,7 +10,6 @@ package com.akingyin.base.taskmanager;
 
 import android.os.Handler;
 import android.os.Looper;
-import androidx.annotation.NonNull;
 import com.akingyin.base.taskmanager.enums.TaskManagerStatusEnum;
 import com.akingyin.base.taskmanager.enums.TaskStatusEnum;
 import com.akingyin.base.taskmanager.enums.ThreadTypeEnum;
@@ -18,7 +17,6 @@ import com.blankj.utilcode.util.StringUtils;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,8 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 多任务管理器
  *
- * @author Administrator
- * @date 2016/7/3
+ * @author akingyin
+ * @date 2019-12-19
  */
 public class MultiTaskManager implements  ITaskResultCallBack{
 
@@ -46,6 +44,10 @@ public class MultiTaskManager implements  ITaskResultCallBack{
 
     /** 线程池 */
     private ExecutorService threadPool;
+
+    private  MultiTaskManager(){
+
+    }
 
     /** 待执行任务 */
     private LinkedBlockingQueue<AbsTaskRunner> queueTasks = new LinkedBlockingQueue<>();
@@ -93,8 +95,22 @@ public class MultiTaskManager implements  ITaskResultCallBack{
     }
 
     private   int   nThreads;
-    public MultiTaskManager() {
-        this(3);
+
+    /**
+     *   // 创建线程池，核心线程数、最大线程数、空闲保持时间、队列长度、拒绝策略可自行定义
+     * @param poolSize
+     * @return
+     */
+    public  static  MultiTaskManager createPool(int  poolSize){
+
+        MultiTaskManager  taskManager = new MultiTaskManager();
+        // 创建线程池，核心线程数、最大线程数、空闲保持时间、队列长度、拒绝策略可自行定义
+        taskManager.threadPool = new ThreadPoolExecutor(poolSize, poolSize*40,
+            0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<>(1024),
+            new ThreadFactoryBuilder().setNameFormat("multitask-pool-%d").build(),new ThreadPoolExecutor.AbortPolicy());
+         taskManager.nThreads = poolSize;
+        return  taskManager;
     }
 
     private   ApiTaskCallBack  callBack;
@@ -108,16 +124,7 @@ public class MultiTaskManager implements  ITaskResultCallBack{
         this.callBack = callBack;
     }
 
-    public MultiTaskManager(int nThreads) {
 
-        threadPool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
-            @Override public Thread newThread(@NonNull Runnable r) {
-                return new Thread(r);
-            }
-        });
-        this.nThreads = nThreads;
-    }
 
     public void addTasks(List<AbsTaskRunner> tasks) {
         for (AbsTaskRunner taskRunner : tasks) {
@@ -162,15 +169,13 @@ public class MultiTaskManager implements  ITaskResultCallBack{
         errorStrings.clear();
         status.getAndSet(2);
         if(null != threadPool){
-            threadPool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
-                @Override public Thread newThread(@NonNull Runnable r) {
-                    return new Thread(r);
-                }
-            });
+            threadPool = new ThreadPoolExecutor(nThreads, nThreads*40,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(1024),
+                new ThreadFactoryBuilder().setNameFormat("multitask-pool-%d").build(),new ThreadPoolExecutor.AbortPolicy());
             for(AbsTaskRunner  absTaskRunner : queueTasks){
                 if(absTaskRunner.getTaskStatusEnum().getCode()<=3){
-                    threadPool.submit(absTaskRunner);
+                    threadPool.execute(absTaskRunner);
                 }
             }
 
@@ -178,6 +183,7 @@ public class MultiTaskManager implements  ITaskResultCallBack{
     }
 
     public   int    getTotal(){
+        System.out.println("count="+count.get()+":"+queueTasks.size());
         return  count.get();
     }
 
@@ -203,6 +209,7 @@ public class MultiTaskManager implements  ITaskResultCallBack{
      */
     public synchronized void cancelTasks() {
         status.getAndSet(3);
+        count.set(0);
         if (threadPool != null) {
             for(AbsTaskRunner  taskRunner : queueTasks){
                 taskRunner.onCancel();

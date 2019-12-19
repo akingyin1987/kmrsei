@@ -87,9 +87,9 @@
 
     <style name="AppTheme_bottom_sheet" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/base_colorPrimary</item>
+        <item name="colorPrimaryDark">@color/base_colorPrimaryDark</item>
+        <item name="colorAccent">@color/base_colorAccent</item>
 
     </style>
 
@@ -110,9 +110,9 @@
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/base_colorAccent</item>
+        <item name="colorPrimaryDark">@color/base_colorPrimaryDark</item>
+        <item name="colorAccent">@color/base_colorAccent</item>
     </style>
     <style name="Theme.TranslucentNavigationBar" parent="Theme.AppCompat.Light.NoActionBar">
 
@@ -240,9 +240,9 @@
     </style>
 
     <style name="App_NoActionbar" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/base_colorPrimary</item>
+        <item name="colorPrimaryDark">@color/base_colorPrimaryDark</item>
+        <item name="colorAccent">@color/base_colorAccent</item>
         <item name="android:windowBackground">@color/window_background</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>

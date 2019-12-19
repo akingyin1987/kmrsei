@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import androidx.annotation.Nullable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -75,7 +76,7 @@ public class StringUtils {
    * @param str
    * @return
    */
-  public  static  String    isEmptyOrNull(String   str){
+  public  static  String    isEmptyOrNull(@Nullable String   str){
     if(TextUtils.isEmpty(str)){
       return  DEFAULT_EMPTY;
     }
@@ -601,5 +602,14 @@ public class StringUtils {
     value = value.replaceAll("script", "");
     return value;
 
+  }
+
+  public static String readableFileSize(long size) {
+    if (size <= 0) {
+      return "0";
+    }
+    final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
+    int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+    return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
   }
 }

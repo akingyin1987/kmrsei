@@ -17,10 +17,11 @@
 
   <TextView
       android:id="@+id/property_name"
-      android:layout_width="wrap_content"
+      android:layout_width="100dp"
       android:layout_height="wrap_content"
       android:textColor="@color/dark_font"
-      android:text="2222222"
+      android:layout_gravity="center"
+      android:text="我是正常的属"
       android:textSize="14sp" />
 
   <TextView
@@ -28,11 +29,18 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:minHeight="25dp"
-      android:text="11111111122222"
+      android:layout_gravity="center"
+
       android:layout_weight="1"
       android:textColor="@color/dark_font"
       android:textSize="14sp"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ll_qmui_content"
+        android:padding="3dp"
+        android:orientation="horizontal"/>
 
 
     <RelativeLayout android:layout_width="20dp"

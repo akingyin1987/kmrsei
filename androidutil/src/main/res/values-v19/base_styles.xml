@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <style name="Theme.TranslucentNavigationBar"
-      parent="Theme.AppCompat.Light.NoActionBar">
+  <style name="Theme.TranslucentNavigationBar" parent="Theme.AppCompat.Light.NoActionBar">
     <item name="android:windowTranslucentStatus">false</item>
     <item name="android:windowFullscreen">true</item>
   </style>
@@ -11,8 +10,8 @@
     <item name="windowNoTitle">true</item>
     <item name="android:windowTranslucentNavigation">true</item>
     <item name="android:windowTranslucentStatus">true</item>
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    <item name="colorAccent">@color/colorAccent</item>
+    <item name="colorPrimary">@color/base_colorPrimary</item>
+    <item name="colorPrimaryDark">@color/base_colorPrimaryDark</item>
+    <item name="colorAccent">@color/base_colorAccent</item>
   </style>
 </resources>

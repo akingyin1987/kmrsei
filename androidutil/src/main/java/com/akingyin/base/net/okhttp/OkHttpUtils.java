@@ -53,8 +53,8 @@ public class OkHttpUtils {
      */
     public static RequestBody CreateFileBody(@NonNull File file) {
 
-        RequestBody rb = RequestBody.create(MEDIA_TYPE_JPG, file);
-        return rb;
+
+        return RequestBody.create(file,MEDIA_TYPE_JPG);
     }
 
     /**

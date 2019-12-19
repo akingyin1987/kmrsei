@@ -10,16 +10,13 @@ package com.akingyin.base.taskmanager;
 
 import android.os.Handler;
 import android.os.Looper;
-import androidx.annotation.NonNull;
 import com.akingyin.base.taskmanager.enums.TaskManagerStatusEnum;
 import com.akingyin.base.taskmanager.enums.TaskStatusEnum;
 import com.akingyin.base.taskmanager.enums.ThreadTypeEnum;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -59,12 +56,7 @@ public class QueueTaskManager implements  ITaskResultCallBack{
     }
 
     public  QueueTaskManager(){
-        threadPool =  threadPool = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
-            @Override public Thread newThread(@NonNull Runnable r) {
-                return new Thread(r);
-            }
-        });
+        threadPool  = Executors.newFixedThreadPool(1);
     }
 
 

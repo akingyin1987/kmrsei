@@ -1,6 +1,7 @@
 package com.akingyin.base.utils;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
@@ -16,6 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 /**
  * @ Description:
@@ -596,13 +599,24 @@ public final class AppUtils {
     return true;
   }
 
+
+  public  static  String  getAndroidId(Context context){
+    try {
+
+      return Settings.System.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+    return "";
+  }
+
   public static String getIMEI(Context context) {
-    String deviceId = null;
+    String deviceId = "";
     try {
 
       if (Build.VERSION.SDK_INT >= 29) {
         deviceId = Settings.System.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-
       } else {
         // request old storage permission
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
@@ -613,17 +627,16 @@ public final class AppUtils {
           //                                          int[] grantResults)
           // to handle the case where the user grants the permission. See the documentation
           // for ActivityCompat#requestPermissions for more details.
-          return null;
+          return "";
         }
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        if(null != tm){
+        if (null != tm) {
           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             deviceId = tm.getImei();
-          }else{
+          } else {
             deviceId = tm.getDeviceId();
           }
         }
-
       }
       if (deviceId == null || "".equals(deviceId)) {
         return "";
@@ -636,5 +649,112 @@ public final class AppUtils {
     }
 
     return deviceId.toUpperCase(Locale.getDefault());
+  }
+
+  public static String getIMSI(Context context) {
+    try {
+      TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+      //获取IMSI号
+      if (ActivityCompat.checkSelfPermission(context,Manifest.permission.READ_PHONE_STATE)
+          != PackageManager.PERMISSION_GRANTED) {
+        // here to request the missing permissions, and then overriding
+        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+        //                                          int[] grantResults)
+        // to handle the case where the user grants the permission. See the documentation
+        // for Activity#requestPermissions for more details.
+        return "";
+      }
+      String imsi = telephonyManager.getSubscriberId();
+      if(null==imsi){
+        imsi="";
+      }
+      return imsi;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return "";
+    }
+  }
+
+
+  public static String getSerial(Context context) {
+    try {
+
+      if (ActivityCompat.checkSelfPermission(context,Manifest.permission.READ_PHONE_STATE)
+          != PackageManager.PERMISSION_GRANTED) {
+        // here to request the missing permissions, and then overriding
+        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+        //                                          int[] grantResults)
+        // to handle the case where the user grants the permission. See the documentation
+        // for Activity#requestPermissions for more details.
+        return "";
+      }
+      String imsi = "";
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        imsi = Build.getSerial();
+      }else{
+        imsi = Build.SERIAL;
+      }
+      if(null==imsi){
+        imsi="";
+      }
+      return imsi;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return "";
+    }
+  }
+
+  /**
+   * 获取设备唯一标识符
+   *
+   * @return 唯一标识符
+   */
+  @SuppressLint("HardwareIds")
+  public static String getDeviceId(Context context) {
+    String m_szDevIDShort = "35" + Build.BOARD.length() % 10
+        + Build.BRAND.length() % 10 + Build.CPU_ABI.length() % 10
+        + Build.DEVICE.length() % 10 + Build.DISPLAY.length() % 10
+        + Build.HOST.length() % 10 + Build.ID.length() % 10
+        + Build.MANUFACTURER.length() % 10 + Build.MODEL.length() % 10
+        + Build.PRODUCT.length() % 10 + Build.TAGS.length() % 10
+        + Build.TYPE.length() % 10 + Build.USER.length() % 10;// 13 位
+
+    String serial = "serial";// 默认serial可随便定义
+    try {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (ActivityCompat.checkSelfPermission(context,
+            Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+          // 由于 Android Q 唯一标识符权限的更改会导致
+          // android.os.Build.getSerial() 返回 unknown,
+          // 但是 m_szDevIDShort 是由硬件信息拼出来的，所以仍然保证了UUID 的唯一性和持久性。
+          serial = android.os.Build.getSerial();// Android Q 中返回 unknown
+        }
+      } else {
+        serial = Build.SERIAL;
+      }
+    } catch (Exception ignored) {
+    }
+    return new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
+  }
+
+
+  public static final boolean isOPenLocation( Context context) {
+
+    try {
+      LocationManager locationManager
+              = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+      // 通过GPS卫星定位，定位级别可以精确到街（通过24颗卫星定位，在室外和空旷的地方定位准确、速度快）
+      boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+      // 通过WLAN或移动网络(3G/2G)确定的位置（也称作AGPS，辅助GPS定位。主要用于在室内或遮盖物（建筑群或茂密的深林等）密集的地方定位）
+      boolean network = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+      if (gps || network) {
+        return true;
+      }
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+
+
+    return false;
   }
 }

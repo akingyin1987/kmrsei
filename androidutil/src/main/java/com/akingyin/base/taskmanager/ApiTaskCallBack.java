@@ -16,13 +16,24 @@ import com.akingyin.base.taskmanager.enums.TaskManagerStatusEnum;
  */
 public interface ApiTaskCallBack {
 
-    //返回结果
+    /**
+     *  //返回结果
+     * @param total
+     * @param progress
+     * @param error
+     */
     void   onCallBack(int total, int progress, int error);
 
-    //任务正常完成时回调
+    /**
+     * 任务正常完成时回调
+     */
     void   onComplete();
 
-    //任务出错时回调
+    /**
+     * 任务出错时回调
+     * @param message
+     * @param statusEnum
+     */
     void   onError(String message, TaskManagerStatusEnum statusEnum);
 
 }

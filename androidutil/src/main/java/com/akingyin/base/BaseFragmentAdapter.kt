@@ -1,7 +1,6 @@
 package com.akingyin.base
 
 
-
 /**
  * @ Description:
  * @author king
@@ -16,7 +15,7 @@ class BaseFragmentAdapter : androidx.fragment.app.FragmentPagerAdapter {
 
 
     private   var  fragmentlist:List<androidx.fragment.app.Fragment>
-     get() =  mutableListOf()
+
 
     private   var  mTitles:List<String>?=null
 
@@ -43,6 +42,7 @@ class BaseFragmentAdapter : androidx.fragment.app.FragmentPagerAdapter {
         notifyDataSetChanged()
     }
     override fun getItem(p0: Int): androidx.fragment.app.Fragment {
+
         return  fragmentlist[p0]
     }
 
@@ -53,4 +53,7 @@ class BaseFragmentAdapter : androidx.fragment.app.FragmentPagerAdapter {
     override fun getPageTitle(position: Int): CharSequence? {
        return  if(null == mTitles)"" else mTitles!![position]
     }
+
+
+
 }
