@@ -10,6 +10,7 @@ package com.akingyin.map.base;
 
 import android.content.Context;
 import android.widget.ImageView;
+import androidx.annotation.NonNull;
 
 /**
  * @author king
@@ -20,6 +21,12 @@ import android.widget.ImageView;
 
 public interface ILoadImage {
 
-  void   loadImageView(String path, Context context, ImageView imageView);
+  /**
+   *
+   * @param path
+   * @param context
+   * @param imageView
+   */
+  void   loadImageView(String path, Context context, @NonNull ImageView imageView);
 
 }

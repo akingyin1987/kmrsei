@@ -12,6 +12,7 @@ import com.baidu.mapapi.clusterutil.clustering.ClusterManager;
 import java.util.Set;
 
 /**
+ * 负责处理聚合操作
  * Renders clusters.
  */
 public interface ClusterRenderer<T extends ClusterItem> {

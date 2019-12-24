@@ -241,10 +241,10 @@ public class IconGenerator {
 
     private static int getStyleColor(int style) {
         switch (style) {
-            default:
+
             case STYLE_DEFAULT:
             case STYLE_WHITE:
-                return 0xffffffff;
+
             case STYLE_RED:
                 return 0xffcc0000;
             case STYLE_BLUE:
@@ -255,21 +255,26 @@ public class IconGenerator {
                 return 0xff9933cc;
             case STYLE_ORANGE:
                 return 0xffff8800;
+            default:
+                return 0xffffffff;
+
         }
     }
 
     private static int getTextStyle(int style) {
         switch (style) {
-            default:
+
             case STYLE_DEFAULT:
             case STYLE_WHITE:
-                return R.style.Bubble_TextAppearance_Dark;
+
             case STYLE_RED:
             case STYLE_BLUE:
             case STYLE_GREEN:
             case STYLE_PURPLE:
             case STYLE_ORANGE:
                 return R.style.Bubble_TextAppearance_Light;
+            default:
+                 return R.style.Bubble_TextAppearance_Dark;
         }
     }
 }

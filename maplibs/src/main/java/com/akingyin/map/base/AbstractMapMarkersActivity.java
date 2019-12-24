@@ -22,11 +22,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 import com.akingyin.map.MapPathPlanActivity;
 import com.akingyin.map.R;
 import com.akingyin.map.adapter.MarkderInfoPagerAdapter;
+import com.akingyin.map.adapter.MarkerInfoRecyclerAdapter;
 import com.akingyin.map.model.IMarkerModel;
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.map.BaiduMap;
@@ -43,7 +46,6 @@ import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.overlayutil.OverlayManager;
 import com.baidu.mapapi.utils.DistanceUtil;
-import com.blankj.utilcode.util.ThreadUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,6 +53,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -76,10 +79,18 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
   private ViewPager viewpager;
   private MarkderInfoPagerAdapter mInfoPagerAdapter;
 
+  private ViewPager2 mRecyclerView;
+  private MarkerInfoRecyclerAdapter<IMarkerModel>   mMarkerInfoRecyclerAdapter;
+
+  /** 当前显示操作marker */
   protected   MyManager   mManager;
+
+  /** 路径 */
   protected   MyManager    overlayManager;
+  /** 其它操作类marker */
   protected   OtherManager    mOtherManager;
   protected   Marker mCurrentMarker = null;
+  protected   BitmapDescriptor   lastClickMarkerIcon = null;
   protected Animation  mShowAction,mHiddenAction;
   protected Toolbar mToolbar;
 
@@ -89,6 +100,7 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
   private ImageView  closeButton;
 
   public     IMarkerModel   getIMarkerModel(int  postion){
+
      if(postion>=0 && postion< dataQueue.size()){
       return dataQueue.get(postion);
      }
@@ -96,13 +108,16 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
   }
 
   @Override public void initialization() {
-    singleThreadPool = ThreadUtils.getIoPool();
+    singleThreadPool =  Executors.newFixedThreadPool(1);
 
 
     mShowAction = AnimationUtils.loadAnimation(this, R.anim.layer_pop_in);
     mHiddenAction = AnimationUtils.loadAnimation(this, R.anim.layer_pop_out);
-    popView = LayoutInflater.from(this).inflate(R.layout.item_openmap_viewpager,null);
-    viewpager = (ViewPager)popView.findViewById(R.id.viewpager);
+    popView = LayoutInflater.from(this).inflate(R.layout.item_openmap_recyclerview,null);
+    mRecyclerView = popView.findViewById(R.id.map_recycler);
+
+    //popView = LayoutInflater.from(this).inflate(R.layout.item_openmap_viewpager,null);
+    //viewpager = (ViewPager)popView.findViewById(R.id.viewpager);
     closeButton = (ImageView)popView.findViewById(R.id.close);
     closeButton.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
@@ -121,11 +136,38 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
         }
       }
     });
-    mInfoPagerAdapter = new MarkderInfoPagerAdapter(this,new ArrayList<IMarkerModel>());
+    if(null != mRecyclerView){
+      mRecyclerView.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+      mMarkerInfoRecyclerAdapter = new MarkerInfoRecyclerAdapter<>();
+      mMarkerInfoRecyclerAdapter.setILoadImage(this);
+      mMarkerInfoRecyclerAdapter.setIOperationListen(this);
+      mRecyclerView.setAdapter(mMarkerInfoRecyclerAdapter);
+      mRecyclerView.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+          super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+        }
 
-    mInfoPagerAdapter.setILoadImage(this);
-    mInfoPagerAdapter.setIOperationListen(this);
-    viewpager.setAdapter(mInfoPagerAdapter);
+        @Override public void onPageSelected(int position) {
+          super.onPageSelected(position);
+           onViewPageSelected(position);
+        }
+
+        @Override public void onPageScrollStateChanged(int state) {
+          super.onPageScrollStateChanged(state);
+        }
+      });
+
+    }
+
+    if(null != viewpager){
+      mInfoPagerAdapter = new MarkderInfoPagerAdapter(this,new ArrayList<IMarkerModel>());
+
+      mInfoPagerAdapter.setILoadImage(this);
+      mInfoPagerAdapter.setIOperationListen(this);
+       viewpager.setAdapter(mInfoPagerAdapter);
+    }
+
     getmBaiduMap().setOnMapLoadedCallback(new BaiduMap.OnMapLoadedCallback() {
       @Override public void onMapLoaded() {
 
@@ -204,6 +246,7 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
 
 
   private    BDLocation    lastbdBDLocation;
+
   @Override
   protected void onLocation(final BDLocation bdLocation) {
 
@@ -513,12 +556,15 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
         @Override
         public void onDismiss() {
           if (null != mCurrentMarker) {
-            int index = mCurrentMarker.getExtraInfo().getInt("index");
-            if(index>=0 && index<mManager.getIMarkerModels().size()){
-              IMarkerModel  iMarkerModel1 = mManager.getIMarkerModels().get(index);
-              mCurrentMarker.setIcon(getMarkerBitmapDescriptor(iMarkerModel1));
-            }
-
+             if(null != lastClickMarkerIcon){
+               mCurrentMarker.setIcon(lastClickMarkerIcon);
+             }else{
+               int index = mCurrentMarker.getExtraInfo().getInt("index");
+               if(index>=0 && index<mManager.getIMarkerModels().size()){
+                 IMarkerModel  iMarkerModel1 = mManager.getIMarkerModels().get(index);
+                 mCurrentMarker.setIcon(getMarkerBitmapDescriptor(iMarkerModel1));
+               }
+             }
           }
 
         }
@@ -536,26 +582,41 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
     }
 
     @Override public void onPageSelected(int position) {
-      IMarkerModel  testMarkerModel = mInfoPagerAdapter.getIMarkerModel(position);
-      Marker   tempMarker = mManager.getMarker(testMarkerModel);
-      if(null !=tempMarker) {
-        if(null != mCurrentMarker){
-          IMarkerModel  temp = mManager.getIMarkerModels().get(mCurrentMarker.getExtraInfo().getInt("index"));
-          mCurrentMarker.setIcon(getMarkerBitmapDescriptor(temp));
-        }
-        mCurrentMarker = tempMarker;
-        mCurrentMarker.setIcon(readBitmap);
-        MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(new LatLng(testMarkerModel.getLat(),testMarkerModel.getLng()));
-        getmBaiduMap().animateMapStatus(u);
-      }
 
-
+      onViewPageSelected(position);
     }
 
     @Override public void onPageScrollStateChanged(int state) {
 
     }
   };
+
+  private    IMarkerModel  getMarkerDataByAdapter(int postion){
+    if(null != mRecyclerView){
+      return  mMarkerInfoRecyclerAdapter.getItem(postion);
+    }
+    if(null != viewpager){
+      return  mInfoPagerAdapter.getIMarkerModel(postion);
+    }
+    return  null;
+  }
+
+  private   void   onViewPageSelected(int position){
+    IMarkerModel  testMarkerModel = getMarkerDataByAdapter(position);
+    Marker   tempMarker = mManager.getMarker(testMarkerModel);
+    if(null !=tempMarker) {
+      if(null != mCurrentMarker){
+        IMarkerModel  temp = mManager.getIMarkerModels().get(mCurrentMarker.getExtraInfo().getInt("index"));
+        mCurrentMarker.setIcon(getMarkerBitmapDescriptor(temp));
+      }
+      mCurrentMarker = tempMarker;
+      lastClickMarkerIcon = mCurrentMarker.getIcon();
+      mCurrentMarker.setIcon(readBitmap);
+      MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(new LatLng(testMarkerModel.getLat(),testMarkerModel.getLng()));
+      getmBaiduMap().animateMapStatus(u);
+    }
+
+  }
 
   Handler   mainHandle = new Handler(Looper.getMainLooper());
   /**
@@ -574,7 +635,7 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
         for (IMarkerModel iMarkerModel : iMarkerModels) {
           index++;
           if(null != iMarkerModel.getMarkes() && iMarkerModel.getMarkes().size()>0){
-            System.out.println("size="+iMarkerModel.getMarkes().size());
+
             iMarkerModel.setSortInfo("详情   "+iMarkerModels.size()+"-"+index+"("+(iMarkerModel.getMarkes().size()+1)+"-1)");
             showImarkers.add(iMarkerModel);
 
@@ -588,20 +649,37 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
             showImarkers.add(iMarkerModel);
           }
         }
+        if(null != viewpager){
+          mInfoPagerAdapter = new MarkderInfoPagerAdapter(AbstractMapMarkersActivity.this,showImarkers);
+          mInfoPagerAdapter.setIOperationListen(AbstractMapMarkersActivity.this);
+          mInfoPagerAdapter.setPathMarker(showPathPlan());
+          mInfoPagerAdapter.setILoadImage(AbstractMapMarkersActivity.this);
+          viewpager.removeOnPageChangeListener(mOnPageChangeListener);
+          viewpager.addOnPageChangeListener(mOnPageChangeListener);
+          viewpager.setAdapter(mInfoPagerAdapter);
+          viewpager.startAnimation(mShowAction);
+          viewpager.setCurrentItem(postion);
+        }
 
-        mInfoPagerAdapter = new MarkderInfoPagerAdapter(AbstractMapMarkersActivity.this,showImarkers);
-        mInfoPagerAdapter.setIOperationListen(AbstractMapMarkersActivity.this);
-        mInfoPagerAdapter.setPathMarker(showPathPlan());
-        mInfoPagerAdapter.setILoadImage(AbstractMapMarkersActivity.this);
-        viewpager.removeOnPageChangeListener(mOnPageChangeListener);
-        viewpager.addOnPageChangeListener(mOnPageChangeListener);
-        viewpager.setAdapter(mInfoPagerAdapter);
-        viewpager.startAnimation(mShowAction);
-        mPopupBottonWindow.setOutsideTouchable(false);
-        mPopupBottonWindow.setFocusable(false);
-        viewpager.setCurrentItem(postion);
+        if(null != mRecyclerView){
+          mMarkerInfoRecyclerAdapter.setPathMarker(showPathPlan());
+          mMarkerInfoRecyclerAdapter.setNewData(iMarkerModels);
+          mRecyclerView.setCurrentItem(postion);
+          mRecyclerView.startAnimation(mShowAction);
+        }
+
+        if(showPathPlan()){
+          mPopupBottonWindow.setOutsideTouchable(false);
+          mPopupBottonWindow.setFocusable(false);
+        }else{
+          mPopupBottonWindow.setOutsideTouchable(true);
+          mPopupBottonWindow.setFocusable(true);
+        }
+
+
         mCurrentMarker = mManager.getMarker(iMarkerModels.get(postion));
         if(null != mCurrentMarker){
+          lastClickMarkerIcon = mCurrentMarker.getIcon();
           mCurrentMarker.setIcon(readBitmap);
         }
         if (mPopupBottonWindow.isShowing()) {
@@ -649,17 +727,31 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
         showListPathMarker(mManager.getPathIMarkerModels(),postion);
         return;
       }
+      postion = mManager.containsMarkerInAll(iMarkerModel);
+      if(postion>=0){
+        showListPathMarker(mManager.getIMarkerModels(),postion);
+        return;
+      }
       List<IMarkerModel>  iMarkerModels = new LinkedList<>();
       iMarkerModels.add(iMarkerModel);
       if(null != iMarkerModel.getMarkes()){
         iMarkerModels.addAll(iMarkerModel.getMarkes());
       }
-      mInfoPagerAdapter = new MarkderInfoPagerAdapter(this,iMarkerModels);
-      mInfoPagerAdapter.setIOperationListen(this);
-      mInfoPagerAdapter.setILoadImage(this);
-      viewpager.setAdapter(mInfoPagerAdapter);
-      viewpager.startAnimation(mShowAction);
-      viewpager.setCurrentItem(0);
+      if(null != viewpager){
+        mInfoPagerAdapter = new MarkderInfoPagerAdapter(this,iMarkerModels);
+        mInfoPagerAdapter.setIOperationListen(this);
+        mInfoPagerAdapter.setILoadImage(this);
+        viewpager.setAdapter(mInfoPagerAdapter);
+        viewpager.startAnimation(mShowAction);
+        viewpager.setCurrentItem(0);
+      }
+      if(null != mRecyclerView){
+        mRecyclerView.startAnimation(mShowAction);
+        mMarkerInfoRecyclerAdapter.setNewData(iMarkerModels);
+        mRecyclerView.setCurrentItem(0);
+      }
+
+      lastClickMarkerIcon = marker.getIcon();
       mCurrentMarker = marker;
       mCurrentMarker.setIcon(readBitmap);
       if (mPopupBottonWindow.isShowing()) {
@@ -704,14 +796,14 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
    * 过滤当前的markers
    * @param iMarkerModels
    */
-  protected abstract   void     filterAddMakerToMap(List<IMarkerModel>  iMarkerModels);
+  protected abstract   void     filterAddMakerToMap(@NonNull List<IMarkerModel>  iMarkerModels);
 
   /**
    * 过滤路径
    * 过滤当前的markers
    * @param iMarkerModels
    */
-  protected abstract   void     filterMakerToPath(List<IMarkerModel>  iMarkerModels);
+  protected abstract   void     filterMakerToPath(@NonNull List<IMarkerModel>  iMarkerModels);
 
   /**
    * 是否安指定顺序显示
@@ -803,6 +895,11 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
       return   pathIMarkerModels.indexOf(iMarkerModel);
     }
 
+    private    int   containsMarkerInAll(IMarkerModel   iMarkerModel){
+
+      return   mIMarkerModels.indexOf(iMarkerModel);
+    }
+
     public List<IMarkerModel> getPathIMarkerModels() {
 
       return pathIMarkerModels;
@@ -860,7 +957,6 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
     }
 
     @Override public boolean onMarkerClick(Marker marker) {
-      System.out.println("onMarkerClick");
 
       if(null != marker && null != marker.getExtraInfo() && marker.getExtraInfo().containsKey(OTHER_MARKER_KEY)){
         onClickOtherMarker(marker,marker.getExtraInfo().getInt("index"));

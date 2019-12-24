@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import com.akingyin.map.base.BaiduPanoramaActivity;
 import com.akingyin.map.base.BaseMapActivity;
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
@@ -29,6 +30,7 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.Marker;
@@ -69,11 +71,11 @@ public class MapCoordinatePickupActivity  extends BaseMapActivity implements Vie
     super.onCreate(savedInstanceState);
   }
 
-  public int tag = 10;
+  public int tag = 30;
    /** 反转获取到的地址 */
    private   String    addr;
   @Override public void initialization() {
-    System.out.println("getTheme--->>>"+getTheme());
+
 
      onlysee = getIntent().getBooleanExtra("onlysee",onlysee);
      draggable = getIntent().getBooleanExtra("draggable",draggable);
@@ -90,8 +92,11 @@ public class MapCoordinatePickupActivity  extends BaseMapActivity implements Vie
     if(onlysee){
       adjust_layout.setVisibility(View.GONE);
       latlng_step.setVisibility(View.GONE);
+    }else{
+      map_street.setVisibility(View.VISIBLE);
     }
-    mCurrentMarker = BitmapDescriptorFactory.fromResource(R.drawable.icon_openmap_mark);
+
+    mCurrentMarker = BitmapDescriptorFactory.fromResource(R.drawable.map_pin);
     if (currentLat > 0 && currentLng > 0) {
       tv_lalnginfo.setVisibility(View.VISIBLE);
       tv_lalnginfo.setText(MessageFormat.format("lat:{0,number,#.######}\r\nlng:{1,number,#.######}", currentLat, currentLng));
@@ -109,6 +114,9 @@ public class MapCoordinatePickupActivity  extends BaseMapActivity implements Vie
     setToolBar(mToolbar,"坐标拾取");
     radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
       @Override public void onCheckedChanged(RadioGroup group, int checkedId) {
+        if(!onlysee){
+          adjust_layout.setVisibility(View.VISIBLE);
+        }
         if(checkedId == R.id.rb_step_one){
             tag = 1;
         }else if(checkedId == R.id.rb_step_tow){
@@ -119,6 +127,13 @@ public class MapCoordinatePickupActivity  extends BaseMapActivity implements Vie
             tag = 30;
         }else if(checkedId == R.id.rb_step_five){
             tag = 100;
+        }else if(checkedId == R.id.rb_step_map){
+            tag = -1;
+          adjust_layout.setVisibility(View.GONE);
+          LatLng ll = new LatLng(currentLat, currentLng);
+          MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll, getmBaiduMap().getMaxZoomLevel());
+
+          getmBaiduMap().animateMapStatus(u);
         }
       }
     });
@@ -148,6 +163,31 @@ public class MapCoordinatePickupActivity  extends BaseMapActivity implements Vie
       }
     });
 
+    getmBaiduMap().setOnMapStatusChangeListener(new BaiduMap.OnMapStatusChangeListener() {
+      @Override public void onMapStatusChangeStart(MapStatus mapStatus) {
+
+      }
+
+      @Override public void onMapStatusChangeStart(MapStatus mapStatus, int i) {
+
+      }
+
+      @Override public void onMapStatusChange(MapStatus mapStatus) {
+        if(tag == -1){
+          currentLat = mapStatus.target.latitude;
+          currentLng = mapStatus.target.longitude;
+          LatLng ll = new LatLng(currentLat, currentLng);
+          tv_lalnginfo.setText(MessageFormat.format("lat:{0,number,#.######}\r\nlng:{1,number,#.######}", currentLat, currentLng));
+          if(null != loctionMarker){
+            loctionMarker.setPosition(ll);
+          }
+        }
+      }
+
+      @Override public void onMapStatusChangeFinish(MapStatus mapStatus) {
+
+      }
+    });
     location_icon.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
 
@@ -156,6 +196,7 @@ public class MapCoordinatePickupActivity  extends BaseMapActivity implements Vie
           mLocClient.start();
         }
          location_icon.setVisibility(View.GONE);
+        location_progress.setVisibility(View.VISIBLE);
         showLoadDialog();
       }
     });
@@ -189,7 +230,7 @@ public class MapCoordinatePickupActivity  extends BaseMapActivity implements Vie
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
     if(!onlysee){
-      getMenuInflater().inflate(R.menu.menu_save,menu);
+      getMenuInflater().inflate(R.menu.menu_map_save,menu);
     }
 
 
@@ -197,14 +238,22 @@ public class MapCoordinatePickupActivity  extends BaseMapActivity implements Vie
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
-    if(item.getItemId() == R.id.item_save){
+    if(item.getItemId() == R.id.action_map_item_save){
       if(currentLng >0 && currentLat >0){
-        Intent   intent = new Intent();
-        intent.putExtra("lat",currentLat);
-        intent.putExtra("lng",currentLng);
-        setResult(RESULT_OK,intent);
-        finish();
-        return true;
+        double  diff = 1E-7;
+        if(Math.abs(oldCurrentLat-currentLat)>diff || Math.abs(oldCurrentLng-currentLng)>diff){
+          Intent   intent = new Intent();
+          intent.putExtra("lat",currentLat);
+          intent.putExtra("lng",currentLng);
+          intent.putExtra("addr",addr);
+          setResult(RESULT_OK,intent);
+          finish();
+          return true;
+        }else{
+          showToast("当前定位未发生改变，无需保存");
+          return true;
+        }
+
 
       }
       showToast("当前没成功获取到定位信息，无法保存");
@@ -246,8 +295,12 @@ public class MapCoordinatePickupActivity  extends BaseMapActivity implements Vie
    public void onMapReceiveLocation(BDLocation location) {
     // map view 销毁后不在处理新接收的位置
     if (location == null || getmMapView() == null) {
+      hidLoadialog();
+      mLocClient.stop();
+      showToast("获取定位信息失败，请检查GPS是否正常，位置环境是否相对空旷");
       return;
     }
+     addr = location.getAddrStr();
     MyLocationData locData = new MyLocationData.Builder()
         .accuracy(location.getRadius())
         // 此处设置开发者获取到的方向信息，顺时针0-360
@@ -263,6 +316,7 @@ public class MapCoordinatePickupActivity  extends BaseMapActivity implements Vie
       if(currentLng==0){
         currentLat = location.getLatitude();
         currentLng = location.getLongitude();
+
         updateLatLng(0,0);
       }
       mLocClient.stop();
@@ -282,10 +336,12 @@ public class MapCoordinatePickupActivity  extends BaseMapActivity implements Vie
       mLocClient.stop();
       hidLoadialog();
       location_icon.setVisibility(View.VISIBLE);
+      location_progress.setVisibility(View.GONE);
     }else{
       errorLoc++;
       if(errorLoc >=4){
         location_icon.setVisibility(View.VISIBLE);
+        location_progress.setVisibility(View.GONE);
         hidLoadialog();
         mLocClient.stop();
         showToast("获取定位信息失败，请检查GPS是否正常，位置环境是否相对空旷");
@@ -426,6 +482,16 @@ public class MapCoordinatePickupActivity  extends BaseMapActivity implements Vie
       intent.putExtra("geoAddr",geoAddr);
       return  intent;
 
+    }
+
+  }
+
+  @Override public void goToMapStreet() {
+    if(currentLng>=0){
+      Intent intent = new Intent(this, BaiduPanoramaActivity.class);
+      intent.putExtra("lat", currentLat);
+      intent.putExtra("lng", currentLng);
+      startActivity(intent);
     }
 
   }

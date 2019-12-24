@@ -23,9 +23,10 @@ class DataBindUserListAdapter @Inject constructor(@Named("binduser") var activit
 
     val inflater = LayoutInflater.from(activity)
 
-    override fun convert(helper: DataBindUserViewHolder?, item: UserEntity?) {
 
-        helper?.let {
+    override fun convert(helper: DataBindUserViewHolder, item: UserEntity?) {
+
+        helper.let {
           val viewDataBinding =  it.getBinding()
            viewDataBinding.user = item
 

@@ -28,7 +28,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#4CAF50"
+        android:background="#008577"
         app:layout_collapseMode="pin"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_scrollFlags="scroll|enterAlways"
@@ -53,7 +53,7 @@
         android:layout_marginTop="20dp"
         android:orientation="horizontal"
         segmentedgroup:sc_border_width="2dp"
-        segmentedgroup:sc_tint_color="#4CAF50"
+        segmentedgroup:sc_tint_color="#008577"
         segmentedgroup:sc_corner_radius="10dp">
 
       <RadioButton

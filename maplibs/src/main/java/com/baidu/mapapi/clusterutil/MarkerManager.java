@@ -63,7 +63,7 @@ public class MarkerManager implements BaiduMap.OnMarkerClickListener, BaiduMap.O
             // you can set the click action
             return collection.mMarkerClickListener.onMarkerClick(marker);
         } else  {
-            ; // click single maker out of cluster
+            // click single maker out of cluster
         }
         return false;
     }

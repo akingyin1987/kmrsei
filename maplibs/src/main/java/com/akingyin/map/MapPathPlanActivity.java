@@ -71,28 +71,14 @@ public class MapPathPlanActivity  extends BaseMapActivity implements OnGetRouteP
    //目的地
    private   String    destination;
   @Override public void initialization() {
+    map_street.setVisibility(View.VISIBLE);
     mToolbar = (Toolbar)findViewById(R.id.toolbar);
     setToolBar(mToolbar,"路径规划");
     double  lat = getIntent().getDoubleExtra("lat",0);
     double  lng = getIntent().getDoubleExtra("lng",0);
     destination = getIntent().getStringExtra("destination");
     endNode = PlanNode.withLocation(new LatLng(lat,lng));
-    map_street.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
 
-        if(null == endNode){
-          showToast("当前没有位置信息无法查看");
-          return;
-        }
-        Intent intent = new Intent(MapPathPlanActivity.this, BaiduPanoramaActivity.class);
-        intent.putExtra("lat",endNode.getLocation().latitude);
-        intent.putExtra("lng",endNode.getLocation().longitude);
-        intent.putExtra("addr",TextUtils.isEmpty(destination)?"":destination);
-
-        startActivity(intent);
-
-      }
-    });
     mSegmentedGroup = (SegmentedGroup)findViewById(R.id.sb_group);
     mRoutePlanSearch = RoutePlanSearch.newInstance();
     mRoutePlanSearch.setOnGetRoutePlanResultListener(this);
@@ -334,6 +320,17 @@ public class MapPathPlanActivity  extends BaseMapActivity implements OnGetRouteP
     }catch (Exception e){
       e.printStackTrace();
       showToast("调用百度地图出错，请检查是否安装最新版本");
+    }
+
+  }
+
+  @Override public void goToMapStreet() {
+    if(null != endNode && null != endNode.getLocation()){
+      Intent intent = new Intent(this, BaiduPanoramaActivity.class);
+      intent.putExtra("lat",endNode.getLocation().latitude );
+      intent.putExtra("lng", endNode.getLocation().longitude);
+      intent.putExtra("addr",TextUtils.isEmpty(destination)?"":destination);
+      startActivity(intent);
     }
 
   }

@@ -36,7 +36,7 @@ public class TestMarkerMapActivity  extends AbstractMapMarkersActivity {
 
   }
 
-  @Override public void onObjectImg(int postion, IMarkerModel iMarkerModel, View view) {
+  @Override public void onObjectImg( int postion, IMarkerModel iMarkerModel, View view) {
 
   }
 

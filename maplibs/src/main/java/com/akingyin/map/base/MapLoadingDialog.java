@@ -30,7 +30,7 @@ public class MapLoadingDialog  extends Dialog {
     setContentView(R.layout.map_loading_dialog);
 
     setCanceledOnTouchOutside(false);
-    setCancelable(false);
+    setCancelable(true);
 
   }
 }

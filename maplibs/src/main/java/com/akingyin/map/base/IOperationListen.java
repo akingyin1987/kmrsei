@@ -35,7 +35,7 @@ public interface IOperationListen {
    * @param postion  当前位置
    * @param iMarkerModel  当前对象
    */
-  void   onOperation(int postion, IMarkerModel iMarkerModel);
+  void   onOperation(int postion,  IMarkerModel iMarkerModel);
 
   /**
    * 路径规划
@@ -56,7 +56,7 @@ public interface IOperationListen {
    * @param postion
    * @param iMarkerModel
    */
-   void   onObjectImg(int postion, IMarkerModel iMarkerModel, View view);
+   void   onObjectImg( int postion, IMarkerModel iMarkerModel, View view);
 
   /**
    * 其它操作

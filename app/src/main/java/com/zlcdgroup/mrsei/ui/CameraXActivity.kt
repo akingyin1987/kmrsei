@@ -64,7 +64,7 @@ class CameraXActivity  : SimpleActivity(), SensorEventListener {
     private   var  displayListener = object :DisplayManager.DisplayListener{
         override fun onDisplayChanged(displayId: Int) {
             if(displayId == this@CameraXActivity.displayId){
-                preview.setTargetRotation(viewFind.display.rotation)
+
                 imageCapture.setTargetRotation(viewFind.display.rotation)
                 imageAnalyzer?.setTargetRotation(viewFind.display.rotation)
             }

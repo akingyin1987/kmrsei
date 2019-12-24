@@ -9,9 +9,10 @@ import com.baidu.lbsapi.panoramaview.ImageMarker;
 import com.baidu.lbsapi.panoramaview.OnTabMarkListener;
 import com.baidu.lbsapi.panoramaview.PanoramaView;
 import com.baidu.lbsapi.panoramaview.PanoramaViewListener;
+import com.baidu.lbsapi.panoramaview.TextMarker;
 import com.baidu.lbsapi.tools.Point;
-import com.blankj.utilcode.util.ThreadUtils;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 百度街景图
@@ -24,24 +25,37 @@ public class BaiduPanoramaActivity extends AppCompatActivity {
 
     private PanoramaView mPanoView;
     ImageMarker imageMarker;
+    TextMarker  mTextMarker;
     private ExecutorService singleThreadPool = null;
     //地址描述
     private String    addr;
+    private   boolean   frist = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_baidu_panorama);
         mPanoView = (PanoramaView)findViewById(R.id.panorama);
         mPanoView.setShowTopoLink(true);
+
+
         double  lat = getIntent().getDoubleExtra("lat",0);
         double  lng = getIntent().getDoubleExtra("lng",0);
         addr = getIntent().getStringExtra("addr");
 
-        singleThreadPool = ThreadUtils.getIoPool();
+        singleThreadPool =  Executors.newFixedThreadPool(1);
+        mTextMarker = new TextMarker();
+        mTextMarker.setMarkerPosition(new Point(lat, lng));
+        mTextMarker.setMarkerHeight(20.3f);
+        mTextMarker.setFontColor(0xFFFF0000);
+        mTextMarker.setText("目标");
+        mTextMarker.setFontSize(12);
+        mTextMarker.setBgColor(0xFFFFFFFF);
+        mTextMarker.setPadding(10, 20, 15, 25);
+       // mPanoView.addMarker(mTextMarker);
 
         imageMarker = new ImageMarker();
         imageMarker.setMarkerPosition(new Point(lat, lng));
-        imageMarker.setMarkerHeight(4f);
+        imageMarker.setMarkerHeight(0);
         imageMarker.setOnTabMarkListener(new OnTabMarkListener() {
             @Override public void onTab() {
                 if(TextUtils.isEmpty(addr)){
@@ -62,10 +76,14 @@ public class BaiduPanoramaActivity extends AppCompatActivity {
             }
 
             @Override public void onLoadPanoramaBegin() {
+                System.out.println("onLoadPanoramaBegin");
 
             }
 
             @Override public void onLoadPanoramaEnd(String s) {
+                System.out.println("onLoadPanoramaEnd");
+
+
 
             }
 
@@ -78,14 +96,15 @@ public class BaiduPanoramaActivity extends AppCompatActivity {
             }
 
             @Override public void onCustomMarkerClick(String s) {
-
+                System.out.println("onCustomMarkerClick="+s);
             }
 
             @Override public void onMoveStart() {
-
+                System.out.println("onMoveStart->");
             }
 
             @Override public void onMoveEnd() {
+                System.out.println("onMoveEnd->");
 
             }
         });

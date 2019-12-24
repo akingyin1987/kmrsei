@@ -104,6 +104,7 @@
                     android:id="@+id/map_street"
                     android:layout_width="40.0dip"
                     android:layout_height="40.0dip"
+                    android:visibility="gone"
                     android:background="@drawable/main_button"
                     android:src="@drawable/main_map_icon_streetscape" />
             </LinearLayout>

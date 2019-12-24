@@ -18,12 +18,13 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Semaphore;
 import retrofit2.HttpException;
 
 /**
  * 执行的任务
  *
- * @author
+ * @author king
  * @date 2016/7/3
  */
 public  abstract class AbsTaskRunner implements Runnable ,ApiSonTaskCallBack{
@@ -34,6 +35,16 @@ public  abstract class AbsTaskRunner implements Runnable ,ApiSonTaskCallBack{
 
     /** 基础信息错误信息时使用 */
     private     String    baseInfo;
+
+    private Semaphore   mSemaphore;
+
+    public Semaphore getSemaphore() {
+        return mSemaphore;
+    }
+
+    public void setSemaphore(Semaphore semaphore) {
+        mSemaphore = semaphore;
+    }
 
     public String getBaseInfo() {
         return baseInfo;
@@ -245,16 +256,28 @@ public  abstract class AbsTaskRunner implements Runnable ,ApiSonTaskCallBack{
 
     @Override
     public void run() {
+       try {
+           System.out.println("run---->"+tag);
+           //if(null != mSemaphore){
+           //    mSemaphore.acquire();
+           //    System.out.println("获取令牌--》"+mSemaphore.getQueueLength()+":"+mSemaphore.availablePermits());
+           //
+           //}
+           if(taskStatusEnum == TaskStatusEnum.CANCEL){
+               return;
+           }
+           doBackground();
 
-       if(taskStatusEnum == TaskStatusEnum.CANCEL){
-           return;
-       }
-        try {
-            doBackground();
-        }catch (Exception e){
+       }catch (Exception e){
            e.printStackTrace();
            onExceptionBack(e);
-        }
+       }finally {
+           //if(null != mSemaphore){
+           //    mSemaphore.release();
+           //    System.out.println("释放令牌--》"+mSemaphore.getQueueLength()+":"+mSemaphore.availablePermits());
+           //
+           //}
+       }
 
     }
 

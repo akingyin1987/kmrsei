@@ -35,6 +35,9 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
         private const val TAP_THRESHOLD = 2
     }
 
+    override fun onCancelLoading() {
+    }
+
     @Inject
     lateinit var userListFragmentPresenterImpl: UserListFragmentPresenterImpl
 

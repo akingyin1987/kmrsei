@@ -19,8 +19,8 @@ class UserListAdapter @Inject constructor(  context: Activity) : BaseQuickAdapte
     var    layoutInflater:LayoutInflater= LayoutInflater.from(context)
 
 
-    override fun convert(helper: UserViewHolder?, item: UserEntity?) {
-       helper?.bind(item )
+    override fun convert(helper: UserViewHolder, item: UserEntity?) {
+       helper.bind(item )
     }
 
     override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): UserViewHolder {

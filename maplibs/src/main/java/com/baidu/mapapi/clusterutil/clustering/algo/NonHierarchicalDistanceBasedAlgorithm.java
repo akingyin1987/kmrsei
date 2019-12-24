@@ -37,7 +37,9 @@ import java.util.Set;
 
 
 public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implements Algorithm<T> {
-    public static final int MAX_DISTANCE_AT_ZOOM = 100; // essentially 100 dp.
+
+    // essentially 100 dp.
+    public static final int MAX_DISTANCE_AT_ZOOM = 200;
 
     /**
      * Any modifications should be synchronized on mQuadTree.
@@ -91,10 +93,11 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
         final int discreteZoom = (int) zoom;
 
         final double zoomSpecificSpan = MAX_DISTANCE_AT_ZOOM / Math.pow(2, discreteZoom) / 256;
+        System.out.println("zoomSpecificSpan=="+zoomSpecificSpan);
 
-        final Set<QuadItem<T>> visitedCandidates = new HashSet<QuadItem<T>>();
-        final Set<Cluster<T>> results = new HashSet<Cluster<T>>();
-        final Map<QuadItem<T>, Double> distanceToCluster = new HashMap<QuadItem<T>, Double>();
+        final Set<QuadItem<T>> visitedCandidates = new HashSet<>();
+        final Set<Cluster<T>> results = new HashSet<>();
+        final Map<QuadItem<T>, Double> distanceToCluster = new HashMap<>();
         final Map<QuadItem<T>, com.baidu.mapapi.clusterutil.clustering.algo.StaticCluster<T>> itemToCluster =
                 new HashMap<>();
 

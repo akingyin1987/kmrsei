@@ -8,12 +8,14 @@
 
 package com.akingyin.base.taskmanager;
 
-import android.os.Handler;
-import android.os.Looper;
+import com.akingyin.base.rx.RxUtil;
 import com.akingyin.base.taskmanager.enums.TaskManagerStatusEnum;
 import com.akingyin.base.taskmanager.enums.TaskStatusEnum;
 import com.akingyin.base.taskmanager.enums.ThreadTypeEnum;
 import com.blankj.utilcode.util.StringUtils;
+import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -29,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class MultiTaskManager implements  ITaskResultCallBack{
 
-    private Handler  mainHandler = new Handler(Looper.getMainLooper());
+
 
     private ThreadTypeEnum mThreadTypeEnum = ThreadTypeEnum.CurrentThread;
 
@@ -52,6 +54,7 @@ public class MultiTaskManager implements  ITaskResultCallBack{
     /** 待执行任务 */
     private LinkedBlockingQueue<AbsTaskRunner> queueTasks = new LinkedBlockingQueue<>();
 
+
     /**  错误日志 */
     private LinkedBlockingQueue<String> errorStrings = new LinkedBlockingQueue<>();
     /** 任务总数 */
@@ -68,6 +71,13 @@ public class MultiTaskManager implements  ITaskResultCallBack{
     private  AtomicInteger  status = new AtomicInteger(0);
     private   StringBuilder    errorMsg = new StringBuilder();
     private   String    lastErrorMsg;
+
+    private CompositeDisposable   mCompositeDisposable = new CompositeDisposable();
+
+
+    public   void  addSubscription(Disposable  disposable){
+        mCompositeDisposable.add(disposable);
+    }
 
     public String getLastErrorMsg() {
         return lastErrorMsg;
@@ -96,6 +106,7 @@ public class MultiTaskManager implements  ITaskResultCallBack{
 
     private   int   nThreads;
 
+
     /**
      *   // 创建线程池，核心线程数、最大线程数、空闲保持时间、队列长度、拒绝策略可自行定义
      * @param poolSize
@@ -104,6 +115,7 @@ public class MultiTaskManager implements  ITaskResultCallBack{
     public  static  MultiTaskManager createPool(int  poolSize){
 
         MultiTaskManager  taskManager = new MultiTaskManager();
+
         // 创建线程池，核心线程数、最大线程数、空闲保持时间、队列长度、拒绝策略可自行定义
         taskManager.threadPool = new ThreadPoolExecutor(poolSize, poolSize*40,
             0L, TimeUnit.MILLISECONDS,
@@ -132,10 +144,13 @@ public class MultiTaskManager implements  ITaskResultCallBack{
         }
     }
 
+    public  static  int  MAX_CACHE_SIZE= 1024;
+
     public void addTask(AbsTaskRunner task) {
         task.setCallBack(this);
         try {
             queueTasks.put(task);
+
             count.getAndIncrement();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -146,12 +161,25 @@ public class MultiTaskManager implements  ITaskResultCallBack{
 
 
     public void executeTask() {
-
+        int   index = 1;
         for(AbsTaskRunner  taskRunner : queueTasks){
-
+          if(index<=MAX_CACHE_SIZE){
+            System.out.println("执行任务"+index);
             threadPool.execute(taskRunner);
+          }
+          index++;
         }
     }
+
+  private void executeTask(int  postion) {
+    int   index = 1;
+    for(AbsTaskRunner  taskRunner : queueTasks){
+      if(index>= postion && index<(MAX_CACHE_SIZE+postion)){
+        threadPool.execute(taskRunner);
+      }
+      index++;
+    }
+  }
 
     public   void   onPauseTask(){
         if(status.get() ==3 || status.get() ==4 ){
@@ -208,8 +236,12 @@ public class MultiTaskManager implements  ITaskResultCallBack{
      * 取消正在下载的任务
      */
     public synchronized void cancelTasks() {
+      System.out.println("取消任务---->");
+
         status.getAndSet(3);
         count.set(0);
+        mCompositeDisposable.dispose();
+        mCompositeDisposable.clear();
         if (threadPool != null) {
             for(AbsTaskRunner  taskRunner : queueTasks){
                 taskRunner.onCancel();
@@ -236,7 +268,6 @@ public class MultiTaskManager implements  ITaskResultCallBack{
             lastErrorMsg = error;
             errorStrings.offer(error);
         }
-
         switch (statusEnum){
             case NETERROR:
 
@@ -246,28 +277,29 @@ public class MultiTaskManager implements  ITaskResultCallBack{
                 overTotal.getAndIncrement();
                 successTotal.getAndIncrement();
                 break;
-            case  ERROR:
-                overTotal.getAndIncrement();
-                errorTotal.getAndIncrement();
-                break;
+
             default:
                 overTotal.getAndIncrement();
                 errorTotal.getAndIncrement();
                 break;
 
         }
-
+        if(overTotal.get()>0 && overTotal.get()%MAX_CACHE_SIZE == 0 && count.get()>overTotal.get()){
+          System.out.println("执行下一轮-->");
+          executeTask(overTotal.get());
+        }
         if(null != callBack ){
             if(statusEnum != TaskStatusEnum.NETERROR){
                 final   int  errorNum = errorTotal.get();
                 final    int  sucNum = successTotal.get();
 
                 if(mThreadTypeEnum == ThreadTypeEnum.MainThread){
-                    mainHandler.post(new Runnable() {
-                        @Override public void run() {
-                            callBack.onCallBack(count.get(),errorNum+sucNum,errorNum);
-                        }
-                    });
+                   Disposable  disposable = Observable.just(count.get()).compose(RxUtil.IO_Main())
+                          .subscribe(
+                              integer -> callBack.onCallBack(count.get(),errorNum+sucNum,errorNum),
+                              Throwable::printStackTrace);
+                    addSubscription(disposable);
+
                 }else{
                     callBack.onCallBack(count.get(),errorNum+sucNum,errorNum);
                 }
@@ -275,28 +307,31 @@ public class MultiTaskManager implements  ITaskResultCallBack{
                 if(count.get() == errorNum +sucNum){
                     status.getAndSet(4);
                     if(errorNum>0){
-                        mainHandler.post(new Runnable() {
-                            @Override public void run() {
-                                callBack.onError(errorMsg.toString(),TaskManagerStatusEnum.COMPLETE);
-                            }
-                        });
+                        Disposable  disposable = Observable.just(count.get()).compose(RxUtil.IO_Main())
+                            .subscribe(
+                                integer -> callBack.onError(errorMsg.toString(),TaskManagerStatusEnum.COMPLETE),
+                                Throwable::printStackTrace);
+                        addSubscription(disposable);
+
 
                     }else{
-                        mainHandler.post(new Runnable() {
-                            @Override public void run() {
-                                callBack.onComplete();
-                            }
-                        });
+                        Disposable  disposable = Observable.just(count.get()).compose(RxUtil.IO_Main())
+                            .subscribe(
+                                integer -> callBack.onComplete(),
+                                Throwable::printStackTrace);
+                        addSubscription(disposable);
+
 
                     }
                 }
             }else{
                 status.getAndSet(5);
-                mainHandler.post(new Runnable() {
-                    @Override public void run() {
-                        callBack.onError(error,TaskManagerStatusEnum.NETError);
-                    }
-                });
+                Disposable  disposable = Observable.just(count.get()).compose(RxUtil.IO_Main())
+                    .subscribe(
+                        integer -> callBack.onError(error,TaskManagerStatusEnum.NETError),
+                        Throwable::printStackTrace);
+                addSubscription(disposable);
+
 
             }
         }
@@ -305,11 +340,12 @@ public class MultiTaskManager implements  ITaskResultCallBack{
     @Override public void onCancelAllTask(final TaskManagerStatusEnum statusEnum, final String error) {
 
         if(null != callBack){
-            mainHandler.post(new Runnable() {
-                @Override public void run() {
-                    callBack.onError(error,statusEnum);
-                }
-            });
+            Disposable  disposable = Observable.just(count.get()).compose(RxUtil.IO_Main())
+                .subscribe(
+                    integer ->  callBack.onError(error,statusEnum),
+                    Throwable::printStackTrace);
+            addSubscription(disposable);
+
         }
         if(statusEnum == TaskManagerStatusEnum.CANCEL ||
                 statusEnum == TaskManagerStatusEnum.COMPLETE){

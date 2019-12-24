@@ -321,6 +321,7 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
         }
 
         @SuppressLint("NewApi")
+        @Override
         public void run() {
             if (clusters.equals(DefaultClusterRenderer.this.mClusters)) {
                 mCallback.run();
@@ -500,14 +501,21 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
          * @param priority whether this operation should have priority.
          */
         public void add(boolean priority, CreateMarkerTask c) {
-            lock.lock();
-            sendEmptyMessage(BLANK);
-            if (priority) {
-                mOnScreenCreateMarkerTasks.add(c);
-            } else {
-                mCreateMarkerTasks.add(c);
+               lock.lock();
+            try {
+                sendEmptyMessage(BLANK);
+                if (priority) {
+                    mOnScreenCreateMarkerTasks.add(c);
+                } else {
+                    mCreateMarkerTasks.add(c);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+                lock.unlock();
             }
-            lock.unlock();
+
+
         }
 
         /**
@@ -518,13 +526,19 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
          */
         public void remove(boolean priority, Marker m) {
             lock.lock();
-            sendEmptyMessage(BLANK);
-            if (priority) {
-                mOnScreenRemoveMarkerTasks.add(m);
-            } else {
-                mRemoveMarkerTasks.add(m);
+            try {
+                sendEmptyMessage(BLANK);
+                if (priority) {
+                    mOnScreenRemoveMarkerTasks.add(m);
+                } else {
+                    mRemoveMarkerTasks.add(m);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+                lock.unlock();
             }
-            lock.unlock();
+
         }
 
         /**

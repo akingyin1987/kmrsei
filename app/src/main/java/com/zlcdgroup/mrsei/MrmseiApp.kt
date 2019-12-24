@@ -11,8 +11,10 @@ import com.akingyin.base.ext.spGetString
 import com.akingyin.base.ext.spSetString
 import com.akingyin.base.net.mode.ApiHost
 import com.akingyin.base.net.okhttp.OkHttpUtils
-import com.akingyin.map.MapUtil
+import com.akingyin.map.BdMapApp
 import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.Utils
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
@@ -60,8 +62,11 @@ class MrmseiApp :BaseApp() {
 
         Ext.with(this)
         DbCore.init(this)
+        Utils.init(this)
+        println("px=${ConvertUtils.dp2px(100F)}")
         DbCore.enableQueryBuilderLog()
-        MapUtil.initMap(this)
+        BdMapApp.get().initBaiDuMap(this)
+        registerReceiver(BdMapApp.get().receiver,BdMapApp.get().getiFilter())
         spSetString("ApiUrl","http://114.215.108.130:38280/mrmsei/")
         if(BuildConfig.DEBUG){
             ARouter.openLog()
@@ -117,5 +122,10 @@ class MrmseiApp :BaseApp() {
     override fun initInjection() {
      // applicationInjector()
 
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        unregisterReceiver(BdMapApp.get().receiver)
     }
 }
