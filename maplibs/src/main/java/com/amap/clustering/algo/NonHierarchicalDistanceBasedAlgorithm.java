@@ -1,17 +1,28 @@
 /*
- * Copyright (C) 2015 Baidu, Inc. All Rights Reserved.
+ * Copyright 2013 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-package com.baidu.mapapi.clusterutil.clustering.algo;
+package com.amap.clustering.algo;
 
-import com.baidu.mapapi.clusterutil.clustering.Cluster;
-import com.baidu.mapapi.clusterutil.clustering.ClusterItem;
-import com.baidu.mapapi.clusterutil.projection.Bounds;
-import com.baidu.mapapi.clusterutil.projection.Point;
-import com.baidu.mapapi.clusterutil.projection.SphericalMercatorProjection;
-import com.baidu.mapapi.clusterutil.quadtree.PointQuadTree;
-import com.baidu.mapapi.model.LatLng;
-
+import com.amap.api.maps.model.LatLng;
+import com.amap.clustering.Bounds;
+import com.amap.clustering.Cluster;
+import com.amap.clustering.ClusterItem;
+import com.amap.clustering.Point;
+import com.amap.clustering.PointQuadTree;
+import com.amap.clustering.SphericalMercatorProjection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,17 +45,15 @@ import java.util.Set;
  * <p/>
  * Clusters have the center of the first element (not the centroid of the items within it).
  */
-
-
 public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implements Algorithm<T> {
+    private static final int DEFAULT_MAX_DISTANCE_AT_ZOOM = 100; // essentially 100 dp.
 
-    // essentially 100 dp.
-    public static final int MAX_DISTANCE_AT_ZOOM = 100;
+    private int mMaxDistance = DEFAULT_MAX_DISTANCE_AT_ZOOM;
 
     /**
      * Any modifications should be synchronized on mQuadTree.
      */
-    private final Collection<QuadItem<T>> mItems = new ArrayList<QuadItem<T>>();
+    private final Collection<QuadItem<T>> mItems = new HashSet<>();
 
     /**
      * Any modifications should be synchronized on mQuadTree.
@@ -79,30 +88,28 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
 
     @Override
     public void removeItem(T item) {
-        // TODO: delegate QuadItem#hashCode and QuadItem#equals to its item.
-        throw new UnsupportedOperationException("NonHierarchicalDistanceBasedAlgorithm.remove not implemented");
+        // QuadItem delegates hashcode() and equals() to its item so,
+        //   removing any QuadItem to that item will remove the item
+        final QuadItem<T> quadItem = new QuadItem<T>(item);
+        synchronized (mQuadTree) {
+            mItems.remove(quadItem);
+            mQuadTree.remove(quadItem);
+        }
     }
 
-    /**
-     *  cluster算法核心
-     * @param zoom map的级别
-     * @return
-     */
     @Override
     public Set<? extends Cluster<T>> getClusters(double zoom) {
         final int discreteZoom = (int) zoom;
 
-        final double zoomSpecificSpan = MAX_DISTANCE_AT_ZOOM / Math.pow(2, discreteZoom) / 256;
-        System.out.println("zoomSpecificSpan=="+zoomSpecificSpan);
+        final double zoomSpecificSpan = mMaxDistance / Math.pow(2, discreteZoom) / 256;
 
-        final Set<QuadItem<T>> visitedCandidates = new HashSet<>();
-        final Set<Cluster<T>> results = new HashSet<>();
-        final Map<QuadItem<T>, Double> distanceToCluster = new HashMap<>();
-        final Map<QuadItem<T>, com.baidu.mapapi.clusterutil.clustering.algo.StaticCluster<T>> itemToCluster =
-                new HashMap<>();
+        final Set<QuadItem<T>> visitedCandidates = new HashSet<QuadItem<T>>();
+        final Set<Cluster<T>> results = new HashSet<Cluster<T>>();
+        final Map<QuadItem<T>, Double> distanceToCluster = new HashMap<QuadItem<T>, Double>();
+        final Map<QuadItem<T>, StaticCluster<T>> itemToCluster = new HashMap<QuadItem<T>, StaticCluster<T>>();
 
         synchronized (mQuadTree) {
-            for (QuadItem<T> candidate : mItems) {
+            for (QuadItem<T> candidate : getClusteringItems(mQuadTree, discreteZoom)) {
                 if (visitedCandidates.contains(candidate)) {
                     // Candidate is already part of another cluster.
                     continue;
@@ -110,7 +117,6 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
 
                 Bounds searchBounds = createBoundsFromSpan(candidate.getPoint(), zoomSpecificSpan);
                 Collection<QuadItem<T>> clusterItems;
-                // search 某边界范围内的clusterItems
                 clusterItems = mQuadTree.search(searchBounds);
                 if (clusterItems.size() == 1) {
                     // Only the current marker is in range. Just add the single item to the results.
@@ -119,9 +125,7 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
                     distanceToCluster.put(candidate, 0d);
                     continue;
                 }
-                com.baidu.mapapi.clusterutil.clustering.algo.StaticCluster<T> cluster =
-                        new com.baidu.mapapi.clusterutil.clustering.algo
-                                .StaticCluster<T>(candidate.mClusterItem.getPosition());
+                StaticCluster<T> cluster = new StaticCluster<T>(candidate.mClusterItem.getPosition());
                 results.add(cluster);
 
                 for (QuadItem<T> clusterItem : clusterItems) {
@@ -145,6 +149,10 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
         return results;
     }
 
+    protected Collection<QuadItem<T>> getClusteringItems(PointQuadTree<QuadItem<T>> quadTree, int discreteZoom) {
+        return mItems;
+    }
+
     @Override
     public Collection<T> getItems() {
         final List<T> items = new ArrayList<T>();
@@ -154,6 +162,16 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
             }
         }
         return items;
+    }
+
+    @Override
+    public void setMaxDistanceBetweenClusteredItems(int maxDistance) {
+        mMaxDistance = maxDistance;
+    }
+
+    @Override
+    public int getMaxDistanceBetweenClusteredItems() {
+        return mMaxDistance;
     }
 
     private double distanceSquared(Point a, Point b) {
@@ -169,7 +187,7 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
                 p.y - halfSpan, p.y + halfSpan);
     }
 
-    private static class QuadItem<T extends ClusterItem> implements PointQuadTree.Item, Cluster<T> {
+    static class QuadItem<T extends ClusterItem> implements PointQuadTree.Item, Cluster<T> {
         private final T mClusterItem;
         private final Point mPoint;
         private final LatLng mPosition;
@@ -200,6 +218,20 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
         @Override
         public int getSize() {
             return 1;
+        }
+
+        @Override
+        public int hashCode() {
+            return mClusterItem.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (!(other instanceof QuadItem<?>)) {
+                return false;
+            }
+
+            return ((QuadItem<?>) other).mClusterItem.equals(mClusterItem);
         }
     }
 }
