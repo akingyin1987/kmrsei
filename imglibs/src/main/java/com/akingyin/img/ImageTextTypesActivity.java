@@ -104,6 +104,7 @@ public class ImageTextTypesActivity  extends AppCompatActivity {
         });
         try {
             ImageViwPageAdapter adapter = new ImageViwPageAdapter(this);
+            adapter.setFragmentManager(getSupportFragmentManager());
             List<ImageTextModel> imageTextModels = new LinkedList<>();
             for (ImageTextTypeModel data : datas) {
                 if(null != data.getItems() && data.getItems().size()>0){

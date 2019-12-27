@@ -30,6 +30,11 @@ public class ImageTextModel  implements Serializable {
 
     public    String   title;
 
+    /**
+     * 0=文字 1=图片 2=视频 3=音频
+     */
+    public    int      multimediaType;
+
     //是否连接网络获取
     public     boolean     haveNetServer;
 
@@ -37,34 +42,38 @@ public class ImageTextModel  implements Serializable {
     public ImageTextModel() {
     }
 
-    public ImageTextModel(String localPath, String serverPath, String text, boolean haveNetServer) {
+    public ImageTextModel(String localPath, String serverPath, String text,int multimediaType, boolean haveNetServer) {
         this.localPath = localPath;
         this.serverPath = serverPath;
         this.text = text;
         this.haveNetServer = haveNetServer;
+        this.multimediaType = multimediaType;
     }
 
-    public ImageTextModel(String localPath, String serverPath, String text) {
+    public ImageTextModel(String localPath, String serverPath, String text,int multimediaType) {
         this.localPath = localPath;
+        this.multimediaType = multimediaType;
         this.serverPath = serverPath;
         this.text = text;
     }
 
-    public   static   ImageTextModel buildWebModel(String   serverPath){
+    public   static   ImageTextModel buildWebModel(String   serverPath,int multimediaType){
 
-        return  buildWebModel(serverPath,"");
+        return  buildWebModel(serverPath,"",multimediaType);
     }
 
-    public   static   ImageTextModel buildWebModel(String   serverPath,String  title){
+    public   static   ImageTextModel buildWebModel(String   serverPath,String  title,int multimediaType){
         ImageTextModel   imageTextModel = new ImageTextModel();
         imageTextModel.haveNetServer = true;
+        imageTextModel.multimediaType = multimediaType;
         imageTextModel.serverPath = serverPath;
         imageTextModel.title = title;
         return  imageTextModel;
     }
 
-    public   static   ImageTextModel buildModel(String  localPath,String   serverPath,String  title){
+    public   static   ImageTextModel buildModel(String  localPath,String   serverPath,String  title,int multimediaType){
         ImageTextModel   imageTextModel = new ImageTextModel();
+        imageTextModel.multimediaType = multimediaType;
         imageTextModel.haveNetServer = true;
         imageTextModel.serverPath = serverPath;
         imageTextModel.title = title;

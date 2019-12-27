@@ -45,6 +45,35 @@
                     android:focusable="true"
                     android:src="@drawable/icon_video_marker_play"
                     android:id="@+id/iv_marker_video"/>
+        <ImageView
+            android:layout_width="100dp"
+            android:src="@drawable/icon_yinpin"
+            android:layout_centerInParent="true"
+            android:id="@+id/iv_audio_markder"
+            android:visibility="gone"
+            android:layout_height="100dp"/>
+
+        <com.akingyin.audio.AudioPlayView
+            android:layout_width="match_parent"
+            android:id="@+id/audio_player"
+            android:layout_margin="5dp"
+            android:padding="3dp"
+            android:background="@drawable/edittext_background_rounded_danger"
+            android:layout_centerInParent="true"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="100dp"
+            android:background="@color/black_overlay"
+            android:padding="5dp"
+            android:layout_margin="2dp"
+            android:visibility="gone"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:id="@+id/tv_audio_time"
+            android:layout_below="@+id/iv_audio_markder"
+            android:text="22；00"
+            android:layout_height="wrap_content"/>
     </RelativeLayout>
 
 

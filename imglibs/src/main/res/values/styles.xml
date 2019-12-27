@@ -92,4 +92,16 @@
     <!-- Dialog进入及退出动画 -->
 
   </style>
+
+
+  <style name="Common_Dialog">
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowFrame">@null</item>
+    <item name="android:windowBackground">@drawable/dialog_shape</item>
+    <item name="android:windowIsFloating">true</item>
+    <item name="android:windowContentOverlay">@null</item>
+    <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="android:backgroundDimEnabled">true</item>
+  </style>
 </resources>

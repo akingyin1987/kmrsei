@@ -258,7 +258,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
     for (T t : baseDatas) {
       t.setViewStatus(ViewDataStatusEnum.NULL);
     }
-    adapter = new MultimediaAdapter<>(R.layout.item_multimedia, baseDatas);
+    adapter = new MultimediaAdapter<>(this,R.layout.item_multimedia, baseDatas);
     multimediaRecycler.setItemAnimator(new DefaultItemAnimator());
     mGridLayoutManager = new GridLayoutManager(this, 3);
     multimediaRecycler.setLayoutManager(mGridLayoutManager);

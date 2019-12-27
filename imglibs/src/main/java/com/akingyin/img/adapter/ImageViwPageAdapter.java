@@ -21,7 +21,11 @@ import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentManager;
 import cn.jzvd.JzvdStd;
+import com.akingyin.audio.AudioPlayDialog;
+import com.akingyin.audio.AudioPlayView;
+import com.akingyin.audio.AudioUtil;
 import com.akingyin.base.utils.FileUtils;
 import com.akingyin.img.ImageLoadUtil;
 import com.akingyin.img.R;
@@ -30,6 +34,8 @@ import com.github.chrisbanes.photoview.PhotoView;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -39,6 +45,16 @@ import java.util.List;
 
 public class ImageViwPageAdapter  extends BasePageAdapter<ImageTextModel> {
     private final LayoutInflater inflater;
+    private FragmentManager  fragmentManager;
+
+    public FragmentManager getFragmentManager() {
+        return fragmentManager;
+    }
+
+    public void setFragmentManager(FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
+    }
+
     public ImageViwPageAdapter(Context context) {
         super(context);
         inflater = LayoutInflater.from(context);
@@ -66,17 +82,23 @@ public class ImageViwPageAdapter  extends BasePageAdapter<ImageTextModel> {
         final  TextView card_pic_num;
         final   ImageView  iv_marker_video;
         final JzvdStd videoplayer;
+        final   ImageView  iv_audio_markder;
+        final   TextView  tv_audio_time;
+        final AudioPlayView   mAudioPlayView;
+
         private  Context context;
 
         public ViewHolder(View view,Context context) {
             this.context = context;
-
+            mAudioPlayView = view.findViewById(R.id.audio_player);
             pv_img = (PhotoView) view.findViewById(R.id.pv_img);
            tv_text = (TextView)view.findViewById(R.id.tv_text);
             tv_pagenum =(TextView)view.findViewById(R.id.tv_pagenum);
             card_pic_num = (TextView)view.findViewById(R.id.card_pic_num);
             iv_marker_video = (ImageView)view.findViewById(R.id.iv_marker_video);
             videoplayer = view.findViewById(R.id.videoplayer);
+            iv_audio_markder = view.findViewById(R.id.iv_audio_markder);
+            tv_audio_time = view.findViewById(R.id.tv_audio_time);
         }
         public  void   bind(final ImageTextModel   imageTextModel,int postion){
             if(TextUtils.isEmpty(imageTextModel.title)){
@@ -86,6 +108,7 @@ public class ImageViwPageAdapter  extends BasePageAdapter<ImageTextModel> {
             }
             videoplayer.setVisibility(View.GONE);
             iv_marker_video.setVisibility(View.GONE);
+            mAudioPlayView.setVisibility(View.GONE);
             tv_pagenum.setText(MessageFormat.format("{0}/{1}", postion, getCount()));
             if(!TextUtils.isEmpty(imageTextModel.text)){
                 pv_img.setVisibility(View.GONE);
@@ -100,56 +123,110 @@ public class ImageViwPageAdapter  extends BasePageAdapter<ImageTextModel> {
                 }
                 if(imageTextModel.haveNetServer){
                     try {
-
                         if(FileUtils.isFileExist(imageTextModel.localPath)){
-                            if(!imageTextModel.localPath.endsWith(".jpg")){
+                            if(imageTextModel.multimediaType == 2){
                                 pv_img.setVisibility(View.GONE);
                                 iv_marker_video.setVisibility(View.VISIBLE);
                                 videoplayer.setVisibility(View.VISIBLE);
                                 ImageLoadUtil.loadImageLocalFile(imageTextModel.localPath,context,videoplayer.thumbImageView);
-                                videoplayer.setUp(imageTextModel.localPath,FileUtils.getFileName(imageTextModel.localPath));
-
-                            }else{
+                                videoplayer.setUp(imageTextModel.localPath,"视频");
+                            }else if(imageTextModel.multimediaType == 1){
                                 ImageLoadUtil.loadImageLocalFile(imageTextModel.localPath,context,pv_img);
+                            }else if(imageTextModel.multimediaType == 3){
+                                iv_marker_video.setVisibility(View.GONE);
+                                videoplayer.setVisibility(View.GONE);
+                                pv_img.setVisibility(View.GONE);
+                                mAudioPlayView.setVisibility(View.VISIBLE);
+                                mAudioPlayView.setUrl(imageTextModel.localPath);
+                               // iv_audio_markder.setVisibility(View.VISIBLE);
+                               // setAudioDuration(tv_audio_time,imageTextModel.localPath);
                             }
 
+
                         }else{
-                            if(!TextUtils.isEmpty(imageTextModel.serverPath) && !imageTextModel.serverPath.endsWith(".jpg")){
+                            if(imageTextModel.multimediaType == 1){
+                                ImageLoadUtil.loadImageServerFile(imageTextModel.serverPath,context,pv_img);
+                            }else if(imageTextModel.multimediaType == 2){
                                 pv_img.setVisibility(View.GONE);
                                 iv_marker_video.setVisibility(View.VISIBLE);
                                 videoplayer.setVisibility(View.VISIBLE);
                                 ImageLoadUtil.loadImageServerFile(imageTextModel.serverPath,context,videoplayer.thumbImageView);
-                                videoplayer.setUp(imageTextModel.serverPath,FileUtils.getFileName(imageTextModel.serverPath));
+                                videoplayer.setUp(imageTextModel.serverPath,"视频");
 
-                            }else{
-                                ImageLoadUtil.loadImageServerFile(imageTextModel.serverPath,context,pv_img);
+                            }else if(imageTextModel.multimediaType == 3){
+                                iv_marker_video.setVisibility(View.GONE);
+                                videoplayer.setVisibility(View.GONE);
+                                pv_img.setVisibility(View.GONE);
+                                mAudioPlayView.setVisibility(View.VISIBLE);
+                                mAudioPlayView.setUrl(imageTextModel.serverPath);
+                               // iv_audio_markder.setVisibility(View.VISIBLE);
+                               // setAudioDuration(tv_audio_time,imageTextModel.localPath);
                             }
 
                         }
 
                     }catch (Exception e){
                         e.printStackTrace();
-                        if(!TextUtils.isEmpty(imageTextModel.serverPath) && !imageTextModel.serverPath.endsWith(".jpg")){
+                        if(imageTextModel.multimediaType == 1){
+                            ImageLoadUtil.loadImageServerFile(imageTextModel.serverPath,context,pv_img);
+                        }else if(imageTextModel.multimediaType == 2){
                             pv_img.setVisibility(View.GONE);
                             iv_marker_video.setVisibility(View.VISIBLE);
                             videoplayer.setVisibility(View.VISIBLE);
+                            ImageLoadUtil.loadImageServerFile(imageTextModel.serverPath,context,videoplayer.thumbImageView);
                             videoplayer.setUp(imageTextModel.serverPath,"视频");
+
+                        }else if(imageTextModel.multimediaType == 3){
+                            iv_marker_video.setVisibility(View.GONE);
+                            videoplayer.setVisibility(View.GONE);
+                            pv_img.setVisibility(View.GONE);
+                            iv_audio_markder.setVisibility(View.VISIBLE);
+                            setAudioDuration(tv_audio_time,imageTextModel.localPath);
                         }
-                        ImageLoadUtil.loadImageServerFile(imageTextModel.serverPath,context,pv_img);
+
                     }
                 }else{
-                    if(!TextUtils.isEmpty(imageTextModel.localPath) &&!imageTextModel.localPath.endsWith(".jpg")){
+                    if(imageTextModel.multimediaType == 1){
+                        ImageLoadUtil.loadImageLocalFile(imageTextModel.localPath,context,pv_img);
+                    }else if(imageTextModel.multimediaType == 2){
                         iv_marker_video.setVisibility(View.VISIBLE);
                         videoplayer.setVisibility(View.VISIBLE);
                         pv_img.setVisibility(View.GONE);
                         ImageLoadUtil.loadImageLocalFile(imageTextModel.localPath,context,videoplayer.thumbImageView);
                         videoplayer.setUp(imageTextModel.localPath,"视频");
-                    }else{
-                        ImageLoadUtil.loadImageLocalFile(imageTextModel.localPath,context,pv_img);
+                    }else if(imageTextModel.multimediaType == 3){
+                         iv_marker_video.setVisibility(View.GONE);
+                         videoplayer.setVisibility(View.GONE);
+                         pv_img.setVisibility(View.GONE);
+
+                        iv_audio_markder.setVisibility(View.VISIBLE);
+                        setAudioDuration(tv_audio_time,imageTextModel.localPath);
                     }
+
 
                 }
             }
+            iv_audio_markder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(FileUtils.isFileExist(imageTextModel.localPath)){
+                        try {
+                            AudioPlayDialog.Companion.getInstance(imageTextModel.localPath).show(fragmentManager,"audio");
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }else{
+                        try {
+                            AudioPlayDialog.Companion.getInstance(imageTextModel.serverPath).show(fragmentManager,"audio");
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                }
+            });
+            iv_marker_video.setVisibility(View.GONE);
             iv_marker_video.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     try {
@@ -167,6 +244,19 @@ public class ImageViwPageAdapter  extends BasePageAdapter<ImageTextModel> {
 
                 }
             });
+        }
+    }
+
+    public  void    setAudioDuration(TextView  textView ,String  localPath){
+        if(TextUtils.isEmpty(localPath)){
+            textView.setVisibility(View.GONE);
+        }else{
+            int  itemDuration = AudioUtil.INSTANCE.getMediaDuration(localPath);
+
+            long minutes = TimeUnit.MILLISECONDS.toMinutes(itemDuration);
+            long seconds = TimeUnit.MILLISECONDS.toSeconds(itemDuration)
+                    - TimeUnit.MINUTES.toSeconds(minutes);
+            textView.setText(String.format(Locale.getDefault(),"%02d:%02d", minutes, seconds));
         }
     }
 

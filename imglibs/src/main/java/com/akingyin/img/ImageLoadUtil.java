@@ -43,7 +43,7 @@ public class ImageLoadUtil {
       return new RequestOptions()
            .fitCenter()
            .placeholder(R.drawable.big_img_error)
-           .error(R.drawable.big_img_error)
+           .error(R.drawable.icon_img_load_error)
 
            .priority(Priority.HIGH);
 
@@ -54,7 +54,7 @@ public class ImageLoadUtil {
     return new RequestOptions()
         .fitCenter()
         .placeholder(R.drawable.big_img_error)
-        .error(R.drawable.big_img_error)
+        .error(R.drawable.icon_img_load_error)
 
         .priority(Priority.HIGH);
 
@@ -111,6 +111,7 @@ public class ImageLoadUtil {
   }
 
   public  static  <T extends ImageView>    void     loadImage(String  path, Context  context, T imageView){
+
     Glide.with(context).load(path)
         .apply(getImgRequestOptions())
 

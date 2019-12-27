@@ -8,6 +8,8 @@
 
 package com.akingyin.img.multimedia;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.akingyin.img.model.IDataMultimedia;
@@ -48,8 +50,11 @@ import java.util.List;
 public class MultimediaAdapter<T extends IDataMultimedia>  extends BaseItemDraggableAdapter<T,MultimediaViewHolder> {
 
 
-  public MultimediaAdapter(int layoutResId, List<T> data) {
+  public MultimediaAdapter(Context context,int layoutResId, List<T> data) {
     super(layoutResId, data);
+    
+    this.mContext = context;
+    this.mLayoutInflater = LayoutInflater.from(context);
 
   }
 
@@ -68,6 +73,7 @@ public class MultimediaAdapter<T extends IDataMultimedia>  extends BaseItemDragg
   @Override
   protected MultimediaViewHolder createBaseViewHolder(ViewGroup parent, int layoutResId) {
     View  view = mLayoutInflater.inflate(layoutResId, parent, false);
+    System.out.println("-----MultimediaViewHolder-----");
     return new MultimediaViewHolder(view);
   }
 
