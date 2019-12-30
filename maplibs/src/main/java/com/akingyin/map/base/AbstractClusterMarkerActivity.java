@@ -38,6 +38,7 @@ public abstract class AbstractClusterMarkerActivity<T extends ClusterItem> exten
 
   @Override public void initialization() {
       mClusterManager = new ClusterManager<>(this,getmBaiduMap());
+
       mExecutorService = Executors.newFixedThreadPool(2);
       mExecutorService.execute(new Runnable() {
         @Override public void run() {
@@ -65,7 +66,7 @@ public abstract class AbstractClusterMarkerActivity<T extends ClusterItem> exten
           return false;
         }
       });
-
+    iv_seeall.setVisibility(View.INVISIBLE);
   }
 
   protected void setToolBar(Toolbar toolbar, String title) {
@@ -116,6 +117,8 @@ public abstract class AbstractClusterMarkerActivity<T extends ClusterItem> exten
        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
        mInfoPagerAdapter = new MarkerInfoBottomSheetAdapter();
+       mInfoPagerAdapter.setILoadImage(this);
+       mInfoPagerAdapter.setIOperationListen(this);
        mRecyclerView.setAdapter(mInfoPagerAdapter);
       closeButton.setOnClickListener(new View.OnClickListener() {
         @Override public void onClick(View v) {

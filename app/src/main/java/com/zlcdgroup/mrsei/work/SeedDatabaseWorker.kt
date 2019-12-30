@@ -20,7 +20,10 @@ import timber.log.Timber
  */
 class SeedDatabaseWorker(context: Context,
                          workerParams: WorkerParameters):CoroutineWorker(context,workerParams) {
+
+
     private val TAG by lazy { SeedDatabaseWorker::class.java.simpleName }
+
 
     override suspend fun doWork(): Result = coroutineScope {
         try {

@@ -1,16 +1,28 @@
 package com.akingyin.base.dialog;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.text.TextUtils;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.StackingBehavior;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import com.akingyin.base.R;
 import com.akingyin.base.rx.RxUtil;
+import com.akingyin.base.utils.HtmlUtils;
+import com.qmuiteam.qmui.skin.QMUISkinHelper;
+import com.qmuiteam.qmui.skin.QMUISkinValueBuilder;
+import com.qmuiteam.qmui.util.QMUIResHelper;
+import com.qmuiteam.qmui.widget.QMUILoadingView;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialogView;
+import com.qmuiteam.qmui.widget.textview.QMUISpanTouchFixTextView;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import java.text.MessageFormat;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-
 
 /**
  * Created by Administrator on 2017/12/29.
@@ -18,113 +30,163 @@ import java.util.concurrent.TimeUnit;
 
 public class TaskShowDialog {
 
-    // --------------进度条显示----------------
-    MaterialDialog loadingDialog;
+  // --------------进度条显示----------------
+  private QMUITipDialog loadingDialog;
 
-    boolean    isAutomatic = false;
-    boolean isLoading() {
-        return null != loadingDialog && loadingDialog.isShowing();
-    }
-    Context context;
+  private boolean isLoading() {
+    return null != loadingDialog && loadingDialog.isShowing();
+  }
 
-    private   DialogCallBack<Boolean>  callBack;
+  private DialogCallBack<Boolean> callBack;
 
-    public DialogCallBack<Boolean> getCallBack() {
-        return callBack;
-    }
+  public DialogCallBack<Boolean> getCallBack() {
+    return callBack;
+  }
 
-    public TaskShowDialog setCallBack(DialogCallBack<Boolean> callBack) {
-        this.callBack = callBack;
-        return this;
-    }
+  public TaskShowDialog setCallBack(DialogCallBack<Boolean> callBack) {
+    this.callBack = callBack;
+    return this;
+  }
 
-    Disposable mDisposable;
-    private    long   currentTime;
-    private   String  msg;
-    public void showLoadDialog(Context context,int  max, String message) {
-        isAutomatic = false;
-        this.context = context;
-        this.msg = message;
-        try {
-            if (isLoading()) {
-                return;
-            }
-            if (null == loadingDialog) {
-                loadingDialog = new MaterialDialog.Builder(context)
-                        .content(message)
-                        .progress(false,0)
-                        .stackingBehavior(StackingBehavior.ADAPTIVE).build();
+  private Disposable mDisposable;
+  private long currentTime;
+  private String msg;
+  private TextView tipView;
 
-            }
-            currentTime = System.currentTimeMillis();
-            loadingDialog.setMaxProgress(max);
-            if (!TextUtils.isEmpty(message)) {
-                loadingDialog.setContent(message+" ,耗时("+((System.currentTimeMillis()-currentTime)/1000)+"s"+")");
-            } else {
-                loadingDialog.setContent("处理中...耗时("+(System.currentTimeMillis()-currentTime)/1000+"s"+")");
-            }
-            loadingDialog.setCancelable(true);
-            loadingDialog.setCanceledOnTouchOutside(false);
-            loadingDialog.show();
-            loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    if(null != mDisposable && !mDisposable.isDisposed()){
-                        mDisposable.dispose();
-                    }
-                    if(!isAutomatic && null != callBack){
-                        callBack.call(true);
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
 
+  public   void   setTipWord(String  message){
+    tipView.setText(HtmlUtils.getTextHtml(message));
+  }
+
+  public void showLoadDialog(Context context, String message) {
+
+    this.msg = message;
+    try {
+      if (isLoading()) {
+        return;
+      }
+      if (null == loadingDialog) {
+        loadingDialog = new QMUITipDialog(context, R.style.QMUI_TipDialog);
+
+        Context dialogContext = loadingDialog.getContext();
+        QMUITipDialogView dialogView = new QMUITipDialogView(dialogContext);
+
+        QMUISkinValueBuilder builder = QMUISkinValueBuilder.acquire();
+
+        QMUILoadingView loadingView = new QMUILoadingView(dialogContext);
+        loadingView.setColor(QMUIResHelper.getAttrColor(dialogContext,
+            R.attr.qmui_skin_support_tip_dialog_loading_color));
+
+        loadingView.setSize(
+            QMUIResHelper.getAttrDimen(dialogContext, R.attr.qmui_tip_dialog_loading_size));
+        builder.tintColor(QMUIResHelper.getAttrString(dialogContext,
+            R.attr.qmui_skin_def_tip_dialog_loading_color));
+        QMUISkinHelper.setSkinValue(loadingView, builder);
+        dialogView.addView(loadingView, onCreateIconOrLoadingLayoutParams(dialogContext));
+
+        tipView = new QMUISpanTouchFixTextView(context);
+        tipView.setEllipsize(TextUtils.TruncateAt.END);
+        tipView.setGravity(Gravity.CENTER);
+        tipView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+            QMUIResHelper.getAttrDimen(context, R.attr.qmui_tip_dialog_text_size));
+        tipView.setTextColor(QMUIResHelper.getAttrColor(context,
+            R.attr.qmui_skin_support_tip_dialog_text_color));
+
+        if (!TextUtils.isEmpty(message)) {
+          tipView.setText(MessageFormat.format("{0} ,耗时({1}s)", message,
+              (System.currentTimeMillis() - currentTime) / 1000));
+        } else {
+          tipView.setText(
+              String.format(Locale.getDefault(),"处理中...耗时(%ds)", (System.currentTimeMillis() - currentTime) / 1000));
         }
+        builder.clear();
+        builder.textColor(
+            QMUIResHelper.getAttrString(dialogContext, R.attr.qmui_skin_def_tip_dialog_text_color));
+        QMUISkinHelper.setSkinValue(tipView, builder);
+        dialogView.addView(tipView, onCreateTextLayoutParams(dialogContext));
+        builder.release();
+        loadingDialog.setContentView(dialogView);
+      }
 
-       mDisposable =  Observable.interval(1,1, TimeUnit.SECONDS)
-                .compose(RxUtil.<Long>IO_Main())
-                .subscribe(new Consumer<Long>() {
-                    @Override
-                    public void accept(Long aLong) throws Exception {
-                        if (!TextUtils.isEmpty(msg)) {
-                            loadingDialog.setContent(msg+" ,耗时("+((System.currentTimeMillis()-currentTime)/1000)+"s"+")");
-                        } else {
-                            loadingDialog.setContent("处理中...耗时("+(System.currentTimeMillis()-currentTime)/1000+"s"+")");
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
+      currentTime = System.currentTimeMillis();
+      loadingDialog.setCancelable(true);
+      loadingDialog.setCanceledOnTouchOutside(false);
+      loadingDialog.show();
 
-                    }
-                });
+      loadingDialog.setOnCancelListener(dialog ->
 
+      {
+        callBack.call(true);
+        if (null != mDisposable && !mDisposable.isDisposed()) {
+          mDisposable.dispose();
+        }
+      });
+      loadingDialog.setOnDismissListener(dialog ->
+
+      {
+        if (null != mDisposable && !mDisposable.isDisposed()) {
+          mDisposable.dispose();
+        }
+      });
+    } catch (Exception e) {
+      e.printStackTrace();
     }
 
-
-
-    public void hideDialog() {
-        isAutomatic = true;
-        if(null != mDisposable && !mDisposable.isDisposed()){
-            mDisposable.dispose();
-        }
-        if (isLoading()) {
-            loadingDialog.dismiss();
-        }
-        loadingDialog = null;
-    }
-
-    public void flushDialog(String message,int  progress) {
-        this.msg = message;
-        if (isLoading()) {
-            loadingDialog.setProgress(progress);
-
+    mDisposable = Observable.interval(1, 1, TimeUnit.SECONDS)
+        .compose(RxUtil.<Long>IO_Main())
+        .subscribe(new Consumer<Long>() {
+          @Override public void accept(Long aLong) throws Exception {
             if (!TextUtils.isEmpty(msg)) {
-                loadingDialog.setContent(msg+" .耗时("+((System.currentTimeMillis()-currentTime)/1000)+"s"+")");
+              setTipWord(
+                  msg + " ,耗时(" + ((System.currentTimeMillis() - currentTime) / 1000) + "s" + ")");
             } else {
-                loadingDialog.setContent("处理中...耗时("+(System.currentTimeMillis()-currentTime)/1000+"s"+")");
+              setTipWord(
+                  "处理中...耗时(" + (System.currentTimeMillis() - currentTime) / 1000 + "s" + ")");
             }
-        }
+          }
+        }, new Consumer<Throwable>() {
+          @Override public void accept(Throwable throwable) throws Exception {
+             throwable.printStackTrace();
+          }
+        });
+  }
+
+
+
+  protected LinearLayout.LayoutParams onCreateIconOrLoadingLayoutParams(Context context) {
+    return new LinearLayout.LayoutParams(
+        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+  }
+
+  protected LinearLayout.LayoutParams onCreateTextLayoutParams(Context context) {
+    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    lp.topMargin = QMUIResHelper.getAttrDimen(context, R.attr.qmui_tip_dialog_text_margin_top);
+
+    return lp;
+  }
+
+  public void hideDialog() {
+
+    if (null != mDisposable && !mDisposable.isDisposed()) {
+      mDisposable.dispose();
     }
+    if (isLoading()) {
+      loadingDialog.dismiss();
+    }
+    loadingDialog = null;
+  }
+
+  public void flushDialog(String message, int progress) {
+    this.msg = message;
+    if (isLoading()) {
+      if (!TextUtils.isEmpty(msg)) {
+        setTipWord(
+            msg + " .耗时(" + ((System.currentTimeMillis() - currentTime) / 1000) + "s" + ")");
+      } else {
+        setTipWord(
+            "处理中...耗时(" + (System.currentTimeMillis() - currentTime) / 1000 + "s" + ")");
+      }
+    }
+  }
 }

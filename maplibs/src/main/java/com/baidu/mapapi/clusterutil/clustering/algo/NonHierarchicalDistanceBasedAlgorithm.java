@@ -93,7 +93,6 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
         final int discreteZoom = (int) zoom;
 
         final double zoomSpecificSpan = MAX_DISTANCE_AT_ZOOM / Math.pow(2, discreteZoom) / 256;
-        System.out.println("zoomSpecificSpan=="+zoomSpecificSpan);
 
         final Set<QuadItem<T>> visitedCandidates = new HashSet<>();
         final Set<Cluster<T>> results = new HashSet<>();

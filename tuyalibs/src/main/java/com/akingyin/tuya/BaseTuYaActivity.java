@@ -395,6 +395,7 @@ public abstract class BaseTuYaActivity extends SimpleActivity implements TuyaLis
         saveBitmap = CameraBitmapUtil.BitmapScale(tuyaView.dis, 1 / scale);
       }
 
+      System.out.println("directoryPath="+directoryPath+":saveName="+saveReName);
       File outFile = new File(directoryPath, saveReName);
       out = new FileOutputStream(outFile);
 

@@ -59,6 +59,6 @@ class TestClusterMarkerActivity : AbstractClusterMarkerActivity<TestMarkerItem>(
     }
 
     override fun loadImageView(path: String?, context: Context?, imageView: ImageView) {
-        ImageLoadUtil.loadImage(path,context,imageView)
+        ImageLoadUtil.loadImage(this,path,R.drawable.error_img,R.drawable.error_img,imageView)
     }
 }

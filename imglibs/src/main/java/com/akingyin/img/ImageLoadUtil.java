@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.widget.ImageView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -129,7 +130,7 @@ public class ImageLoadUtil {
    * @param t
    * @param <T>
    */
-  public  static  <T extends  ImageView>   void   loadImage(@NonNull Context  context,@NonNull String  url,@DrawableRes int  error,@DrawableRes int placeholder,T  t){
+  public  static  <T extends  ImageView>   void   loadImage(@NonNull Context  context,@Nullable String  url,@DrawableRes int  error,@DrawableRes int placeholder,T  t){
     Glide.with(context).load(url).apply(getImgRequestOptions(placeholder,error)).into(t);
   }
 

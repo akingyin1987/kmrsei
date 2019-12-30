@@ -15,7 +15,7 @@ ext{
     androidXTestVersion = '1.1.1'
     androidXAnnotations = '1.0.1'
     androidXLegacySupport = '1.0.0'
-    materialVersion = '1.2.0-alpha02'
+    materialVersion = '1.2.0-alpha03'
     cardVersion = '1.0.0'
     recyclerViewVersion = '1.1.0'
     appCompatVersion = '1.1.0'

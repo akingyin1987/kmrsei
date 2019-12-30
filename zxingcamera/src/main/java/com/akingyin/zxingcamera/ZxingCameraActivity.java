@@ -258,7 +258,12 @@ public class ZxingCameraActivity  extends AppCompatActivity implements SurfaceHo
     if(width>0){
       mCameraManager.setCustomCameraSizeValue(new Point(width,higth));
     }
-    iv_lock_land.setVisibility(isLockScreen?View.VISIBLE:View.GONE);
+    if(isLockScreen){
+      iv_lock_land.setImageResource(R.drawable.ic_screen_lock_landscape_white_36dp);
+    }else{
+      iv_lock_land.setImageResource(R.drawable.ic_screen_landscape_white_36dp);
+    }
+
     int flashMode = getPreferenceInt("flashMode", 0);
     iv_flash_model.setImageResource(resFlashIds[flashMode]);
     if(flashMode == 0){
@@ -333,6 +338,18 @@ public class ZxingCameraActivity  extends AppCompatActivity implements SurfaceHo
    * 添加事件
    */
   public   void   addOperationalEvents(){
+    iv_lock_land.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View v) {
+        isLockScreen = !isLockScreen;
+        savePreferenceBoolean("camera_land",isLockScreen);
+        mCameraManager.setLandscape(isLockScreen?1:0);
+        if(isLockScreen){
+          iv_lock_land.setImageResource(R.drawable.ic_screen_lock_landscape_white_36dp);
+        }else{
+          iv_lock_land.setImageResource(R.drawable.ic_screen_landscape_white_36dp);
+        }
+      }
+    });
      iv_camera_setting.setOnClickListener(new View.OnClickListener() {
        @Override public void onClick(View v) {
          setCameraResolution();
