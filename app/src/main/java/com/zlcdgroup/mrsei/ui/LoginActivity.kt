@@ -5,15 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import com.akingyin.base.BaseActivity
-import com.akingyin.base.dialog.DialogUtil
+import com.akingyin.base.dialog.MaterialDialogUtil
 import com.akingyin.base.ext.*
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.base.utils.StringUtils
 import com.akingyin.tuya.BaseTuYaActivity
+import com.uber.autodispose.ScopeProvider
+import com.uber.autodispose.autoDisposable
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
 import com.zlcdgroup.mrsei.utils.ThemeHelper
+import io.reactivex.Completable
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_login.*
 import java.io.File
 import javax.inject.Inject
@@ -71,8 +75,17 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
     }
 
     override fun startRequest() {
+      Completable.create {
 
+      }.autoDisposable(ScopeProvider.UNBOUND).subscribe {
 
+      }
+      Observable.just("1")
+              .autoDisposable(Completable.complete())
+
+              .subscribe {
+                   println("on complete")
+              }
     }
 
     override fun dismissLoading() {
@@ -81,7 +94,7 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
     }
 
     override fun showConfigDialog(message: String) {
-        DialogUtil.showConfigDialog(this,message) {
+        MaterialDialogUtil.showConfigDialog(context = this,message = message) {
             aBoolean -> if(aBoolean){
 
         }

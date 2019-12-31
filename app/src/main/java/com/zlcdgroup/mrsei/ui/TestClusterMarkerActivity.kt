@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.akingyin.img.ImageLoadUtil
 import com.akingyin.map.TestUtil
-import com.akingyin.map.base.AbstractClusterMarkerActivity
+import com.akingyin.map.base.AbstractClusterBMapMarkerActivity
 import com.akingyin.map.model.IMarkerModel
 import com.baidu.location.BDLocation
 import com.zlcdgroup.mrsei.R
@@ -19,7 +19,7 @@ import com.zlcdgroup.mrsei.data.model.TestMarkerItem
  * @ Date 2019/12/24 15:57
  * @version V1.0
  */
-class TestClusterMarkerActivity : AbstractClusterMarkerActivity<TestMarkerItem>() {
+class TestClusterMarkerActivity : AbstractClusterBMapMarkerActivity<TestMarkerItem>() {
 
     override fun onLocation(bdLocation: BDLocation?) {
     }
@@ -60,5 +60,10 @@ class TestClusterMarkerActivity : AbstractClusterMarkerActivity<TestMarkerItem>(
 
     override fun loadImageView(path: String?, context: Context?, imageView: ImageView) {
         ImageLoadUtil.loadImage(this,path,R.drawable.error_img,R.drawable.error_img,imageView)
+    }
+
+    override fun onDestroy() {
+
+        super.onDestroy()
     }
 }

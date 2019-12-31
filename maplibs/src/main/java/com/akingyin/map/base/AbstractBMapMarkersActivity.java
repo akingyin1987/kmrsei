@@ -57,14 +57,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * 地图显示坐标信息
+ * 基于百度地图显示坐标信息
  * @author king
  * @version V1.0
  * @ Description:
  * @ Date 2017/11/25 11:45
  */
 
-public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity implements ILoadImage,IOperationListen{
+public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
+    implements ILoadImage,IOperationListen{
   public BitmapDescriptor pathRead = BitmapDescriptorFactory.fromAsset("icon_road_red_arrow.png");
   public  BitmapDescriptor pathGreen = BitmapDescriptorFactory.fromAsset("icon_road_green_arrow.png");
   protected BitmapDescriptor readBitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_openmap_mark);
@@ -650,10 +651,10 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
           }
         }
         if(null != viewpager){
-          mInfoPagerAdapter = new MarkderInfoPagerAdapter(AbstractMapMarkersActivity.this,showImarkers);
-          mInfoPagerAdapter.setIOperationListen(AbstractMapMarkersActivity.this);
+          mInfoPagerAdapter = new MarkderInfoPagerAdapter(AbstractBMapMarkersActivity.this,showImarkers);
+          mInfoPagerAdapter.setIOperationListen(AbstractBMapMarkersActivity.this);
           mInfoPagerAdapter.setPathMarker(showPathPlan());
-          mInfoPagerAdapter.setILoadImage(AbstractMapMarkersActivity.this);
+          mInfoPagerAdapter.setILoadImage(AbstractBMapMarkersActivity.this);
           viewpager.removeOnPageChangeListener(mOnPageChangeListener);
           viewpager.addOnPageChangeListener(mOnPageChangeListener);
           viewpager.setAdapter(mInfoPagerAdapter);
@@ -816,6 +817,7 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
    * @return
    */
   protected abstract   boolean    showPathPlan();
+
 
   /**
    * 最短距离刷新路径规划
@@ -1038,5 +1040,13 @@ public  abstract class AbstractMapMarkersActivity  extends  BaseMapActivity impl
 
   @Override protected void onBdNotify(BDLocation bdLocation, float d) {
 
+  }
+
+  /**
+   * 是否支持点聚合(默认支持)
+   * @return
+   */
+  public   boolean    isSupportClusterMarker(){
+    return   true;
   }
 }

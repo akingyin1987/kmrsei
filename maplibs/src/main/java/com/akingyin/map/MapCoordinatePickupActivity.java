@@ -22,7 +22,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import com.akingyin.map.base.BaiduPanoramaActivity;
-import com.akingyin.map.base.BaseMapActivity;
+import com.akingyin.map.base.BaseBMapActivity;
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
@@ -48,7 +48,7 @@ import java.text.MessageFormat;
  * @ Date 2017/11/24 13:33
  */
 
-public class MapCoordinatePickupActivity  extends BaseMapActivity implements View.OnClickListener {
+public class MapCoordinatePickupActivity  extends BaseBMapActivity implements View.OnClickListener {
 
    private   double   currentLat,currentLng;
 

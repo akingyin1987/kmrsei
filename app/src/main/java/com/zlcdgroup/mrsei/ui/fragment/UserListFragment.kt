@@ -6,7 +6,8 @@ import android.view.View
 import android.widget.EditText
 import com.afollestad.materialdialogs.MaterialDialog
 import com.akingyin.base.BaseFragment
-import com.akingyin.base.dialog.DialogUtil
+import com.akingyin.base.dialog.MaterialDialogUtil
+
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.stepstone.stepper.BlockingStep
 import com.stepstone.stepper.StepperLayout
@@ -62,38 +63,41 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
     }
 
     override fun showAddUserDialog() {
+        MaterialDialog(mContext).show {
+            title(text = "用户信息修改")
+            positiveButton(text = "确定")
+            negativeButton(text = "取消")
+            setContentView(R.layout.dialog_edit_user)
+            noAutoDismiss()
+            positiveButton {
+                val name: EditText = it.findViewById(R.id.edit_name) as EditText
+                val age: EditText = it.findViewById(R.id.edit_age) as EditText
 
-        MaterialDialog.Builder(mContext).title("用户信息修改")
-                .positiveText("确定")
-                .negativeText("取消")
-                .autoDismiss(false)
-                .onPositive { dialog, _ ->
-                    val name:EditText = dialog.findViewById(R.id.edit_name) as EditText
-                    val age :EditText = dialog.findViewById(R.id.edit_age) as EditText
-                    if(age.text.isNullOrEmpty()){
-                        showError("不可为空")
-                        return@onPositive
-                    }
-                    if(age.text !is Number){
-                        showError("类型不正确")
-                        return@onPositive
-                    }
-                    val userEntity  = UserEntity()
-                    userEntity.age = age.text.toString().trim().toInt()
-                    userEntity.name = name.text.toString().trim()
-                    userListFragmentPresenterImpl.addUser(userEntity)
-                    dialog.dismiss()
+                if(age.text.isNullOrEmpty()){
+                    showError("不可为空")
+                     return@positiveButton
                 }
-                .customView(R.layout.dialog_edit_user,false)
-                .show()
+                if(age.text !is Number){
+                    showError("类型不正确")
+                    return@positiveButton
+                }
+                val userEntity  = UserEntity()
+                userEntity.age = age.text.toString().trim().toInt()
+                userEntity.name = name.text.toString().trim()
+                userListFragmentPresenterImpl.addUser(userEntity)
+                it.dismiss()
+            }
+        }
+
     }
 
     override fun showDelectUserDialog(userEntity: UserEntity, postion: Int) {
-       DialogUtil.showConfigDialog(mContext,"确定要删除当前信息?") {
-           result -> if(result){
-           userListFragmentPresenterImpl.delectUser(userEntity,postion)
+       MaterialDialogUtil.showConfigDialog(mContext,message = "确定要删除当前信息?"){
+           if(it){
+               userListFragmentPresenterImpl.delectUser(userEntity,postion)
+           }
        }
-       }
+
     }
 
     override fun getAdapter(): BaseQuickAdapter<UserEntity, UserViewHolder> {
@@ -107,18 +111,21 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
          name.setText(userEntity.name)
          age.setText(userEntity.age.toString())
 
-         MaterialDialog.Builder(mContext).title("用户信息修改")
-                .positiveText("确定")
-                .negativeText("取消")
-                .onPositive { _, _ ->
 
-                    userEntity.age = age.text.toString().trim().toInt()
-                    userEntity.name = name.text.toString().trim()
-                    userListFragmentPresenterImpl.modifyUser(userEntity,postion)
-                }
-                .customView(view,false)
-                .show()
+        MaterialDialog(mContext).show {
+            title(text = "用户信息修改")
+            positiveButton(text = "确定")
+            negativeButton(text = "取消")
+            setContentView(view)
+            noAutoDismiss()
+            positiveButton {
 
+                userEntity.age = age.text.toString().trim().toInt()
+                userEntity.name = name.text.toString().trim()
+                userListFragmentPresenterImpl.modifyUser(userEntity,postion)
+                it.dismiss()
+            }
+        }
     }
 
     override fun initView() {

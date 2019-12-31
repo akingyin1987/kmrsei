@@ -41,7 +41,7 @@ import com.baidu.mapapi.model.LatLng;
  *
  * @ Date 2017/11/24 12:37
  */
-public   abstract  class BaseMapFragment extends Fragment implements ReceiveLocListion {
+public   abstract  class BaseBMapFragment extends Fragment implements ReceiveLocListion {
 
       private MapView mMapView;
       private BaiduMap mBaiduMap;

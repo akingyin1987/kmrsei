@@ -12,7 +12,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import com.akingyin.map.base.AbstractMapMarkersActivity;
+import com.akingyin.map.base.AbstractBMapMarkersActivity;
 import com.akingyin.map.model.IMarkerModel;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -26,7 +26,7 @@ import java.util.List;
  * @ Date 2017/11/25 14:45
  */
 
-public class TestMarkerMapActivity  extends AbstractMapMarkersActivity {
+public class TestMarkerMapActivity  extends AbstractBMapMarkersActivity {
 
   @Override public void onOperation(int postion, IMarkerModel iMarkerModel) {
 

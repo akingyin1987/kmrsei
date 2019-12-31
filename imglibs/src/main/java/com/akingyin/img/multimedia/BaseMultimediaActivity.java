@@ -24,12 +24,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
+import com.akingyin.base.dialog.MaterialDialogUtil;
 import com.akingyin.base.utils.FileUtils;
 import com.akingyin.base.utils.PreferencesUtil;
 import com.akingyin.img.R;
@@ -46,9 +46,10 @@ import com.akingyin.img.widget.MaterialSelectDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.callback.ItemDragAndSwipeCallback;
 import com.chad.library.adapter.base.listener.OnItemDragListener;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -973,7 +974,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
       showMsg("当前没有可粘贴的数据");
       return;
     }
-    Disposable  disposable =  Flowable.just(pastedatas)
+  Flowable.just(pastedatas)
         .map(new Function<List<T>, List<T>>() {
           @Override public List<T> apply(List<T> ts) throws Exception {
             List<T> pastestemp = new LinkedList<>();
@@ -1016,8 +1017,10 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
             return temps;
           }
         })
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
+       .subscribeOn(Schedulers.io())
+       .observeOn(AndroidSchedulers.mainThread())
+        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+
         .subscribe(new Consumer<List<T>>() {
           @Override public void accept(List<T> ts) throws Exception {
             showMsg("粘贴成功");
@@ -1037,7 +1040,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
 
   //复制数据
   public void copyDatas(List<T> copydatas) {
-   Disposable  disposable = Flowable.just(copydatas)
+    Flowable.just(copydatas)
         .map(new Function<List<T>, String>() {
           @Override public String apply(List<T> ts) throws Exception {
             int error = 0;
@@ -1049,8 +1052,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
                 try {
                   File file = new File(t.getLocalPath());
                   if (file.exists()) {
-                    boolean result =
-                        FileUtils.copyFile(t.getLocalPath(), copydir + File.separator + copyname);
+                    boolean result = FileUtils.copyFile(t.getLocalPath(), copydir + File.separator + copyname);
                     if (result) {
                       T copyt = createObject();
                       copyt.setData(t.getMultimediaEnum(), t.getTextDes(),
@@ -1079,6 +1081,8 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
         })
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
+        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+
         .subscribe(new Consumer<String>() {
           @Override public void accept(String s) throws Exception {
             showMsg(s);
@@ -1151,21 +1155,14 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
     sOperationStateEnum = OperationStateEnum.NULL;
     ValMessage  valMessage = onBackValData(adapter.getData());
     if(!valMessage.isVal()){
-     new MaterialDialog.Builder(this).title("提示")
-          .content(valMessage.getMsg()).negativeText("取消")
-          .positiveText("退出")
-          .onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-              dialog.dismiss();
-            }
-          }).onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-              dialog.dismiss();
+      MaterialDialogUtil.INSTANCE.showConfigDialog(this, "提示", valMessage.getMsg(), "退出", "取消",
+          aBoolean -> {
+            if(aBoolean){
               finish();
             }
-          }).show();
+            return null;
+          });
+
       return;
     }
     super.onBackPressed();

@@ -23,13 +23,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * 基于聚合显示当前marker
+ * 基于百度地图 聚合
  * @author king
  * @version V1.0
  * @ Description:
  * @ Date 2019/12/24 15:29
  */
-public abstract class AbstractClusterMarkerActivity<T extends ClusterItem> extends BaseMapActivity implements
+public abstract class AbstractClusterBMapMarkerActivity<T extends ClusterItem> extends
+    BaseBMapActivity implements
     ILoadImage,IOperationListen{
 
   private ClusterManager<T>   mClusterManager;
@@ -40,6 +41,7 @@ public abstract class AbstractClusterMarkerActivity<T extends ClusterItem> exten
       mClusterManager = new ClusterManager<>(this,getmBaiduMap());
 
       mExecutorService = Executors.newFixedThreadPool(2);
+      mClusterManager.setExecutorService(mExecutorService);
       mExecutorService.execute(new Runnable() {
         @Override public void run() {
           mClusterManager.addItems(loadMarkers());
@@ -66,6 +68,7 @@ public abstract class AbstractClusterMarkerActivity<T extends ClusterItem> exten
           return false;
         }
       });
+    vs_seeall.setVisibility(View.INVISIBLE);
     iv_seeall.setVisibility(View.INVISIBLE);
   }
 
@@ -145,6 +148,8 @@ public abstract class AbstractClusterMarkerActivity<T extends ClusterItem> exten
 
     mBottomSheetDialog.show();
   }
+
+
 
 
 }

@@ -7,7 +7,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import com.akingyin.base.dialog.DialogUtil;
+import android.text.InputType;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.input.DialogInputExtKt;
 import com.akingyin.tuya.AppTuyaCallBack;
 
 public class ArrowWithTxt extends Shape {
@@ -160,13 +162,17 @@ public class ArrowWithTxt extends Shape {
     }
   }
 
+
   public void showDialog(Context activity, final AppTuyaCallBack<String>  callBack) {
-    DialogUtil.showEditDialog(activity, "输入箭头内容描述", "", 1, 10, new com.akingyin.base.call.AppCallBack<String>() {
-      @Override public void call(String s) {
-        arrowTxt = s;
-        callBack.call(s);
-      }
-    });
+    MaterialDialog dialog =  new  MaterialDialog(activity,MaterialDialog.getDEFAULT_BEHAVIOR());
+    dialog.setTitle("输入文本");
+    dialog = DialogInputExtKt.input(dialog, "请输入", null, null, null, InputType.TYPE_CLASS_TEXT, 10, false,
+        false,(materialDialog, text)->{
+          arrowTxt = text.toString();
+          callBack.call(text.toString());
+          return  null;
+        });
+    dialog.show();
 
   }
 }

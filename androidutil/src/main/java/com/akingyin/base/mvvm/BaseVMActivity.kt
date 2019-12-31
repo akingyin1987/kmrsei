@@ -46,6 +46,8 @@ abstract class BaseVMActivity<VM:BaseViewModel>  :SimpleActivity(),LifecycleObse
     override fun onDestroy() {
 
 
+
+        lifecycle.removeObserver(mViewModel)
         super.onDestroy()
     }
 

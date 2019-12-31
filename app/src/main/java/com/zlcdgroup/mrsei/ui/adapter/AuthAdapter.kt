@@ -8,7 +8,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import com.afollestad.materialdialogs.MaterialDialog
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog
 import com.umeng.socialize.UMAuthListener
 import com.umeng.socialize.UMShareAPI
 import com.umeng.socialize.bean.SHARE_MEDIA
@@ -29,8 +29,7 @@ class AuthAdapter @Inject constructor(var context: Activity) :BaseAdapter(){
 
     var mutableList: MutableList<SnsPlatform> = mutableListOf()
 
-    var   dialog: MaterialDialog = MaterialDialog.Builder(context)
-             .progress(false, 0).build()
+    var   dialog: QMUITipDialog = QMUITipDialog.Builder(context).setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING).create(true)
 
     override fun getView(position: Int, convertView1: View?, parent: ViewGroup?): View {
         var   convertView = convertView1

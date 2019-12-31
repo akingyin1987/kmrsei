@@ -10,6 +10,7 @@ package com.akingyin.map.base;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -41,14 +42,14 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 
 /**
- * 基础地图
+ * 基础地图(百度)
  *
  * @author king
  * @version V1.0
  * @ Description:
  * @ Date 2017/11/24 12:41
  */
-public abstract class BaseMapActivity extends AppCompatActivity {
+public abstract class BaseBMapActivity extends AppCompatActivity {
   private MapView mMapView;
   private BaiduMap mBaiduMap;
 
@@ -85,10 +86,7 @@ public abstract class BaseMapActivity extends AppCompatActivity {
 
   protected BDAbstractLocationListener mLocationListener;
 
-  // protected BDLocationListener   mLocationListener;
 
-  /** 位置提醒 */
-  //private BDNotifyListener    mBDNotifyListener;
   public MapView getmMapView() {
     return mMapView;
   }
@@ -107,20 +105,29 @@ public abstract class BaseMapActivity extends AppCompatActivity {
     initialization();
   }
 
+  @Override protected void onSaveInstanceState(@NonNull Bundle outState) {
+    super.onSaveInstanceState(outState);
+    if(null != mMapView){
+      mMapView.onSaveInstanceState(outState);
+    }
+  }
+
   public void initView(Bundle savedInstanceState) {
-    mMapView = (MapView) findViewById(R.id.map_content);
+    mMapView =  findViewById(R.id.map_content);
     mBaiduMap = mMapView.getMap();
-    vs_showloc = (ViewSwitcher) findViewById(R.id.vs_showloc);
-    iv_showloc = (ImageView) findViewById(R.id.iv_showloc);
-    iv_seeall = (ImageView) findViewById(R.id.iv_seeall);
-    vs_seeall = (ViewSwitcher) findViewById(R.id.vs_seeall);
-    location_icon = (ImageView) findViewById(R.id.location_icon);
-    location_progress = (ProgressBar) findViewById(R.id.location_progress);
-    zoom_out = (ImageButton) findViewById(R.id.zoom_out);
-    zoom_in = (ImageButton) findViewById(R.id.zoom_in);
-    road_condition = (ImageButton) findViewById(R.id.road_condition);
-    map_layers = (ImageButton) findViewById(R.id.map_layers);
-    map_street = (ImageButton) findViewById(R.id.map_street);
+    mMapView.onCreate(this,savedInstanceState);
+
+    vs_showloc =  findViewById(R.id.vs_showloc);
+    iv_showloc =  findViewById(R.id.iv_showloc);
+    iv_seeall =  findViewById(R.id.iv_seeall);
+    vs_seeall =  findViewById(R.id.vs_seeall);
+    location_icon =  findViewById(R.id.location_icon);
+    location_progress =  findViewById(R.id.location_progress);
+    zoom_out =  findViewById(R.id.zoom_out);
+    zoom_in =  findViewById(R.id.zoom_in);
+    road_condition =  findViewById(R.id.road_condition);
+    map_layers =  findViewById(R.id.map_layers);
+    map_street =  findViewById(R.id.map_street);
     iv_showloc.setTag("0");
     iv_showloc.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
@@ -272,7 +279,7 @@ public abstract class BaseMapActivity extends AppCompatActivity {
 
         if (localzoom == supportmax) {
           zoom_in.setEnabled(false);
-          Toast.makeText(BaseMapActivity.this, "已到支持最大级别", Toast.LENGTH_SHORT).show();
+          Toast.makeText(BaseBMapActivity.this, "已到支持最大级别", Toast.LENGTH_SHORT).show();
           return;
         }
         if (!zoom_out.isEnabled()) {
@@ -288,7 +295,7 @@ public abstract class BaseMapActivity extends AppCompatActivity {
         float localzoom = mBaiduMap.getMapStatus().zoom;
         if (localzoom == supportmin) {
           zoom_out.setEnabled(false);
-          Toast.makeText(BaseMapActivity.this, "已到支持最小级别", Toast.LENGTH_SHORT).show();
+          Toast.makeText(BaseBMapActivity.this, "已到支持最小级别", Toast.LENGTH_SHORT).show();
           return;
         }
         if (!zoom_in.isEnabled()) {
@@ -312,7 +319,7 @@ public abstract class BaseMapActivity extends AppCompatActivity {
       showToast("当前没有位置信息无法查看");
       return;
     }
-    Intent intent = new Intent(BaseMapActivity.this, BaiduPanoramaActivity.class);
+    Intent intent = new Intent(BaseBMapActivity.this, BaiduPanoramaActivity.class);
     intent.putExtra("lat", locationData.latitude);
     intent.putExtra("lng", locationData.longitude);
     startActivity(intent);
@@ -343,7 +350,8 @@ public abstract class BaseMapActivity extends AppCompatActivity {
     if (mPopupWindow == null) {
       mPopupWindow = new PopupWindow(maplayer, RadioGroup.LayoutParams.WRAP_CONTENT,
           RadioGroup.LayoutParams.WRAP_CONTENT, true);
-      mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+
+      mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(),(Bitmap) null));
     }
     if (mPopupWindow.isShowing()) {
       mPopupWindow.setAnimationStyle(R.anim.layer_pop_out);
@@ -435,7 +443,7 @@ public abstract class BaseMapActivity extends AppCompatActivity {
     runOnUiThread(new Runnable() {
       @Override public void run() {
         if (null == mLoadingDialog) {
-          mLoadingDialog = new MapLoadingDialog(BaseMapActivity.this);
+          mLoadingDialog = new MapLoadingDialog(BaseBMapActivity.this);
         }
 
         if (!mLoadingDialog.isShowing()) {
@@ -465,7 +473,7 @@ public abstract class BaseMapActivity extends AppCompatActivity {
   public void showToast(final String msg) {
     runOnUiThread(new Runnable() {
       @Override public void run() {
-        Toast.makeText(BaseMapActivity.this, msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(BaseBMapActivity.this, msg, Toast.LENGTH_SHORT).show();
       }
     });
   }
@@ -492,4 +500,15 @@ public abstract class BaseMapActivity extends AppCompatActivity {
    * 获取位置提醒信息
    */
   protected abstract void onBdNotify(BDLocation bdLocation, float d);
+
+
+
+  /**
+   * 是否支持高德地图
+   * @return
+   */
+  public   boolean    isSupportAmp(){
+    return   true;
+  }
+
 }

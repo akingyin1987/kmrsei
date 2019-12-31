@@ -58,23 +58,24 @@ class UserListDataBindActivity :BaseActivity(), UserListContract.View{
 
 
     private fun    showAddOrModifyUser(@Nullable  userEntity: UserEntity, postion: Int  ){
-     MaterialDialog.Builder(this).title("用户信息修改")
-                .positiveText("确定")
-                .negativeText("取消")
-                .onPositive { dialog, _ ->
-                    val name: EditText = dialog.findViewById(R.id.edit_name) as EditText
-                    val age: EditText = dialog.findViewById(R.id.edit_age) as EditText
-                    userEntity.age = age.text.toString().trim().toInt()
-                    userEntity.name = name.text.toString().trim()
-                    if(null == userEntity.id){
-                        userListPresenterImpl.addUser(userEntity)
-                    }else{
-                        userListPresenterImpl.modifyUser(userEntity,postion)
-                    }
+       MaterialDialog(this).show {
+           title(text = "用户信息修改")
+           positiveButton(text = "确定")
+           negativeButton(text = "取消")
+           setContentView(R.layout.dialog_edit_user)
+           positiveButton {
+               val name: EditText = it.findViewById(R.id.edit_name) as EditText
+               val age: EditText = it.findViewById(R.id.edit_age) as EditText
+               userEntity.age = age.text.toString().trim().toInt()
+               userEntity.name = name.text.toString().trim()
+               if(null == userEntity.id){
+                   userListPresenterImpl.addUser(userEntity)
+               }else{
+                   userListPresenterImpl.modifyUser(userEntity,postion)
+               }
+           }
+       }
 
-                }
-                .customView(R.layout.dialog_edit_user, false)
-                .show()
     }
 
     override fun onSaveInstanceData(outState: Bundle?) {

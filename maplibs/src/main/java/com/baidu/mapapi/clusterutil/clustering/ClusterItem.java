@@ -5,13 +5,14 @@
 package com.baidu.mapapi.clusterutil.clustering;
 
 
+import com.akingyin.map.model.IMarkerModel;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.model.LatLng;
 
 /**
  * ClusterItem represents a marker on the map.
  */
-public interface ClusterItem {
+public interface ClusterItem extends IMarkerModel {
 
     /**
      * The position of this marker. This must always return the same value.

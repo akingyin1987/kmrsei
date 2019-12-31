@@ -35,7 +35,6 @@ import java.util.Set;
  * Clusters have the center of the first element (not the centroid of the items within it).
  */
 
-
 public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implements Algorithm<T> {
 
     // essentially 100 dp.
@@ -90,10 +89,11 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
      */
     @Override
     public Set<? extends Cluster<T>> getClusters(double zoom) {
+
         final int discreteZoom = (int) zoom;
 
         final double zoomSpecificSpan = MAX_DISTANCE_AT_ZOOM / Math.pow(2, discreteZoom) / 256;
-
+        System.out.println("NonHierarchicalDistanceBasedAlgorithm"+discreteZoom+":"+zoomSpecificSpan);
         final Set<QuadItem<T>> visitedCandidates = new HashSet<>();
         final Set<Cluster<T>> results = new HashSet<>();
         final Map<QuadItem<T>, Double> distanceToCluster = new HashMap<>();
@@ -102,11 +102,13 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
 
         synchronized (mQuadTree) {
             for (QuadItem<T> candidate : mItems) {
+
                 if (visitedCandidates.contains(candidate)) {
                     // Candidate is already part of another cluster.
                     continue;
                 }
 
+                //创建一个新的聚合点
                 Bounds searchBounds = createBoundsFromSpan(candidate.getPoint(), zoomSpecificSpan);
                 Collection<QuadItem<T>> clusterItems;
                 // search 某边界范围内的clusterItems
@@ -127,6 +129,7 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
                     Double existingDistance = distanceToCluster.get(clusterItem);
                     double distance = distanceSquared(clusterItem.getPoint(), candidate.getPoint());
                     if (existingDistance != null) {
+                        System.out.println("existingDistance="+existingDistance+":"+distance);
                         // Item already belongs to another cluster. Check if it's closer to this cluster.
                         if (existingDistance < distance) {
                             continue;

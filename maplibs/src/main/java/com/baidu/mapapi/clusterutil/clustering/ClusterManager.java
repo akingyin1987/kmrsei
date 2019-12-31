@@ -7,7 +7,6 @@ package com.baidu.mapapi.clusterutil.clustering;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
-
 import com.baidu.mapapi.clusterutil.MarkerManager;
 import com.baidu.mapapi.clusterutil.clustering.algo.Algorithm;
 import com.baidu.mapapi.clusterutil.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
@@ -16,9 +15,12 @@ import com.baidu.mapapi.clusterutil.clustering.view.ClusterRenderer;
 import com.baidu.mapapi.clusterutil.clustering.view.DefaultClusterRenderer;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.model.LatLngBounds;
 import java.util.Collection;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -34,9 +36,13 @@ public class ClusterManager<T extends ClusterItem> implements
     private final MarkerManager.Collection mMarkers;
     private final MarkerManager.Collection mClusterMarkers;
 
-    private Algorithm<T> mAlgorithm;
+    private PreCachingAlgorithmDecorator<T> mAlgorithm;
     private final ReadWriteLock mAlgorithmLock = new ReentrantReadWriteLock();
     private ClusterRenderer<T> mRenderer;
+
+
+
+    private ExecutorService   mExecutorService=null;
 
     private BaiduMap mMap;
     private MapStatus mPreviousCameraPosition;
@@ -59,8 +65,14 @@ public class ClusterManager<T extends ClusterItem> implements
         mMarkers = markerManager.newCollection();
         mRenderer = new DefaultClusterRenderer<T>(context, map, this);
         mAlgorithm = new PreCachingAlgorithmDecorator<T>(new NonHierarchicalDistanceBasedAlgorithm<T>());
+
         mClusterTask = new ClusterTask();
         mRenderer.onAdd();
+    }
+
+    public void setExecutorService(ExecutorService executorService) {
+        mExecutorService = executorService;
+        mAlgorithm.setExecutorService(mExecutorService);
     }
 
     public MarkerManager.Collection getMarkerCollection() {
@@ -282,6 +294,22 @@ public class ClusterManager<T extends ClusterItem> implements
     }
 
     @Override public void onMapStatusChangeStart(MapStatus mapStatus, int i) {
+
+    }
+
+
+
+
+    public void zoomToSpan() {
+        if (mMap == null) {
+            return;
+        }
+        Collection<T>  items = mAlgorithm.getItems();
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (T item : items) {
+          builder.include(item.getPosition());
+        }
+        mMap.setMapStatus(MapStatusUpdateFactory.newLatLngBounds(builder.build()));
 
     }
 }

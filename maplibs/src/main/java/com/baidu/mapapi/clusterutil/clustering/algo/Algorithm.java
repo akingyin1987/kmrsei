@@ -15,6 +15,9 @@ import java.util.Set;
  * Logic for computing clusters
  */
 public interface Algorithm<T extends ClusterItem> {
+
+
+
     void addItem(T item);
 
     void addItems(Collection<T> items);

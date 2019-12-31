@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.RadioGroup;
 import androidx.appcompat.widget.Toolbar;
 import com.akingyin.map.base.BaiduPanoramaActivity;
-import com.akingyin.map.base.BaseMapActivity;
+import com.akingyin.map.base.BaseBMapActivity;
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.MyLocationData;
@@ -54,7 +54,7 @@ import info.hoang8f.android.segmented.SegmentedGroup;
  * @ Date 2017/11/29 17:51
  */
 
-public class MapPathPlanActivity  extends BaseMapActivity implements OnGetRoutePlanResultListener {
+public class MapPathPlanActivity  extends BaseBMapActivity implements OnGetRoutePlanResultListener {
 
   Toolbar mToolbar;
 

@@ -10,11 +10,10 @@ package com.akingyin.img.multimedia;
 
 import android.content.Context;
 import android.text.InputType;
-import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.input.DialogInputExtKt;
 import com.akingyin.img.callback.AppCallBack;
 
 /**
@@ -62,17 +61,16 @@ public class MultimediaHelper {
    * @param cb
    */
   public   static    void    showEditDialog(Context  context,@Nullable String  message, final AppCallBack<String> cb){
-    new MaterialDialog.Builder(context).title("文字编辑")
-        .inputType(InputType.TYPE_NULL)
-        .inputRange(2,200)
-        .input("请输入", TextUtils.isEmpty(message)?"":message, false, new MaterialDialog.InputCallback() {
-      @Override public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-        dialog.dismiss();
-        if(null != cb){
-          cb.call(input.toString());
-        }
-      }
-    }).show();
+   MaterialDialog  dialog =  new  MaterialDialog(context,MaterialDialog.getDEFAULT_BEHAVIOR());
+   dialog.setTitle("文本编辑");
+   dialog = DialogInputExtKt.input(dialog, "请输入", null, message, null, InputType.TYPE_CLASS_TEXT, 100, false,
+        false,(materialDialog, text)->{
+            cb.call(text.toString());
+           return  null;
+        });
+    dialog.show();
+
+
   }
 
   /**
@@ -84,16 +82,16 @@ public class MultimediaHelper {
    */
   public  static   void   showConfigDialog(Context  context,@NonNull String title,@NonNull String  content,
       final AppCallBack<String>  cb){
-    new MaterialDialog.Builder(context).title(title)
-         .positiveText("确定")
-         .negativeText("取消")
-        .content(content).onPositive(new MaterialDialog.SingleButtonCallback() {
-      @Override public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-        if(null != cb){
-          cb.call(null);
-        }
-      }
-    }).show();
+    MaterialDialog  dialog = new MaterialDialog(context,MaterialDialog.getDEFAULT_BEHAVIOR());
+    dialog.title(null,title);
+    dialog.message(null,content,null);
+    dialog.positiveButton(null, "确定", materialDialog -> {
+      cb.call(null);
+      return null;
+    });
+    dialog.negativeButton(null, "取消", materialDialog -> null);
+    dialog.show();
+
   }
 
 }

@@ -75,6 +75,7 @@ public class ClusterManager<T extends ClusterItem> implements
         mAlgorithm = new ScreenBasedAlgorithmAdapter<>(new PreCachingAlgorithmDecorator<>(
                 new NonHierarchicalDistanceBasedAlgorithm<T>()));
 
+
         mClusterTask = new ClusterTask();
         mRenderer.onAdd();
     }
