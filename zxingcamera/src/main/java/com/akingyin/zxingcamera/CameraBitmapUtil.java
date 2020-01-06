@@ -221,6 +221,7 @@ public class CameraBitmapUtil {
             p.setColor(Color.WHITE);
             p.setStyle(Paint.Style.FILL);
             p.setAntiAlias(true);
+
             //Rect rect = new Rect();
             //
             //canvas.drawRect(mBitmap.getWidth()-215, mBitmap.getHeight() - 30, mBitmap.getWidth()-20,mBitmap.getHeight()- 5, p);// 长方形
@@ -229,6 +230,8 @@ public class CameraBitmapUtil {
             paint.setTextSize(20f);
             paint.setColor(Color.RED);
             paint.setAntiAlias(true);
+            paint.setFakeBoldText(true);
+            paint.setShadowLayer(1.6f, 1.5f, 1.3f, Color.BLACK);
             if(null != typeFace){
                 paint.setTypeface(typeFace);
             }

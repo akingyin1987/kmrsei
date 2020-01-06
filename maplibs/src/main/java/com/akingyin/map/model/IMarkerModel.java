@@ -20,16 +20,17 @@ import java.util.List;
 public interface IMarkerModel  {
 
   /**
-   * 经度
+   * 当前地图使用 经度
    * @return
    */
   double   getLat();
 
   /**
-   * 纬度
+   * 当前地图使用 纬度
    * @return
    */
   double   getLng();
+
 
   /**
    * 指定顺序

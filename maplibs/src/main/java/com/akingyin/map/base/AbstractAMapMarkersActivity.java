@@ -1,18 +1,13 @@
-/*
- * Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package com.akingyin.map.base;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Bundle;
+import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +16,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
@@ -31,21 +25,18 @@ import com.akingyin.map.R;
 import com.akingyin.map.adapter.MarkderInfoPagerAdapter;
 import com.akingyin.map.adapter.MarkerInfoRecyclerAdapter;
 import com.akingyin.map.model.IMarkerModel;
-import com.baidu.location.BDLocation;
-import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BitmapDescriptor;
-import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.MapPoi;
-import com.baidu.mapapi.map.MapStatusUpdate;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.map.Marker;
-import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.OverlayOptions;
-import com.baidu.mapapi.map.Polyline;
-import com.baidu.mapapi.map.PolylineOptions;
-import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.overlayutil.OverlayManager;
-import com.baidu.mapapi.utils.DistanceUtil;
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.AMapUtils;
+import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.model.BitmapDescriptor;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.model.Polyline;
+import com.amap.api.maps.model.PolylineOptions;
+import com.amap.overlayutil.OverlayManager;
+import com.baidu.mapapi.utils.CoordinateConverter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -55,56 +46,56 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.json.JSONObject;
 
 /**
- * 基于百度地图显示坐标信息
+ * 基于高德地图 坐标点的显示
  * @author king
  * @version V1.0
  * @ Description:
- * @ Date 2017/11/25 11:45
+ * @ Date 2020/1/6 11:09
  */
+public abstract class AbstractAMapMarkersActivity extends BaseAMapActivity implements ILoadImage,IOperationListen{
 
-public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
-    implements ILoadImage,IOperationListen{
   public BitmapDescriptor pathRead = BitmapDescriptorFactory.fromAsset("icon_road_red_arrow.png");
   public  BitmapDescriptor pathGreen = BitmapDescriptorFactory.fromAsset("icon_road_green_arrow.png");
   protected BitmapDescriptor readBitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_openmap_mark);
   protected BitmapDescriptor startBitmap = BitmapDescriptorFactory.fromResource(R.drawable.ic_start);
   protected BitmapDescriptor endBitmap = BitmapDescriptorFactory.fromResource(R.drawable.ic_end);
   protected BitmapDescriptor   personDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.person);
-  private List<IMarkerModel>    dataQueue  = new LinkedList<>();
+  private List<IMarkerModel> dataQueue  = new LinkedList<>();
 
-  protected   ExecutorService singleThreadPool = null;
-  protected AtomicBoolean     isMapLoaded  = new AtomicBoolean(false);
+  protected ExecutorService singleThreadPool = null;
+  protected AtomicBoolean isMapLoaded  = new AtomicBoolean(false);
 
   private ViewPager viewpager;
   private MarkderInfoPagerAdapter mInfoPagerAdapter;
 
   private ViewPager2 mRecyclerView;
-  private MarkerInfoRecyclerAdapter<IMarkerModel>   mMarkerInfoRecyclerAdapter;
+  private MarkerInfoRecyclerAdapter<IMarkerModel> mMarkerInfoRecyclerAdapter;
 
   /** 当前显示操作marker */
-  protected   MyManager   mManager;
+  protected MyManager mManager;
 
   /** 路径 */
-  protected   MyManager    overlayManager;
+  protected MyManager overlayManager;
   /** 其它操作类marker */
-  protected   OtherManager    mOtherManager;
-  protected   Marker mCurrentMarker = null;
-  protected   BitmapDescriptor   lastClickMarkerIcon = null;
-  protected Animation  mShowAction,mHiddenAction;
+  protected OtherManager mOtherManager;
+  protected Marker mCurrentMarker = null;
+  protected   List<BitmapDescriptor>   lastClickMarkerIcon = null;
+  protected Animation mShowAction,mHiddenAction;
   protected Toolbar mToolbar;
 
 
   private PopupWindow mPopupBottonWindow;
-  private View   popView;
-  private ImageView  closeButton;
+  private View popView;
+  private ImageView closeButton;
 
   public     IMarkerModel   getIMarkerModel(int  postion){
 
-     if(postion>=0 && postion< dataQueue.size()){
+    if(postion>=0 && postion< dataQueue.size()){
       return dataQueue.get(postion);
-     }
+    }
     return  null;
   }
 
@@ -114,9 +105,6 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
     mHiddenAction = AnimationUtils.loadAnimation(this, R.anim.layer_pop_out);
     popView = LayoutInflater.from(this).inflate(R.layout.item_openmap_recyclerview,null);
     mRecyclerView = popView.findViewById(R.id.map_recycler);
-
-    //popView = LayoutInflater.from(this).inflate(R.layout.item_openmap_viewpager,null);
-    //viewpager = (ViewPager)popView.findViewById(R.id.viewpager);
     closeButton = popView.findViewById(R.id.close);
     closeButton.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
@@ -149,7 +137,7 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
 
         @Override public void onPageSelected(int position) {
           super.onPageSelected(position);
-           onViewPageSelected(position);
+          onViewPageSelected(position);
         }
 
         @Override public void onPageScrollStateChanged(int state) {
@@ -164,38 +152,93 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
 
       mInfoPagerAdapter.setILoadImage(this);
       mInfoPagerAdapter.setIOperationListen(this);
-       viewpager.setAdapter(mInfoPagerAdapter);
+      viewpager.setAdapter(mInfoPagerAdapter);
     }
-
-    getmBaiduMap().setOnMapLoadedCallback(new BaiduMap.OnMapLoadedCallback() {
+    getAMap().setOnMapLoadedListener(new AMap.OnMapLoadedListener() {
       @Override public void onMapLoaded() {
-
-         onRefreshMarkders();
+        onRefreshMarkders();
       }
     });
-    getmBaiduMap().setOnMapClickListener(new BaiduMap.OnMapClickListener() {
+
+    getAMap().setOnMapClickListener(new AMap.OnMapClickListener() {
       @Override public void onMapClick(LatLng latLng) {
-        onBaiduMapClick(latLng);
-      }
-
-      @Override public void onMapPoiClick(MapPoi mapPoi) {
-        if(null != mapPoi){
-          onBaiduMapClick(mapPoi.getPosition());
-        }
+        onAMapClick(latLng);
       }
     });
+
 
   }
 
-  protected   void    onBaiduMapClick(LatLng   latLng){}
 
-  public   void   hiddenPopWindow(){
-    if(null != mPopupBottonWindow && mPopupBottonWindow.isShowing()){
-      mPopupBottonWindow.dismiss();
+  protected void setToolBar(Toolbar toolbar, String title) {
+    toolbar.setTitle(title);
+    setSupportActionBar(toolbar);
+    if(null != getSupportActionBar()){
+      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+      getSupportActionBar().setDisplayShowHomeEnabled(true);
+      toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View view) {
+          onBackPressed();
+        }
+      });
     }
 
   }
 
+
+  private    IMarkerModel  getMarkerDataByAdapter(int postion){
+    if(null != mRecyclerView){
+      return  mMarkerInfoRecyclerAdapter.getItem(postion);
+    }
+    if(null != viewpager){
+      return  mInfoPagerAdapter.getIMarkerModel(postion);
+    }
+    return  null;
+  }
+  private   void   onViewPageSelected(int position){
+    IMarkerModel  testMarkerModel = getMarkerDataByAdapter(position);
+    Marker tempMarker = mManager.getMarker(testMarkerModel);
+    if(null !=tempMarker) {
+      if(null != mCurrentMarker ){
+         if(null != lastClickMarkerIcon && lastClickMarkerIcon.size()>0){
+           mCurrentMarker.setIcon(lastClickMarkerIcon.get(0));
+         }else{
+            Integer  index = getMarkerIndex(mCurrentMarker);
+            if(null != index){
+              IMarkerModel  temp = mManager.getIMarkerModels().get(index);
+              mCurrentMarker.setIcon(getMarkerBitmapDescriptor(temp));
+            }
+
+         }
+
+      }
+      mCurrentMarker = tempMarker;
+      lastClickMarkerIcon = mCurrentMarker.getIcons();
+      mCurrentMarker.setIcon(readBitmap);
+      getAMap().moveCamera(CameraUpdateFactory.changeLatLng(tempMarker.getPosition()));
+
+    }
+
+  }
+
+  public   Integer   getMarkerIndex(Marker  marker){
+    try {
+      String  jsonStr = marker.getSnippet();
+      if(!TextUtils.isEmpty(jsonStr)){
+        JSONObject  jsonObject = new JSONObject(jsonStr);
+        if(!jsonObject.isNull("index")){
+          return  jsonObject.getInt("index");
+        }
+
+      }
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+    return  null;
+  }
+
+
+  protected   void    onAMapClick(LatLng latLng){}
 
   protected   AtomicBoolean    isloadingToMarkders = new AtomicBoolean(false);
 
@@ -244,32 +287,33 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
   }
 
 
-  private    BDLocation    lastbdBDLocation;
+  private Location lastbdBDLocation;
 
   @Override
-  protected void onLocation( BDLocation bdLocation) {
+  protected void onLocation( Location bdLocation) {
 
-     //当前要显示路径 且不用内置的顺序
-     if(showPathPlan() && !displayInOrder()){
+    //当前要显示路径 且不用内置的顺序
+    if(showPathPlan() && !displayInOrder()){
 
-       if(null == lastbdBDLocation || DistanceUtil.getDistance(new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude()),new LatLng(lastbdBDLocation.getLatitude(),lastbdBDLocation.getLongitude()))>getMinDisFlushPath()){
-         if(isMapLoaded.get() && !isloadingToMarkders.get()){
-           lastbdBDLocation = bdLocation;
-           temps.clear();
-           temps.addAll(dataQueue);
+      if(null == lastbdBDLocation || AMapUtils.calculateLineDistance(new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude()),new LatLng(lastbdBDLocation.getLatitude(),lastbdBDLocation.getLongitude()))>getMinDisFlushPath()){
+        if(isMapLoaded.get() && !isloadingToMarkders.get()){
+          lastbdBDLocation = bdLocation;
+          temps.clear();
+          temps.addAll(dataQueue);
 
-           singleThreadPool.execute(new Runnable() {
-             @Override public void run() {
+          singleThreadPool.execute(new Runnable() {
+            @Override public void run() {
 
-               loadMarkerPath(temps,new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude()));
-             }
-           });
-         }
+              loadMarkerPath(temps,new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude()));
+            }
+          });
+        }
 
-       }
+      }
 
-     }
+    }
   }
+
 
   /** 所有路线点集合 */
   List<LatLng> points = new LinkedList<>();
@@ -279,17 +323,17 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
   /** 构造纹理队列 */
   List<BitmapDescriptor> customList = new ArrayList<>();
 
-  private   Polyline   polylineMarker = null;
-  private Marker  personMarder;
+  private Polyline polylineMarker = null;
+  private Marker personMarder;
 
   private    boolean  firstLoadPath = true;
-  protected    void   loadMarkerPath(List<IMarkerModel>   iMarkerModels,LatLng  currentLatlng){
+  protected    void   loadMarkerPath(List<IMarkerModel>   iMarkerModels, LatLng currentLatlng){
     if(isMapLoaded.get() && !isloadingToMarkders.get()){
       try {
         filterMakerToPath(temps);
         isMapLoaded.getAndSet(false);
         List<IMarkerModel> iMarkerModels1  = new ArrayList<>();
-        Iterator<IMarkerModel>   iterator = iMarkerModels.iterator();
+        Iterator<IMarkerModel> iterator = iMarkerModels.iterator();
         while (iterator.hasNext()){
           IMarkerModel  iMarkerModel = iterator.next();
           if(!iMarkerModel.isComplete()){
@@ -308,7 +352,10 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
             }
           });
         }else{
-          iMarkerModels1 = PathPlanUtil.getOptimalPathPlan(iMarkerModels1,currentLatlng);
+           CoordinateConverter  coordinateConverter = new CoordinateConverter();
+           coordinateConverter.coord(new com.baidu.mapapi.model.LatLng(currentLatlng.latitude,currentLatlng.longitude));
+           coordinateConverter.from(CoordinateConverter.CoordType.COMMON);
+           iMarkerModels1 = PathPlanUtil.getOptimalPathPlan(iMarkerModels1,coordinateConverter.convert());
         }
         points.clear();
         indexs.clear();
@@ -329,11 +376,11 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
           //处理经纬度，将排序后的计算距离小于2米的直接去掉一个
           Iterator<LatLng> iterator2 = points.listIterator();
 
-          LatLng  latLng =null;
+          LatLng latLng =null;
           while(iterator2.hasNext()){
-            LatLng  temp = iterator2.next();
+           LatLng temp = iterator2.next();
             if(null != latLng){
-              if(DistanceUtil.getDistance(latLng,temp)<2){
+              if(AMapUtils.calculateLineDistance(latLng,temp)<2){
                 iterator2.remove();
               }
             }
@@ -363,37 +410,39 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
           // 折线线宽， 默认为 5， 单位：像素
           polylineOptionBg.width(20);
           // 折线是否虚线
-          polylineOptionBg.dottedLine(true);
+          polylineOptionBg.setDottedLine(true);
           //  polylineOptionBg.color(0xAAFF0000); // 折线颜色
           // 折线坐标点列表:[2,10000]，且不能包含null
-          polylineOptionBg.points(points);
+          polylineOptionBg.addAll(points);
           // 纹理宽、高是否保持原比例渲染
-          polylineOptionBg.keepScale(true);
-          polylineOptionBg.textureIndex(indexs);
-          polylineOptionBg.customTextureList(customList);
+          polylineOptionBg.setUseTexture(true);
 
-          polylineMarker = (Polyline) getmBaiduMap().addOverlay(polylineOptionBg);
+          polylineOptionBg.setCustomTextureIndex(indexs);
+          polylineOptionBg.setCustomTextureList(customList);
+
+
+          polylineMarker = (Polyline) getAMap().addPolyline(polylineOptionBg);
 
           //绘制终点与启点
           List<LatLng> pointStartEnd = new ArrayList<>(2);
           pointStartEnd.add(points.get(null != startSort && startSort<points.size()?startSort:0));
           pointStartEnd.add(points.get(points.size() - 1));
 
-          OverlayOptions  persontempMarker = new MarkerOptions()
-              .position(pointStartEnd.get(0)).animateType(
-                  MarkerOptions.MarkerAnimateType.grow).icon(personDescriptor).draggable(false);
-          personMarder = (Marker) getmBaiduMap().addOverlay(persontempMarker);
-          Bundle bundle =  new Bundle();
+          MarkerOptions persontempMarker = new MarkerOptions()
+              .position(pointStartEnd.get(0)).icon(personDescriptor).draggable(false);
+          personMarder =  getAMap().addMarker(persontempMarker);
 
-          OverlayOptions startmarker = new MarkerOptions()
-              .position(pointStartEnd.get(0)).animateType(
-                  MarkerOptions.MarkerAnimateType.drop).icon(startBitmap).draggable(false);
+          JSONObject  jsonObject = new JSONObject();
+          jsonObject.put(AbstractBMapMarkersActivity.OTHER_MARKER_KEY,"yes");
+          jsonObject.put("index",0);
+          MarkerOptions startmarker = new MarkerOptions()
+              .position(pointStartEnd.get(0)).icon(startBitmap).snippet(jsonObject.toString()).draggable(false);
 
-          OverlayOptions endmarker = new MarkerOptions()
-              .position(pointStartEnd.get(1)).extraInfo(bundle).animateType(
-                  MarkerOptions.MarkerAnimateType.drop).icon(endBitmap).draggable(false);
+          jsonObject.put("index",1);
+          MarkerOptions endmarker = new MarkerOptions()
+              .position(pointStartEnd.get(1)).icon(endBitmap).snippet(jsonObject.toString()).draggable(false);
           if(null == overlayManager){
-            overlayManager = new MyManager(getmBaiduMap(),new LinkedList<OverlayOptions>());
+            overlayManager = new MyManager(getAMap(),new LinkedList<MarkerOptions>());
           }
 
 
@@ -402,9 +451,7 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
           overlayManager.addOverlay(endmarker);
           overlayManager.addToMap();
           mManager.setNewPathDatas(iMarkerModels1);
-
-          MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(points.get(0));
-          getmBaiduMap().animateMapStatus(u);
+          getAMap().moveCamera(CameraUpdateFactory.changeLatLng(points.get(0)));
           if(firstLoadPath){
 
             showListPathMarker(iMarkerModels1,0);
@@ -429,28 +476,7 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
 
 
 
-  protected void setToolBar(Toolbar toolbar, String title) {
-    toolbar.setTitle(title);
-    setSupportActionBar(toolbar);
-    if(null != getSupportActionBar()){
-      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-      getSupportActionBar().setDisplayShowHomeEnabled(true);
-      toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-        @Override public void onClick(View view) {
-          onBackPressed();
-        }
-      });
-    }
 
-  }
-
-  @Override public void onBackPressed() {
-    if(null != mPopupBottonWindow && mPopupBottonWindow.isShowing()){
-      mPopupBottonWindow.dismiss();
-      return;
-    }
-    super.onBackPressed();
-  }
 
   private  List<IMarkerModel>  temps = new LinkedList<>();
   protected   AtomicBoolean   flushMarker  =  new AtomicBoolean(false);
@@ -485,30 +511,30 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
         }catch (Exception e){
           e.printStackTrace();
         }
-        List<OverlayOptions>   overlayOptions = new LinkedList<>();
+        List<MarkerOptions>   overlayOptions = new LinkedList<>();
         int   index = 0;
         for (IMarkerModel iMarkerModel : temps) {
           LatLng point = new LatLng(iMarkerModel.getLat(), iMarkerModel.getLng());
-          Bundle bundle = new Bundle();
-          bundle.putInt("index", index);
-          MarkerOptions  option = new MarkerOptions().animateType(getMarkerAnimateByMarker(iMarkerModel))
+          JSONObject  jsonObject = new JSONObject();
+          jsonObject.put("index",index);
+         MarkerOptions option = new MarkerOptions()
               .position(point)
               .draggable(isDragMarker(iMarkerModel))
               .icon(getMarkerBitmapDescriptor(iMarkerModel))
-              .extraInfo(bundle);
+              .snippet(jsonObject.toString());
           overlayOptions.add(option);
           index++;
 
         }
         if(null == mOtherManager){
-          mOtherManager = new OtherManager(getmBaiduMap());
-          getmBaiduMap().setOnMarkerClickListener(mOtherManager);
+          mOtherManager = new OtherManager(getAMap());
+          getAMap().setOnMarkerClickListener(mOtherManager);
         }
         addOtherOverlay(mOtherManager);
         if(null == mManager){
-          mManager = new MyManager(getmBaiduMap(), overlayOptions);
+          mManager = new MyManager(getAMap(), overlayOptions);
 
-          getmBaiduMap().setOnMarkerClickListener(mManager);
+          getAMap().setOnMarkerClickListener(mManager);
         }else{
           mManager.cleanOverlay();
           mManager.addOverlays(overlayOptions);
@@ -527,15 +553,10 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
 
   }
 
-
-  protected MarkerOptions.MarkerAnimateType  getMarkerAnimateByMarker(IMarkerModel  iMarkerModel){
-    return MarkerOptions.MarkerAnimateType.none;
-  }
-
   /**
    * 添加其它遮盖物
    */
-  protected    void     addOtherOverlay(OtherManager  overlayManager){
+  protected    void     addOtherOverlay(OtherManager overlayManager){
 
   }
 
@@ -550,79 +571,30 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
       mPopupBottonWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
       mPopupBottonWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
       mPopupBottonWindow.setFocusable(true);
-      mPopupBottonWindow.setBackgroundDrawable(new BitmapDrawable());
+      mPopupBottonWindow.setBackgroundDrawable(new BitmapDrawable((Resources) null,(Bitmap) null));
       mPopupBottonWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
         @Override
         public void onDismiss() {
           if (null != mCurrentMarker) {
-             if(null != lastClickMarkerIcon){
-               mCurrentMarker.setIcon(lastClickMarkerIcon);
-             }else{
-               int index = mCurrentMarker.getExtraInfo().getInt("index");
-               if(index>=0 && index<mManager.getIMarkerModels().size()){
-                 IMarkerModel  iMarkerModel1 = mManager.getIMarkerModels().get(index);
-                 mCurrentMarker.setIcon(getMarkerBitmapDescriptor(iMarkerModel1));
-               }
-             }
+            if(null != lastClickMarkerIcon&& lastClickMarkerIcon.size()>0){
+              mCurrentMarker.setIcon(lastClickMarkerIcon.get(0));
+            }else{
+              Integer index = getMarkerIndex(mCurrentMarker);
+              if(null != index && index>=0 && index<mManager.getIMarkerModels().size()){
+                IMarkerModel  iMarkerModel1 = mManager.getIMarkerModels().get(index);
+                mCurrentMarker.setIcon(getMarkerBitmapDescriptor(iMarkerModel1));
+              }
+            }
           }
 
         }
       });
     }
-
-
-
   }
 
-  private ViewPager.OnPageChangeListener  mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-    }
 
-    @Override public void onPageSelected(int position) {
-
-      onViewPageSelected(position);
-    }
-
-    @Override public void onPageScrollStateChanged(int state) {
-
-    }
-  };
-
-  private    IMarkerModel  getMarkerDataByAdapter(int postion){
-    if(null != mRecyclerView){
-      return  mMarkerInfoRecyclerAdapter.getItem(postion);
-    }
-    if(null != viewpager){
-      return  mInfoPagerAdapter.getIMarkerModel(postion);
-    }
-    return  null;
-  }
-
-  private   void   onViewPageSelected(int position){
-    IMarkerModel  testMarkerModel = getMarkerDataByAdapter(position);
-    Marker   tempMarker = mManager.getMarker(testMarkerModel);
-    if(null !=tempMarker) {
-      if(null != mCurrentMarker){
-        if(null != lastClickMarkerIcon){
-          mCurrentMarker.setIcon(lastClickMarkerIcon);
-        }else{
-          IMarkerModel  temp = mManager.getIMarkerModels().get(mCurrentMarker.getExtraInfo().getInt("index"));
-          mCurrentMarker.setIcon(getMarkerBitmapDescriptor(temp));
-        }
-
-      }
-      mCurrentMarker = tempMarker;
-      lastClickMarkerIcon = mCurrentMarker.getIcon();
-      mCurrentMarker.setIcon(readBitmap);
-      MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(new LatLng(testMarkerModel.getLat(),testMarkerModel.getLng()));
-      getmBaiduMap().animateMapStatus(u);
-    }
-
-  }
-
-  Handler   mainHandle = new Handler(Looper.getMainLooper());
+  Handler mainHandle = new Handler(Looper.getMainLooper());
   /**
    * 显示当前路径所有Marker
    * @param iMarkerModels
@@ -654,10 +626,10 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
           }
         }
         if(null != viewpager){
-          mInfoPagerAdapter = new MarkderInfoPagerAdapter(AbstractBMapMarkersActivity.this,showImarkers);
-          mInfoPagerAdapter.setIOperationListen(AbstractBMapMarkersActivity.this);
+          mInfoPagerAdapter = new MarkderInfoPagerAdapter(AbstractAMapMarkersActivity.this,showImarkers);
+          mInfoPagerAdapter.setIOperationListen(AbstractAMapMarkersActivity.this);
           mInfoPagerAdapter.setPathMarker(showPathPlan());
-          mInfoPagerAdapter.setILoadImage(AbstractBMapMarkersActivity.this);
+          mInfoPagerAdapter.setILoadImage(AbstractAMapMarkersActivity.this);
           viewpager.removeOnPageChangeListener(mOnPageChangeListener);
           viewpager.addOnPageChangeListener(mOnPageChangeListener);
           viewpager.setAdapter(mInfoPagerAdapter);
@@ -683,7 +655,7 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
 
         mCurrentMarker = mManager.getMarker(iMarkerModels.get(postion));
         if(null != mCurrentMarker){
-          lastClickMarkerIcon = mCurrentMarker.getIcon();
+          lastClickMarkerIcon = mCurrentMarker.getIcons();
           mCurrentMarker.setIcon(readBitmap);
         }
         if (mPopupBottonWindow.isShowing()) {
@@ -697,76 +669,24 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
   }
 
 
-  public    void    setMarkerSelected(IMarkerModel  iMarkerModel){
-    if(null != mCurrentMarker){
-      IMarkerModel  temp = mManager.getIMarkerModels().get(mCurrentMarker.getExtraInfo().getInt("index"));
-      mCurrentMarker.setIcon(getMarkerBitmapDescriptor(temp));
+
+  private ViewPager.OnPageChangeListener  mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
     }
-    mCurrentMarker = mManager.getMarker(iMarkerModel);
-    if(null != mCurrentMarker){
-      mCurrentMarker.setIcon(readBitmap);
-      MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(new LatLng(iMarkerModel.getLat(),iMarkerModel.getLng()));
-      getmBaiduMap().animateMapStatus(u);
+
+    @Override public void onPageSelected(int position) {
+
+      onViewPageSelected(position);
     }
-  }
 
-  protected   void   showMarkerInfo(Marker  marker){
+    @Override public void onPageScrollStateChanged(int state) {
 
-    try {
-      initPopupWindow();
-      if(null == marker || null == marker.getExtraInfo() || !marker.getExtraInfo().containsKey("index")){
-        return;
-      }
-      if(null != mPopupBottonWindow && mPopupBottonWindow.isShowing()){
-        mPopupBottonWindow.dismiss();
-      }
-      int  index = marker.getExtraInfo().getInt("index");
-
-      IMarkerModel   iMarkerModel = mManager.getIMarkerModels().get(index);
-      MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(new LatLng(iMarkerModel.getLat(),iMarkerModel.getLng()));
-      getmBaiduMap().animateMapStatus(u);
-
-      int   postion = mManager.containsMarkerInPath(iMarkerModel);
-      if(postion>=0){
-        showListPathMarker(mManager.getPathIMarkerModels(),postion);
-        return;
-      }
-      postion = mManager.containsMarkerInAll(iMarkerModel);
-      if(postion>=0){
-        showListPathMarker(mManager.getIMarkerModels(),postion);
-        return;
-      }
-      List<IMarkerModel>  iMarkerModels = new LinkedList<>();
-      iMarkerModels.add(iMarkerModel);
-      if(null != iMarkerModel.getMarkes()){
-        iMarkerModels.addAll(iMarkerModel.getMarkes());
-      }
-      if(null != viewpager){
-        mInfoPagerAdapter = new MarkderInfoPagerAdapter(this,iMarkerModels);
-        mInfoPagerAdapter.setIOperationListen(this);
-        mInfoPagerAdapter.setILoadImage(this);
-        viewpager.setAdapter(mInfoPagerAdapter);
-        viewpager.startAnimation(mShowAction);
-        viewpager.setCurrentItem(0);
-      }
-      if(null != mRecyclerView){
-        mRecyclerView.startAnimation(mShowAction);
-        mMarkerInfoRecyclerAdapter.setNewData(iMarkerModels);
-        mRecyclerView.setCurrentItem(0);
-      }
-
-      lastClickMarkerIcon = marker.getIcon();
-      mCurrentMarker = marker;
-      mCurrentMarker.setIcon(readBitmap);
-      if (mPopupBottonWindow.isShowing()) {
-        mPopupBottonWindow.dismiss();
-      } else {
-        mPopupBottonWindow.showAtLocation(closeButton, Gravity.BOTTOM, 0, 0);
-      }
-    }catch (Exception | Error e){
-      e.printStackTrace();
     }
-  }
+  };
+
+
 
   /**
    *
@@ -785,7 +705,7 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
    * @param iMarkerModel
    * @return
    */
-  protected abstract BitmapDescriptor  getMarkerBitmapDescriptor(IMarkerModel iMarkerModel);
+  protected abstract BitmapDescriptor getMarkerBitmapDescriptor(IMarkerModel iMarkerModel);
 
   /**
    * 当前是否可以拖动
@@ -833,7 +753,7 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
   }
 
   @Override public void onPathPlan(int postion, IMarkerModel iMarkerModel) {
-    Intent   intent  = new Intent(this, MapPathPlanActivity.class);
+    Intent intent  = new Intent(this, MapPathPlanActivity.class);
     intent.putExtra("lat",iMarkerModel.getLat());
     intent.putExtra("lng",iMarkerModel.getLng());
     startActivity(intent);
@@ -844,54 +764,21 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
    * @param marker
    * @return
    */
-  protected   boolean   onClickOtherMarker(Marker   marker,Integer  integer){
+  protected   boolean   onClickOtherMarker(Marker marker,Integer  integer){
     return   false;
   }
 
-  public    class    OtherManager extends  OverlayManager{
 
-    private List<OverlayOptions> overlays = new ArrayList<>();
-
-
-    public OtherManager(BaiduMap baiduMap) {
-      super(baiduMap);
+  @Override public void onBackPressed() {
+    if(null != mPopupBottonWindow && mPopupBottonWindow.isShowing()){
+      mPopupBottonWindow.dismiss();
+      return;
     }
-    public synchronized void addOverlay(OverlayOptions option) {
-      overlays.add(option);
-    }
-    public synchronized void addOverlays(List<OverlayOptions> options) {
-      overlays.addAll(options);
-    }
-    public void removeOverlay(OverlayOptions option) {
-      overlays.remove(option);
-
-    }
-
-    public void removeAll() {
-      overlays.clear();
-    }
-    @Override public List<OverlayOptions> getOverlayOptions() {
-      return overlays;
-    }
-
-    @Override public boolean onMarkerClick(Marker marker) {
-      Integer    index = null;
-      if(null != marker.getExtraInfo() && marker.getExtraInfo().containsKey("index")){
-          index = marker.getExtraInfo().getInt("index");
-      }
-
-      return onClickOtherMarker(marker,index);
-    }
-
-    @Override public boolean onPolylineClick(Polyline polyline) {
-      return false;
-    }
+    super.onBackPressed();
   }
 
-  public    final   static   String    OTHER_MARKER_KEY="other_marker_key";
 
-
-  public class  MyManager extends OverlayManager{
+  public class  MyManager extends OverlayManager {
     private  List<IMarkerModel>  mIMarkerModels = new LinkedList<>();
 
     private  List<IMarkerModel>  pathIMarkerModels = new LinkedList<>();
@@ -920,10 +807,10 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
       mIMarkerModels.addAll(datas);
     }
 
-    public   Marker   getMarker(IMarkerModel  iMarkerModel){
+    public Marker getMarker(IMarkerModel  iMarkerModel){
       for (int i = 0; i < mIMarkerModels.size(); i++) {
         if(mIMarkerModels.get(i) == iMarkerModel){
-          return (Marker) getOverLay(i);
+          return getMarker(i);
         }
       }
       return null;
@@ -940,117 +827,91 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
       overlays.clear();
     }
 
-    private List<OverlayOptions> overlays = new ArrayList<>();
-    public MyManager(BaiduMap baiduMap,List<OverlayOptions>  overlays) {
+    private List<MarkerOptions> overlays = new ArrayList<>();
+    public MyManager(AMap baiduMap,List<MarkerOptions>  overlays) {
       super(baiduMap);
       this.overlays = overlays;
     }
-    public synchronized void addOverlay(OverlayOptions option) {
+    public synchronized void addOverlay(MarkerOptions option) {
       overlays.add(option);
     }
-    public synchronized void addOverlays(List<OverlayOptions> options) {
+    public synchronized void addOverlays(List<MarkerOptions> options) {
       overlays.addAll(options);
     }
-    public void removeOverlay(OverlayOptions option) {
+    public void removeOverlay(MarkerOptions option) {
       overlays.remove(option);
     }
 
     public void removeAll() {
       overlays.clear();
     }
-    @Override public List<OverlayOptions> getOverlayOptions() {
+    @Override public List<MarkerOptions> getOverlayOptions() {
       return overlays;
     }
 
     @Override public boolean onMarkerClick(Marker marker) {
 
-      if(null != marker && null != marker.getExtraInfo() && marker.getExtraInfo().containsKey(OTHER_MARKER_KEY)){
-        onClickOtherMarker(marker,marker.getExtraInfo().getInt("index"));
-      }else{
-        showMarkerInfo(marker);
-      }
+       try {
+         if(null != marker){
+           String  jsonStr = marker.getSnippet();
+           JSONObject  jsonObject = new JSONObject(jsonStr);
+           if(jsonObject.isNull(AbstractBMapMarkersActivity.OTHER_MARKER_KEY)){
+
+           }
+         }else{
+
+         }
+
+
+       }catch (Exception e){
+         e.printStackTrace();
+       }
+
 
       return true;
     }
 
-    @Override public boolean onPolylineClick(Polyline polyline) {
-      return false;
+    @Override public void onPolylineClick(Polyline polyline) {
+
     }
   }
 
-  @Override public void onDestroy() {
-    super.onDestroy();
-    try {
-      hiddenPopWindow();
-    }catch (Exception e){
-      e.printStackTrace();
+
+  public    class    OtherManager extends OverlayManager {
+
+    private List<MarkerOptions> overlays = new ArrayList<>();
+
+
+    public OtherManager(AMap baiduMap) {
+      super(baiduMap);
     }
-    try {
-      if(null != singleThreadPool){
-        singleThreadPool.shutdown();
-      }
-    }catch (Exception e){
-      e.printStackTrace();
+    public synchronized void addOverlay(MarkerOptions option) {
+      overlays.add(option);
     }
-    if(null != pathGreen){
-      pathGreen.recycle();
+    public synchronized void addOverlays(List<MarkerOptions> options) {
+      overlays.addAll(options);
     }
-    if(null != readBitmap){
-      readBitmap.recycle();
-    }
-    if(null != pathRead){
-      pathRead.recycle();
+    public void removeOverlay(MarkerOptions option) {
+      overlays.remove(option);
+
     }
 
-    if(null != startBitmap){
-      startBitmap.recycle();
+    public void removeAll() {
+      overlays.clear();
     }
-    if(null != endBitmap){
-      endBitmap.recycle();
-    }
-    if(null != personDescriptor){
-      personDescriptor.recycle();
-    }
-  }
-
-  @Override public void initView(TextView left, TextView center, TextView right, int postion,
-      IMarkerModel iMarkerModel, View... views) {
-
-  }
-
-  @Override protected void showViewInfo() {
-    super.showViewInfo();
-    if(null != getmBaiduMap() && null != getmBaiduMap().getLocationData()){
-      LatLng   latLng = new LatLng(getmBaiduMap().getLocationData().latitude,getmBaiduMap().getLocationData().longitude);
-      loadMarkerPath(mManager.getPathIMarkerModels(),latLng);
+    @Override public List<MarkerOptions> getOverlayOptions() {
+      return overlays;
     }
 
-  }
+    @Override public boolean onMarkerClick(Marker marker) {
+      Integer    index = getMarkerIndex(marker);
 
-  @Override protected void hideViewInfo() {
-    super.hideViewInfo();
-    if(null != overlayManager){
-      overlayManager.cleanOverlay();
-      overlayManager.removeAll();
-      overlayManager.removeFromMap();
+
+      return onClickOtherMarker(marker,index);
     }
-    if(null != personMarder){
-      personMarder.remove();
+
+    @Override public void onPolylineClick(Polyline polyline) {
+
     }
-    if(null != polylineMarker){
-      polylineMarker.remove();
-    }
-  }
-
-  @Override protected void onBdNotify(BDLocation bdLocation, float d) {
-
-  }
-
-  /**
-   * 是否支持点聚合(默认支持)
-   * @return
-   */
-  public   boolean    isSupportClusterMarker(){
-    return   true;
   }
 }

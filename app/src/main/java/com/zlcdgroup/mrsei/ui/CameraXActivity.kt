@@ -130,6 +130,7 @@ class CameraXActivity  : SimpleActivity(), SensorEventListener {
         // Set up the view finder use case to display camera preview
 
         //图像预览
+
         val viewFinderConfig = PreviewConfig.Builder().apply {
             setLensFacing(CameraX.LensFacing.BACK)
             // We request aspect ratio but no resolution to let CameraX optimize our use cases

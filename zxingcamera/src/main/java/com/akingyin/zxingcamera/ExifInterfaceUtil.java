@@ -9,8 +9,6 @@ import java.util.Map;
  * @author king
  * @version V1.0
  * @ Description:
- *
- * Company:重庆中陆承大科技有限公司
  * @ Date 2017/11/20 10:01
  */
 public class ExifInterfaceUtil {

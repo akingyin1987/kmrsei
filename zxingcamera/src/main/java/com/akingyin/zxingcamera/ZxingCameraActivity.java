@@ -41,6 +41,7 @@ import java.util.List;
  * @ Description:
  * @ Date 2019/11/18 11:23
  */
+@SuppressWarnings("deprecation")
 public class ZxingCameraActivity  extends AppCompatActivity implements SurfaceHolder.Callback,
     Camera.ErrorCallback {
 
@@ -71,9 +72,12 @@ public class ZxingCameraActivity  extends AppCompatActivity implements SurfaceHo
 
   public String pictureName = "1.jpg";
   public String path = "";
-  public boolean isSend = true;// 是否处于变焦中
-  public boolean hasTakePicture = false; // 是否已拍完照片
-  public boolean hasTackOk = false;//是否按了OK键
+  // 是否处于变焦中
+  public boolean isSend = true;
+  // 是否已拍完照片
+  public boolean hasTakePicture = false;
+  //是否按了OK键
+  public boolean hasTackOk = false;
   private  boolean  isLockScreen=false;
 
 
@@ -135,7 +139,7 @@ public class ZxingCameraActivity  extends AppCompatActivity implements SurfaceHo
     iv_turnright = findViewById(R.id.iv_turnright);
     object_info = findViewById(R.id.object_info);
   }
-  // 照相结果返回
+
   @SuppressLint("HandlerLeak")
   Handler resultHandler = new Handler() {
 
@@ -446,7 +450,7 @@ public class ZxingCameraActivity  extends AppCompatActivity implements SurfaceHo
     btn_cancel.setEnabled(false);
 
     try {
-      System.out.println("result="+mCameraManager.getResult());
+
       long   time = getCurrentTime();
       mCameraManager.tackPic(time);
     } catch (Exception e) {

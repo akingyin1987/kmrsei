@@ -26,7 +26,6 @@ import android.hardware.Camera.ErrorCallback;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
-import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.ExifInterface;
 import android.os.Build;
 import android.os.Handler;
@@ -47,7 +46,8 @@ import java.util.Map;
  * talking to it. The implementation encapsulates the steps needed to take
  * preview-sized images, which are used for both preview and decoding.
  * 
- * @author dswitkin@google.com (Daniel Switkin) 该类封装了相机的所有服务并且是该app中唯一与相机打交道的类
+ * @author dswitkin@google.com (Daniel Switkin)
+ * 该类封装了相机的所有服务并且是该app中唯一与相机打交道的类
  */
 
 @SuppressWarnings("deprecation")
@@ -249,7 +249,7 @@ public final class CameraManager implements AutoFocusListion {
 			}
 
 			Parameters parameters = theCamera.getParameters();
-			String parametersFlattened = parameters == null ? null : parameters.flatten(); // Save
+			String parametersFlattened = parameters == null ? null : parameters.flatten();
 			// these,
 			// temporarily
 			try {
@@ -406,7 +406,7 @@ public final class CameraManager implements AutoFocusListion {
 		}
 	}
 
-	private StreamConfigurationMap   mStreamConfigurationMap=null;
+
 	public   List<Point>   getSuportPreviewSizeValues(){
 
 		//if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

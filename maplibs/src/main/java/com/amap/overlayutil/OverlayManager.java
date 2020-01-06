@@ -1,14 +1,14 @@
 package com.amap.overlayutil;
 
-import android.os.Bundle;
+import android.text.TextUtils;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.json.JSONObject;
 
 /**
  * 基于地图点的管理
@@ -66,6 +66,7 @@ public abstract class OverlayManager implements AMap.OnMarkerClickListener,
     }
 
     for (MarkerOptions option : mOverlayOptionList) {
+
       mOverlayList.add(mBaiduMap.addMarker(option));
     }
   }
@@ -90,27 +91,23 @@ public abstract class OverlayManager implements AMap.OnMarkerClickListener,
   public Marker getMarker(int  index){
 
     for (Marker overlay : mOverlayList) {
-      Bundle bundle =  overlay.getExtraInfo();
-      if(overlay instanceof com.baidu.mapapi.map.Marker && null != bundle && bundle.containsKey("index")){
-        if(index == bundle.getInt("index")){
-          return (com.baidu.mapapi.map.Marker) overlay;
-        }
-      }
+       String  jsonStr =  overlay.getSnippet();
+       if(!TextUtils.isEmpty(jsonStr)){
+         try {
+           JSONObject  jsonObject =  new JSONObject(jsonStr);
+           if(index == jsonObject.getInt("index")){
+             return  overlay;
+           }
+
+         }catch (Exception e){
+           e.printStackTrace();
+         }
+
+       }
     }
     return  null;
   }
 
-  public   Overlay  getOverLay(int  index){
-    for (Overlay overlay : mOverlayList) {
-      Bundle  bundle =  overlay.getExtraInfo();
-      if(null != bundle && bundle.containsKey("index")){
-        if(index == bundle.getInt("index")){
-          return  overlay;
-        }
-      }
-    }
-    return  null;
-  }
 
 
   /**

@@ -67,7 +67,7 @@ public abstract class BaseAMapActivity extends AppCompatActivity {
 
   protected ProgressBar location_progress;
 
-  protected BDAbstractLocationListener mLocationListener;
+
 
 
   public MapView getmMapView() {
@@ -370,7 +370,7 @@ public abstract class BaseAMapActivity extends AppCompatActivity {
 
   public   void   goToMapStreet(){
     LatLng  latLng =  mAMap.getCameraPosition().target;
-    if (null == locationData) {
+    if (null == latLng) {
       showToast("当前没有位置信息无法查看");
       return;
     }
