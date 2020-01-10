@@ -291,7 +291,7 @@ public abstract class AbstractAMapMarkersActivity extends BaseAMapActivity imple
 
   @Override
   protected void onLocation( Location bdLocation) {
-
+    System.out.println("onlocation-->");
     //当前要显示路径 且不用内置的顺序
     if(showPathPlan() && !displayInOrder()){
 
@@ -454,7 +454,7 @@ public abstract class AbstractAMapMarkersActivity extends BaseAMapActivity imple
           getAMap().moveCamera(CameraUpdateFactory.changeLatLng(points.get(0)));
           if(firstLoadPath){
 
-            showListPathMarker(iMarkerModels1,0);
+            showListPathMarker(iMarkerModels1,null,0);
 
           }
           firstLoadPath = false;
@@ -599,7 +599,7 @@ public abstract class AbstractAMapMarkersActivity extends BaseAMapActivity imple
    * 显示当前路径所有Marker
    * @param iMarkerModels
    */
-  protected   void   showListPathMarker(final List<IMarkerModel>  iMarkerModels , final int   postion){
+  protected   void   showListPathMarker(final List<IMarkerModel>  iMarkerModels ,final Marker  marker, final int   postion){
     mainHandle.post(new Runnable() {
       @Override public void run() {
         initPopupWindow();
@@ -652,9 +652,14 @@ public abstract class AbstractAMapMarkersActivity extends BaseAMapActivity imple
           mPopupBottonWindow.setFocusable(true);
         }
 
-
-        mCurrentMarker = mManager.getMarker(iMarkerModels.get(postion));
+        if(null == marker){
+          mCurrentMarker = mManager.getMarker(iMarkerModels.get(postion));
+        } else{
+          mCurrentMarker = marker;
+        }
+        System.out.println("on marker");
         if(null != mCurrentMarker){
+          System.out.println("改变图标->>>>");
           lastClickMarkerIcon = mCurrentMarker.getIcons();
           mCurrentMarker.setIcon(readBitmap);
         }
@@ -667,6 +672,9 @@ public abstract class AbstractAMapMarkersActivity extends BaseAMapActivity imple
     });
 
   }
+
+
+
 
 
 
@@ -705,7 +713,7 @@ public abstract class AbstractAMapMarkersActivity extends BaseAMapActivity imple
    * @param iMarkerModel
    * @return
    */
-  protected abstract BitmapDescriptor getMarkerBitmapDescriptor(IMarkerModel iMarkerModel);
+  protected abstract BitmapDescriptor getMarkerBitmapDescriptor(@NonNull IMarkerModel iMarkerModel);
 
   /**
    * 当前是否可以拖动
@@ -856,10 +864,10 @@ public abstract class AbstractAMapMarkersActivity extends BaseAMapActivity imple
            String  jsonStr = marker.getSnippet();
            JSONObject  jsonObject = new JSONObject(jsonStr);
            if(jsonObject.isNull(AbstractBMapMarkersActivity.OTHER_MARKER_KEY)){
-
+              showMarkerInfo(marker);
+           }else{
+             onClickOtherMarker(marker,jsonObject.getInt("index"));
            }
-         }else{
-
          }
 
 
@@ -914,4 +922,110 @@ public abstract class AbstractAMapMarkersActivity extends BaseAMapActivity imple
 
     }
   }
+  public   void   hiddenPopWindow(){
+    if(null != mPopupBottonWindow && mPopupBottonWindow.isShowing()){
+      mPopupBottonWindow.dismiss();
+    }
+
+  }
+
+
+  protected   void   showMarkerInfo(Marker marker){
+
+    try {
+      initPopupWindow();
+      if(null == marker || TextUtils.isEmpty(marker.getSnippet())){
+        return;
+      }
+      JSONObject   jsonObject = new JSONObject(marker.getSnippet());
+      if(jsonObject.isNull("index")){
+        return;
+      }
+      if(null != mPopupBottonWindow && mPopupBottonWindow.isShowing()){
+        mPopupBottonWindow.dismiss();
+      }
+      int  index = jsonObject.getInt("index");
+      System.out.println("showMarker="+index);
+      IMarkerModel   iMarkerModel = mManager.getIMarkerModels().get(index);
+      getAMap().moveCamera(CameraUpdateFactory.changeLatLng(marker.getPosition()));
+      int   postion = mManager.containsMarkerInPath(iMarkerModel);
+      if(postion>=0){
+        System.out.println("showPath->>");
+        showListPathMarker(mManager.getPathIMarkerModels(),marker,postion);
+        return;
+      }
+      postion = mManager.containsMarkerInAll(iMarkerModel);
+      if(postion>=0){
+        System.out.println("showList->>");
+        showListPathMarker(mManager.getIMarkerModels(),marker,postion);
+        return;
+      }
+      List<IMarkerModel>  iMarkerModels = new LinkedList<>();
+      iMarkerModels.add(iMarkerModel);
+      if(null != iMarkerModel.getMarkes()){
+        iMarkerModels.addAll(iMarkerModel.getMarkes());
+      }
+      if(null != viewpager){
+        mInfoPagerAdapter = new MarkderInfoPagerAdapter(this,iMarkerModels);
+        mInfoPagerAdapter.setIOperationListen(this);
+        mInfoPagerAdapter.setILoadImage(this);
+        viewpager.setAdapter(mInfoPagerAdapter);
+        viewpager.startAnimation(mShowAction);
+        viewpager.setCurrentItem(0);
+      }
+      if(null != mRecyclerView){
+        mRecyclerView.startAnimation(mShowAction);
+        mMarkerInfoRecyclerAdapter.setNewData(iMarkerModels);
+        mRecyclerView.setCurrentItem(0);
+      }
+
+      lastClickMarkerIcon = marker.getIcons();
+      mCurrentMarker = marker;
+      mCurrentMarker.setIcon(readBitmap);
+      if (mPopupBottonWindow.isShowing()) {
+        mPopupBottonWindow.dismiss();
+      } else {
+        mPopupBottonWindow.showAtLocation(closeButton, Gravity.BOTTOM, 0, 0);
+      }
+    }catch (Exception | Error e){
+      e.printStackTrace();
+    }
+  }
+
+
+  @Override public void onDestroy() {
+    super.onDestroy();
+    try {
+      hiddenPopWindow();
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+    try {
+      if(null != singleThreadPool){
+        singleThreadPool.shutdown();
+      }
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+    if(null != pathGreen){
+      pathGreen.recycle();
+    }
+    if(null != readBitmap){
+      readBitmap.recycle();
+    }
+    if(null != pathRead){
+      pathRead.recycle();
+    }
+
+    if(null != startBitmap){
+      startBitmap.recycle();
+    }
+    if(null != endBitmap){
+      endBitmap.recycle();
+    }
+    if(null != personDescriptor){
+      personDescriptor.recycle();
+    }
+  }
+
 }

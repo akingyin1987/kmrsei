@@ -17,10 +17,18 @@ kapt {
     arg("AROUTER_MODULE_NAME", project.getName())
   }
 }
+
+
+def getAppName() {
+  Properties properties = new Properties()
+  properties.load(new InputStreamReader(new FileInputStream(rootProject.getRootDir().getAbsolutePath() + "/gradle.properties")))
+  return properties.getProperty("APP_NAME")
+}
 android {
   compileSdkVersion rootProject.ext.android.compileSdkVersion
 
     defaultConfig {
+        resValue("string", "app_name", "${getAppName()}")
         applicationId "com.zlcdgroup.mrsei"
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
@@ -74,6 +82,7 @@ android {
   }
   buildTypes {
     release {
+
       signingConfig signingConfigs.release
       // buildConfigField "int", "AppCode", "1"
       //混淆

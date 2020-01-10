@@ -43,19 +43,20 @@ class TestClusterMarkerActivity : AbstractClusterBMapMarkerActivity<TestMarkerIt
     override fun initView(left: TextView?, center: TextView?, right: TextView?, postion: Int, iMarkerModel: IMarkerModel?, vararg views: View?) {
     }
 
-    override fun onOperation(postion: Int, iMarkerModel: IMarkerModel?) {
+    override fun onOperation(postion: Int, iMarkerModel: IMarkerModel) {
     }
 
-    override fun onPathPlan(postion: Int, iMarkerModel: IMarkerModel?) {
+    override fun onPathPlan(postion: Int, iMarkerModel: IMarkerModel) {
     }
 
-    override fun onTuWen(postion: Int, iMarkerModel: IMarkerModel?) {
+    override fun onTuWen(postion: Int, iMarkerModel: IMarkerModel) {
     }
 
-    override fun onObjectImg(postion: Int, iMarkerModel: IMarkerModel?, view: View?) {
+    override fun onObjectImg(postion: Int, iMarkerModel: IMarkerModel, view: View?) {
     }
 
-    override fun onOtherOperation(postion: Int, iMarkerModel: IMarkerModel?, view: View?) {
+    override fun onOtherOperation(postion: Int, iMarkerModel: IMarkerModel, view: View?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun loadImageView(path: String?, context: Context?, imageView: ImageView) {

@@ -19,6 +19,7 @@ import com.zlcdgroup.mrsei.utils.ThemeHelper
 import io.reactivex.Completable
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.coroutines.delay
 import java.io.File
 import javax.inject.Inject
 
@@ -72,6 +73,15 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
             }
         }
 
+        load {
+            println("--------1111----------${Thread.currentThread().name}")
+            delay(200)
+            123
+        }.then {
+            println(it)
+            println(Thread.currentThread().name)
+        }
+        println("222222222${Thread.currentThread().name}")
     }
 
     override fun startRequest() {
@@ -115,7 +125,7 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
        // startActivityForResult<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"),requestCode = 100)
        // startActivity<TestMarkerMapActivity>()
       //  startActivity<TestTuwenActivity>()
-        startActivity<TestClusterMarkerActivity>()
+        startActivity<FragmentTestActivity>()
     }
 
     override fun setAppTheme(theme: String) {

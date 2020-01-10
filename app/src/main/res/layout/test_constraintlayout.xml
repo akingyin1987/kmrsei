@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="3dp"
+    android:orientation="vertical"
+    android:padding="3dp">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:orientation="vertical"
+      android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+      <Button
+          android:id="@+id/tv1"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"
+          android:layout_width="100dp"
+
+          android:layout_height="wrap_content"
+          android:text="顶部对齐，左对齐2222"
+          />
+
+      <TextView
+          android:id="@+id/tv2"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="顶部对齐，左对齐"
+          app:layout_constraintLeft_toRightOf="@id/tv1"
+
+          app:layout_constraintEnd_toEndOf="parent"
+
+          app:layout_constraintBaseline_toBaselineOf="@id/tv1"
+
+          />
+
+      <TextView
+          android:id="@+id/tv3"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+
+          android:text="这是居中父级"
+
+
+          android:layout_marginTop="60dp"
+
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+
+      <TextView
+          android:id="@+id/tv4"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+
+          android:text="这是居中父级,偏心定位"
+
+          app:layout_constraintHorizontal_bias="0.7"
+          app:layout_constraintTop_toBottomOf="@id/tv3"
+
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+         />
+
+      <TextView
+          android:id="@+id/tv5"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+
+          android:text="这是居中父级,角度定位 180"
+
+          app:layout_constraintDimensionRatio="10:1"
+          android:layout_marginTop="100dp"
+          app:layout_constraintCircle="@id/tv4"
+          app:layout_constraintCircleAngle="180"
+          app:layout_constraintCircleRadius="100dp"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+      <Button
+          android:id="@+id/button"
+          android:layout_width="200dp"
+          android:layout_height="wrap_content"
+          android:text="Button"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintTop_toTopOf="parent"/>
+
+      <Button
+          android:id="@+id/button10"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Button"
+          android:layout_marginLeft="10dp"
+          app:layout_constraintLeft_toLeftOf="@+id/button"
+          app:layout_constraintRight_toRightOf="@+id/button"
+          app:layout_constraintTop_toBottomOf="@+id/button"/>
+
+      <Button
+          android:id="@+id/button11"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="Button11"
+          android:layout_marginLeft="100dp"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/button10"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+      <Button
+          android:id="@+id/buttonA"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+
+          android:text="Button"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toLeftOf="@+id/buttonB"/>
+
+      <Button
+          android:id="@+id/buttonB"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Button"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintLeft_toRightOf="@+id/buttonA"
+          app:layout_constraintRight_toRightOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+      <Button
+          android:id="@+id/button4"
+          android:layout_width="100dp"
+          android:layout_height="wrap_content"
+          android:text="button4"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          />
+
+      <!-- android:layout_marginRight="10dp"
+      配合 app:layout_goneMarginRight="110dp"一起使用，
+      在约束的布局gone时，起用goneMargin，
+      但是一定要预先设置对应方向上的margin -->
+      <Button
+          android:id="@+id/button5"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginRight="10dp"
+          android:text="button5"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintRight_toLeftOf="@id/button4"
+          app:layout_goneMarginRight="10dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <!--按权重-->
+      <!--app:layout_constraintHorizontal_weight="1"-->
+
+      <!--按样式，链第一项即可-->
+      <!--app:layout_constraintHorizontal_chainStyle="spread_inside"-->
+
+      <Button
+          android:id="@+id/btn1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="链1"
+          app:layout_constraintHorizontal_chainStyle="spread"
+          android:background="@color/gray"
+          app:layout_constraintRight_toLeftOf="@+id/btn2"
+
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+
+      <Button
+          android:id="@+id/btn2"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+
+          android:text="链2"
+
+          android:background="@color/red"
+
+          app:layout_constraintHorizontal_chainStyle="packed"
+
+          app:layout_constraintLeft_toRightOf="@+id/btn1"
+          app:layout_constraintRight_toLeftOf="@+id/btn3"
+          app:layout_constraintTop_toTopOf="parent" />
+
+      <Button
+          android:id="@+id/btn3"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="链3"
+          android:background="@color/green"
+
+          app:layout_constraintLeft_toRightOf="@id/btn2"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="wrap_content">
+
+      <androidx.constraintlayout.widget.Guideline
+          android:id="@+id/guideline"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+
+          app:layout_constraintGuide_begin="30dp"
+           />
+
+      <Button
+          android:id="@+id/button13"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:text="Button"
+          app:layout_constraintLeft_toLeftOf="@+id/guideline"
+          app:layout_constraintTop_toTopOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="wrap_content">
+
+      <androidx.constraintlayout.widget.Placeholder
+          android:layout_width="wrap_content"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:content="@id/button20"
+          android:visibility="gone"
+          android:layout_marginStart="100dp"
+          android:layout_height="wrap_content"/>
+      <Button
+          android:id="@+id/button20"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="button20占位符"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+      <Button
+          android:id="@+id/button21"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="button21占位符"
+
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <Button
+          android:id="@+id/TextView1"
+          android:layout_width="0dp"
+
+          android:layout_height="wrap_content"
+
+          android:text="A22222222222222222222222222222222"
+          app:layout_constraintRight_toLeftOf="@id/button21"
+          app:layout_constraintBottom_toTopOf="@id/TextView2"
+          app:layout_constraintLeft_toRightOf="@id/button23"
+          app:layout_constraintTop_toTopOf="parent" />
+
+      <Button
+          android:id="@+id/TextView2"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="B"
+          app:layout_constraintLeft_toRightOf="@id/button23"
+          app:layout_constraintRight_toLeftOf="@id/button21"
+          android:visibility="visible"
+          app:layout_constraintBottom_toTopOf="@id/TextView3"
+
+          app:layout_constraintTop_toBottomOf="@id/TextView1" />
+
+      <Button
+          android:id="@+id/TextView3"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="D"
+          android:visibility="visible"
+          app:layout_constraintLeft_toRightOf="@id/button23"
+          app:layout_constraintTop_toBottomOf="@id/TextView2" />
+
+
+
+      <Button
+          android:id="@id/button21"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="C"
+          app:layout_constraintBottom_toTopOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toBottomOf="parent" />
+
+
+      <Button
+          android:id="@+id/button23"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+
+          android:text="E"
+          app:layout_constraintBottom_toTopOf="@id/TextView3"
+
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/TextView1" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </LinearLayout>
+
+
+
+
+
+</androidx.core.widget.NestedScrollView>

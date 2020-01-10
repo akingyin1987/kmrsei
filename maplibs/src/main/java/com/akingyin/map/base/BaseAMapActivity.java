@@ -59,7 +59,7 @@ public abstract class BaseAMapActivity extends AppCompatActivity {
   /** 显示当前位置 */
   protected ViewSwitcher vs_showloc;
   protected ImageView iv_showloc;
-  private   int   mCurrentMode = MyLocationStyle.LOCATION_TYPE_SHOW;
+  private   int   mCurrentMode = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
 
   /** 地图类型 */
   private View maplayer;
@@ -107,15 +107,15 @@ public abstract class BaseAMapActivity extends AppCompatActivity {
     iv_showloc.setTag("0");
     iv_showloc.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
-        if (iv_showloc.getTag().equals("1")) {
-          showViewInfo();
+        if (mAMap.isMyLocationEnabled()) {
+           hideViewInfo();
         } else {
-          hideViewInfo();
+           showViewInfo();
         }
       }
     });
     baseInitialization(savedInstanceState);
-    initialization();
+
   }
 
 
@@ -125,6 +125,10 @@ public abstract class BaseAMapActivity extends AppCompatActivity {
     iv_showloc.setTag("0");
     if (null != getAMap()) {
       getAMap().setMyLocationEnabled(true);
+      MyLocationStyle  myLocationStyle = new MyLocationStyle();
+      myLocationStyle.myLocationType(mCurrentMode);
+      myLocationStyle.interval(2000);
+      mAMap.setMyLocationStyle(myLocationStyle);
     }
   }
 
@@ -145,15 +149,20 @@ public abstract class BaseAMapActivity extends AppCompatActivity {
       myLocationStyle =  new MyLocationStyle();
     }
     myLocationStyle.interval(2000);
+
     myLocationStyle.myLocationType(mCurrentMode);
     mAMap.setMyLocationStyle(myLocationStyle);
     mAMap.setMyLocationEnabled(true);
+
     mAMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
       @Override public void onMyLocationChange(Location location) {
+
         // map view 销毁后不在处理新接收的位置
         if (location == null || mMapView == null) {
           return;
         }
+
+        System.out.println("onMyLocationChange->"+location.toString());
         initMyLocationData(location);
         if (isFirstLoc) {
           isFirstLoc = false;
@@ -169,7 +178,8 @@ public abstract class BaseAMapActivity extends AppCompatActivity {
    * @param location
    */
   public    void    onFristLocationInitMap(Location location){
-     mAMap.moveCamera(CameraUpdateFactory.changeLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
+    System.out.println("第一次定位初始化");
+     mAMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
   }
   protected void initMyLocationData(Location  location) {
 
@@ -227,6 +237,7 @@ public abstract class BaseAMapActivity extends AppCompatActivity {
       double lng = bundle.getDouble("lng", 0);
       LatLng   latLng = null;
       if (lat > 0 && lng > 0) {
+        System.out.println("默认中心位置-->");
         latLng = new LatLng(lat, lng);
         mAMap.moveCamera( CameraUpdateFactory.newLatLngZoom(latLng,15F));
       }
@@ -236,17 +247,14 @@ public abstract class BaseAMapActivity extends AppCompatActivity {
       @Override public void onClick(View v) {
 
         switch (mCurrentMode) {
-          case MyLocationStyle.LOCATION_TYPE_SHOW:
+          case MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER:
             mCurrentMode = MyLocationStyle.LOCATION_TYPE_FOLLOW;
             location_icon.setImageResource(R.drawable.main_icon_follow);
             break;
-          case MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE:
-            mCurrentMode = MyLocationStyle.LOCATION_TYPE_SHOW;
-            location_icon.setImageResource(R.drawable.main_icon_location);
-            break;
+
           case MyLocationStyle.LOCATION_TYPE_FOLLOW:
-            mCurrentMode = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE;
-            location_icon.setImageResource(R.drawable.main_icon_compass);
+            mCurrentMode = MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
+            location_icon.setImageResource(R.drawable.main_icon_location);
             break;
           default:
             break;
@@ -291,7 +299,7 @@ public abstract class BaseAMapActivity extends AppCompatActivity {
           mAMap.moveCamera(CameraUpdateFactory.changeTilt(0));
         } else if (checkedId == R.id.layer_3d) {
           mAMap.setMapType(AMap.MAP_TYPE_NORMAL);
-          CameraUpdateFactory.changeTilt(-45F);
+           mAMap.moveCamera(CameraUpdateFactory.changeTilt(-45F));
 
         }
       }

@@ -10,6 +10,7 @@ package com.akingyin.map.base;
 
 import android.view.View;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import com.akingyin.map.model.IMarkerModel;
 
 /**
@@ -35,28 +36,28 @@ public interface IOperationListen {
    * @param postion  当前位置
    * @param iMarkerModel  当前对象
    */
-  void   onOperation(int postion,  IMarkerModel iMarkerModel);
+  void   onOperation(int postion, @NonNull IMarkerModel iMarkerModel);
 
   /**
    * 路径规划
    * @param postion
    * @param iMarkerModel
    */
-  void   onPathPlan(int postion, IMarkerModel iMarkerModel);
+  void   onPathPlan(int postion,@NonNull IMarkerModel iMarkerModel);
 
   /**
    * 图文信息
    * @param postion
    * @param iMarkerModel
    */
-  void   onTuWen(int postion, IMarkerModel iMarkerModel);
+  void   onTuWen(int postion, @NonNull IMarkerModel iMarkerModel);
 
   /**
    * 点击详情图片
    * @param postion
    * @param iMarkerModel
    */
-   void   onObjectImg( int postion, IMarkerModel iMarkerModel, View view);
+   void   onObjectImg( int postion,@NonNull IMarkerModel iMarkerModel, View view);
 
   /**
    * 其它操作
@@ -64,5 +65,5 @@ public interface IOperationListen {
    * @param iMarkerModel
    * @param view
    */
-   void   onOtherOperation(int postion, IMarkerModel iMarkerModel, View view);
+   void   onOtherOperation(int postion, @NonNull IMarkerModel iMarkerModel, View view);
 }

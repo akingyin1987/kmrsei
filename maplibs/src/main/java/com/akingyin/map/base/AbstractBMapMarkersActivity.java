@@ -723,7 +723,7 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
       int  index = marker.getExtraInfo().getInt("index");
 
       IMarkerModel   iMarkerModel = mManager.getIMarkerModels().get(index);
-      MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(new LatLng(iMarkerModel.getLat(),iMarkerModel.getLng()));
+      MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(marker.getPosition());
       getmBaiduMap().animateMapStatus(u);
 
       int   postion = mManager.containsMarkerInPath(iMarkerModel);
@@ -785,7 +785,7 @@ public  abstract class AbstractBMapMarkersActivity extends BaseBMapActivity
    * @param iMarkerModel
    * @return
    */
-  protected abstract BitmapDescriptor  getMarkerBitmapDescriptor(IMarkerModel iMarkerModel);
+  protected abstract BitmapDescriptor  getMarkerBitmapDescriptor(@NonNull IMarkerModel iMarkerModel);
 
   /**
    * 当前是否可以拖动

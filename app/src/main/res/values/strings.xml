@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Login UI</string>
+
     <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
 
     <string name="capture_button_alt">Capture</string>
@@ -14,4 +14,5 @@
     <string name="delete_button_alt">Delete</string>
     <string name="delete_dialog">Delete current photo?</string>
     <string name="delete_title">Confirm</string>
+    <string name="tv2">TV2</string>
 </resources>

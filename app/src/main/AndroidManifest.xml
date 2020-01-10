@@ -26,6 +26,12 @@
     <meta-data
         android:name="com.baidu.lbsapi.API_KEY"
         android:value="iTXPm0sWihFwoYqVaDZAhcN24pdHHmWq"/>
+
+    <meta-data
+        android:name="com.amap.api.v2.apikey"
+        android:value="6fe1265803ce2479308d84d5e1cade10" />
+
+
     <meta-data android:value="5cd152274ca357112b000a24"
         android:name="UMENG_APPKEY"/>
     <provider
@@ -55,6 +61,7 @@
     <activity android:name=".ui.AuthActivity"/>
     <activity android:name=".ui.UserListDataBindActivity"/>
     <activity android:name=".ui.CoroutinesDemo"/>
+    <activity android:name=".ui.FragmentTestActivity"/>
     <activity android:name="com.akingyin.map.MapCoordinatePickupActivity"/>
     <activity android:name=".ui.CameraXActivity"
         android:theme="@style/FullscreenTheme"
@@ -86,6 +93,8 @@
 
     <activity android:name="com.akingyin.map.TestMarkerMapActivity"
             />
+    <activity android:name=".ui.TestAmapMarkerActivity"/>
+    <activity android:name=".ui.TestAmapActivity"/>
 
     <activity android:name=".ui.TuyaTestActivity"
         android:launchMode="singleTop"
