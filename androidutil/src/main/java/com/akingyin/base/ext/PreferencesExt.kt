@@ -11,6 +11,7 @@ import android.content.SharedPreferences
  */
 private inline val sp: SharedPreferences
     //get() = PreferenceManager.getDefaultSharedPreferences(app)
+
     get() = app.getSharedPreferences("app_preferences",Context.MODE_PRIVATE)
 fun spSetInt(key: String, value: Int) = sp.edit().putInt(key, value).apply()
 

@@ -1,12 +1,14 @@
 package com.akingyin.base.dialog
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.text.Spanned
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.list.listItemsMultiChoice
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
+import com.afollestad.materialdialogs.message.DialogMessageSettings
 
 /**
  * @ Description:
@@ -59,7 +61,6 @@ object MaterialDialogUtil {
                 .apply {
                     positiveButton(text = positive)
                     negativeButton(text = negative)
-
                 }.positiveButton {
                     callback.invoke(true)
                 }.negativeButton {
@@ -70,30 +71,34 @@ object MaterialDialogUtil {
     /**
      * 确认对话框(内容显示html)
      */
-    fun  showConfigDialog(context:Context, title:String="提示", message: Spanned, positive:String="确定", negative:String="取消", callback:(Boolean)->Unit){
-        MaterialDialog(context).title(text = title).message(text = message)
-                .apply {
-                    positiveButton(text = positive)
-                    negativeButton(text = negative)
-
-                }.positiveButton {
-                    callback.invoke(true)
-                }.negativeButton {
-                    callback.invoke(false)
-                }.show()
+    fun  showConfigDialog(context:Context, title:String="提示", message: Spanned,
+                          positive:String="确定", negative:String="取消",
+                          callback:(Boolean)->Unit):Dialog{
+        return MaterialDialog(context).show {
+            title(text =  title)
+            message(text = message)
+            positiveButton(text = positive)
+            negativeButton(text = negative)
+            positiveButton {
+                callback.invoke(true)
+            }
+            negativeButton {
+                callback.invoke(false)
+            }
+         }
     }
 
 
     /**
      * 单选对话框
      */
-    fun <T> showSingleSelectItemDialog(context:Context, title:String,selectIndex:Int = 0,datas:List<T>,callback: (T) -> Unit) {
+    fun <T> showSingleSelectItemDialog(context:Context, title:String,selectIndex:Int = 0,datas:List<T>,callback: (T,selectIndex:Int) -> Unit) {
         MaterialDialog(context).title(text = title)
                 .listItemsSingleChoice(items=datas.map {
                     it.toString()
                 },initialSelection = selectIndex){
                     _, index, _ ->
-                    callback(datas[index])
+                    callback(datas[index],index)
                 }
                 .show()
     }
@@ -118,12 +123,12 @@ object MaterialDialogUtil {
     /**
      * 显示提示信息
      */
-    fun   showInfoDialog(context:Context, message: String){
-        MaterialDialog(context).show {
+    fun   showInfoDialog(context:Context, message: String):Dialog{
+        return MaterialDialog(context).show {
             message(text = message)
             cancelOnTouchOutside(true)
-
         }
+
     }
 
     /**
@@ -132,7 +137,8 @@ object MaterialDialogUtil {
     fun  showEditDialog(context:Context, title: String,inputText:String,hint:String="请输入",minLen :Int=0,maxLen:Int=100,callback: (String) -> Unit){
         MaterialDialog(context).show {
             setTitle(title)
-            input(hint,maxLength=maxLen,prefill=inputText){
+
+            input(hint,maxLength=maxLen,prefill=inputText,allowEmpty= minLen==0){
                 _,text ->
                 callback(text.toString())
             }

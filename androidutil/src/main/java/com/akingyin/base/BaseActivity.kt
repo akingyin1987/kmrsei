@@ -27,6 +27,7 @@ abstract  class BaseActivity : SimpleActivity(),HasAndroidInjector {
 
     @Inject
     lateinit var fragmentInjector :DispatchingAndroidInjector<Any>
+
     override fun initInjection() {
 
         AndroidInjection.inject(this)

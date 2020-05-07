@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TaskShowDialog {
 
-  // --------------进度条显示----------------
+
   private QMUITipDialog loadingDialog;
 
   private boolean isLoading() {
@@ -153,12 +153,12 @@ public class TaskShowDialog {
 
 
 
-  protected LinearLayout.LayoutParams onCreateIconOrLoadingLayoutParams(Context context) {
+  private LinearLayout.LayoutParams onCreateIconOrLoadingLayoutParams(Context context) {
     return new LinearLayout.LayoutParams(
         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
   }
 
-  protected LinearLayout.LayoutParams onCreateTextLayoutParams(Context context) {
+  private LinearLayout.LayoutParams onCreateTextLayoutParams(Context context) {
     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     lp.topMargin = QMUIResHelper.getAttrDimen(context, R.attr.qmui_tip_dialog_text_margin_top);

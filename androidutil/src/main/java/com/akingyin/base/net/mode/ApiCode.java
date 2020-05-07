@@ -57,7 +57,7 @@ public class ApiCode {
     public static class Response {
         /*===========Response响应码================*/
         /** HTTP请求成功状态码 */
-        public static final int HTTP_SUCCESS = 0;
+        public static final int HTTP_SUCCESS = 200;
 
         /** AccessToken错误或已过期 */
         public static final int ACCESS_TOKEN_EXPIRED = 10001;

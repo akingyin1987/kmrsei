@@ -59,11 +59,11 @@ public abstract class BaseListObserver<T> implements Observer<ApiListResult<T>>{
 
   @Override
   public void onNext(@NonNull ApiListResult<T> result) {
-    if (result.getStatus() == SUCCESS_CODE) {
+    if (result.getCode() == SUCCESS_CODE) {
       List<T> datas = result.getData();
       onHandleSuccess(datas);
     } else {
-      onHandleError(result.getStatus(), result.getMsg());
+      onHandleError(result.getCode(), result.getMsg());
     }
   }
 

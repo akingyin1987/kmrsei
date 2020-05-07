@@ -19,18 +19,27 @@ import java.util.List;
  */
 public class ApiListResult <E>  {
 
-    private int status;
+    private int code;
 
     private String msg;
 
     private List<E> data;
+    private Long  time;
 
-    public int getStatus() {
-        return status;
+    public Long getTime() {
+        return time;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setTime(Long time) {
+        this.time = time;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public String getMsg() {
@@ -52,7 +61,7 @@ public class ApiListResult <E>  {
     @Override
     public String toString() {
         return "ApiListResult{" +
-                "code=" + status +
+                "code=" + code +
                 ", message='" + msg + '\'' +
                 ", data=" + data +
                 '}';

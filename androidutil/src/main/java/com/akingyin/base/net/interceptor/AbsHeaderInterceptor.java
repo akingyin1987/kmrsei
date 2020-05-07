@@ -8,6 +8,7 @@
 
 package com.akingyin.base.net.interceptor;
 
+import androidx.annotation.NonNull;
 import java.io.IOException;
 
 import java.util.UUID;
@@ -67,7 +68,7 @@ public abstract class AbsHeaderInterceptor implements Interceptor {
    * @param request
    * @return
    */
-   protected abstract Request    getRequestHeader(Request request);
+   protected abstract Request    getRequestHeader(@NonNull Request request);
 
   /**
    * 获取新的token
@@ -75,12 +76,12 @@ public abstract class AbsHeaderInterceptor implements Interceptor {
    * @param token
    * @return
    */
-   protected abstract Request    getNewTokenRequestHeader(Request request,String token);
+   protected abstract Request    getNewTokenRequestHeader(@NonNull Request request,String token);
 
   /**
    * 解析数据
    * @param response
    * @return
    */
-   protected abstract  Response   decryptResponse(Response  response);
+   protected abstract  Response   decryptResponse(@NonNull Response  response);
 }

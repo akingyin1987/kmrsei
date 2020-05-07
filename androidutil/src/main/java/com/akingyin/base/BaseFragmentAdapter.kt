@@ -1,5 +1,9 @@
 package com.akingyin.base
 
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+
 
 /**
  * @ Description:
@@ -11,26 +15,26 @@ package com.akingyin.base
  * 应该使用FragmentStatePagerAdapter。
  * @version V1.0
  */
-class BaseFragmentAdapter : androidx.fragment.app.FragmentPagerAdapter {
+class BaseFragmentAdapter   : FragmentPagerAdapter {
 
 
-    private   var  fragmentlist:List<androidx.fragment.app.Fragment>
+    private   var  fragmentlist:List<Fragment>
 
 
     private   var  mTitles:List<String>?=null
 
-    constructor(fm: androidx.fragment.app.FragmentManager, fragmentlist: List<androidx.fragment.app.Fragment>) : super(fm) {
+    constructor(fm: FragmentManager, fragmentlist: List<Fragment>) : super(fm,BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT ) {
         this.fragmentlist = fragmentlist
     }
 
-    constructor(fm: androidx.fragment.app.FragmentManager, fragmentlist: List<androidx.fragment.app.Fragment>, mTitles: List<String>?) : super(fm) {
+    constructor(fm: FragmentManager, fragmentlist: List<Fragment>, mTitles: List<String>?) : super(fm,BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT ) {
         this.fragmentlist = fragmentlist
         this.mTitles = mTitles
     }
 
     //刷新fragment
 
-    private fun setFragments(fm: androidx.fragment.app.FragmentManager, fragments: List<androidx.fragment.app.Fragment>, mTitles: List<String>) {
+    private fun setFragments(fm:FragmentManager, fragments: List<Fragment>, mTitles: List<String>) {
         this.mTitles = mTitles
         val ft = fm.beginTransaction()
         fragmentlist.forEach {
@@ -41,7 +45,7 @@ class BaseFragmentAdapter : androidx.fragment.app.FragmentPagerAdapter {
         this.fragmentlist = fragments
         notifyDataSetChanged()
     }
-    override fun getItem(p0: Int): androidx.fragment.app.Fragment {
+    override fun getItem(p0: Int): Fragment {
 
         return  fragmentlist[p0]
     }

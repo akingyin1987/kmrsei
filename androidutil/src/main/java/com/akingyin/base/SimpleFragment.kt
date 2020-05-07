@@ -16,10 +16,10 @@ import android.view.ViewGroup
  */
 abstract class SimpleFragment : androidx.fragment.app.Fragment(){
 
-    protected var mView: View? = null
-    protected lateinit var mActivity: Activity
-    protected lateinit var mContext: Context
-    protected var isInited = false
+    private var mView: View? = null
+    private lateinit var mActivity: Activity
+     lateinit var mContext: Context
+    private var isInited = false
 
 
 

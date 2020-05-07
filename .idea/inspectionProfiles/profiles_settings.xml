@@ -1,5 +1,8 @@
 <component name="InspectionProjectProfileManager">
   <settings>
+    <option name="PROJECT_PROFILE" value="Default" />
+    <option name="USE_PROJECT_PROFILE" value="false" />
+    <version value="1.0" />
     <list size="11">
       <item index="0" class="java.lang.String" itemvalue="INFORMATION" />
       <item index="1" class="java.lang.String" itemvalue="UNUSED ENTRY" />

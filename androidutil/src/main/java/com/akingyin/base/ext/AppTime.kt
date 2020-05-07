@@ -8,16 +8,25 @@ import android.os.SystemClock
  * @ Date 2019/5/28 11:21
  * @version V1.0
  */
-class AppTime{
+class AppTime  private constructor(){
 
+     /** 服务器时间 */
      private   var   serverTime : Long = 0L
 
+     /** 手机运行时间 */
      private   var   elapsedRealtime : Long = 0L
 
-     companion object{
+     /** 登录超期时间 */
+     private   var   extendedTime:Long = 0L
+
+    companion object{
          private val Instance: AppTime by lazy { AppTime() }
 
-         fun   getAppTime():Long{
+
+        /**
+         * 获取当前时间
+         */
+        fun   getAppTime():Long{
              if(Instance.serverTime == 0L){
                  Instance.serverTime = spGetLong("serverTime",0L)
              }
@@ -28,6 +37,7 @@ class AppTime{
                  return  System.currentTimeMillis()
              }
 
+
              return  Instance.serverTime + (SystemClock.elapsedRealtime() - Instance.elapsedRealtime)
          }
 
@@ -37,7 +47,20 @@ class AppTime{
              spSetLong("serverTime",server)
              spSetLong("elapsedRealtime", Instance.elapsedRealtime)
          }
-     }
+
+         fun   saveExtendedTime(extendedTime:Long){
+              Instance.extendedTime = extendedTime
+              spSetLong("extendedTime",extendedTime)
+         }
+
+         fun  getExtendedTime():Long{
+             if(Instance.extendedTime == 0L){
+                 Instance.extendedTime = spGetLong("extendedTime")
+             }
+             return  Instance.extendedTime
+         }
+
+    }
 
 
 }

@@ -257,7 +257,7 @@ public final class AppUtils {
    * @param packageName 包名
    * @return App版本号
    */
-  public static String getAppVersionName(final String packageName) {
+  public static  String getAppVersionName(final String packageName) {
     if (isSpace(packageName)) {
       return null;
     }

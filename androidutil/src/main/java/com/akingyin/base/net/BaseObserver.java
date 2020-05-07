@@ -27,6 +27,7 @@ import timber.log.Timber;
  * @ Author king
  * @ Date 2016/12/30 18:22
  * @ Version V1.0
+ * @author zlcd
  */
 
 public abstract class BaseObserver<T>  implements Observer<ApiResult<T>> {
@@ -59,7 +60,7 @@ public abstract class BaseObserver<T>  implements Observer<ApiResult<T>> {
       T t = value.getData();
       onHandleSuccess(t);
     } else {
-      onHandleError(value.getStatus(), value.getMsg());
+      onHandleError(value.getCode(), value.getMsg());
     }
   }
 

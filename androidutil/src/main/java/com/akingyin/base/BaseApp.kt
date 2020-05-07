@@ -14,12 +14,15 @@ import timber.log.Timber
 
 
     override fun onCreate() {
+        initInjection()
         super.onCreate()
+        println("onCreate->app")
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
            // initLeakCanary()
         }
-        initInjection()
+
+
     }
 
     private fun   initLeakCanary() {

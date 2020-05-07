@@ -1,7 +1,9 @@
 package com.akingyin.base.dialog;
 
 /**
- * Created by Administrator on 2017/8/29.
+ *
+ * @author Administrator
+ * @date 2017/8/29
  */
 
 public interface DialogCallBack<T> {

@@ -8,6 +8,7 @@
 
 package com.akingyin.base.net.exception;
 
+import androidx.annotation.Nullable;
 import com.akingyin.base.net.mode.ApiCode;
 import com.akingyin.base.net.mode.ApiResult;
 import com.alibaba.fastjson.JSONException;
@@ -24,9 +25,24 @@ public class ApiException extends Exception {
     private  int code;
     private String message;
 
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    @Nullable @Override public String getMessage() {
+        return message;
+    }
+
     public ApiException(String message) {
         super(message);
+        this.message = message;
 
+    }
+
+    public ApiException(Throwable  throwable){
+        super(throwable);
+        this.message = throwable.getMessage();
+        this.code = ApiCode.Http.UNAUTHORIZED;
     }
 
     public ApiException(Throwable throwable, int code) {
@@ -39,7 +55,7 @@ public class ApiException extends Exception {
         if (apiResult == null) {
             return false;
         }
-        return apiResult.getStatus() == ApiCode.Response.HTTP_SUCCESS || ignoreSomeIssue(apiResult.getStatus());
+        return apiResult.getCode() == ApiCode.Response.HTTP_SUCCESS || ignoreSomeIssue(apiResult.getCode());
     }
 
     private static boolean ignoreSomeIssue(int code) {

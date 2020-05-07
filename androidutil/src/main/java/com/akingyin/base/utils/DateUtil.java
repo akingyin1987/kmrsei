@@ -54,6 +54,8 @@ public class DateUtil {
    */
   public static final int DAY  = 86400000;
 
+
+
   public enum TimeUnit {
     MSEC,
     SEC,
@@ -116,7 +118,7 @@ public class DateUtil {
    * @return
    */
   public static String millis2String(@Nullable Long millis) {
-    if(null == millis){
+    if(null == millis|| millis<=0L){
       return StringUtils.DEFAULT_EMPTY;
     }
     return getDefaultFormat().format(new Date(millis));

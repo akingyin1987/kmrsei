@@ -51,16 +51,11 @@ abstract class BaseFragment :SimpleFragment(),HasAndroidInjector,IBaseView{
     /**
      * 多种状态的 View 的切换
      */
-    protected var mLayoutStatusView: MultipleStatusView? = null
+    private var mLayoutStatusView: MultipleStatusView? = null
 
 
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser) {
-            lazyLoadDataIfPrepared()
-        }
-    }
+
 
     abstract   fun  injection()
 
@@ -70,7 +65,7 @@ abstract class BaseFragment :SimpleFragment(),HasAndroidInjector,IBaseView{
         super.onViewCreated(view, savedInstanceState)
          isViewPrepare = true
         initView()
-        lazyLoadDataIfPrepared()
+
         //多种状态切换的view 重试点击事件
         mLayoutStatusView?.setOnClickListener(mRetryClickListener)
     }
@@ -78,7 +73,7 @@ abstract class BaseFragment :SimpleFragment(),HasAndroidInjector,IBaseView{
 
 
     private fun lazyLoadDataIfPrepared() {
-        if (userVisibleHint && isViewPrepare && !hasLoadData) {
+        if (!hasLoadData) {
             lazyLoad()
             hasLoadData = true
         }
@@ -142,5 +137,17 @@ abstract class BaseFragment :SimpleFragment(),HasAndroidInjector,IBaseView{
     }
 
     override fun dismissLoading() {
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lazyLoadDataIfPrepared()
     }
 }

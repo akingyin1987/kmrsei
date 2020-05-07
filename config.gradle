@@ -19,7 +19,7 @@ ext{
     cardVersion = '1.0.0'
     recyclerViewVersion = '1.1.0'
     appCompatVersion = '1.1.0'
-    coreKtxVersion='1.1.0'
+    coreKtxVersion='1.2.0'
     junitVersion = '4.12'
     mockitoVersion = '2.27.0'
     dexMaker = '1.2'

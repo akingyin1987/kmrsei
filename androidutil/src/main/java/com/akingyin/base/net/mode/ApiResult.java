@@ -16,7 +16,7 @@ package com.akingyin.base.net.mode;
  * @ Date 2017/11/11 14:02
  */
 public class ApiResult<T> {
-    private int status;
+    private int code;
     private String msg;
     private T data;
     private Long  time;
@@ -29,12 +29,12 @@ public class ApiResult<T> {
         this.time = time;
     }
 
-    public int getStatus() {
-        return status;
+    public int getCode() {
+        return code;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public String getMsg() {
@@ -58,7 +58,7 @@ public class ApiResult<T> {
     @Override
     public String toString() {
         return "ApiResult{" +
-                "code=" + status +
+                "code=" + code +
                 ", msg='" + msg + '\'' +
                 ", data=" + data +
                 '}';

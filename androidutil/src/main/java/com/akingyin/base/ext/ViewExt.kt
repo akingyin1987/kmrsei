@@ -14,6 +14,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.EditText
 import android.widget.TextView
+import androidx.annotation.ColorRes
 
 /**
  * @ Description:
@@ -129,6 +130,8 @@ fun TextView.bold(isBold: Boolean = true) {
     paint.isFakeBoldText = isBold
     paint.isAntiAlias = true
 }
+
+
 
 @Suppress("UNCHECKED_CAST")
 fun <T : View> T.click(block: (T) -> Unit) = setOnClickListener {

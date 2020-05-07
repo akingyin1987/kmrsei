@@ -122,7 +122,7 @@ import java.lang.ref.WeakReference
    if (mActivity.get() == null) {
     return
    }
-   val activity = mActivity.get()
+
    when (msg.what) {
     0-> {
 
@@ -137,7 +137,7 @@ import java.lang.ref.WeakReference
 
  override fun onNewRfid(data: ByteArray?, rfidInterface: RfidInterface?) {
   data?.let {
-   var msg = mainHandler.obtainMessage()
+   val msg = mainHandler.obtainMessage()
    msg.apply {
     what=1
     obj = ConvertUtils.bytes2HexStrReverse(it)

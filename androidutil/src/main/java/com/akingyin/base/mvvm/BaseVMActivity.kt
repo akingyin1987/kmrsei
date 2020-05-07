@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.mvvm.viewmodel.BaseViewModel
+import com.akingyin.base.net.exception.ApiException
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 
 /**
@@ -40,12 +41,10 @@ abstract class BaseVMActivity<VM:BaseViewModel>  :SimpleActivity(),LifecycleObse
         mViewModel.mException.observe(this, Observer { it?.let { onError(it) } })
     }
 
-    open fun onError(e: Throwable) {}
+    open fun onError(e: ApiException) {}
 
 
     override fun onDestroy() {
-
-
 
         lifecycle.removeObserver(mViewModel)
         super.onDestroy()
