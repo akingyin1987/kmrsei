@@ -10,6 +10,8 @@ import com.akingyin.base.ext.*
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.base.utils.StringUtils
 import com.akingyin.tuya.BaseTuYaActivity
+import com.baidu.mapapi.model.LatLng
+import com.baidu.mapapi.utils.AreaUtil
 import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.autoDisposable
 import com.zlcdgroup.mrsei.R
@@ -74,9 +76,22 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
         }
 
         load {
+
+
+
             println("--------1111----------${Thread.currentThread().name}")
             delay(200)
             123
+
+            AreaUtil.calculateArea(mutableListOf<LatLng>().apply {
+                add(LatLng(113.601164,24.829919))
+                add(LatLng(113.609397,24.838277))
+                add(LatLng(113.614567,24.838638))
+                add(LatLng(113.615178,24.84136))
+                add(LatLng(113.62055,24.843893))
+                add(LatLng(113.621942,24.837466))
+                add(LatLng(113.621448,24.836076))
+            })
         }.then {
             println(it)
             println(Thread.currentThread().name)

@@ -18,7 +18,7 @@ import com.akingyin.img.model.IDataMultimedia;
 import com.akingyin.img.model.ViewDataStatusEnum;
 import com.akingyin.img.widget.AudioPlayerView;
 import com.akingyin.img.widget.SuperCheckBox;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.io.File;
 
 /**
@@ -109,12 +109,12 @@ public class MultimediaViewHolder extends BaseViewHolder {
         try {
           if(iDataMultimedia.isNetToWeb()){
             if( FileUtils.isFileExist(iDataMultimedia.getLocalPath())){
-              ImageLoadUtil.loadImageLocalFile(iDataMultimedia.getLocalPath(),getConvertView().getContext(),iv_image);
+              ImageLoadUtil.loadImageLocalFile(iDataMultimedia.getLocalPath(),itemView.getContext(),iv_image);
             }else{
-              ImageLoadUtil.loadImageServerFile(iDataMultimedia.getServerPath(),getConvertView().getContext(),iv_image);
+              ImageLoadUtil.loadImageServerFile(iDataMultimedia.getServerPath(),itemView.getContext(),iv_image);
             }
           }else{
-            ImageLoadUtil.loadImageLocalFile(iDataMultimedia.getLocalPath(),getConvertView().getContext(),iv_image);
+            ImageLoadUtil.loadImageLocalFile(iDataMultimedia.getLocalPath(),itemView.getContext(),iv_image);
           }
 
         }catch (Exception e){
@@ -133,12 +133,12 @@ public class MultimediaViewHolder extends BaseViewHolder {
         try {
           if(iDataMultimedia.isNetToWeb()){
             if( FileUtils.isFileExist(iDataMultimedia.getLocalPath())){
-              ImageLoadUtil.loadImageLocalFile(iDataMultimedia.getLocalPath(),getConvertView().getContext(),iv_image);
+              ImageLoadUtil.loadImageLocalFile(iDataMultimedia.getLocalPath(),itemView.getContext(),iv_image);
             }else{
-              ImageLoadUtil.loadImageServerFile(iDataMultimedia.getServerPath(),getConvertView().getContext(),iv_image);
+              ImageLoadUtil.loadImageServerFile(iDataMultimedia.getServerPath(),itemView.getContext(),iv_image);
             }
           }else{
-            ImageLoadUtil.loadImageLocalFile(iDataMultimedia.getLocalPath(),getConvertView().getContext(),iv_image);
+            ImageLoadUtil.loadImageLocalFile(iDataMultimedia.getLocalPath(),itemView.getContext(),iv_image);
           }
 
         }catch (Exception e){

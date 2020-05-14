@@ -2,7 +2,8 @@ package com.zlcdgroup.mrsei.ui.adapter
 
 import android.view.View
 import android.widget.TextView
-import com.chad.library.adapter.base.BaseViewHolder
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
+
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.entity.UserEntity
 

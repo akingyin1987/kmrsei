@@ -15,10 +15,10 @@ ext{
     androidXTestVersion = '1.1.1'
     androidXAnnotations = '1.0.1'
     androidXLegacySupport = '1.0.0'
-    materialVersion = '1.2.0-alpha03'
+    materialVersion = '1.2.0-alpha06'
     cardVersion = '1.0.0'
     recyclerViewVersion = '1.1.0'
-    appCompatVersion = '1.1.0'
+    appCompatVersion = '1.2.0-beta01'
     coreKtxVersion='1.2.0'
     junitVersion = '4.12'
     mockitoVersion = '2.27.0'
@@ -31,12 +31,12 @@ ext{
   }
   dependVersion = [
       androidSupportSdkVersion: "27.1.1",
-      retrofitSdkVersion      : "2.6.0",
-      okhttpSdkVersion        : "4.0.1",
-      glideSdkVersion         : "4.9.0",
-      rxJava                  : "2.2.10",
-      rxAndroid               : "2.1.1",
-      rxKotlin                 : "2.4.0"
+      retrofitSdkVersion      : "2.8.1",
+      okhttpSdkVersion        : "4.6.0",
+      glideSdkVersion         : "4.11.0",
+      rxJava                  : "3.0.0",
+      rxAndroid               : "3.0.0",
+      rxKotlin                 : "3.0.0"
   ]
 
   supportDeps = [
@@ -64,8 +64,9 @@ ext{
   ]
 
   rxJava = [
-      rxJava                : "io.reactivex.rxjava2:rxjava:$dependVersion.rxJava",
-      rxAndroid             : "io.reactivex.rxjava2:rxandroid:$dependVersion.rxAndroid"
+      rxJava                : "io.reactivex.rxjava3:rxjava:$dependVersion.rxJava",
+      rxAndroid             : "io.reactivex.rxjava3:rxandroid:$dependVersion.rxAndroid",
+      rxKotlin              :  "io.reactivex.rxjava3:rxkotlin:$dependVersion.rxKotlin"
   ]
 
 

@@ -8,6 +8,7 @@ import com.akingyin.base.SimpleActivity
 import com.google.android.material.tabs.TabLayout
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.ui.fragment.FragmentLayzTest
+import com.zlcdgroup.mrsei.ui.fragment.FragmentViewPager
 import kotlinx.android.synthetic.main.activity_fragments.*
 
 /**
@@ -33,10 +34,14 @@ class FragmentTestActivity : SimpleActivity() {
     override fun initView() {
         val  fragments = mutableListOf<Fragment>()
         val  titles = mutableListOf<String>()
+        fragments.add(FragmentViewPager.newInstance("abc"))
+        titles.add("abc")
         for (i in 1..10){
             titles.add("test$i")
             fragments.add(FragmentLayzTest.newInstance("frag-data$i"))
         }
+
+        viewpager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
         tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }

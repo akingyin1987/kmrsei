@@ -66,11 +66,11 @@ class UserListActivity  : BaseActivity(),UserListContract.View, UMShareListener 
         recycle.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         recycle.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
         recycle.adapter = userListAdapter
-        userListAdapter.setNewData(userListPresenterImpl.getUserList())
-        userListAdapter.onItemClickListener = BaseQuickAdapter.OnItemClickListener {
-            _, _, position ->
-            showSucces(userListAdapter.getItem(position)?.name)
+        userListAdapter.setNewInstance(userListPresenterImpl.getUserList()?.toMutableList())
+        userListAdapter.setOnItemClickListener { _, _, position ->
+            showSucces(userListAdapter.getItem(position).name)
         }
+
         fab.setOnClickListener {
                             var  random :Random = Random()
                             var   userEntity: UserEntity = UserEntity()
@@ -135,7 +135,7 @@ class UserListActivity  : BaseActivity(),UserListContract.View, UMShareListener 
     }
 
     override fun showUserList(userEntitys: List<UserEntity>?) {
-        userListAdapter.setNewData(userEntitys)
+        userListAdapter.setNewInstance(userEntitys?.toMutableList())
     }
 
     override fun showAddUser(userEntity: UserEntity) {

@@ -86,7 +86,8 @@ public class RxUtil {
 
 
   public  void   test(){
-   Disposable disposable = Observable.just(1)
+
+    Disposable disposable = Observable.just(1)
         .compose(RxUtil.<Integer>IO_Main())
         .map(new Function<Integer, String >() {
           @Override public String apply(Integer integer) throws Exception {

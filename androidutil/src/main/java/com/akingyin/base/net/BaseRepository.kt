@@ -1,6 +1,7 @@
 package com.akingyin.base.net
 
 import android.util.Log
+import com.akingyin.base.net.exception.ApiException
 import com.akingyin.base.net.mode.ApiCode
 import com.akingyin.base.net.mode.ApiResult
 import retrofit2.Response
@@ -35,20 +36,22 @@ open class BaseRepository {
 
         private suspend fun <T: Any> safeApiResult(call: suspend ()-> ApiResult<T>, errorMessage: String) : Result<T>{
             val response = call.invoke()
-            if(response.status == ApiCode.Response.HTTP_SUCCESS) return Result.Success(response.data)
+            if(response.code == ApiCode.Response.HTTP_SUCCESS) return Result.Success(response.data,response.time)
 
-            return Result.Error(Exception("Error Occurred during getting safe Api result, Custom ERROR - $errorMessage"))
+            return Result.Error(ApiException("Error Occurred during getting safe Api result, Custom ERROR - $errorMessage"))
         }
 
     private suspend fun <T: Any> safeApiResult(call: suspend ()-> Response<T>) : Result<T>{
         val response = call.invoke()
         if(response.isSuccessful){
-            val data : T = response.body()!!
-            return Result.Success(response.body()!!)
+            response.body()?.let {
+                return Result.Success(it,0)
+            }
+
 
         }
 
-        return Result.Error(Exception("Error Occurred during getting safe Api result, Custom ERROR - ${response.message()}"))
+        return Result.Error(ApiException("Error Occurred during getting safe Api result, Custom ERROR - ${response.message()}"))
     }
 
 

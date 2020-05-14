@@ -59,7 +59,7 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
     }
 
     override fun showUserList(userEntitys: List<UserEntity>?) {
-       userListAdapter.setNewData(userEntitys)
+       userListAdapter.setNewInstance(userEntitys?.toMutableList())
     }
 
     override fun showAddUserDialog() {

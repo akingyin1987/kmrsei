@@ -2,6 +2,8 @@ package com.zlcdgroup.mrsei.ui.fragment
 
 import android.os.Bundle
 import com.akingyin.base.SimpleFragment
+import com.akingyin.base.ext.currentTimeMillis
+import com.akingyin.base.utils.DateUtil
 import com.zlcdgroup.mrsei.R
 import kotlinx.android.synthetic.main.fragment_test.*
 
@@ -16,6 +18,9 @@ import kotlinx.android.synthetic.main.fragment_test.*
 class FragmentLayzTest : SimpleFragment() {
 
     override fun getLayoutId()= R.layout.fragment_test
+    override fun initView() {
+
+    }
 
     companion object{
         fun   newInstance(str:String):FragmentLayzTest{
@@ -48,22 +53,15 @@ class FragmentLayzTest : SimpleFragment() {
 
     override fun onResume() {
         super.onResume()
-        lazyLoadDataIfPrepared()
+
         println("onResume=${TAG}")
     }
 
-    private   var  hasLoadData = false
-    private fun lazyLoadDataIfPrepared() {
-        if ( !hasLoadData) {
-            lazyLoad()
-            hasLoadData = true
-        }
-    }
 
-    private   fun   lazyLoad(){
-        println("第一次懒加载=${TAG}")
-    }
 
+
+    override fun lazyLoad() {
+        println("第一次懒加载=${TAG}  time=${DateUtil.millis2String(currentTimeMillis)}")    }
 
     override fun onPause() {
         super.onPause()

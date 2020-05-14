@@ -4,7 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import com.akingyin.base.ext.no
+import com.akingyin.base.ext.yes
 import com.classic.common.MultipleStatusView
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
@@ -33,121 +36,10 @@ abstract class BaseFragment :SimpleFragment(),HasAndroidInjector,IBaseView{
     override fun androidInjector(): AndroidInjector<Any> {
         return   childFragmentInjector
     }
-
+    abstract   fun  injection()
 //    fun supportFragmentInjector(): DispatchingAndroidInjector<androidx.fragment.app.Fragment> {
 //        return childFragmentInjector
 //    }
 
-    /**
-     * 视图是否加载完毕
-     */
 
-
-    private var isViewPrepare = false
-    /**
-     * 数据是否加载过了
-     */
-    private var hasLoadData = false
-    /**
-     * 多种状态的 View 的切换
-     */
-    private var mLayoutStatusView: MultipleStatusView? = null
-
-
-
-
-
-    abstract   fun  injection()
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-
-        super.onViewCreated(view, savedInstanceState)
-         isViewPrepare = true
-        initView()
-
-        //多种状态切换的view 重试点击事件
-        mLayoutStatusView?.setOnClickListener(mRetryClickListener)
-    }
-
-
-
-    private fun lazyLoadDataIfPrepared() {
-        if (!hasLoadData) {
-            lazyLoad()
-            hasLoadData = true
-        }
-    }
-
-    open val mRetryClickListener: View.OnClickListener = View.OnClickListener {
-        lazyLoad()
-    }
-
-
-
-
-    /**
-     * 初始化 ViewI
-     */
-    abstract fun initView()
-
-    /**
-     * 懒加载
-     */
-    abstract fun lazyLoad()
-
-
-    override fun showMessage(msg: String?) {
-        if (msg != null ) {
-            Toasty.info(mContext,msg, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun showSucces(msg: String?) {
-        if (msg != null ) {
-            Toasty.success(mContext,msg, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun showError(msg: String?) {
-        if (msg != null ) {
-            Toasty.error(mContext,msg, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun showWarning(msg: String?) {
-        if (msg != null ) {
-            Toasty.warning(mContext,msg, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun close() {
-    }
-
-    override fun showTips(msg: String?) {
-    }
-
-    override fun showLoadDialog(msg: String?) {
-    }
-
-    override fun hideLoadDialog() {
-    }
-
-    override fun showLoading() {
-    }
-
-    override fun dismissLoading() {
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-        lazyLoadDataIfPrepared()
-    }
 }

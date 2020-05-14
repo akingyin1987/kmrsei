@@ -2,6 +2,7 @@ package com.akingyin.base.mvvm
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.akingyin.base.SimpleFragment
@@ -13,7 +14,7 @@ import com.akingyin.base.mvvm.viewmodel.BaseViewModel
  * @ Date 2019/8/1 12:18
  * @version V1.0
  */
-abstract class BaseVMFragment<VM : BaseViewModel> :SimpleFragment(){
+abstract class BaseVMFragment<VM : BaseViewModel> :SimpleFragment() {
 
     protected lateinit var mViewModel: VM
 
@@ -32,7 +33,8 @@ abstract class BaseVMFragment<VM : BaseViewModel> :SimpleFragment(){
         }
     }
     open fun startObserve() {
-        mViewModel.mException.observe(this, Observer { it?.let { onError(it) } })
+
+        mViewModel.mException.observe(viewLifecycleOwner, Observer { it?.let { onError(it) } })
     }
     open fun providerVMClass(): Class<VM>? = null
 

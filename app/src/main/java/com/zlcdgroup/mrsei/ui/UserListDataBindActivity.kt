@@ -44,7 +44,7 @@ class UserListDataBindActivity :BaseActivity(), UserListContract.View{
        recycle.layoutManager = LinearLayoutManager(this)
        recycle.itemAnimator = DefaultItemAnimator()
        recycle.adapter = userListAdapter
-       userListAdapter.setNewData(userListPresenterImpl.getUserList())
+       userListAdapter.setNewInstance(userListPresenterImpl.getUserList()?.toMutableList())
        userListPresenterImpl.attachView(this)
         setToolBar(toolbar,"dataBind")
        fab.click {
@@ -88,7 +88,7 @@ class UserListDataBindActivity :BaseActivity(), UserListContract.View{
     }
 
     override fun showUserList(userEntitys: List<UserEntity>?) {
-        userListAdapter.setNewData(userEntitys)
+        userListAdapter.setNewInstance(userEntitys?.toMutableList())
     }
 
     override fun showAddUser(userEntity: UserEntity) {

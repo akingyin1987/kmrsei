@@ -67,7 +67,7 @@ class MrmseiApp :BaseApp() {
         DbCore.enableQueryBuilderLog()
         BdMapApp.get().initBaiDuMap(this)
         registerReceiver(BdMapApp.get().receiver,BdMapApp.get().getiFilter())
-        spSetString("ApiUrl","http://114.215.108.130:38280/mrmsei/")
+        spSetString("ApiUrl","http://139.9.235.121:38082/mrmsei/")
         if(BuildConfig.DEBUG){
             ARouter.openLog()
             ARouter.openDebug()

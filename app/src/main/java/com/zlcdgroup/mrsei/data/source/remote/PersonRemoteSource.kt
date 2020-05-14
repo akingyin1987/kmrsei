@@ -80,7 +80,7 @@ class PersonRemoteSource @Inject constructor()  : IPersonSource{
                     })
             disposable =   serverApi.login(json,RQ.getToken(json)).retryWithDelay(2,3).compose(RxUtil.IO_Main())
                   .subscribe({
-                     if(it.status == 0){
+                     if(it.code == 0){
                       callBack.call(it.data)
                   }else{
                       callBack.onError(it.msg)

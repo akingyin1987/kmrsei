@@ -13,8 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.akingyin.img.model.IDataMultimedia;
-import com.chad.library.adapter.base.BaseItemDraggableAdapter;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.module.DraggableModule;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * * *                #                                                   #
@@ -47,35 +49,27 @@ import java.util.List;
  * @ Version V1.0
  */
 
-public class MultimediaAdapter<T extends IDataMultimedia>  extends BaseItemDraggableAdapter<T,MultimediaViewHolder> {
+public class MultimediaAdapter<T extends IDataMultimedia>  extends
+    BaseQuickAdapter<T,MultimediaViewHolder> implements DraggableModule {
 
-
+  private   LayoutInflater  mLayoutInflater = null;
   public MultimediaAdapter(Context context,int layoutResId, List<T> data) {
     super(layoutResId, data);
-    
-    this.mContext = context;
+
     this.mLayoutInflater = LayoutInflater.from(context);
 
   }
 
   @Override protected void convert(final MultimediaViewHolder multimediaViewHolder, T t) {
-    if(!isItemDraggable()){
-      multimediaViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-          return   getOnItemLongClickListener().onItemLongClick(MultimediaAdapter.this, v, multimediaViewHolder.getLayoutPosition() - getHeaderLayoutCount());
-        }
-      });
-    }
+
+
     multimediaViewHolder.bind(t);
   }
 
-  @Override
-  protected MultimediaViewHolder createBaseViewHolder(ViewGroup parent, int layoutResId) {
+  @NotNull @Override
+  protected MultimediaViewHolder createBaseViewHolder(@NotNull ViewGroup parent, int layoutResId) {
     View  view = mLayoutInflater.inflate(layoutResId, parent, false);
     System.out.println("-----MultimediaViewHolder-----");
     return new MultimediaViewHolder(view);
   }
-
-
 }

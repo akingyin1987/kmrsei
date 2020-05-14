@@ -14,18 +14,18 @@ import javax.inject.Inject
  * @ Date 2018/9/6 15:29
  * @version V1.0
  */
-class UserListAdapter @Inject constructor(  context: Activity) : BaseQuickAdapter<UserEntity, UserViewHolder>(null) {
+class UserListAdapter @Inject constructor(  context: Activity) : BaseQuickAdapter<UserEntity, UserViewHolder>(R.layout.item_user) {
 
     var    layoutInflater:LayoutInflater= LayoutInflater.from(context)
 
 
-    override fun convert(helper: UserViewHolder, item: UserEntity?) {
-       helper.bind(item )
+
+
+    override fun convert(holder: UserViewHolder, item: UserEntity) {
+      holder.bind(item)
     }
 
-    override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): UserViewHolder {
-       return  UserViewHolder(layoutInflater.inflate(R.layout.item_user,parent,false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
+        return UserViewHolder(layoutInflater.inflate(R.layout.item_user,parent))
     }
-
-
 }

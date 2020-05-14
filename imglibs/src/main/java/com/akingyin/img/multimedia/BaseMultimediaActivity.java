@@ -8,6 +8,8 @@
 
 package com.akingyin.img.multimedia;
 
+import android.animation.ValueAnimator;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
@@ -44,8 +46,9 @@ import com.akingyin.img.model.ValMessage;
 import com.akingyin.img.model.ViewDataStatusEnum;
 import com.akingyin.img.widget.MaterialSelectDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.callback.ItemDragAndSwipeCallback;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnItemDragListener;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.uber.autodispose.AutoDispose;
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 import io.reactivex.Flowable;
@@ -116,7 +119,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
   public static String MultiediaPre = "mulitimedia_setting";
   public GridLayoutManager mGridLayoutManager;
 
-  protected ItemDragAndSwipeCallback mItemDragAndSwipeCallback;
+  protected OnItemDragListener mItemDragAndSwipeCallback;
   protected ItemTouchHelper mItemTouchHelper;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -282,25 +285,23 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
       supportInvalidateOptionsMenu();
     }
 
+    adapter.setOnItemLongClickListener((adapter, view, position) -> {
+      System.out.println("sOperationStateEnum"+sOperationStateEnum.toString());
+      if (sOperationStateEnum == OperationStateEnum.NULL
+          || sOperationStateEnum == OperationStateEnum.Select
+          || sOperationStateEnum == OperationStateEnum.AddAudio
+          || sOperationStateEnum == OperationStateEnum.AddImage
+          || sOperationStateEnum == OperationStateEnum.AddText
+          || sOperationStateEnum == OperationStateEnum.AddVideo) {
 
-    adapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
-      @Override public boolean onItemLongClick(BaseQuickAdapter adapter2, View view, int position) {
-        System.out.println("sOperationStateEnum"+sOperationStateEnum.toString());
-        if (sOperationStateEnum == OperationStateEnum.NULL
-            || sOperationStateEnum == OperationStateEnum.Select
-            || sOperationStateEnum == OperationStateEnum.AddAudio
-            || sOperationStateEnum == OperationStateEnum.AddImage
-            || sOperationStateEnum == OperationStateEnum.AddText
-            || sOperationStateEnum == OperationStateEnum.AddVideo) {
-
-          showMoreOpera(position);
-          return true;
-        }
-        return false;
+        showMoreOpera(position);
+        return true;
       }
+      return false;
     });
 
-    adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+
+    adapter.setOnItemClickListener(new OnItemClickListener() {
       @Override public void onItemClick(BaseQuickAdapter baseadapter, View view, int position) {
 
         T t = adapter.getItem(position);
@@ -346,12 +347,55 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
       }
     });
 
-    mItemDragAndSwipeCallback = new ItemDragAndSwipeCallback(adapter);
-    mItemTouchHelper = new ItemTouchHelper(mItemDragAndSwipeCallback);
-    mItemTouchHelper.attachToRecyclerView(multimediaRecycler);
+    mItemDragAndSwipeCallback = new OnItemDragListener() {
+      @Override public void onItemDragStart(RecyclerView.ViewHolder viewHolder, int pos) {
+        final BaseViewHolder holder = ((BaseViewHolder) viewHolder);
 
-    adapter.disableDragItem();
-    adapter.setOnItemDragListener(mOnItemDragListener);
+        // 开始时，item背景色变化，demo这里使用了一个动画渐变，使得自然
+        int startColor = Color.WHITE;
+        int endColor = Color.rgb(245, 245, 245);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+          ValueAnimator v = ValueAnimator.ofArgb(startColor, endColor);
+          v.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+              holder.itemView.setBackgroundColor((int)animation.getAnimatedValue());
+            }
+          });
+          v.setDuration(300);
+          v.start();
+        }
+      }
+
+      @Override public void onItemDragMoving(RecyclerView.ViewHolder source, int from,
+          RecyclerView.ViewHolder target, int to) {
+
+      }
+
+      @Override public void onItemDragEnd(RecyclerView.ViewHolder viewHolder, int pos) {
+        final BaseViewHolder holder = ((BaseViewHolder) viewHolder);
+        // 结束时，item背景色变化，demo这里使用了一个动画渐变，使得自然
+        int startColor = Color.rgb(245, 245, 245);
+        int endColor = Color.WHITE;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+          ValueAnimator v = ValueAnimator.ofArgb(startColor, endColor);
+          v.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+              holder.itemView.setBackgroundColor((int)animation.getAnimatedValue());
+            }
+          });
+          v.setDuration(300);
+          v.start();
+        }
+      }
+    };
+    if(null != adapter.getDraggableModule()){
+      adapter.getDraggableModule().setDragEnabled(false);
+      adapter.getDraggableModule().setOnItemDragListener(mItemDragAndSwipeCallback);
+    }
+
+
     MultimediaEnum  multimediaEnum = defaultAddMultimedia();
     if(null != multimediaEnum){
       if(multimediaEnum == MultimediaEnum.Audio){
@@ -539,7 +583,9 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
 
   public void endOperation() {
     mLlOperationContainer.setVisibility(View.GONE);
-    adapter.setOnItemDragListener(null);
+    if(null != adapter.getDraggableModule()){
+      adapter.getDraggableModule().setOnItemDragListener(null);
+    }
   }
 
   public void startOperation() {
@@ -780,24 +826,14 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
 
 
 
-  //拖动监听器
-  protected OnItemDragListener mOnItemDragListener = new OnItemDragListener() {
-    @Override public void onItemDragStart(RecyclerView.ViewHolder viewHolder, int i) {
 
-    }
-
-    @Override public void onItemDragMoving(RecyclerView.ViewHolder viewHolder, int i,
-        RecyclerView.ViewHolder viewHolder1, int i1) {
-
-    }
-
-    @Override public void onItemDragEnd(RecyclerView.ViewHolder viewHolder, int i) {
-
-    }
-  };
 
   void sort() {
-    adapter.enableDragItem(mItemTouchHelper);
+    if(null != adapter.getDraggableModule()){
+      adapter.getDraggableModule().setDragEnabled(true);
+      adapter.getDraggableModule().setOnItemDragListener(mItemDragAndSwipeCallback);
+    }
+
     adapter.notifyDataSetChanged();
     cbOperation.setVisibility(View.GONE);
     tvCurrentOperation.setText("当前操作：排序");
@@ -867,7 +903,11 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
 
    void tv_cancel() {
     cbOperation.setChecked(false);
-    adapter.disableDragItem();
+    if(null != adapter.getDraggableModule()){
+      adapter.getDraggableModule().setDragEnabled(false);
+      adapter.getDraggableModule().setOnItemDragListener(null);
+    }
+
     System.out.println("sOperationStateEnum="+sOperationStateEnum.getName());
     if (sOperationStateEnum == OperationStateEnum.TuYa
         || sOperationStateEnum == OperationStateEnum.Modify) {
@@ -896,7 +936,11 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
 
   void tv_finished() {
     cbOperation.setChecked(false);
-    adapter.disableDragItem();
+    if(null != adapter.getDraggableModule()){
+      adapter.getDraggableModule().setOnItemDragListener(null);
+      adapter.getDraggableModule().setDragEnabled(false);
+    }
+
 
     if (sOperationStateEnum == OperationStateEnum.Sort) {
       for (int i = 0; i < adapter.getItemCount(); i++) {
