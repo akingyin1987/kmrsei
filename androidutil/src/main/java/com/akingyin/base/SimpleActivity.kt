@@ -183,7 +183,7 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
             }.no {  }
         }
 
-         loadingDialog = QMUITipDialog.Builder(this).setFollowSkin(true)
+         loadingDialog = QMUITipDialog.Builder(this)
                  .setIconType(ICON_TYPE_LOADING).create(true)
 
          loadingDialog?.let {  dialog ->

@@ -155,7 +155,7 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(),IBaseView{
             }.no {  }
         }
 
-        loadingDialog = QMUITipDialog.Builder(mContext).setFollowSkin(true)
+        loadingDialog = QMUITipDialog.Builder(mContext)
                 .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING).create(true)
 
         loadingDialog?.let {  dialog ->

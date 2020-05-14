@@ -3,11 +3,12 @@ package com.zlcdgroup.mrsei.utils
 import android.content.Context
 import android.graphics.Matrix
 import android.hardware.display.DisplayManager
-import android.util.Log
+
 import android.util.Size
 import android.view.*
 import androidx.camera.core.Preview
 import androidx.camera.core.PreviewConfig
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import kotlin.math.roundToInt
 
@@ -19,6 +20,7 @@ import kotlin.math.roundToInt
  * @ Date 2019/7/19 16:58
  * @version V1.0
  */
+@Suppress("NAME_SHADOWING")
 class AutoFitPreviewBuilder private constructor(
         config: PreviewConfig, viewFinderRef: WeakReference<TextureView>) {
 
@@ -77,8 +79,7 @@ class AutoFitPreviewBuilder private constructor(
         useCase.setOnPreviewOutputUpdateListener(Preview.OnPreviewOutputUpdateListener {
             val viewFinder =
                     viewFinderRef.get() ?: return@OnPreviewOutputUpdateListener
-            Log.d(TAG, "Preview output changed. " +
-                    "Size: ${it.textureSize}. Rotation: ${it.rotationDegrees}")
+            Timber.d(TAG, "Preview output changed. Size: ${it.textureSize}. Rotation: ${it.rotationDegrees}")
 
             // To update the SurfaceTexture, we have to remove it and re-add it
             val parent = viewFinder.parent as ViewGroup
@@ -96,9 +97,10 @@ class AutoFitPreviewBuilder private constructor(
 
         // Every time the provided texture view changes, recompute layout
         viewFinder.addOnLayoutChangeListener { view, left, top, right, bottom, _, _, _, _ ->
-            val viewFinder = view as TextureView
+            val viewFinder:TextureView = view as TextureView
             val newViewFinderDimens = Size(right - left, bottom - top)
-            Log.d(TAG, "View finder layout changed. Size: $newViewFinderDimens")
+
+            Timber.d(TAG, "View finder layout changed. Size: $newViewFinderDimens")
             val rotation = getDisplaySurfaceRotation(viewFinder.display)
             updateTransform(viewFinder, rotation, bufferDimens, newViewFinderDimens)
         }
@@ -167,7 +169,7 @@ class AutoFitPreviewBuilder private constructor(
         }
 
         val matrix = Matrix()
-        Log.d(TAG, "Applying output transformation.\n" +
+        Timber.d(TAG, "Applying output transformation.\n" +
                 "View finder size: $viewFinderDimens.\n" +
                 "Preview output size: $bufferDimens\n" +
                 "View finder rotation: $viewFinderRotation\n" +

@@ -137,11 +137,11 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
         recycle.adapter = userListAdapter
         userListAdapter.setOnItemClickListener{
             _, _, position ->
-            showModifyUser(userListAdapter.getItem(position)!!,position)
+            showModifyUser(userListAdapter.getItem(position),position)
         }
         userListAdapter.setOnItemLongClickListener {
             _, _, position ->
-             showDelectUserDialog(userListAdapter.getItem(position)!!,position)
+             showDelectUserDialog(userListAdapter.getItem(position),position)
              true
 
         }

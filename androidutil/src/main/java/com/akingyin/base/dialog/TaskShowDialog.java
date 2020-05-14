@@ -79,8 +79,7 @@ public class TaskShowDialog {
 
         loadingView.setSize(
             QMUIResHelper.getAttrDimen(dialogContext, R.attr.qmui_tip_dialog_loading_size));
-        builder.tintColor(QMUIResHelper.getAttrString(dialogContext,
-            R.attr.qmui_skin_def_tip_dialog_loading_color));
+        builder.tintColor(R.attr.qmui_skin_support_tip_dialog_loading_color);
         QMUISkinHelper.setSkinValue(loadingView, builder);
         dialogView.addView(loadingView, onCreateIconOrLoadingLayoutParams(dialogContext));
 
@@ -100,8 +99,7 @@ public class TaskShowDialog {
               String.format(Locale.getDefault(),"处理中...耗时(%ds)", (System.currentTimeMillis() - currentTime) / 1000));
         }
         builder.clear();
-        builder.textColor(
-            QMUIResHelper.getAttrString(dialogContext, R.attr.qmui_skin_def_tip_dialog_text_color));
+        builder.textColor(R.attr.qmui_skin_support_tip_dialog_text_color);
         QMUISkinHelper.setSkinValue(tipView, builder);
         dialogView.addView(tipView, onCreateTextLayoutParams(dialogContext));
         builder.release();
