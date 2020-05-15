@@ -4,13 +4,12 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Toast
-import com.akingyin.base.BaseActivity
+import com.akingyin.base.BaseDaggerActivity
 import com.akingyin.base.ext.click
 import com.akingyin.base.ext.goActivity
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
-import com.chad.library.adapter.base.BaseQuickAdapter
 import com.umeng.socialize.ShareAction
 import com.umeng.socialize.UMShareListener
 import com.umeng.socialize.bean.SHARE_MEDIA
@@ -40,7 +39,7 @@ import kotlin.properties.Delegates
  * @version V1.0
  */
 @Route(path = "/user/list")
-class UserListActivity  : BaseActivity(),UserListContract.View, UMShareListener {
+class UserListActivity  : BaseDaggerActivity(),UserListContract.View, UMShareListener {
 
     @Inject
     lateinit var userListPresenterImpl: UserListPresenterImpl

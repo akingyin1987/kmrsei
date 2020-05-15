@@ -2,7 +2,7 @@ package com.zlcdgroup.mrsei.ui
 
 import android.os.Bundle
 import android.view.View
-import com.akingyin.base.BaseActivity
+import com.akingyin.base.BaseDaggerActivity
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
 import com.zlcdgroup.mrsei.R
@@ -20,7 +20,7 @@ import javax.inject.Inject
  */
 
 
-class SteperActivity : BaseActivity() , StepperLayout.StepperListener, OnNavigationBarListener {
+class SteperActivity : BaseDaggerActivity() , StepperLayout.StepperListener, OnNavigationBarListener {
 
     @Inject
     lateinit var sampleStepAdapter: SampleStepAdapter

@@ -1,4 +1,4 @@
-@file:Suppress("DEPRECATION")
+
 
 package com.akingyin.base
 
@@ -18,7 +18,7 @@ import javax.inject.Inject
  * @ Date 2018/8/3 16:16
  * @version V1.0
  */
-abstract  class BaseActivity : SimpleActivity(),HasAndroidInjector {
+abstract  class BaseDaggerActivity : BaseNfcTagActivity(),HasAndroidInjector {
 
 //    @Inject
 //    lateinit var supportFragmentInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>

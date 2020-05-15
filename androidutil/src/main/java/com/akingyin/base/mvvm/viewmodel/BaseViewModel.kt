@@ -1,12 +1,15 @@
 package com.akingyin.base.mvvm.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import com.akingyin.base.mvvm.SingleLiveEvent
 import com.akingyin.base.net.Result
 import com.akingyin.base.net.ResultList
 import com.akingyin.base.net.exception.ApiException
 import com.akingyin.base.net.mode.ApiCode
 import com.akingyin.base.net.mode.ApiListResult
 import com.akingyin.base.net.mode.ApiResult
+import com.akingyin.base.repo.Resource
+import com.akingyin.base.repo.StateActionEvent
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.*
@@ -24,6 +27,9 @@ open  class BaseViewModel :AutoDisposeViewModel(), CoroutineScope {
 
 
     val mException: MutableLiveData<ApiException> = MutableLiveData()
+
+    //通用事件模型驱动(如：显示对话框、取消对话框、错误提示)
+    val mStateLiveData = SingleLiveEvent<StateActionEvent>()
     private var mCompositeDisposable: CompositeDisposable? = null
 
     override val coroutineContext: CoroutineContext

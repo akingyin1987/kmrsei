@@ -27,6 +27,7 @@ import com.zlcdgroup.mrsei.utils.RetrofitConfig
 import com.zlcdgroup.mrsei.utils.ThemeHelper
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
+import leakcanary.LeakCanary
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -63,8 +64,8 @@ class MrmseiApp :BaseApp() {
         Ext.with(this)
         DbCore.init(this)
         Utils.init(this)
-        println("px=${ConvertUtils.dp2px(100F)}")
         DbCore.enableQueryBuilderLog()
+
         BdMapApp.get().initBaiDuMap(this)
         registerReceiver(BdMapApp.get().receiver,BdMapApp.get().getiFilter())
         spSetString("ApiUrl","http://139.9.235.121:38082/mrmsei/")

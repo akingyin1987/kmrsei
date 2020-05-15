@@ -2,7 +2,6 @@ package com.akingyin.base.mvvm
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.akingyin.base.SimpleFragment

@@ -1,10 +1,11 @@
 package com.zlcdgroup.mrsei.ui
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
-import com.akingyin.base.BaseActivity
+import com.akingyin.base.BaseDaggerActivity
 import com.akingyin.base.dialog.MaterialDialogUtil
 import com.akingyin.base.ext.*
 import com.akingyin.base.utils.FileUtils
@@ -22,6 +23,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.delay
+import permissions.dispatcher.ktx.withPermissionsCheck
 import java.io.File
 import javax.inject.Inject
 
@@ -33,7 +35,7 @@ import javax.inject.Inject
  */
 
 
-class LoginActivity  : BaseActivity() ,UserLoginContract.View{
+class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
 
     @Inject
     lateinit var userLoginPersenterImpl: UserLoginPersenterImpl
@@ -61,7 +63,7 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
         println("btn_login2")
 
         btn_login.click {
-
+            testCameraAuth()
             userLoginPersenterImpl.login(et_mobile.text.toString(),et_password.text.toString())
         }
         app_theme.click {
@@ -81,7 +83,7 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
 
             println("--------1111----------${Thread.currentThread().name}")
             delay(200)
-            123
+
 
             AreaUtil.calculateArea(mutableListOf<LatLng>().apply {
                 add(LatLng(113.601164,24.829919))
@@ -95,8 +97,10 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
         }.then {
             println(it)
             println(Thread.currentThread().name)
+
         }
         println("222222222${Thread.currentThread().name}")
+
     }
 
     override fun startRequest() {
@@ -127,6 +131,20 @@ class LoginActivity  : BaseActivity() ,UserLoginContract.View{
         }
     }
 
+   private fun    testCameraAuth()=withPermissionsCheck(Manifest.permission.CAMERA,
+    onShowRationale = {
+        it.proceed()
+        println("onShowRationale")
+    },onPermissionDenied = {
+        println("onPermissionDenied")
+    },onNeverAskAgain = {
+       println("onNeverAskAgain")
+    }){
+        println("权限认证通过")
+    }
+    private fun onCameraNeverAskAgain() {
+       showTips("不再询问")
+    }
     override fun goToMainActivity() {
 
 //        ARouter.getInstance().build("/user/list").withString("name","nametest")

@@ -1,13 +1,14 @@
 package com.akingyin.base.mvvm
 
-import android.os.Bundle
+import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.akingyin.base.SimpleActivity
+import com.akingyin.base.BaseDataBindActivity
 import com.akingyin.base.mvvm.viewmodel.BaseViewModel
 import com.akingyin.base.net.exception.ApiException
+import com.akingyin.base.repo.StateActionEvent
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 
 /**
@@ -16,32 +17,44 @@ import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
  * @ Date 2019/8/1 11:23
  * @version V1.0
  */
-abstract class BaseVMActivity<VM:BaseViewModel>  :SimpleActivity(),LifecycleObserver{
+abstract class BaseVMActivity<DB : ViewDataBinding,VM:BaseViewModel>  :BaseDataBindActivity<DB>(),LifecycleObserver{
 
     lateinit var mViewModel: VM
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun initDataBindView() {
+        super.initDataBindView()
         initVM()
-        super.onCreate(savedInstanceState)
         startObserve()
     }
 
-
     private  fun  initVM(){
-       providerVMClass()?.let {
-           mViewModel =  ViewModelProvider.AndroidViewModelFactory.getInstance(application).create(it)
-       }
+        mViewModel = getViewModelFactory().create(providerVMClass())
     }
 
-    open fun providerVMClass(): Class<VM>? = null
 
+    abstract  fun   getViewModelFactory(): ViewModelProvider.Factory
 
+    abstract fun providerVMClass(): Class<VM>
     open fun startObserve() {
         mViewModel.mException.observe(this, Observer { it?.let { onError(it) } })
+        mDataBind.lifecycleOwner = this
+        mViewModel.mStateLiveData.observe(this, Observer {
+                when(it){
+                    is StateActionEvent.LoadState -> showLoadDialog(null)
+                    is StateActionEvent.SuccessState-> hideLoadDialog()
+                    is StateActionEvent.ErrorState -> {
+                        hideLoadDialog()
+                        showError(it.message)
+                    }
+                    is StateActionEvent.SuccessInfoState -> showSucces(it.message)
+                }
+        })
     }
 
-    open fun onError(e: ApiException) {}
+    open fun onError(e: ApiException) {
+        showError(e.msg)
+    }
 
 
     override fun onDestroy() {

@@ -34,11 +34,9 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
     private   var multipleStatusView : MultipleStatusView?=null
     // Log tag
     private var TAG_LOG: String? = null
-
-
     protected var mContext: Context? = null
 
-    protected  var   useDataBind = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjection()
@@ -46,7 +44,9 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
         super.onCreate(savedInstanceState)
         AppManager.getInstance()!!.addActivity(this)
         TAG_LOG = this.localClassName
-        if(!useDataBind){
+        if(useDataBindView()){
+            initDataBindView()
+        }else{
             setContentView(getLayoutId())
         }
         mContext = this
@@ -80,6 +80,19 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
      * dagger2注入
      */
     abstract   fun   initInjection()
+
+
+    open    fun    useDataBindView()= false
+
+
+    open    fun    useAndroidNfc() = false
+
+    /**
+     * 初始化dataBinding
+     */
+    open   fun   initDataBindView(){
+
+    }
 
     private   fun   initStatusViewListion(){
         multipleStatusView?.setOnClickListener(mRetryClickListener)

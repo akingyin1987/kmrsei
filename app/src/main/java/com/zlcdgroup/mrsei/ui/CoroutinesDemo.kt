@@ -1,7 +1,7 @@
 package com.zlcdgroup.mrsei.ui
 
 import android.os.Bundle
-import com.akingyin.base.BaseActivity
+import com.akingyin.base.BaseDaggerActivity
 import com.akingyin.base.ext.click
 import com.akingyin.base.ext.currentTimeMillis
 import com.zlcdgroup.mrsei.R
@@ -23,7 +23,7 @@ import javax.inject.Inject
  * @ Date 2019/7/4 11:11
  * @version V1.0
  */
-class CoroutinesDemo :BaseActivity() {
+class CoroutinesDemo :BaseDaggerActivity() {
 
      @Inject
     lateinit var noticeDao :NoticeDao

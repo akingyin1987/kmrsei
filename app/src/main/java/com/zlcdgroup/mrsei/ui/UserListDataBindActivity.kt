@@ -8,7 +8,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
-import com.akingyin.base.BaseActivity
+import com.akingyin.base.BaseDaggerActivity
 import com.akingyin.base.ext.click
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.entity.UserEntity
@@ -25,7 +25,7 @@ import javax.inject.Inject
  * @ Date 2019/5/15 15:30
  * @version V1.0
  */
-class UserListDataBindActivity :BaseActivity(), UserListContract.View{
+class UserListDataBindActivity :BaseDaggerActivity(), UserListContract.View{
 
     @Inject
     lateinit var userListPresenterImpl: UserListPresenterImpl

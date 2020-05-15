@@ -2,7 +2,7 @@ package com.zlcdgroup.mrsei.ui
 
 import android.content.Intent
 import android.os.Bundle
-import com.akingyin.base.BaseActivity
+import com.akingyin.base.BaseDaggerActivity
 import com.umeng.socialize.UMShareAPI
 import com.umeng.socialize.bean.SHARE_MEDIA
 import com.umeng.socialize.shareboard.SnsPlatform
@@ -20,7 +20,7 @@ import javax.inject.Inject
  * @ Date 2019/5/10 13:45
  * @version V1.0
  */
-class AuthActivity :BaseActivity(),UserAuthContract.View{
+class AuthActivity :BaseDaggerActivity(),UserAuthContract.View{
 
     override fun getLayoutId() = R.layout.activity_auth
 

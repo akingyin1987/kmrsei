@@ -1,6 +1,5 @@
 package com.zlcdgroup.mrsei.ui
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -9,9 +8,8 @@ import cafe.adriel.androidaudiorecorder.model.AudioChannel
 import cafe.adriel.androidaudiorecorder.model.AudioSampleRate
 import cafe.adriel.androidaudiorecorder.model.AudioSource
 import com.akingyin.base.ext.appServerTime
-import com.akingyin.base.ext.no
 import com.akingyin.base.ext.startActivityForResult
-import com.akingyin.base.ext.yes
+
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.base.utils.StringUtils
 import com.akingyin.img.callback.AppCallBack3
@@ -20,7 +18,7 @@ import com.akingyin.img.model.ValMessage
 import com.akingyin.img.multimedia.AbsCreateMultimediaActivity
 import com.akingyin.img.multimedia.BaseMultimediaActivity
 import com.akingyin.img.multimedia.MultimediaHelper
-import com.tbruyelle.rxpermissions2.RxPermissions
+
 import com.zlcdgroup.mrsei.data.db.dao.ImageTextEntityDao
 import com.zlcdgroup.mrsei.data.db.help.DbCore
 import com.zlcdgroup.mrsei.data.entity.ImageTextEntity
@@ -108,30 +106,20 @@ class TestTuwenActivity : BaseMultimediaActivity<ImageTextEntity>() {
     override fun onSoundRecording(filePath: String, callBack3: AppCallBack3<File>) {
         this.callBack = callBack3
         AbsCreateMultimediaActivity.localPath = filePath
-        val  rxPermissions = RxPermissions(this)
-                .request(Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe({
-                    it.yes {
-                        AndroidAudioRecorder.with(this)
-                                // Required
-                                .setFilePath(filePath)
-                                .setRequestCode(101)
-                                // Optional
-                                .setSource(AudioSource.MIC)
-                                .setChannel(AudioChannel.STEREO)
-                                .setSampleRate(AudioSampleRate.HZ_48000)
-                                .setAutoStart(true)
-                                .setKeepDisplayOn(true)
 
-                                // Start recording
-                                .record()
-                    }.no {
-                        showMsg("请给出必要的权限")
-                    }
-                }, {
-                    it.printStackTrace()
-                })
+        AndroidAudioRecorder.with(this)
+                // Required
+                .setFilePath(filePath)
+                .setRequestCode(101)
+                // Optional
+                .setSource(AudioSource.MIC)
+                .setChannel(AudioChannel.STEREO)
+                .setSampleRate(AudioSampleRate.HZ_48000)
+                .setAutoStart(true)
+                .setKeepDisplayOn(true)
 
+                // Start recording
+                .record()
 
     }
 
