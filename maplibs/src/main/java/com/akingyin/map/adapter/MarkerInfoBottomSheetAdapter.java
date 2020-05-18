@@ -12,7 +12,7 @@ import com.akingyin.map.base.ILoadImage;
 import com.akingyin.map.base.IOperationListen;
 import com.akingyin.map.model.IMarkerModel;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.text.MessageFormat;
 
 /**
@@ -64,7 +64,7 @@ public class MarkerInfoBottomSheetAdapter <T extends IMarkerModel> extends
     ImageView detai_img =  helper.getView(R.id.detai_img);
     if(null != mILoadImage && !TextUtils.isEmpty(iMarkerModel.getMarkerDetaiImgPath())){
       detai_img.setVisibility(View.VISIBLE);
-      mILoadImage.loadImageView(iMarkerModel.getMarkerDetaiImgPath(),mContext,detai_img);
+      mILoadImage.loadImageView(iMarkerModel.getMarkerDetaiImgPath(),getContext(),detai_img);
     }else{
       detai_img.setVisibility(View.GONE);
     }
