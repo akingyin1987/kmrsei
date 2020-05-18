@@ -1,4 +1,4 @@
-package com.akingyin.map.base
+package com.akingyin.bmap
 
 import com.akingyin.base.ext.spGetBoolean
 import com.akingyin.base.ext.spGetInt

@@ -1,7 +1,8 @@
-package com.akingyin.map.base
+package com.akingyin.bmap
 
 import android.app.Activity
 import android.os.Bundle
+import com.akingyin.map.base.Weak
 import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
 import com.baidu.mapapi.map.*
