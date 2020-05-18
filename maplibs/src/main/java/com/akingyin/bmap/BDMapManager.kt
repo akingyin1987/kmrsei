@@ -2,6 +2,7 @@ package com.akingyin.bmap
 
 import android.app.Activity
 import android.os.Bundle
+import com.akingyin.map.IMapManager
 import com.akingyin.map.base.Weak
 import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
@@ -14,7 +15,7 @@ import com.baidu.mapapi.model.LatLng
  * @ Date 2020/5/18 11:11
  * @version V1.0
  */
-class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Activity):IMapManager() {
+class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Activity): IMapManager() {
 
 
     /**
