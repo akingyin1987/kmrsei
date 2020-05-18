@@ -139,7 +139,7 @@ public abstract class BaseBMapActivity extends AppCompatActivity {
       }
     });
     baseInitialization(savedInstanceState);
-    initialization();
+
   }
 
   protected LocationClient mLocClient;
@@ -180,6 +180,7 @@ public abstract class BaseBMapActivity extends AppCompatActivity {
   }
 
   private void baseInitialization(Bundle bundle) {
+
 
     mMapView.showZoomControls(false);
 

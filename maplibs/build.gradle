@@ -48,22 +48,26 @@ android {
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-  implementation "androidx.appcompat:appcompat:$appCompatVersion"
-  implementation "androidx.core:core-ktx:$coreKtxVersion"
-  implementation "androidx.cardview:cardview:$cardVersion"
-  implementation "com.google.android.material:material:$materialVersion"
-  implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
+//  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+//  implementation "androidx.appcompat:appcompat:$appCompatVersion"
+//  implementation "androidx.core:core-ktx:$coreKtxVersion"
+//  implementation "androidx.cardview:cardview:$cardVersion"
+//  implementation "com.google.android.material:material:$materialVersion"
+//  implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
+//
+//  implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.47'
+//  implementation 'com.blankj:utilcode:1.22.0'
+//  def lifecycle_version = "2.2.0-rc03"
+//  implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version" // use -ktx for Kotlin
+
+
   implementation 'info.hoang8f:android-segmented:1.0.6'
-  implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.47'
-  implementation 'com.blankj:utilcode:1.22.0'
-  def lifecycle_version = "2.2.0-rc03"
-  implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version" // use -ktx for Kotlin
-  testImplementation 'junit:junit:4.12'
+  testImplementation 'junit:junit:4.13'
   androidTestImplementation 'androidx.test.ext:junit:1.1.1'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
   api files('libs/BaiduLBS_Android.jar')
   api files('libs/IndoorscapeAlbumPlugin.jar')
   api files('libs/AMap3DMap.jar')
+  implementation project(path: ':androidutil')
 }
