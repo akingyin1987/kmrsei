@@ -3,7 +3,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 android {
   compileSdkVersion rootProject.ext.android.compileSdkVersion
-
+  //为资源增加前缀
+ // resourcePrefix "map_"
   defaultConfig {
     minSdkVersion rootProject.ext.android.minSdkVersion
     targetSdkVersion rootProject.ext.android.targetSdkVersion
@@ -13,6 +14,7 @@ android {
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     consumerProguardFiles 'consumer-rules.pro'
   }
+
   lintOptions {
     disable 'GoogleAppIndexingWarning'
     abortOnError false

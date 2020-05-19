@@ -8,6 +8,8 @@ import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
 import com.baidu.mapapi.map.*
 import com.baidu.mapapi.model.LatLng
+import com.baidu.mapapi.search.core.PoiInfo
+import com.baidu.mapapi.search.poi.*
 
 /**
  * @ Description:
@@ -15,7 +17,7 @@ import com.baidu.mapapi.model.LatLng
  * @ Date 2020/5/18 11:11
  * @version V1.0
  */
-class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Activity): IMapManager() {
+class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Activity,autoLoc:Boolean = true): IMapManager() {
 
 
     /**
@@ -27,6 +29,8 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
     private   val  bdLocationService  by  lazy{
         BDLocationService.getLocationServer(activity)
     }
+
+   var   poiSearch: PoiSearch?=null
 
 
 
@@ -53,6 +57,13 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
 
     }
 
+    /**
+     * 初始化POI
+     */
+    fun   initPoiConfig(){
+        poiSearch= PoiSearch.newInstance()
+    }
+
 
     /**
      * 地图加载完成
@@ -65,9 +76,9 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
     }
 
 
-    override fun setMapCenter(lat: Double, lng: Double) {
+    override fun setMapCenter(lat: Double, lng: Double,zoom: Float) {
        if(lat>0 && lng>0){
-           baiduMap.animateMapStatus(MapStatusUpdateFactory.newLatLngZoom(LatLng(lat,lng),15F))
+           baiduMap.animateMapStatus(MapStatusUpdateFactory.newLatLngZoom(LatLng(lat,lng),zoom))
        }
     }
 
@@ -93,6 +104,18 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
      */
     fun  setMapLocationConfiguration(locationMode: MyLocationConfiguration.LocationMode,b:Boolean,bitmapDescriptor: BitmapDescriptor?){
         baiduMap.setMyLocationConfiguration(MyLocationConfiguration(locationMode,b,bitmapDescriptor))
+    }
+
+    /**
+     * 设置当前定位信息
+     */
+    fun  setMyLocationData(bdLocation: BDLocation){
+        baiduMap.setMyLocationData(MyLocationData.Builder().apply {
+            accuracy(bdLocation.radius)
+            direction(bdLocation.direction)
+            latitude(bdLocation.latitude)
+            longitude(bdLocation.longitude)
+        }.build())
     }
 
 
@@ -142,19 +165,82 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
 
     }
 
+
+
+
+    private   var   autoLocation = true
+
+    fun   setAutoLocationModel(auto:Boolean){
+        autoLocation = auto
+    }
+
+    /**
+     * 搜索 某点附近的POI
+     */
+    fun searchRoundPoi(lat: Double, lng: Double, r: Int = 1000,callBack: (List<PoiInfo>?) -> Unit) {
+       poiSearch?.setOnGetPoiSearchResultListener(object :OnGetPoiSearchResultListener{
+           override fun onGetPoiIndoorResult(p0: PoiIndoorResult?) {
+           }
+
+           override fun onGetPoiResult(p0: PoiResult?) {
+              p0?.let {
+                  poiResult ->
+                  callBack.invoke(poiResult.allPoi)
+              }
+           }
+
+           override fun onGetPoiDetailResult(p0: PoiDetailResult?) {
+           }
+
+           override fun onGetPoiDetailResult(p0: PoiDetailSearchResult?) {
+           }
+       }) 
+       poiSearch?.searchNearby(PoiNearbySearchOption().apply {
+           radius(r)
+           location(LatLng(lat,lng))
+           pageNum(0)
+           pageCapacity(10)
+       })
+    }
+
+
+    fun    addSingleMarker(markerOptions: MarkerOptions):Marker=baiduMap.addOverlay(markerOptions) as Marker
+
+    override fun startLoction() {
+        bdLocationService.start()
+    }
+
+    override fun stopLoction() {
+       bdLocationService.stop()
+    }
+
+
+
+
+    override fun requestLocation() {
+        bdLocationService.requestLocation()
+    }
+
     override fun onResume() {
        mapView.onResume()
-       bdLocationService.start()
+       if(autoLocation){
+           bdLocationService.start()
+       }
+
     }
 
     override fun onPause() {
        mapView.onPause()
-        bdLocationService.stop()
+        if(autoLocation){
+            bdLocationService.stop()
+        }
+
 
     }
 
     override fun onDestroy() {
         mapView.onDestroy()
+        poiSearch?.destroy()
         bdLocationService.unregisterListener(bdAbstractLocationListener)
         bdLocationService.stop()
     }

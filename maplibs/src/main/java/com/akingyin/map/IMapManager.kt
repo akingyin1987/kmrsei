@@ -20,7 +20,7 @@ abstract class IMapManager {
     /**
      * 设置地图中心
      */
-  abstract  fun   setMapCenter(lat:Double,lng :Double)
+  abstract  fun   setMapCenter(lat:Double,lng :Double,zoom:Float=15F)
 
 
     /**
@@ -43,9 +43,25 @@ abstract class IMapManager {
     fun   getShowMapTraffic() = spGetBoolean("map_traffic")
 
 
+    /**
+     * 开始定位
+     */
+    abstract  fun   startLoction()
+
+
+    abstract   fun   requestLocation()
+
+
+    /**
+     * 停止定位
+     */
+    abstract  fun    stopLoction()
+
    abstract fun   onResume()
 
    abstract fun   onPause()
+
+
 
    abstract fun  onDestroy()
 

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="5dp"
+
+    android:background="@drawable/bbuton_default"
+    android:layout_height="wrap_content">
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:id="@+id/iv_select"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+
+      android:src="@drawable/checkbox_checked"
+
+      app:layout_constraintRight_toRightOf="parent"
+      android:contentDescription="@string/empty_title"
+      android:layout_height="wrap_content"/>
+  <TextView
+      android:id="@+id/tvTitle"
+      app:layout_constraintTop_toTopOf="parent"
+
+      app:layout_constraintRight_toLeftOf="@+id/iv_select"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="万科广场"
+      android:layout_marginRight="8dp"
+      android:textColor="@color/black"
+      android:textSize="16sp"/>
+
+  <TextView
+      android:id="@+id/tvDesc"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="5dp"
+      app:layout_constraintRight_toLeftOf="@+id/iv_select"
+      app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+
+      android:text="1222222222244444444444444222222222333333333333333333333333333333333"
+      android:textColor="@color/gray"
+      android:textSize="12sp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
