@@ -2,6 +2,7 @@
 
 package com.akingyin.base
 
+import com.zlcdgroup.nfcsdk.RfidInterface
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -45,5 +46,7 @@ abstract  class BaseDaggerActivity : BaseNfcTagActivity(),HasAndroidInjector {
 //        return  supportFragmentInjector
 //    }
 
+    override fun handTag(rfid: String?, rfidInterface: RfidInterface?) {
 
+    }
 }

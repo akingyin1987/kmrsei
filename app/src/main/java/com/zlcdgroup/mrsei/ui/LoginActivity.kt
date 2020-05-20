@@ -10,6 +10,7 @@ import com.akingyin.base.dialog.MaterialDialogUtil
 import com.akingyin.base.ext.*
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.base.utils.StringUtils
+import com.akingyin.bmap.SelectLocationBaiduActivity
 import com.akingyin.tuya.BaseTuYaActivity
 import com.baidu.mapapi.model.LatLng
 import com.baidu.mapapi.utils.AreaUtil
@@ -158,7 +159,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
        // startActivityForResult<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"),requestCode = 100)
        // startActivity<TestMarkerMapActivity>()
       //  startActivity<TestTuwenActivity>()
-        startActivity<FragmentTestActivity>()
+        startActivity<SelectLocationBaiduActivity>()
     }
 
     override fun setAppTheme(theme: String) {

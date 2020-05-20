@@ -82,7 +82,7 @@ class MrmseiApp :BaseApp() {
         }
         ARouter.init(this)
         showDebugDBAddressLogToast(this)
-        ApiHost.setHost("http://114.215.108.130:38280/mrmsei/")
+        ApiHost.setHost("http://139.9.235.121:38082/mrmsei/")
         RetrofitConfig.getDefaultService()
         val  theme = spGetString("themePref")
         println("theme=$theme")

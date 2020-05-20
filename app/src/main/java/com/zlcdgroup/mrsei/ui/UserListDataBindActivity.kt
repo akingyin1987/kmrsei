@@ -32,10 +32,8 @@ class UserListDataBindActivity :BaseDaggerActivity(), UserListContract.View{
 
     @Inject
     lateinit var userListAdapter: DataBindUserListAdapter
-    override fun initInjection() {
-        super.initInjection()
-        useDataBind = true
-    }
+
+    override fun useDataBindView()=true
 
     override fun getLayoutId() = R.layout.activity_userlist
 

@@ -81,6 +81,7 @@ class UserLoginPersenterImpl @Inject constructor(var personRepository: PersonRep
        personRepository.login(name,pass, object : ApiCallBack<LoginResultModel> {
            override fun call(resultModel: LoginResultModel) {
                mRootView!!.hideLoadDialog()
+               mRootView?.goToMainActivity()
            }
 
            override fun onError(msg: String) {

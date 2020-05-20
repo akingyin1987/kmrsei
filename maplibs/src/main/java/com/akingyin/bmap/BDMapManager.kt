@@ -2,6 +2,7 @@ package com.akingyin.bmap
 
 import android.app.Activity
 import android.os.Bundle
+import com.akingyin.base.net.exception.ApiException
 import com.akingyin.map.IMapManager
 import com.akingyin.map.base.Weak
 import com.baidu.location.BDAbstractLocationListener
@@ -9,6 +10,8 @@ import com.baidu.location.BDLocation
 import com.baidu.mapapi.map.*
 import com.baidu.mapapi.model.LatLng
 import com.baidu.mapapi.search.core.PoiInfo
+import com.baidu.mapapi.search.core.SearchResult
+import com.baidu.mapapi.search.geocode.*
 import com.baidu.mapapi.search.poi.*
 
 /**
@@ -17,7 +20,11 @@ import com.baidu.mapapi.search.poi.*
  * @ Date 2020/5/18 11:11
  * @version V1.0
  */
-class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Activity,autoLoc:Boolean = true): IMapManager() {
+
+internal typealias Func<T> = (T?) -> Unit
+
+
+class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Activity,var autoLoc:Boolean = true): IMapManager() {
 
 
     /**
@@ -31,6 +38,10 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
     }
 
    var   poiSearch: PoiSearch?=null
+
+   var   geoCoder :GeoCoder? = null
+
+
 
 
 
@@ -66,6 +77,14 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
 
 
     /**
+     * 逆地理编码
+     */
+    fun   initGeoCoderConfig(){
+         geoCoder = GeoCoder.newInstance()
+    }
+
+
+    /**
      * 地图加载完成
      */
     fun    onMapLoad(callBack:()->Unit){
@@ -82,6 +101,29 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
        }
     }
 
+    fun    getUiSetting():UiSettings{
+        return  baiduMap.uiSettings
+    }
+
+    fun   setMapStatusChange(onChangeStart:Func<MapStatus>?=null,onChange: Func<MapStatus>?=null,onChangeFinish:Func<MapStatus>?=null){
+        baiduMap.setOnMapStatusChangeListener(object :BaiduMap.OnMapStatusChangeListener{
+            override fun onMapStatusChangeStart(p0: MapStatus?) {
+                   onChangeStart?.invoke(p0)
+            }
+
+            override fun onMapStatusChangeStart(p0: MapStatus?, p1: Int) {
+                    onChangeStart?.invoke(p0)
+            }
+
+            override fun onMapStatusChange(p0: MapStatus?) {
+                onChange?.invoke(p0)
+            }
+
+            override fun onMapStatusChangeFinish(p0: MapStatus?) {
+                onChangeFinish?.invoke(p0)
+            }
+        })
+    }
 
     fun   getMapMaxZoomLevel()=baiduMap.maxZoomLevel
 
@@ -137,6 +179,7 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
         bdAbstractLocationListener = if(null == bdAbstractLocationListener){
             object :BDAbstractLocationListener(){
                 override fun onReceiveLocation(p0: BDLocation?) {
+                    println("onReceiveLocation->${p0?.locType}$mapLoadComplete")
                     if(!mapLoadComplete){
                         return
                     }
@@ -168,39 +211,75 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
 
 
 
-    private   var   autoLocation = true
 
-    fun   setAutoLocationModel(auto:Boolean){
-        autoLocation = auto
+
+
+
+    private var   onGetGeoCoderResultListener:OnGetGeoCoderResultListener ?= null
+
+    fun  searchRoundPoiByGeoCoder(lat: Double, lng: Double, r: Int = 1000,callBack: (data: List<PoiInfo>?, e: Exception?) -> Unit){
+        try {
+            if(null == onGetGeoCoderResultListener){
+                onGetGeoCoderResultListener = object :OnGetGeoCoderResultListener{
+                    override fun onGetGeoCodeResult(p0: GeoCodeResult?) {
+                    }
+
+                    override fun onGetReverseGeoCodeResult(p0: ReverseGeoCodeResult?) {
+                        p0?.let {
+                            reverseGeoCodeResult ->
+                            if(reverseGeoCodeResult.error == SearchResult.ERRORNO.NO_ERROR){
+                                callBack(reverseGeoCodeResult.poiList,null)
+                            }else{
+                                callBack(null,ApiException("未查询到数据"))
+                            }
+                        }?:callBack(null,ApiException("未查询到数据"))
+                    }
+                }
+            }
+            geoCoder?.setOnGetGeoCodeResultListener(onGetGeoCoderResultListener)
+
+            geoCoder?.reverseGeoCode(ReverseGeoCodeOption().location(LatLng(lat,lng)).radius(r).newVersion(1))
+        }catch (e:Exception){
+            e.printStackTrace()
+            callBack.invoke(null,e)
+        }
+
     }
 
     /**
      * 搜索 某点附近的POI
      */
-    fun searchRoundPoi(lat: Double, lng: Double, r: Int = 1000,callBack: (List<PoiInfo>?) -> Unit) {
-       poiSearch?.setOnGetPoiSearchResultListener(object :OnGetPoiSearchResultListener{
-           override fun onGetPoiIndoorResult(p0: PoiIndoorResult?) {
-           }
-
-           override fun onGetPoiResult(p0: PoiResult?) {
-              p0?.let {
-                  poiResult ->
-                  callBack.invoke(poiResult.allPoi)
+    fun searchRoundPoi(lat: Double, lng: Double, r: Int = 1000,keyword:String,callBack: (data:List<PoiInfo>?, e:Exception?) -> Unit) {
+      try {
+          poiSearch?.setOnGetPoiSearchResultListener(object :OnGetPoiSearchResultListener{
+              override fun onGetPoiIndoorResult(p0: PoiIndoorResult?) {
               }
-           }
 
-           override fun onGetPoiDetailResult(p0: PoiDetailResult?) {
-           }
+              override fun onGetPoiResult(p0: PoiResult?) {
+                  p0?.let {
+                      poiResult ->
+                      callBack.invoke(poiResult.allPoi,null)
+                  }
+              }
 
-           override fun onGetPoiDetailResult(p0: PoiDetailSearchResult?) {
-           }
-       }) 
-       poiSearch?.searchNearby(PoiNearbySearchOption().apply {
-           radius(r)
-           location(LatLng(lat,lng))
-           pageNum(0)
-           pageCapacity(10)
-       })
+              override fun onGetPoiDetailResult(p0: PoiDetailResult?) {
+              }
+
+              override fun onGetPoiDetailResult(p0: PoiDetailSearchResult?) {
+              }
+          })
+          poiSearch?.searchNearby(PoiNearbySearchOption().apply {
+              radius(r)
+              location(LatLng(lat,lng))
+              pageNum(0)
+              keyword(keyword)
+              pageCapacity(10)
+          })
+      }catch ( e: Exception){
+          callBack(null,e)
+      }
+
+
     }
 
 
@@ -223,7 +302,8 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
 
     override fun onResume() {
        mapView.onResume()
-       if(autoLocation){
+
+       if(autoLoc){
            bdLocationService.start()
        }
 
@@ -231,7 +311,7 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
 
     override fun onPause() {
        mapView.onPause()
-        if(autoLocation){
+        if(autoLoc){
             bdLocationService.stop()
         }
 
@@ -241,6 +321,7 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
     override fun onDestroy() {
         mapView.onDestroy()
         poiSearch?.destroy()
+        geoCoder?.destroy()
         bdLocationService.unregisterListener(bdAbstractLocationListener)
         bdLocationService.stop()
     }

@@ -12,7 +12,7 @@ import com.akingyin.map.base.ILoadImage;
 import com.akingyin.map.base.IOperationListen;
 import com.akingyin.map.model.IMarkerModel;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.text.MessageFormat;
 
 /**
@@ -21,7 +21,8 @@ import java.text.MessageFormat;
  * @ Description:
  * @ Date 2019/12/17 11:58
  */
-public class MarkerInfoRecyclerAdapter<T extends IMarkerModel> extends BaseQuickAdapter<T , BaseViewHolder> {
+public class MarkerInfoRecyclerAdapter<T extends IMarkerModel> extends
+    BaseQuickAdapter<T , BaseViewHolder> {
 
   private ILoadImage mILoadImage;
 
@@ -62,7 +63,7 @@ public class MarkerInfoRecyclerAdapter<T extends IMarkerModel> extends BaseQuick
     ImageView  detai_img =  helper.getView(R.id.detai_img);
     if(null != mILoadImage && !TextUtils.isEmpty(iMarkerModel.getMarkerDetaiImgPath())){
       detai_img.setVisibility(View.VISIBLE);
-      mILoadImage.loadImageView(iMarkerModel.getMarkerDetaiImgPath(),mContext,detai_img);
+      mILoadImage.loadImageView(iMarkerModel.getMarkerDetaiImgPath(),getContext(),detai_img);
     }else{
       detai_img.setVisibility(View.GONE);
     }

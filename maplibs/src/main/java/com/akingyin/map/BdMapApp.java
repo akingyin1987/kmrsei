@@ -10,11 +10,11 @@ package com.akingyin.map;
 
 import android.content.Context;
 import android.content.IntentFilter;
-import android.util.Log;
 import android.widget.Toast;
 import com.baidu.lbsapi.BMapManager;
 import com.baidu.lbsapi.MKGeneralListener;
 import com.baidu.mapapi.SDKInitializer;
+import timber.log.Timber;
 
 /**
  * @author king
@@ -77,7 +77,7 @@ public class BdMapApp {
     if (!mBMapManager.init(new MyGeneralListener(context))) {
       Toast.makeText(context, "BMapManager  初始化错误!", Toast.LENGTH_LONG).show();
     }
-    Log.d("ljx", "initEngineManager");
+    Timber.d("initEngineManager");
   }
 
 
