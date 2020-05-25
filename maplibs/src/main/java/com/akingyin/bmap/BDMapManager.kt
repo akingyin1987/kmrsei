@@ -13,6 +13,7 @@ import com.baidu.mapapi.search.core.PoiInfo
 import com.baidu.mapapi.search.core.SearchResult
 import com.baidu.mapapi.search.geocode.*
 import com.baidu.mapapi.search.poi.*
+import kotlin.math.abs
 
 /**
  * @ Description:
@@ -95,6 +96,9 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
     }
 
 
+    /**
+     * 设置地图中心点
+     */
     override fun setMapCenter(lat: Double, lng: Double,zoom: Float) {
        if(lat>0 && lng>0){
            baiduMap.animateMapStatus(MapStatusUpdateFactory.newLatLngZoom(LatLng(lat,lng),zoom))
@@ -105,7 +109,13 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
         return  baiduMap.uiSettings
     }
 
-    fun   setMapStatusChange(onChangeStart:Func<MapStatus>?=null,onChange: Func<MapStatus>?=null,onChangeFinish:Func<MapStatus>?=null){
+
+    var    lastMapStatus:MapStatus?= null
+    /**
+     * 地图状态监听
+     */
+    fun   setMapStatusChange(onChangeStart:Func<MapStatus>?=null,onChange: Func<MapStatus>?=null,
+                             onChangeFinish:Func<MapStatus>?=null,onChangeLocation:Func<MapStatus>?=null){
         baiduMap.setOnMapStatusChangeListener(object :BaiduMap.OnMapStatusChangeListener{
             override fun onMapStatusChangeStart(p0: MapStatus?) {
                    onChangeStart?.invoke(p0)
@@ -117,6 +127,19 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
 
             override fun onMapStatusChange(p0: MapStatus?) {
                 onChange?.invoke(p0)
+                if(null != p0 && null != lastMapStatus){
+                    lastMapStatus?.let {
+                        if( abs(p0.target.latitude-it.target.latitude)>0.000001){
+                            onChangeLocation?.invoke(p0)
+                            return
+                        }
+                        if( abs(p0.target.longitude-it.target.longitude)>0.000001){
+                            onChangeLocation?.invoke(p0)
+                        }
+                    }
+
+                }
+                lastMapStatus = p0
             }
 
             override fun onMapStatusChangeFinish(p0: MapStatus?) {
@@ -160,6 +183,12 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
         }.build())
     }
 
+    /**
+     * 获取当前位置信息
+      */
+    fun    getMyLocationData():MyLocationData{
+      return  baiduMap.locationData
+    }
 
     /**
      * 是否是第一次定位

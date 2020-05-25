@@ -36,7 +36,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
 
     override fun initializationData(savedInstanceState: Bundle?) {
         val  mapView = findViewById<MapView>(R.id.map_content)
-        bdMapManager = BDMapManager(mapView.map,mapView,this)
+        bdMapManager = BDMapManager(mapView.map,mapView,this,autoLocation())
         bdMapManager.onCreate(savedInstanceState)
         bdMapManager.initMapConfig()
         bdMapManager.onMapLoad {
@@ -46,7 +46,9 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
 
 
     /** 地图模式（正常，跟随，罗盘）  */
-    private lateinit var location_icon: ImageView
+     lateinit var location_icon: ImageView
+     lateinit var location_switcher:ViewSwitcher
+     var location_progress: ProgressBar? = null
 
     private lateinit var  zoom_in: ImageButton
     private lateinit var zoom_out: ImageButton
@@ -72,7 +74,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
     private lateinit var maplayer: View
     private var mLoadingDialog: MapLoadingDialog? = null
 
-    private var location_progress: ProgressBar? = null
+
 
 
 
@@ -88,6 +90,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
 
         location_icon = findViewById(R.id.location_icon)
         location_progress = findViewById(R.id.location_progress)
+        location_switcher = findViewById(R.id.location)
 
         map_layers = findViewById(R.id.map_layers)
         map_street = findViewById(R.id.map_street)
@@ -190,6 +193,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
             goToMapStreet()
         }
         bdMapManager.registerLocationListener({
+            println("获取到经纬度->")
             changeMyLocation(it)
         },{
             onFristMyLocation(it)
@@ -251,6 +255,10 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
      */
     protected abstract fun getLocationBitmap(): BitmapDescriptor?
 
+    /**
+     * 是否自动定位
+     */
+    protected abstract  fun   autoLocation():Boolean
 
     /**
      * 地图加载完成
@@ -263,6 +271,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
      * 收到新的定位信息
      */
     open  fun  changeMyLocation(bdLocation: BDLocation){
+        println("收到新的定位信息-->>>>")
         bdMapManager.baiduMap.setMyLocationData(MyLocationData.Builder().apply {
             accuracy(bdLocation.radius)
             direction(bdLocation.direction)

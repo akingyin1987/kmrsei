@@ -54,11 +54,11 @@ public class MapCoordinatePickupActivity  extends BaseBMapActivity implements Vi
 
    private   double   oldCurrentLat,oldCurrentLng;
 
-  private boolean onlysee = false;
+   private boolean onlysee = false;
 
-  private boolean draggable = true;
+   private boolean draggable = true;
 
-  private boolean  geoAddr = true;
+   private boolean  geoAddr = true;
 
   RelativeLayout  adjust_layout;
   LinearLayout   latlng_step;

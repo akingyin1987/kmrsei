@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.DiffUtil
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.ext.click
 import com.akingyin.base.ext.gone
+import com.akingyin.base.ext.startActivity
 import com.akingyin.base.ext.visiable
 import com.akingyin.bmap.adapter.BaiduPoiListAdapter
 import com.akingyin.bmap.vo.PoiInfoVo
 import com.akingyin.map.R
+import com.akingyin.map.base.BaiduPanoramaActivity
 import com.baidu.mapapi.map.*
 import com.baidu.mapapi.model.LatLng
 import kotlinx.android.synthetic.main.activity_select_baidu_location.*
@@ -56,8 +58,11 @@ class SelectLocationBaiduActivity :SimpleActivity() {
                   searchPoiInfos(mapStatus.target)
               }
         },onChangeStart = {
-              baiduPoiListAdapter.setDiffNewData(null)
-              progress_bar.visiable()
+              if(!searchPoiIng){
+                  baiduPoiListAdapter.setDiffNewData(null)
+                  progress_bar.visiable()
+              }
+
         },onChange = {
             mapStatus ->
             marker?.position = mapStatus?.target
@@ -133,6 +138,7 @@ class SelectLocationBaiduActivity :SimpleActivity() {
             }?.mSelected = false
             baiduPoiListAdapter.getItem(position).apply {
                 mSelected = true
+                searchPoiIng = true
                 bdMapManager.setMapCenter(location.latitude,location.longitude,bdMapManager.getCurrentZoomLevel())
                 marker?.position = LatLng(location.latitude,location.longitude)
 
@@ -162,7 +168,12 @@ class SelectLocationBaiduActivity :SimpleActivity() {
     private var bitmap: BitmapDescriptor = BitmapDescriptorFactory
             .fromResource(R.drawable.icon_marka)
 
+   private  var   searchPoiIng = false
    private fun   searchPoiInfos(latLng: LatLng){
+        if(searchPoiIng){
+            searchPoiIng = false
+            return
+        }
         progress_bar.visiable()
 
         bdMapManager.searchRoundPoiByGeoCoder(latLng.latitude,latLng.longitude){
@@ -171,7 +182,7 @@ class SelectLocationBaiduActivity :SimpleActivity() {
 
             data?.let {
                 result->
-                println(" baiduPoiListAdapter.hasEmptyView()->${ baiduPoiListAdapter.hasEmptyView()}")
+
                 baiduPoiListAdapter.setDiffNewData(result.map {
                     pointInfo ->
                     PoiInfoVo(pointInfo.name,pointInfo.uid,pointInfo.address,pointInfo.location,false)
@@ -206,12 +217,14 @@ class SelectLocationBaiduActivity :SimpleActivity() {
                 it.mSelected
           }?.let {
               setResult(Activity.RESULT_OK, Intent().apply {
-                  putExtra("lat",it.location.latitude)
-                  putExtra("lng",it.location.longitude)
-                  putExtra("address",it.address)
+                  putExtra(PanoramaBaiduMapActivity.LAT_KEY,it.location.latitude)
+                  putExtra(PanoramaBaiduMapActivity.LNG_KEY,it.location.longitude)
+                  putExtra(PanoramaBaiduMapActivity.ADDR_KEY,it.address)
                   putExtra("name",it.name)
                   putExtra("uid",it.uid)
               })
+              startActivity<PanoramaBaiduMapActivity>(bundle = arrayOf(PanoramaBaiduMapActivity.LAT_KEY to it.location.latitude,
+               PanoramaBaiduMapActivity.LNG_KEY to it.location.longitude,PanoramaBaiduMapActivity.ADDR_KEY to it.address))
               finish()
           }?:showError("请选择要发送的地址！")
         }

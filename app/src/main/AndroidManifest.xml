@@ -67,6 +67,7 @@
     <activity android:name=".ui.CoroutinesDemo"/>
     <activity android:name=".ui.FragmentTestActivity"/>
     <activity android:name="com.akingyin.map.MapCoordinatePickupActivity"/>
+    <activity android:name="com.akingyin.bmap.PanoramaBaiduMapActivity"/>
     <activity android:name=".ui.CameraXActivity"
         android:theme="@style/FullscreenTheme"
       />
@@ -100,7 +101,7 @@
     <activity android:name=".ui.TestAmapMarkerActivity"/>
     <activity android:name=".ui.TestAmapActivity"/>
     <activity android:name="com.akingyin.bmap.SelectLocationBaiduActivity"/>
-
+     <activity android:name="com.akingyin.bmap.CoordinatePickupBaiduMapActivity"/>
     <activity android:name=".ui.TuyaTestActivity"
         android:launchMode="singleTop"
         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"

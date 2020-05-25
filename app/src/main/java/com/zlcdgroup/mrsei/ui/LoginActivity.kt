@@ -2,20 +2,27 @@ package com.zlcdgroup.mrsei.ui
 
 import android.Manifest
 import android.app.Activity
+import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
+import android.util.Base64
 import com.akingyin.base.BaseDaggerActivity
 import com.akingyin.base.dialog.MaterialDialogUtil
 import com.akingyin.base.ext.*
+import com.akingyin.base.utils.DateUtil
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.base.utils.StringUtils
+import com.akingyin.bmap.CoordinatePickupBaiduMapActivity
 import com.akingyin.bmap.SelectLocationBaiduActivity
 import com.akingyin.tuya.BaseTuYaActivity
+import com.alibaba.fastjson.JSONObject
 import com.baidu.mapapi.model.LatLng
 import com.baidu.mapapi.utils.AreaUtil
 import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.autoDisposable
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
@@ -26,6 +33,8 @@ import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.delay
 import permissions.dispatcher.ktx.withPermissionsCheck
 import java.io.File
+import java.nio.charset.Charset
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -101,7 +110,36 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
 
         }
         println("222222222${Thread.currentThread().name}")
+        var  day_time = 0L
+        date_picker_actions.click {
+            TimePickerDialog.newInstance({ view, hourOfDay, minute, second ->
+                 val  calendar  = Calendar.getInstance()
+                 calendar.set(Calendar.HOUR_OF_DAY,hourOfDay)
+                 calendar.set(Calendar.MINUTE,minute)
+                 calendar.set(Calendar.SECOND,second)
+                  day_time = calendar.time.time
+                  date_picker_actions.text = DateUtil.millis2String(day_time)
+            },true).show(supportFragmentManager,"time-fragment")
 
+        }
+        btn_create_code.click {
+            val  keywork = edit_keywork.text.toString()
+            if(keywork.isEmpty() || day_time<= 0){
+                showError("数据不正确")
+                return@click
+            }
+            val json = JSONObject().apply {
+                put("keyWord",keywork)
+                put("overdueTime",day_time)
+            }
+            val  data = Base64.encode(json.toJSONString().toByteArray(),Base64.DEFAULT).toString(Charset.forName("utf-8"))
+            MaterialDialogUtil.showConfigDialog( this,message = data,callback = {
+                   if(it){
+                     clipboardManager.setPrimaryClip(ClipData.newPlainText("验证码",data))
+                     showSucces("已复制到剪切版里")
+                   }
+            })
+        }
     }
 
     override fun startRequest() {
@@ -159,7 +197,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
        // startActivityForResult<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"),requestCode = 100)
        // startActivity<TestMarkerMapActivity>()
       //  startActivity<TestTuwenActivity>()
-        startActivity<SelectLocationBaiduActivity>()
+        startActivity<CoordinatePickupBaiduMapActivity>()
     }
 
     override fun setAppTheme(theme: String) {
