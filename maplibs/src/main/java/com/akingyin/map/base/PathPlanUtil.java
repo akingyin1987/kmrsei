@@ -217,7 +217,7 @@ public class PathPlanUtil {
     List<PathPlanModel> sortPathPlanModels = new LinkedList<>();
     float dis = 0L;
     float baseDis = 0L;
-    for (int i = 0; i < (disPathPlanModels.size() < MIN_CALCULATION_COUNT ? disPathPlanModels.size() : MIN_CALCULATION_COUNT); i++) {
+    for (int i = 0; i < (Math.min(disPathPlanModels.size(), MIN_CALCULATION_COUNT)); i++) {
       List<PathPlanModel>  temp = new LinkedList<>(disPathPlanModels);
 
       temp.remove(i);
@@ -263,8 +263,7 @@ public class PathPlanUtil {
 
     List<PathPlanModel> pathPlanModels = null;
     if (fristPlanModel.getAccumulateDis() == 0) {
-      pathPlanModels = new LinkedList<>();
-      pathPlanModels.addAll(pathPlanModelList);
+      pathPlanModels = new LinkedList<>(pathPlanModelList);
     } else {
       pathPlanModels = pathPlanModelList;
     }

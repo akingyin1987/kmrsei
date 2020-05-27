@@ -4,11 +4,14 @@ import android.app.Activity
 import android.os.Bundle
 import com.akingyin.base.net.exception.ApiException
 import com.akingyin.map.IMapManager
+import com.akingyin.map.IMarker
 import com.akingyin.map.base.Weak
+import com.alibaba.fastjson.JSON
 import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
 import com.baidu.mapapi.map.*
 import com.baidu.mapapi.model.LatLng
+import com.baidu.mapapi.overlayutil.OverlayManager
 import com.baidu.mapapi.search.core.PoiInfo
 import com.baidu.mapapi.search.core.SearchResult
 import com.baidu.mapapi.search.geocode.*
@@ -24,32 +27,31 @@ import kotlin.math.abs
 
 internal typealias Func<T> = (T?) -> Unit
 
+class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: Activity, var autoLoc: Boolean = true) : IMapManager() {
 
-class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Activity,var autoLoc:Boolean = true): IMapManager() {
-
+    companion object{
+        const val  BAIDU_MARKER_UUID="baidu_marker_uuid"
+        const val  BAIDU_MARKER_DATA="baidu_marker_data"
+    }
 
     /**
      * 地图是否加载完成
      */
-    private   var    mapLoadComplete = false
+    private var mapLoadComplete = false
 
 
-    private   val  bdLocationService  by  lazy{
+    private val bdLocationService by lazy {
         BDLocationService.getLocationServer(activity)
     }
 
-   var   poiSearch: PoiSearch?=null
+    var poiSearch: PoiSearch? = null
 
-   var   geoCoder :GeoCoder? = null
-
-
+    var geoCoder: GeoCoder? = null
 
 
-
-    var act by Weak{
+    var act by Weak {
         activity
     }
-
 
 
     /**
@@ -72,23 +74,23 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
     /**
      * 初始化POI
      */
-    fun   initPoiConfig(){
-        poiSearch= PoiSearch.newInstance()
+    fun initPoiConfig() {
+        poiSearch = PoiSearch.newInstance()
     }
 
 
     /**
      * 逆地理编码
      */
-    fun   initGeoCoderConfig(){
-         geoCoder = GeoCoder.newInstance()
+    fun initGeoCoderConfig() {
+        geoCoder = GeoCoder.newInstance()
     }
 
 
     /**
      * 地图加载完成
      */
-    fun    onMapLoad(callBack:()->Unit){
+    fun onMapLoad(callBack: () -> Unit) {
         baiduMap.setOnMapLoadedCallback {
             mapLoadComplete = true
             callBack.invoke()
@@ -99,41 +101,42 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
     /**
      * 设置地图中心点
      */
-    override fun setMapCenter(lat: Double, lng: Double,zoom: Float) {
-       if(lat>0 && lng>0){
-           baiduMap.animateMapStatus(MapStatusUpdateFactory.newLatLngZoom(LatLng(lat,lng),zoom))
-       }
+    override fun setMapCenter(lat: Double, lng: Double, zoom: Float) {
+        if (lat > 0 && lng > 0) {
+            baiduMap.animateMapStatus(MapStatusUpdateFactory.newLatLngZoom(LatLng(lat, lng), zoom))
+        }
     }
 
-    fun    getUiSetting():UiSettings{
-        return  baiduMap.uiSettings
+    fun getUiSetting(): UiSettings {
+        return baiduMap.uiSettings
     }
 
 
-    var    lastMapStatus:MapStatus?= null
+    var lastMapStatus: MapStatus? = null
+
     /**
      * 地图状态监听
      */
-    fun   setMapStatusChange(onChangeStart:Func<MapStatus>?=null,onChange: Func<MapStatus>?=null,
-                             onChangeFinish:Func<MapStatus>?=null,onChangeLocation:Func<MapStatus>?=null){
-        baiduMap.setOnMapStatusChangeListener(object :BaiduMap.OnMapStatusChangeListener{
+    fun setMapStatusChange(onChangeStart: Func<MapStatus>? = null, onChange: Func<MapStatus>? = null,
+                           onChangeFinish: Func<MapStatus>? = null, onChangeLocation: Func<MapStatus>? = null) {
+        baiduMap.setOnMapStatusChangeListener(object : BaiduMap.OnMapStatusChangeListener {
             override fun onMapStatusChangeStart(p0: MapStatus?) {
-                   onChangeStart?.invoke(p0)
+                onChangeStart?.invoke(p0)
             }
 
             override fun onMapStatusChangeStart(p0: MapStatus?, p1: Int) {
-                    onChangeStart?.invoke(p0)
+                onChangeStart?.invoke(p0)
             }
 
             override fun onMapStatusChange(p0: MapStatus?) {
                 onChange?.invoke(p0)
-                if(null != p0 && null != lastMapStatus){
+                if (null != p0 && null != lastMapStatus) {
                     lastMapStatus?.let {
-                        if( abs(p0.target.latitude-it.target.latitude)>0.000001){
+                        if (abs(p0.target.latitude - it.target.latitude) > 0.000001) {
                             onChangeLocation?.invoke(p0)
                             return
                         }
-                        if( abs(p0.target.longitude-it.target.longitude)>0.000001){
+                        if (abs(p0.target.longitude - it.target.longitude) > 0.000001) {
                             onChangeLocation?.invoke(p0)
                         }
                     }
@@ -148,33 +151,33 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
         })
     }
 
-    fun   getMapMaxZoomLevel()=baiduMap.maxZoomLevel
+    fun getMapMaxZoomLevel() = baiduMap.maxZoomLevel
 
-    fun   getMapMinZoomLevel() = baiduMap.minZoomLevel
+    fun getMapMinZoomLevel() = baiduMap.minZoomLevel
 
-    fun   getCurrentZoomLevel() = baiduMap.mapStatus.zoom
+    fun getCurrentZoomLevel() = baiduMap.mapStatus.zoom
 
 
-    fun   setMapZoom(zoom : Float){
+    fun setMapZoom(zoom: Float) {
         baiduMap.animateMapStatus(MapStatusUpdateFactory.zoomTo(zoom))
     }
 
-    fun onCreate(savedInstanceState:Bundle?) {
-       mapView.onCreate(act,savedInstanceState)
+    fun onCreate(savedInstanceState: Bundle?) {
+        mapView.onCreate(act, savedInstanceState)
     }
 
 
     /**
      * 设置当前位置及定位坐标
      */
-    fun  setMapLocationConfiguration(locationMode: MyLocationConfiguration.LocationMode,b:Boolean,bitmapDescriptor: BitmapDescriptor?){
-        baiduMap.setMyLocationConfiguration(MyLocationConfiguration(locationMode,b,bitmapDescriptor))
+    fun setMapLocationConfiguration(locationMode: MyLocationConfiguration.LocationMode, b: Boolean, bitmapDescriptor: BitmapDescriptor?) {
+        baiduMap.setMyLocationConfiguration(MyLocationConfiguration(locationMode, b, bitmapDescriptor))
     }
 
     /**
      * 设置当前定位信息
      */
-    fun  setMyLocationData(bdLocation: BDLocation){
+    fun setMyLocationData(bdLocation: BDLocation) {
         baiduMap.setMyLocationData(MyLocationData.Builder().apply {
             accuracy(bdLocation.radius)
             direction(bdLocation.direction)
@@ -185,38 +188,37 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
 
     /**
      * 获取当前位置信息
-      */
-    fun    getMyLocationData():MyLocationData{
-      return  baiduMap.locationData
+     */
+    fun getMyLocationData(): MyLocationData {
+        return baiduMap.locationData
     }
 
     /**
      * 是否是第一次定位
      */
-    private  var   firstLocation = true
+    private var firstLocation = true
 
     /**
      * 定位监听器
      */
-    private   var  bdAbstractLocationListener :BDAbstractLocationListener?=null
+    private var bdAbstractLocationListener: BDAbstractLocationListener? = null
 
 
     /**
      * 注册监听定位
      */
-    fun   registerLocationListener(onLocationChange:(BDLocation)->Unit,onFristLocation:(BDLocation)->Unit){
-        bdAbstractLocationListener = if(null == bdAbstractLocationListener){
-            object :BDAbstractLocationListener(){
+    fun registerLocationListener(onLocationChange: (BDLocation) -> Unit, onFristLocation: (BDLocation) -> Unit) {
+        bdAbstractLocationListener = if (null == bdAbstractLocationListener) {
+            object : BDAbstractLocationListener() {
                 override fun onReceiveLocation(p0: BDLocation?) {
                     println("onReceiveLocation->${p0?.locType}$mapLoadComplete")
-                    if(!mapLoadComplete){
+                    if (!mapLoadComplete) {
                         return
                     }
-                    p0?.let {
-                        location->
-                        if(location.locType == BDLocation.TypeGpsLocation ||
-                                location.locType == BDLocation.TypeNetWorkLocation){
-                            if(firstLocation){
+                    p0?.let { location ->
+                        if (location.locType == BDLocation.TypeGpsLocation ||
+                                location.locType == BDLocation.TypeNetWorkLocation) {
+                            if (firstLocation) {
                                 firstLocation = false
                                 onFristLocation(location)
                             }
@@ -227,7 +229,7 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
 
                 }
             }
-        }else{
+        } else {
             bdAbstractLocationListener
         }
         bdAbstractLocationListener?.let {
@@ -238,39 +240,32 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
     }
 
 
+    private var onGetGeoCoderResultListener: OnGetGeoCoderResultListener? = null
 
-
-
-
-
-
-    private var   onGetGeoCoderResultListener:OnGetGeoCoderResultListener ?= null
-
-    fun  searchRoundPoiByGeoCoder(lat: Double, lng: Double, r: Int = 1000,callBack: (data: List<PoiInfo>?, e: Exception?) -> Unit){
+    fun searchRoundPoiByGeoCoder(lat: Double, lng: Double, r: Int = 1000, callBack: (data: List<PoiInfo>?, e: Exception?) -> Unit) {
         try {
-            if(null == onGetGeoCoderResultListener){
-                onGetGeoCoderResultListener = object :OnGetGeoCoderResultListener{
+            if (null == onGetGeoCoderResultListener) {
+                onGetGeoCoderResultListener = object : OnGetGeoCoderResultListener {
                     override fun onGetGeoCodeResult(p0: GeoCodeResult?) {
                     }
 
                     override fun onGetReverseGeoCodeResult(p0: ReverseGeoCodeResult?) {
-                        p0?.let {
-                            reverseGeoCodeResult ->
-                            if(reverseGeoCodeResult.error == SearchResult.ERRORNO.NO_ERROR){
-                                callBack(reverseGeoCodeResult.poiList,null)
-                            }else{
-                                callBack(null,ApiException("未查询到数据"))
+                        p0?.let { reverseGeoCodeResult ->
+                            if (reverseGeoCodeResult.error == SearchResult.ERRORNO.NO_ERROR) {
+                                callBack(reverseGeoCodeResult.poiList, null)
+                            } else {
+                                callBack(null, ApiException("未查询到数据"))
                             }
-                        }?:callBack(null,ApiException("未查询到数据"))
+                        } ?: callBack(null, ApiException("未查询到数据"))
                     }
                 }
             }
             geoCoder?.setOnGetGeoCodeResultListener(onGetGeoCoderResultListener)
 
-            geoCoder?.reverseGeoCode(ReverseGeoCodeOption().location(LatLng(lat,lng)).radius(r).newVersion(1))
-        }catch (e:Exception){
+            geoCoder?.reverseGeoCode(ReverseGeoCodeOption().location(LatLng(lat, lng)).radius(r).newVersion(1))
+        } catch (e: Exception) {
             e.printStackTrace()
-            callBack.invoke(null,e)
+            callBack.invoke(null, e)
         }
 
     }
@@ -278,51 +273,75 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
     /**
      * 搜索 某点附近的POI
      */
-    fun searchRoundPoi(lat: Double, lng: Double, r: Int = 1000,keyword:String,callBack: (data:List<PoiInfo>?, e:Exception?) -> Unit) {
-      try {
-          poiSearch?.setOnGetPoiSearchResultListener(object :OnGetPoiSearchResultListener{
-              override fun onGetPoiIndoorResult(p0: PoiIndoorResult?) {
-              }
+    fun searchRoundPoi(lat: Double, lng: Double, r: Int = 1000, keyword: String, callBack: (data: List<PoiInfo>?, e: Exception?) -> Unit) {
+        try {
+            poiSearch?.setOnGetPoiSearchResultListener(object : OnGetPoiSearchResultListener {
+                override fun onGetPoiIndoorResult(p0: PoiIndoorResult?) {
+                }
 
-              override fun onGetPoiResult(p0: PoiResult?) {
-                  p0?.let {
-                      poiResult ->
-                      callBack.invoke(poiResult.allPoi,null)
-                  }
-              }
+                override fun onGetPoiResult(p0: PoiResult?) {
+                    p0?.let { poiResult ->
+                        callBack.invoke(poiResult.allPoi, null)
+                    }
+                }
 
-              override fun onGetPoiDetailResult(p0: PoiDetailResult?) {
-              }
+                override fun onGetPoiDetailResult(p0: PoiDetailResult?) {
+                }
 
-              override fun onGetPoiDetailResult(p0: PoiDetailSearchResult?) {
-              }
-          })
-          poiSearch?.searchNearby(PoiNearbySearchOption().apply {
-              radius(r)
-              location(LatLng(lat,lng))
-              pageNum(0)
-              keyword(keyword)
-              pageCapacity(10)
-          })
-      }catch ( e: Exception){
-          callBack(null,e)
-      }
+                override fun onGetPoiDetailResult(p0: PoiDetailSearchResult?) {
+                }
+            })
+            poiSearch?.searchNearby(PoiNearbySearchOption().apply {
+                radius(r)
+                location(LatLng(lat, lng))
+                pageNum(0)
+                keyword(keyword)
+                pageCapacity(10)
+            })
+        } catch (e: Exception) {
+            callBack(null, e)
+        }
 
 
     }
 
 
-    fun    addSingleMarker(markerOptions: MarkerOptions):Marker=baiduMap.addOverlay(markerOptions) as Marker
+    fun addSingleMarker(markerOptions: MarkerOptions): Marker = baiduMap.addOverlay(markerOptions) as Marker
+
+
+
+    fun  addPolylineMarker(latlngs : List<LatLng>,pathIndex:List<Int>,customList:List<BitmapDescriptor>):Polyline{
+
+        val polylineOptionBg = PolylineOptions()
+        // 折线线宽， 默认为 5， 单位：像素
+        // 折线线宽， 默认为 5， 单位：像素
+        polylineOptionBg.width(20)
+        // 折线是否虚线
+        // 折线是否虚线
+        polylineOptionBg.dottedLine(true)
+        //  polylineOptionBg.color(0xAAFF0000); // 折线颜色
+        // 折线坐标点列表:[2,10000]，且不能包含null
+        //  polylineOptionBg.color(0xAAFF0000); // 折线颜色
+        // 折线坐标点列表:[2,10000]，且不能包含null
+        polylineOptionBg.points(latlngs)
+        // 纹理宽、高是否保持原比例渲染
+        // 纹理宽、高是否保持原比例渲染
+        polylineOptionBg.keepScale(true)
+        polylineOptionBg.textureIndex(pathIndex)
+        polylineOptionBg.customTextureList(customList)
+        return  addPolylineMarker(polylineOptionBg)
+
+    }
+
+    fun addPolylineMarker(polygonOptions: PolylineOptions):Polyline = baiduMap.addOverlay(polygonOptions) as Polyline
 
     override fun startLoction() {
         bdLocationService.start()
     }
 
     override fun stopLoction() {
-       bdLocationService.stop()
+        bdLocationService.stop()
     }
-
-
 
 
     override fun requestLocation() {
@@ -330,17 +349,17 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
     }
 
     override fun onResume() {
-       mapView.onResume()
+        mapView.onResume()
 
-       if(autoLoc){
-           bdLocationService.start()
-       }
+        if (autoLoc) {
+            bdLocationService.start()
+        }
 
     }
 
     override fun onPause() {
-       mapView.onPause()
-        if(autoLoc){
+        mapView.onPause()
+        if (autoLoc) {
             bdLocationService.stop()
         }
 
@@ -353,5 +372,115 @@ class BDMapManager (var baiduMap: BaiduMap,var mapView: MapView,var activity: Ac
         geoCoder?.destroy()
         bdLocationService.unregisterListener(bdAbstractLocationListener)
         bdLocationService.stop()
+    }
+
+    fun recycleMapBitmap(vararg bitmapDescriptor: BitmapDescriptor?) {
+        bitmapDescriptor.forEach {
+            it?.recycle()
+        }
+    }
+
+    private var overlayManager: BdCustomOverlayManager? = null
+
+
+    /**
+     * 清除当前管理器的marker数据
+     */
+    fun   cleanOverlayManagerMarkers(){
+        overlayManager?.removeAll()
+        overlayManager?.removeFromMap()
+    }
+
+    /**
+     * 初始化地图marker 相关类
+     */
+    fun initMapMarkerConfig(callBack: (Marker) -> Unit) {
+
+        overlayManager = BdCustomOverlayManager(baiduMap, callBack)
+        baiduMap.setOnMarkerClickListener(overlayManager)
+    }
+
+    /**
+     * 将数据添加到地图界面上
+     */
+    fun   addDataToMap(overlayOptions: List<OverlayOptions>,zoomToSpan: Boolean = false){
+        overlayManager?.let {
+            it.removeAll()
+            it.addOverlayOptionsAll(overlayOptions)
+            it.addToMap()
+            if(zoomToSpan){
+                it.zoomToSpan()
+            }
+
+        }
+    }
+
+    fun    zoomToSpan(){
+        overlayManager?.zoomToSpan()
+    }
+
+    /**
+     * 创建marker 点
+     */
+    fun  <T:IMarker>  onCreateMarkerOptions(data:T):MarkerOptions{
+        return    MarkerOptions()
+                .position(LatLng(data.getLat(),data.getLng()))
+                .extraInfo(Bundle().apply {
+                    putString(BAIDU_MARKER_UUID,data.uuid)
+                    putString(BAIDU_MARKER_DATA,JSON.toJSONString(data.data))
+                })
+    }
+
+    fun<T : IMarker>  findMarkerByData(data:T):Marker?{
+      return overlayManager?.getMarker(data.uuid)
+    }
+
+    /**
+     * 通过marker 查询数据
+     */
+    fun <T : IMarker> findMarkerDataAndIndexByMarker(marker: Marker, data: List<T>):Pair<Int,T>?{
+       val  uuid = marker.extraInfo.getString(BAIDU_MARKER_UUID)?:""
+       if(uuid.isEmpty()){
+           return null
+       }
+       data.forEachIndexed { index, t ->
+           if(t.uuid == uuid) {
+               return  index to t
+           }
+       }
+       return null
+    }
+
+    class BdCustomOverlayManager constructor(baiduMap: BaiduMap, var callBack: (Marker) -> Unit) : OverlayManager(baiduMap) {
+        private val overlays: MutableList<OverlayOptions> = mutableListOf()
+
+        fun addOverlayOptionsAll(overlayOptions: List<OverlayOptions>) {
+            overlays.addAll(overlayOptions)
+        }
+
+        fun addOverlayOptions(overlayOptions: OverlayOptions) {
+            overlays.add(overlayOptions)
+        }
+
+        fun removeOverlay(option: OverlayOptions) {
+            overlays.remove(option)
+        }
+
+        fun removeAll() {
+            overlays.clear()
+        }
+
+        override fun onMarkerClick(p0: Marker?): Boolean {
+            p0?.let {
+                callBack.invoke(it)
+            }
+            return true
+        }
+
+        override fun getOverlayOptions(): MutableList<OverlayOptions> {
+            return overlays
+        }
+
+        override fun onPolylineClick(p0: Polyline?) = false
     }
 }

@@ -5,12 +5,10 @@
  * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
+package com.akingyin.map.base
 
-package com.akingyin.map.base;
-
-import android.content.Context;
-import android.widget.ImageView;
-import androidx.annotation.NonNull;
+import android.content.Context
+import android.widget.ImageView
 
 /**
  * @author king
@@ -18,15 +16,12 @@ import androidx.annotation.NonNull;
  * @ Description:
  * @ Date 2017/11/25 12:50
  */
-
-public interface ILoadImage {
-
-  /**
-   *
-   * @param path
-   * @param context
-   * @param imageView
-   */
-  void   loadImageView(String path, Context context, @NonNull ImageView imageView);
-
+interface ILoadImage {
+    /**
+     *
+     * @param path
+     * @param context
+     * @param imageView
+     */
+    fun loadImageView(path: String, context: Context, imageView: ImageView)
 }
