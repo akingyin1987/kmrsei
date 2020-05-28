@@ -10,6 +10,7 @@
 package com.akingyin.bmap
 
 import android.graphics.drawable.BitmapDrawable
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,6 +81,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
                 }
                 mCurrentMarker = it
                 lastClickMarkerIcon = it.icon
+                mCurrentMarker?.icon = readBitmap
                 onMapMarkerClick(pair.first,pair.second,it)
             }
         }
@@ -131,11 +133,17 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
         loadMapMarker()
     }
 
+
+
+     private   var   fristLoadMarker = true
     /**
      * 地图marker 加载完成
      */
     open  fun    loadMapMarkerViewComplete(){
-
+        if(fristLoadMarker){
+            fristLoadMarker = false
+            bdMapManager.zoomToSpan()
+        }
     }
 
 
@@ -143,7 +151,6 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
     override fun changeMyLocation(bdLocation: BDLocation) {
         super.changeMyLocation(bdLocation)
         if(!loadMarkerData.get() && showPathPlan()){
-
             lastLocation = bdLocation
         }
     }
@@ -216,7 +223,55 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
     /**
      * 显示当前marker详情
      */
-    fun   showMapMarkerListInfo(postion: Int,viewDatas:List<T>){
+      fun    showMapMarkerListInfo(postion: Int,viewDatas:List<T>){
+        try {
+            mPopupBottonWindow?.let {
+                if(it.isShowing){
+                    it.dismiss()
+                }
+            }
+            initPopupWindow()
+            val showMarkers = mutableListOf<IMarker>()
+            viewDatas.forEachIndexed { index, t ->
+               if(null != t.markers && t.markers!!.isNotEmpty()){
+                   t.sortInfo = "详情   ${viewDatas.size} - ${index+1} (${t.markers!!.size+1}-1)"
+                   showMarkers.add(t)
+                   t.markers?.forEachIndexed { index2, iMarker ->
+                       iMarker.sortInfo = "详情   ${viewDatas.size} - ${index+1} (${t.markers!!.size+1}-${index2+2})"
+                       showMarkers.add(iMarker)
+                   }
+               }else{
+                   t.sortInfo = "详情   ${viewDatas.size} - ${index+1} "
+                   showMarkers.add(t)
+               }
+            }
+            markerInfoViewPager2Adapter.setNewInstance(showMarkers.map {
+                it as T
+            }.toMutableList())
+            viewPager2.startAnimation(mShowAction)
+            viewPager2.currentItem = postion
+            if (showPathPlan()) {
+                mPopupBottonWindow?.isOutsideTouchable = false
+                mPopupBottonWindow?.isFocusable = false
+            } else {
+                mPopupBottonWindow?.isOutsideTouchable = true
+                mPopupBottonWindow?.isFocusable = true
+            }
+            initLastMarkerIcon()
+            mCurrentMarker = bdMapManager.findMarkerByData(viewDatas[postion])
+            if(null != mCurrentMarker){
+                lastClickMarkerIcon = mCurrentMarker?.icon
+            }
+            mCurrentMarker?.icon = readBitmap
+            if (mPopupBottonWindow!!.isShowing) {
+                mPopupBottonWindow!!.dismiss()
+            } else {
+                mPopupBottonWindow!!.showAtLocation(closeButton, Gravity.BOTTOM, 0, 0)
+            }
+        }catch (e : Exception){
+            e.printStackTrace()
+        }
+
 
     }
 
@@ -231,6 +286,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
             initLastMarkerIcon()
             mCurrentMarker = it
             lastClickMarkerIcon = mCurrentMarker?.icon
+            mCurrentMarker?.icon = readBitmap
             bdMapManager.setMapCenter(it.position.latitude,it.position.longitude,bdMapManager.getCurrentZoomLevel())
         }
     }
@@ -251,6 +307,11 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
             }
 
         }
+    }
+
+    override fun onSeeAllMarkers() {
+        super.onSeeAllMarkers()
+        bdMapManager.zoomToSpan()
     }
 
     /**
@@ -343,7 +404,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
     /**
      * 地图上的图标
      */
-    abstract   fun    getBitmapDescriptor(data:IMarker):BitmapDescriptor
+    abstract   fun    getBitmapDescriptor(data:T):BitmapDescriptor
 
 
         /**
@@ -358,7 +419,9 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
     /**
      * 当前marker点被点击
      */
-    abstract   fun    onMapMarkerClick( postion:Int,data:T,marker: Marker)
+    open   fun    onMapMarkerClick( postion:Int,data:T,marker: Marker){
+        showMapMarkerListInfo(postion,dataQueue)
+    }
 
     /**
      * 展现的所有marker数据

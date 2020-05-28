@@ -64,7 +64,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
 
 
     private var vs_seeall: ViewSwitcher? = null
-    private var iv_seeall: ImageView? = null
+     var iv_seeall: ImageView? = null
 
     /** 显示当前位置  */
     private lateinit var vs_showloc: ViewSwitcher
@@ -87,7 +87,9 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
         iv_showloc = findViewById(R.id.iv_showloc)
         iv_seeall = findViewById(R.id.iv_seeall)
         vs_seeall = findViewById(R.id.vs_seeall)
-
+        iv_seeall?.click {
+            onSeeAllMarkers()
+        }
         location_icon = findViewById(R.id.location_icon)
         location_progress = findViewById(R.id.location_progress)
         location_switcher = findViewById(R.id.location)
@@ -267,6 +269,10 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
 
     }
 
+    open  fun    onSeeAllMarkers(){
+
+    }
+
     /**
      * 收到新的定位信息
      */
@@ -284,7 +290,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
      * 获取到第一次定位信息
      */
     open   fun   onFristMyLocation(bdLocation: BDLocation){
-
+         bdMapManager.setMapCenter(bdLocation.latitude,bdLocation.longitude,bdMapManager.getMapMaxZoomLevel()-1)
     }
 
     override fun onResume() {

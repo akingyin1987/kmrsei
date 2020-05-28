@@ -64,7 +64,8 @@ class TestAmapMarkerActivity : AbstractAMapMarkersActivity() {
     }
 
     override fun displayInOrder()=true
-    override fun loadImageView(path: String?, context: Context?, imageView: ImageView) {
+
+    override fun loadImageView(path: String, context: Context, imageView: ImageView) {
         imageView.setImageResource(R.drawable.error_img)
     }
 

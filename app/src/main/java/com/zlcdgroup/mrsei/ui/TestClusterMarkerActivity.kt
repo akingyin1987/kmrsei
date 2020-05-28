@@ -59,8 +59,8 @@ class TestClusterMarkerActivity : AbstractClusterBMapMarkerActivity<TestMarkerIt
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun loadImageView(path: String?, context: Context?, imageView: ImageView) {
-        ImageLoadUtil.loadImage(this,path,R.drawable.error_img,R.drawable.error_img,imageView)
+    override fun loadImageView(path: String, context: Context, imageView: ImageView) {
+        TODO("Not yet implemented")
     }
 
     override fun onDestroy() {
