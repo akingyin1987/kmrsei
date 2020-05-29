@@ -42,7 +42,21 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
               baseInfo="test${index}"
           })
       }
-      return  list
+
+      list.sortWith(Comparator { o1, o2 ->
+          when {
+              o1.getLat()>o2.getLat() -> {
+                  return@Comparator 1
+              }
+              o1.getLat()<o2.getLat() -> {
+                  return@Comparator -1
+              }
+              else -> {
+                  return@Comparator 0
+              }
+          }
+      })
+      return   list
     }
 
 

@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import com.akingyin.base.BaseNfcTagActivity
 import com.akingyin.base.ext.click
@@ -109,17 +110,17 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
             when( bdMapManager.baiduMap.locationConfiguration?.locationMode){
                 MyLocationConfiguration.LocationMode.NORMAL->{
                     location_icon.setImageResource(R.drawable.main_icon_follow)
-                    bdMapManager.setMapLocationConfiguration(MyLocationConfiguration.LocationMode.NORMAL,true,getLocationBitmap())
+                    bdMapManager.setMapLocationConfiguration(MyLocationConfiguration.LocationMode.FOLLOWING,true,getLocationBitmap())
                 }
 
                 MyLocationConfiguration.LocationMode.COMPASS->{
-                    location_icon.setImageResource(R.drawable.main_icon_compass)
-                    bdMapManager.setMapLocationConfiguration(MyLocationConfiguration.LocationMode.COMPASS,true,getLocationBitmap())
+                    location_icon.setImageResource(R.drawable.main_icon_location)
+                    bdMapManager.setMapLocationConfiguration(MyLocationConfiguration.LocationMode.NORMAL,true,getLocationBitmap())
                 }
 
                 MyLocationConfiguration.LocationMode.FOLLOWING->{
-                    location_icon.setImageResource(R.drawable.main_icon_follow)
-                    bdMapManager.setMapLocationConfiguration(MyLocationConfiguration.LocationMode.FOLLOWING,true,getLocationBitmap())
+                    location_icon.setImageResource(R.drawable.main_icon_compass)
+                    bdMapManager.setMapLocationConfiguration(MyLocationConfiguration.LocationMode.COMPASS,true,getLocationBitmap())
                 }
             }
         }
@@ -158,7 +159,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
                 }
 
                 R.id.layer_3d->{
-                    bdMapManager.baiduMap.mapType = BaiduMap.MAP_TYPE_NONE
+                    bdMapManager.baiduMap.mapType = BaiduMap.MAP_TYPE_NORMAL
                     bdMapManager.baiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(MapStatus.Builder().overlook(-45F).build()))
                 }
             }
@@ -211,8 +212,8 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
 
     open fun showMapLayerDialog(v: View, xoff: Int, yoff: Int) {
         if (mPopupWindow == null) {
-            mPopupWindow = PopupWindow(maplayer, RadioGroup.LayoutParams.WRAP_CONTENT,
-                    RadioGroup.LayoutParams.WRAP_CONTENT, true)
+            mPopupWindow = PopupWindow(maplayer, ViewGroup.LayoutParams.WRAP_CONTENT,
+                  ViewGroup.LayoutParams.WRAP_CONTENT, true)
             mPopupWindow?.setBackgroundDrawable(BitmapDrawable(resources, null as Bitmap?))
         }
         mPopupWindow?.let {
@@ -277,7 +278,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
      * 收到新的定位信息
      */
     open  fun  changeMyLocation(bdLocation: BDLocation){
-        println("收到新的定位信息-->>>>")
+
         bdMapManager.baiduMap.setMyLocationData(MyLocationData.Builder().apply {
             accuracy(bdLocation.radius)
             direction(bdLocation.direction)

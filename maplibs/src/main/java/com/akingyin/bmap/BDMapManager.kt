@@ -333,7 +333,7 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: A
 
     }
 
-    fun addPolylineMarker(polygonOptions: PolylineOptions):Polyline = baiduMap.addOverlay(polygonOptions) as Polyline
+    private fun addPolylineMarker(polygonOptions: PolylineOptions):Polyline = baiduMap.addOverlay(polygonOptions) as Polyline
 
     override fun startLoction() {
         bdLocationService.start()
@@ -439,7 +439,7 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: A
      * 通过marker 查询数据
      */
     fun <T : IMarker> findMarkerDataAndIndexByMarker(marker: Marker, data: List<T>):Pair<Int,T>?{
-       val  uuid = marker.extraInfo.getString(BAIDU_MARKER_UUID)?:""
+       val  uuid = marker.extraInfo?.getString(BAIDU_MARKER_UUID)?:""
        if(uuid.isEmpty()){
            return null
        }

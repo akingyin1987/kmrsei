@@ -19,8 +19,12 @@ import com.akingyin.map.TestUtil
  * @version V1.0
  */
 class BdModel(uuid: String ) : IMarker(uuid) {
-    override fun getLat() = TestUtil.Latlng()[0]
-    override fun getLng() = TestUtil.Latlng()[1]
+
+    private   var  dbLat:Double = TestUtil.Latlng()[0]
+    override fun getLat() = dbLat
+
+    private   val  dbLng:Double = TestUtil.Latlng()[1]
+    override fun getLng() =  dbLng
 
     override fun isComplete()= false
 

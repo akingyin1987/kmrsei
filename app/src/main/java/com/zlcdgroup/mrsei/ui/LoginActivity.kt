@@ -184,19 +184,20 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
     private fun onCameraNeverAskAgain() {
        showTips("不再询问")
     }
-    override fun goToMainActivity() {
+    override fun goToMainActivity() =withPermissionsCheck(Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION){
 
 //        ARouter.getInstance().build("/user/list").withString("name","nametest")
 //                .withInt("age",2).navigation()
-       //  goActivity<UserListActivity>()
-       //   goActivity<CoroutinesDemo>()
-       // goActivity<CameraXActivity>()
-       var  localPath = mContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.apply {
+        //  goActivity<UserListActivity>()
+        //   goActivity<CoroutinesDemo>()
+        // goActivity<CameraXActivity>()
+        var  localPath = mContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.apply {
             println("abs$absolutePath")
         }?.absolutePath+File.separator+StringUtils.getUUID()+".jpg"
-       // startActivityForResult<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"),requestCode = 100)
-       // startActivity<TestMarkerMapActivity>()
-      //  startActivity<TestTuwenActivity>()
+        // startActivityForResult<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"),requestCode = 100)
+        // startActivity<TestMarkerMapActivity>()
+        //  startActivity<TestTuwenActivity>()
         startActivity<TestBaiduMapActivity>()
     }
 

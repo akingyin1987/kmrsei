@@ -24,7 +24,7 @@ public class DateUtil {
     throw new UnsupportedOperationException("u can't instantiate me...");
   }
   public static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
-
+  public static final String HH_MM_SS_SSS = "HH:mm:ss SSS";
   public static final String YYYY_MM_DD="yyyy-MM-dd";
 
   public static final String HH_MM="HH:mm";

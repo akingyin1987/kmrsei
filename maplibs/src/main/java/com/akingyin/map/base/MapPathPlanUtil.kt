@@ -26,7 +26,10 @@ object MapPathPlanUtil {
 
     const val MIN_CALCULATION_COUNT = 5
 
-    const val MAX_MARKER_COUNT = 50
+    const val MAX_MARKER_COUNT = 20
+
+    /** 最短距离 */
+    const val  MIN_SHORTEST_DIS=2.0
 
     /**
      * 通过当前位置计算最优路径
@@ -43,7 +46,10 @@ object MapPathPlanUtil {
                     tempcompleteMarkers.add(planModel)
                 }
             }
-            var pathPlanModelList = getCalculatDistance<T>(iMarkerModels, currentLatlnt)
+            val pathPlanModelList = getCalculatDistance(iMarkerModels, currentLatlnt)
+            pathPlanModelList.forEach {
+                println("dis=${it.distance}")
+            }
             if (iMarkerModels.size <= MIN_MARKER_COUNT) {
                 val iMarkerModelList: MutableList<T> = LinkedList()
                 for (planModel in pathPlanModelList) {
@@ -55,9 +61,9 @@ object MapPathPlanUtil {
                 iMarkerModelList.addAll(0, tempcompleteMarkers)
                 return iMarkerModelList
             }
-            if (pathPlanModelList.size > MAX_MARKER_COUNT) {
-               pathPlanModelList = pathPlanModelList.toMutableList().subList(0, MAX_MARKER_COUNT-1).toList()
-            }
+//            if (pathPlanModelList.size > MAX_MARKER_COUNT) {
+//               pathPlanModelList = pathPlanModelList.toMutableList().subList(0, MAX_MARKER_COUNT).toList()
+//            }
             //待计算的点
             val pathPlanModels: MutableList<PathPlanModel<T>> = LinkedList()
             //已算好的点
@@ -66,7 +72,7 @@ object MapPathPlanUtil {
             sortPathPlanModels.add(pathPlanModelList[0])
             pathPlanModels.removeAt(0)
             //以最近的一个为启点
-            while (pathPlanModels.size > 0) {
+            while (pathPlanModels.size > 0 &&  sortPathPlanModels.size< MAX_MARKER_COUNT) {
                 //每次以计算好的最后一个点为起点
                 val fristpPlanModel = sortPathPlanModels[sortPathPlanModels.size - 1]
                 val nextPlanModel = getLatelyDistance(fristpPlanModel, pathPlanModels)
@@ -92,14 +98,12 @@ object MapPathPlanUtil {
                 //  pathPlanModels.removeAll(pathPlanModels1);
                 //}
             }
-            val iMarkerModelList: MutableList<T> = LinkedList()
-            for (sortPathPlanModel in sortPathPlanModels) {
-                if (null != sortPathPlanModel.iMarkerModel) {
-                    iMarkerModelList.add(sortPathPlanModel.iMarkerModel!!)
-                }
+           return  sortPathPlanModels.map {
+                 println("返回结果->>>${DistanceUtil.getDistance(currentLatlnt,it.latLng)}  uuid=${it.iMarkerModel?.uuid}")
+
+                it.iMarkerModel!!
             }
 
-            return iMarkerModelList
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -114,6 +118,7 @@ object MapPathPlanUtil {
 
         return iMarkerModels.map {
             val d = DistanceUtil.getDistance(latLng, LatLng(it.getLat(), it.getLng())).toFloat()
+
             PathPlanModel(it,d)
         }.sortedBy {
             it.distance
@@ -121,7 +126,7 @@ object MapPathPlanUtil {
     }
 
     /**
-     * 获取最近距离点
+     * 获取最近距离点 且最小距离超过 MIN
      */
     fun<T:IMarker> getLatelyDistance(pathPlanModel: PathPlanModel<T>,
                           pathPlanModelList: List<PathPlanModel<T>>): PathPlanModel<T>? {
@@ -131,16 +136,17 @@ object MapPathPlanUtil {
         for (model in pathPlanModelList) {
             if (pathPlanModel !== model) {
                 val d = DistanceUtil.getDistance(latLng, model.latLng).toFloat()
-                if (dis == 0f) {
-                    dis = d
-                    planModel = model
+                if(d > MIN_SHORTEST_DIS){
+                    if (dis == 0f ) {
+                        dis = d
+                        planModel = model
+                    }
+                    if (d < dis) {
+                        dis = d
+                        planModel = model
+                    }
                 }
-                if (d < dis) {
-                    dis = d
-                    planModel = model
-                }
-            } else {
-                println("---=====---")
+
             }
         }
         if (null == planModel) {

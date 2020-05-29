@@ -2,6 +2,7 @@ package com.baidu.mapapi.overlayutil;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import com.akingyin.base.utils.DateUtil;
 import com.akingyin.bmap.BDMapManager;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.OnPolylineClickListener;
@@ -112,8 +113,10 @@ public abstract class OverlayManager implements OnMarkerClickListener, OnPolylin
         if (mBaiduMap == null) {
             return;
         }
-
+        System.out.println("stime="+ DateUtil.getNowTimeString(DateUtil.HH_MM_SS_SSS)+":"+Thread.currentThread().getName());
         removeFromMap();
+        System.out.println("etime="+ DateUtil.getNowTimeString(DateUtil.HH_MM_SS_SSS));
+
         List<OverlayOptions> overlayOptions = getOverlayOptions();
         if (overlayOptions != null) {
             mOverlayOptionList.addAll(overlayOptions);

@@ -79,10 +79,17 @@ abstract  class  IMarker constructor(var uuid:String ) {
    var sortInfo: String?=null
 
 
+   /** 距离当前位置 */
+   var  disFromPostion:Double?=null
+
+
 
     /**
      * 是否已完成
      * @return
      */
    abstract fun isComplete(): Boolean
+
+
+
 }
