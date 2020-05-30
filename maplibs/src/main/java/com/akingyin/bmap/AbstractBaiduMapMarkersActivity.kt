@@ -18,11 +18,13 @@ import android.widget.PopupWindow
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.akingyin.base.ext.click
+import com.akingyin.base.ext.startActivity
 import com.akingyin.base.utils.DateUtil
 import com.akingyin.map.IMarker
 import com.akingyin.map.R
 import com.akingyin.map.adapter.MarkerInfoViewPager2Adapter
 import com.akingyin.map.base.MapPathPlanUtil
+import com.akingyin.map.ui.MapSettingActivity
 import com.baidu.location.BDLocation
 import com.baidu.mapapi.map.*
 import com.baidu.mapapi.model.LatLng
@@ -526,6 +528,6 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
     }
 
     open   fun    showMapSettingInfo(){
-
+        startActivity<MapSettingActivity>()
     }
 }

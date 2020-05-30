@@ -8,6 +8,90 @@
   ~ akingyin@163.com
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+  <PreferenceCategory
+      android:title="base">
 
+    <Preference
+        android:key="preference"
+        android:title="title"
+
+        android:iconSpaceReserved="false"
+        android:summary="summary"/>
+
+    <Preference
+        android:key="stylized"
+        android:title="title22222222"
+        app:allowDividerAbove="true"
+
+        app:allowDividerBelow="true"
+        android:layout="@layout/itme_xml_test"
+        android:summary="summary"/>
+
+    <Preference
+        android:key="icon"
+        android:title="title"
+        android:summary="summary"
+        app:allowDividerAbove="true"
+
+        app:allowDividerBelow="true"
+        android:icon="@android:drawable/ic_menu_camera"/>
+
+    <Preference
+        android:key="single_line_title"
+        android:title="title"
+        android:summary="summary"
+        app:singleLineTitle="true"/>
+  </PreferenceCategory>
+  <PreferenceCategory
+        android:summary="我的路径"
+        android:title="路径设置"
+        android:key="map_path">
+
+
+  <SwitchPreferenceCompat
+          android:title="路径优化"
+          android:key="map_suggest_path_key"
+          android:summary="通过当前位置，提供建议路径(距离最短)"
+          android:defaultValue="true"/>
+
+    <EditTextPreference
+        app:allowDividerBelow="true"
+        app:allowDividerAbove="true"
+        android:key="map_path_min_dis"
+        android:title="刷新推荐路径的最小距离"
+        android:defaultValue="50"
+        android:summary="50米"/>
+  </PreferenceCategory>
+  <!-- 设置的类别 -->
+  <PreferenceCategory
+      android:key="mylocation"
+      android:summary="我的位置"
+      android:title="我的位置源">
+    <CheckBoxPreference
+        android:key="wireless_network"
+        android:summary="使用无线网络查看应用程序中的位置"
+        android:title="使用无线网络"/>
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:key="mymsg"
+      android:summary="个人信息"
+      android:title="个人信息">
+    <EditTextPreference
+        android:key="myname"
+        android:title="请输入真实姓名"
+
+
+        android:summary="姓名"/>
+
+    <ListPreference
+        android:entries="@array/cities_test"
+        android:entryValues="@array/cities_test"
+        android:key="mycity"
+
+        android:summary="所属城市"
+        android:title="所属城市" />
+  </PreferenceCategory>
 </PreferenceScreen>

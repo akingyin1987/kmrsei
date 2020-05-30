@@ -80,7 +80,10 @@ dependencies {
   api "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle_version" // use -ktx for Kotlin
   api "androidx.appcompat:appcompat:$appCompatVersion"
   api "androidx.cardview:cardview:$cardVersion"
-  api "androidx.preference:preference:1.1.1"
+
+  def preference_version = "1.1.1"
+  api "androidx.preference:preference:$preference_version"
+  api "androidx.preference:preference-ktx:$preference_version"
   api "com.google.android.material:material:$materialVersion"
   api "androidx.recyclerview:recyclerview:$recyclerViewVersion"
   api "androidx.annotation:annotation:$androidXAnnotations"

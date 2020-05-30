@@ -67,6 +67,7 @@
     <activity android:name=".ui.CoroutinesDemo"/>
     <activity android:name=".ui.FragmentTestActivity"/>
     <activity android:name=".ui.TestBaiduMapActivity"/>
+    <activity android:name="com.akingyin.map.ui.MapSettingActivity"/>
     <activity android:name="com.akingyin.map.MapCoordinatePickupActivity"/>
     <activity android:name="com.akingyin.bmap.PanoramaBaiduMapActivity"/>
     <activity android:name=".ui.CameraXActivity"

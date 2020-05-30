@@ -1,3 +1,7 @@
 <resources>
-
+  <string-array name="cities_test">
+    <item>成都</item>
+    <item>重庆</item>
+    <item>黄冈</item>
+  </string-array>
 </resources>
