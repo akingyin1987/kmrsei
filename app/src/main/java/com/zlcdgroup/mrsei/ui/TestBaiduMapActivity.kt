@@ -9,10 +9,16 @@
 
 package com.zlcdgroup.mrsei.ui
 
+import android.content.Context
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import com.akingyin.base.utils.StringUtils
 import com.akingyin.bmap.AbstractBaiduMapMarkersActivity
+import com.akingyin.img.ImageLoadUtil
+import com.baidu.mapapi.clusterutil.clustering.ClusterManager
+import com.baidu.mapapi.map.BaiduMap
 
 import com.baidu.mapapi.map.BitmapDescriptor
 
@@ -32,15 +38,23 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
     override fun onFilterMarkerData(data: BdModel)=true
 
     override fun getBitmapDescriptor(data: BdModel): BitmapDescriptor {
+
        return  personDescriptor
     }
 
+    val  list = arrayListOf<BdModel>()
     override fun searchMarkerData(): List<BdModel> {
-        val  list = arrayListOf<BdModel>()
-      for (index in 0..100){
-          list.add(BdModel(StringUtils.getUUID()).apply {
-              baseInfo="test${index}"
-          })
+      if(list.size == 0){
+          for (index in 0..200){
+              list.add(BdModel(StringUtils.getUUID()).apply {
+                  baseInfo="test${index}  --->${supportMapCluster()}---${null == bitmap}"
+                  if(supportMapCluster() && (null == bitmap  || bitmap!!.bitmap.isRecycled)){
+                      bitmap = getBitmapDescriptor(this)
+                  }
+
+              })
+          }
+
       }
 
       list.sortWith(Comparator { o1, o2 ->
@@ -87,7 +101,60 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
 
     }
 
+    override fun loadImageView(path: String, context: Context, imageView: ImageView) {
+        ImageLoadUtil.loadImage(path,context,imageView)
+    }
+
+    override fun onOperation(postion: Int, iMarkerModel: BdModel) {
+    }
+
+    override fun onTuWen(postion: Int, iMarkerModel: BdModel) {
+    }
+
+    override fun onObjectImg(postion: Int, iMarkerModel: BdModel, view: View?) {
+    }
+
+
+    private lateinit  var   clusterManager : ClusterManager<BdModel>
+    override fun initClusterManager(baiduMap: BaiduMap) {
+        super.initClusterManager(baiduMap)
+        clusterManager = ClusterManager(this,bdMapManager.baiduMap)
+
+        clusterManager.setOnClusterClickListener {
+            println("点击---->>>>")
+            return@setOnClusterClickListener true
+        }
+    }
+
+    override fun bindClusterManagerMapStatusChange(): BaiduMap.OnMapStatusChangeListener? {
+        return clusterManager
+    }
+
+    override fun onShowClusterManagerChange(change: Boolean) {
+        super.onShowClusterManagerChange(change)
+        if(!change){
+            println("清除---->>>>>>")
+            clusterManager.clearItems()
+            clusterManager.markerCollection.clear()
+            clusterManager.clusterMarkerCollection.clear()
+        }
+    }
+
+    override fun addClusterManagerData(data: List<BdModel>) {
+        super.addClusterManagerData(data)
+        clusterManager.addItems(data)
+    }
+
+    override fun loadMapClusterMarker(frist: Boolean) {
+        super.loadMapClusterMarker(frist)
+        if(frist){
+            clusterManager.zoomToSpan()
+        }
+    }
+
     override fun startRequest() {
 
     }
+
+
 }

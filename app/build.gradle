@@ -52,6 +52,22 @@ android {
   dataBinding {
     enabled true
   }
+
+  adbOptions {
+    // adb 执行超时时间 毫秒
+    timeOutInMs 10 * 60 * 1000  // 10 minutes
+    /**
+     * -r: replace existing application
+     * -t: allow test packages
+     * -d: allow version code downgrade (debuggable packages only)
+     * -p: partial application install (install-multiple only)
+     * -g: grant all runtime permissions
+     */
+    // apk 安装时候可选参数
+    // adb install -d
+    installOptions "-d", "-t"
+  }
+
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
@@ -211,6 +227,6 @@ dependencies {
   implementation project(path: ':zxingcamera')
   implementation project(path: ':maplibs')
   implementation project(path: ':tuyalibs')
-  implementation project(path: ':imglibs')
+  implementation project(path: ':medialibs')
 }
 

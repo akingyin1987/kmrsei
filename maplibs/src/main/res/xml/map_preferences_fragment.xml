@@ -56,6 +56,14 @@
           android:summary="通过当前位置，提供建议路径(距离最短)"
           android:defaultValue="true"/>
 
+    <SwitchPreferenceCompat
+        android:title="点聚合"
+        android:key="support_map_cluster"
+        android:summary="通过聚合方式展现"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        android:defaultValue="false"/>
+
     <EditTextPreference
         app:allowDividerBelow="true"
         app:allowDividerAbove="true"

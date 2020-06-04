@@ -11,6 +11,10 @@ package com.zlcdgroup.mrsei.data.model
 
 import com.akingyin.map.IMarker
 import com.akingyin.map.TestUtil
+import com.baidu.mapapi.clusterutil.clustering.ClusterItem
+import com.baidu.mapapi.map.BitmapDescriptor
+import com.baidu.mapapi.model.LatLng
+
 
 /**
  * @ Description:
@@ -18,7 +22,7 @@ import com.akingyin.map.TestUtil
  * @ Date 2020/5/28 11:32
  * @version V1.0
  */
-class BdModel(uuid: String ) : IMarker(uuid) {
+class BdModel(uuid: String ) : IMarker(uuid), ClusterItem {
 
     private   var  dbLat:Double = TestUtil.Latlng()[0]
     override fun getLat() = dbLat
@@ -28,5 +32,13 @@ class BdModel(uuid: String ) : IMarker(uuid) {
 
     override fun isComplete()= false
 
+    override fun getPosition(): LatLng {
+      return LatLng(getLat(),getLng())
+    }
 
+       var   bitmap: BitmapDescriptor?=null
+
+    override fun getBitmapDescriptor(): BitmapDescriptor? {
+        return  bitmap
+    }
 }

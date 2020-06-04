@@ -40,13 +40,15 @@ dependencies {
   implementation "androidx.appcompat:appcompat:$appCompatVersion"
   implementation "androidx.core:core-ktx:$coreKtxVersion"
 
-  testImplementation 'junit:junit:4.12'
+  testImplementation 'junit:junit:4.13'
   implementation project(':androidutil')
   androidTestImplementation 'androidx.test.ext:junit:1.1.1'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-  api 'com.github.bumptech.glide:glide:4.10.0'
-  api 'com.github.chrisbanes:PhotoView:2.1.4'
-  api 'cn.jzvd:jiaozivideoplayer:7.0.5'
+
+  api 'com.github.chrisbanes:PhotoView:2.3.0'
+  api 'cn.jzvd:jiaozivideoplayer:7.4.1'
   implementation 'org.honorato.multistatetogglebutton:multistatetogglebutton:0.2.2'
-  annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
+
+  api 'com.github.bumptech.glide:glide:4.11.0'
+  annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 }

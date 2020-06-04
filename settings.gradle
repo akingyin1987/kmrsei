@@ -1,1 +1,1 @@
-include ':app', ':androidutil', ':zxingcamera', ':maplibs', ':tuyalibs', ':imglibs'
+include ':app', ':androidutil', ':zxingcamera', ':maplibs', ':tuyalibs', ':medialibs'

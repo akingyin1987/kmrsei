@@ -5,19 +5,20 @@
 package com.baidu.mapapi.clusterutil.clustering;
 
 
-import com.akingyin.map.model.IMarkerModel;
+import androidx.annotation.Nullable;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.model.LatLng;
 
 /**
  * ClusterItem represents a marker on the map.
  */
-public interface ClusterItem extends IMarkerModel {
+public interface ClusterItem  {
 
     /**
      * The position of this marker. This must always return the same value.
      */
     LatLng getPosition();
 
+    @Nullable
     BitmapDescriptor getBitmapDescriptor();
 }

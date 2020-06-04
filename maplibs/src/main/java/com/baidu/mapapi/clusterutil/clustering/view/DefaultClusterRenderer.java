@@ -804,6 +804,7 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
                         MarkerOptions markerOptions = new MarkerOptions();
                         if (animateFrom != null) {
                             markerOptions.position(animateFrom);
+
                             markerOptions.icon(item.getBitmapDescriptor());
                         } else {
                             markerOptions.position(item.getPosition());

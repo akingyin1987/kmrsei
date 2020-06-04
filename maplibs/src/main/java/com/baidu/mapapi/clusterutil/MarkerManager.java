@@ -112,6 +112,7 @@ public class MarkerManager implements BaiduMap.OnMarkerClickListener, BaiduMap.O
         }
 
         public Marker addMarker(MarkerOptions opts) {
+
             Marker marker = (Marker) mMap.addOverlay(opts);
             mMarkers.add(marker);
             mAllMarkers.put(marker, Collection.this);

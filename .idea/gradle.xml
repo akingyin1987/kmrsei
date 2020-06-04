@@ -13,8 +13,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/androidutil" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/imglibs" />
             <option value="$PROJECT_DIR$/maplibs" />
+            <option value="$PROJECT_DIR$/medialibs" />
             <option value="$PROJECT_DIR$/tuyalibs" />
             <option value="$PROJECT_DIR$/zxingcamera" />
           </set>

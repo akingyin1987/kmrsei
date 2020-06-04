@@ -66,6 +66,7 @@ public abstract class OverlayManager implements OnMarkerClickListener, OnPolylin
         for (Overlay overlay : mOverlayList) {
             Bundle  bundle =  overlay.getExtraInfo();
             if(overlay instanceof  Marker && null != bundle && bundle.containsKey(BDMapManager.BAIDU_MARKER_UUID)){
+                System.out.println("uuid=>"+bundle.getString(BDMapManager.BAIDU_MARKER_UUID));
                 if(TextUtils.equals(uuid,bundle.getString(BDMapManager.BAIDU_MARKER_UUID))){
                     return (Marker) overlay;
                 }
