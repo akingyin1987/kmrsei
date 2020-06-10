@@ -94,8 +94,13 @@
     </style>
 
     <!-- 按返回键弹出框主题 -->
-    <style name="MyDialogStyle">
-        <item name="android:windowBackground">@android:color/transparent</item>
+    <style name="MyDialogStyle" parent="QMUI.TipDialog">
+        <item name="qmui_tip_dialog_min_width">120dp</item>
+        <item name="qmui_tip_dialog_min_height">40dp</item>
+        <item name="qmui_tip_dialog_max_width">270dp</item>
+        <item name="qmui_skin_support_loading_color">@color/qmui_config_color_gray_5</item>
+        <item name="qmui_skin_support_tip_dialog_bg">@color/qmui_config_color_75_pure_black</item>
+        <!--<item name="android:windowBackground">@android:color/transparent</item>-->
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>
         <!-- 是否漂浮在Activity上 -->

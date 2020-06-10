@@ -196,7 +196,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
             goToMapStreet()
         }
         bdMapManager.registerLocationListener({
-            println("获取到经纬度->")
+
             changeMyLocation(it)
         },{
             onFristMyLocation(it)

@@ -211,7 +211,7 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: A
         bdAbstractLocationListener = if (null == bdAbstractLocationListener) {
             object : BDAbstractLocationListener() {
                 override fun onReceiveLocation(p0: BDLocation?) {
-                    println("onReceiveLocation->${p0?.locType}$mapLoadComplete")
+
                     if (!mapLoadComplete) {
                         return
                     }

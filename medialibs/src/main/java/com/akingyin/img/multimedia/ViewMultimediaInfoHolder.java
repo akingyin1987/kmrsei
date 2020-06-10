@@ -294,18 +294,18 @@ public class ViewMultimediaInfoHolder<T extends IDataMultimedia>{
          try {
            if(!TextUtils.isEmpty(t.getLocalPath())){
              mVideoPlayerStandard.setUp(t.getLocalPath(),"视频");
-             ImageLoadUtil.loadImageLocalFile(t.getLocalPath(),mContext,mVideoPlayerStandard.thumbImageView);
+             ImageLoadUtil.loadImageLocalFile(t.getLocalPath(),mContext,mVideoPlayerStandard.posterImageView);
            }else{
              if(t.isNetToWeb()){
                mVideoPlayerStandard.setUp(t.getBaseUrl()+t.getServerPath(),"视频");
-               ImageLoadUtil.loadImageServerFileNoPlaceHolder(t.getServerPath(),mContext,mVideoPlayerStandard.thumbImageView);
+               ImageLoadUtil.loadImageServerFileNoPlaceHolder(t.getServerPath(),mContext,mVideoPlayerStandard.posterImageView);
              }
            }
 
          }catch(Exception e){
            e.printStackTrace();
            if(t.isNetToWeb()){
-             ImageLoadUtil.loadImageServerFileNoPlaceHolder(t.getServerPath(),mContext,mVideoPlayerStandard.thumbImageView);
+             ImageLoadUtil.loadImageServerFileNoPlaceHolder(t.getServerPath(),mContext,mVideoPlayerStandard.posterImageView);
            }
          }
 

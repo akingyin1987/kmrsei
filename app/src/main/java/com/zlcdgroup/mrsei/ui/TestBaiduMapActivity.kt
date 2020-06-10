@@ -14,6 +14,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
+import com.akingyin.base.dialog.LoadingDialog
+import com.akingyin.base.dialog.MaterialDialogUtil
+import com.akingyin.base.dialog.TaskShowDialog
 import com.akingyin.base.utils.StringUtils
 import com.akingyin.bmap.AbstractBaiduMapMarkersActivity
 import com.akingyin.img.ImageLoadUtil
@@ -24,6 +27,7 @@ import com.baidu.mapapi.map.BitmapDescriptor
 
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.model.BdModel
+
 import com.zlcdgroup.nfcsdk.RfidInterface
 
 
@@ -34,6 +38,9 @@ import com.zlcdgroup.nfcsdk.RfidInterface
  * @version V1.0
  */
 class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
+
+
+
 
     override fun onFilterMarkerData(data: BdModel)=true
 
@@ -93,9 +100,11 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
         super.initView()
         val bar = findViewById<Toolbar>(R.id.toolbar)
         setToolBar(bar,"百度地图marker测试")
+
+
     }
 
-    override fun getLayoutId()= R.layout.activity_test_map_show_markers
+    override fun getLayoutId()= R.layout.activity_test_baidu_marker
 
     override fun onSaveInstanceData(outState: Bundle?) {
 
@@ -142,6 +151,9 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
 
     override fun addClusterManagerData(data: List<BdModel>) {
         super.addClusterManagerData(data)
+        data.forEach {
+            it.bitmapDescriptor?:getBitmapDescriptor(it)
+        }
         clusterManager.addItems(data)
     }
 
@@ -156,5 +168,23 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
 
     }
 
+    override fun onMapRefresh() {
+        println("onMapRefresh")
+        TaskShowDialog().setCallBack {
+            println("it=${it}")
+        }.showLoadDialog(this,"测试")
 
+
+    }
+
+    override fun onSearchMapData() {
+        println("onSearchMapData")
+        TaskShowDialog().showLoadDialog(this,"search")
+
+    }
+
+    override fun onCancelLoading() {
+        super.onCancelLoading()
+        println("对话框被取消---->>>>")
+    }
 }

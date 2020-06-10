@@ -614,9 +614,19 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.action_map_item_setting){
-            showMapSettingInfo()
+        when(item.itemId){
+            R.id.action_map_item_setting -> showMapSettingInfo()
+            
+            R.id.action_map_refresh ->{
+                onMapRefresh()
+            }
+
+
+            R.id.action_map_search ->{
+                onSearchMapData()
+            }
         }
+       
         return super.onOptionsItemSelected(item)
     }
 
@@ -677,5 +687,13 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
 
     open   fun    showMapSettingInfo(){
         startActivity<MapSettingActivity>()
+    }
+
+    open  fun     onMapRefresh(){
+        loadMarkerData()
+    }
+
+    open  fun     onSearchMapData(){
+
     }
 }

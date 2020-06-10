@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@drawable/base_tips_bg"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingLeft="16.0dip"
+    android:paddingTop="12.0dip"
+    android:paddingRight="16.0dip"
+    android:paddingBottom="12.0dip">
+
+  <com.wang.avi.AVLoadingIndicatorView
+      android:id="@+id/avi"
+      style="@style/AVLoadingIndicatorView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:visibility="visible"
+      android:textColor="@color/white"
+      app:indicatorName="LineSpinFadeLoaderIndicator" />
+
+  <TextView
+      android:id="@+id/tips_msg"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8.0dip"
+      android:layout_marginEnd="20dp"
+      android:gravity="center_vertical"
+      android:text="请等待..."
+      android:textColor="@color/white"
+      android:textSize="16sp" />
+
+</LinearLayout>

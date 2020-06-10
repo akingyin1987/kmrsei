@@ -128,7 +128,7 @@ public class ImageViwPageAdapter  extends BasePageAdapter<ImageTextModel> {
                                 pv_img.setVisibility(View.GONE);
                                 iv_marker_video.setVisibility(View.VISIBLE);
                                 videoplayer.setVisibility(View.VISIBLE);
-                                ImageLoadUtil.loadImageLocalFile(imageTextModel.localPath,context,videoplayer.thumbImageView);
+                                ImageLoadUtil.loadImageLocalFile(imageTextModel.localPath,context,videoplayer.posterImageView);
                                 videoplayer.setUp(imageTextModel.localPath,"视频");
                             }else if(imageTextModel.multimediaType == 1){
                                 ImageLoadUtil.loadImageLocalFile(imageTextModel.localPath,context,pv_img);
@@ -150,7 +150,7 @@ public class ImageViwPageAdapter  extends BasePageAdapter<ImageTextModel> {
                                 pv_img.setVisibility(View.GONE);
                                 iv_marker_video.setVisibility(View.VISIBLE);
                                 videoplayer.setVisibility(View.VISIBLE);
-                                ImageLoadUtil.loadImageServerFile(imageTextModel.serverPath,context,videoplayer.thumbImageView);
+                                ImageLoadUtil.loadImageServerFile(imageTextModel.serverPath,context,videoplayer.posterImageView);
                                 videoplayer.setUp(imageTextModel.serverPath,"视频");
 
                             }else if(imageTextModel.multimediaType == 3){
@@ -173,7 +173,7 @@ public class ImageViwPageAdapter  extends BasePageAdapter<ImageTextModel> {
                             pv_img.setVisibility(View.GONE);
                             iv_marker_video.setVisibility(View.VISIBLE);
                             videoplayer.setVisibility(View.VISIBLE);
-                            ImageLoadUtil.loadImageServerFile(imageTextModel.serverPath,context,videoplayer.thumbImageView);
+                            ImageLoadUtil.loadImageServerFile(imageTextModel.serverPath,context,videoplayer.posterImageView);
                             videoplayer.setUp(imageTextModel.serverPath,"视频");
 
                         }else if(imageTextModel.multimediaType == 3){
@@ -192,7 +192,7 @@ public class ImageViwPageAdapter  extends BasePageAdapter<ImageTextModel> {
                         iv_marker_video.setVisibility(View.VISIBLE);
                         videoplayer.setVisibility(View.VISIBLE);
                         pv_img.setVisibility(View.GONE);
-                        ImageLoadUtil.loadImageLocalFile(imageTextModel.localPath,context,videoplayer.thumbImageView);
+                        ImageLoadUtil.loadImageLocalFile(imageTextModel.localPath,context,videoplayer.posterImageView);
                         videoplayer.setUp(imageTextModel.localPath,"视频");
                     }else if(imageTextModel.multimediaType == 3){
                          iv_marker_video.setVisibility(View.GONE);

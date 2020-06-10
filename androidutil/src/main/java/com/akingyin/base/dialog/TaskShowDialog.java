@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.appcompat.app.AppCompatDialog;
 import com.akingyin.base.R;
 import com.akingyin.base.rx.RxUtil;
 import com.akingyin.base.utils.HtmlUtils;
@@ -14,7 +15,6 @@ import com.qmuiteam.qmui.skin.QMUISkinHelper;
 import com.qmuiteam.qmui.skin.QMUISkinValueBuilder;
 import com.qmuiteam.qmui.util.QMUIResHelper;
 import com.qmuiteam.qmui.widget.QMUILoadingView;
-import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialogView;
 import com.qmuiteam.qmui.widget.textview.QMUISpanTouchFixTextView;
 import io.reactivex.Observable;
@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 public class TaskShowDialog {
 
 
-  private QMUITipDialog loadingDialog;
+  private AppCompatDialog loadingDialog;
 
   private boolean isLoading() {
     return null != loadingDialog && loadingDialog.isShowing();
@@ -66,7 +66,7 @@ public class TaskShowDialog {
         return;
       }
       if (null == loadingDialog) {
-        loadingDialog = new QMUITipDialog(context, R.style.QMUI_TipDialog);
+        loadingDialog = new AppCompatDialog(context, R.style.MyDialogStyle);
 
         Context dialogContext = loadingDialog.getContext();
         QMUITipDialogView dialogView = new QMUITipDialogView(dialogContext);
@@ -83,6 +83,7 @@ public class TaskShowDialog {
         QMUISkinHelper.setSkinValue(loadingView, builder);
         dialogView.addView(loadingView, onCreateIconOrLoadingLayoutParams(dialogContext));
 
+        System.out.println("loadingView="+loadingView.getWidth()+":"+loadingView.getHeight());
         tipView = new QMUISpanTouchFixTextView(context);
         tipView.setEllipsize(TextUtils.TruncateAt.END);
         tipView.setGravity(Gravity.CENTER);
@@ -114,7 +115,10 @@ public class TaskShowDialog {
       loadingDialog.setOnCancelListener(dialog ->
 
       {
-        callBack.call(true);
+        if(null != callBack){
+          callBack.call(true);
+        }
+
         if (null != mDisposable && !mDisposable.isDisposed()) {
           mDisposable.dispose();
         }

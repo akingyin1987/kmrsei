@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.util.Base64
+import androidx.viewbinding.ViewBinding
 import com.akingyin.base.BaseDaggerActivity
 import com.akingyin.base.dialog.MaterialDialogUtil
 import com.akingyin.base.ext.*
@@ -19,6 +20,7 @@ import com.akingyin.tuya.BaseTuYaActivity
 import com.alibaba.fastjson.JSONObject
 import com.baidu.mapapi.model.LatLng
 import com.baidu.mapapi.utils.AreaUtil
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.autoDisposable
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
@@ -76,6 +78,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
             testCameraAuth()
             userLoginPersenterImpl.login(et_mobile.text.toString(),et_password.text.toString())
         }
+
         app_theme.click {
             app_theme.isChecked.yes {
                 println("yes----------->>>>")
@@ -88,9 +91,6 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
         }
 
         load {
-
-
-
             println("--------1111----------${Thread.currentThread().name}")
             delay(200)
 

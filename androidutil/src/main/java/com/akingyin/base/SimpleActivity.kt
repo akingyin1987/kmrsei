@@ -46,9 +46,14 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
         TAG_LOG = this.localClassName
         if(useDataBindView()){
             initDataBindView()
-        }else{
-            setContentView(getLayoutId())
+        }else {
+            if(useViewBind()){
+                initViewBind()
+            }else{
+                setContentView(getLayoutId())
+            }
         }
+
         mContext = this
         initializationData(savedInstanceState)
         initView()
@@ -84,6 +89,8 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
 
     open    fun    useDataBindView()= false
 
+    open    fun    useViewBind() = false
+
 
     open    fun    useAndroidNfc() = false
 
@@ -91,6 +98,13 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
      * 初始化dataBinding
      */
     open   fun   initDataBindView(){
+
+    }
+
+    /**
+     * 初始化Viewbind
+     */
+    open   fun   initViewBind(){
 
     }
 
@@ -197,7 +211,7 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
         }
 
          loadingDialog = QMUITipDialog.Builder(this)
-                 .setIconType(ICON_TYPE_LOADING).create(true)
+                 .setIconType(ICON_TYPE_LOADING).create(true,R.style.MyDialogStyle)
 
          loadingDialog?.let {  dialog ->
 
