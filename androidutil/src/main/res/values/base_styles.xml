@@ -95,12 +95,30 @@
 
     <!-- 按返回键弹出框主题 -->
     <style name="MyDialogStyle" parent="QMUI.TipDialog">
+        <!--**********************************************
+               *             qmui tip dialog                    *
+               **********************************************-->
         <item name="qmui_tip_dialog_min_width">120dp</item>
         <item name="qmui_tip_dialog_min_height">40dp</item>
         <item name="qmui_tip_dialog_max_width">270dp</item>
-        <item name="qmui_skin_support_loading_color">@color/qmui_config_color_gray_5</item>
+        <item name="qmui_tip_dialog_padding_vertical">14dp</item>
+        <item name="qmui_tip_dialog_padding_horizontal">?attr/qmui_content_padding_horizontal</item>
+        <item name="qmui_tip_dialog_radius">15dp</item>
+        <item name="qmui_tip_dialog_loading_size">32dp</item>
+        <item name="qmui_tip_dialog_text_margin_top">12dp</item>
+        <item name="qmui_tip_dialog_text_size">14sp</item>
+
         <item name="qmui_skin_support_tip_dialog_bg">@color/qmui_config_color_75_pure_black</item>
-        <!--<item name="android:windowBackground">@android:color/transparent</item>-->
+        <item name="qmui_skin_support_tip_dialog_loading_color">@color/qmui_config_color_white</item>
+        <item name="qmui_skin_support_tip_dialog_text_color">@color/qmui_config_color_white</item>
+        <item name="qmui_skin_support_tip_dialog_icon_success_src">@drawable/qmui_icon_notify_done</item>
+        <item name="qmui_skin_support_tip_dialog_icon_error_src">@drawable/qmui_icon_notify_error</item>
+        <item name="qmui_skin_support_tip_dialog_icon_info_src">@drawable/qmui_icon_notify_info</item>
+        <item name="qmui_skin_support_loading_color">@color/qmui_config_color_gray_5</item>
+
+
+
+        <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>
         <!-- 是否漂浮在Activity上 -->
