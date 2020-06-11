@@ -70,7 +70,7 @@ public class TaskShowDialog {
 
         Context dialogContext = loadingDialog.getContext();
         QMUITipDialogView dialogView = new QMUITipDialogView(dialogContext);
-
+        dialogView.setOrientation(LinearLayout.HORIZONTAL);
         QMUISkinValueBuilder builder = QMUISkinValueBuilder.acquire();
 
         QMUILoadingView loadingView = new QMUILoadingView(dialogContext);
@@ -83,7 +83,6 @@ public class TaskShowDialog {
         QMUISkinHelper.setSkinValue(loadingView, builder);
         dialogView.addView(loadingView, onCreateIconOrLoadingLayoutParams(dialogContext));
 
-        System.out.println("loadingView="+loadingView.getWidth()+":"+loadingView.getHeight());
         tipView = new QMUISpanTouchFixTextView(context);
         tipView.setEllipsize(TextUtils.TruncateAt.END);
         tipView.setGravity(Gravity.CENTER);
@@ -92,22 +91,23 @@ public class TaskShowDialog {
         tipView.setTextColor(QMUIResHelper.getAttrColor(context,
             R.attr.qmui_skin_support_tip_dialog_text_color));
 
-        if (!TextUtils.isEmpty(message)) {
-          tipView.setText(MessageFormat.format("{0} ,耗时({1}s)", message,
-              (System.currentTimeMillis() - currentTime) / 1000));
-        } else {
-          tipView.setText(
-              String.format(Locale.getDefault(),"处理中...耗时(%ds)", (System.currentTimeMillis() - currentTime) / 1000));
-        }
         builder.clear();
         builder.textColor(R.attr.qmui_skin_support_tip_dialog_text_color);
         QMUISkinHelper.setSkinValue(tipView, builder);
+
         dialogView.addView(tipView, onCreateTextLayoutParams(dialogContext));
         builder.release();
         loadingDialog.setContentView(dialogView);
       }
 
       currentTime = System.currentTimeMillis();
+      if (!TextUtils.isEmpty(message)) {
+        tipView.setText(MessageFormat.format("{0} ,耗时({1}s)", message,
+            (System.currentTimeMillis() - currentTime) / 1000));
+      } else {
+        tipView.setText(
+            String.format(Locale.getDefault(),"处理中...耗时(%ds)", (System.currentTimeMillis() - currentTime) / 1000));
+      }
       loadingDialog.setCancelable(true);
       loadingDialog.setCanceledOnTouchOutside(false);
       loadingDialog.show();
@@ -156,15 +156,21 @@ public class TaskShowDialog {
 
 
   private LinearLayout.LayoutParams onCreateIconOrLoadingLayoutParams(Context context) {
-    return new LinearLayout.LayoutParams(
+    LinearLayout.LayoutParams lp =  new LinearLayout.LayoutParams(
         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    lp.leftMargin = QMUIResHelper.getAttrDimen(context, R.attr.qmui_tip_dialog_text_margin_top);
+    lp.rightMargin =   QMUIResHelper.getAttrDimen(context, R.attr.qmui_tip_dialog_text_margin_top);
+    lp.gravity = Gravity.CENTER;
+    return lp;
+
   }
 
   private LinearLayout.LayoutParams onCreateTextLayoutParams(Context context) {
     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-    lp.topMargin = QMUIResHelper.getAttrDimen(context, R.attr.qmui_tip_dialog_text_margin_top);
-
+    lp.leftMargin = QMUIResHelper.getAttrDimen(context, R.attr.qmui_tip_dialog_text_margin_top);
+    lp.rightMargin =   QMUIResHelper.getAttrDimen(context, R.attr.qmui_tip_dialog_text_margin_top);
+    lp.gravity = Gravity.CENTER;
     return lp;
   }
 

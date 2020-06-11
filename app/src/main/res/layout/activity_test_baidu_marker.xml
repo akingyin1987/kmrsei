@@ -8,11 +8,11 @@
   ~ akingyin@163.com
   -->
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:fitsSystemWindows="true">
 
@@ -47,6 +47,46 @@
 
 
   </FrameLayout>
+  <androidx.core.widget.NestedScrollView
+      android:layout_width="match_parent"
+      android:id="@+id/bottom_sheet_view"
+      android:layout_alignParentBottom="true"
+      app:behavior_hideable="true"
+      app:behavior_peekHeight="160dp"
+      android:background="@drawable/sliding_panel_header_background"
+      android:layout_margin="3dp"
+      android:padding="5dp"
+      app:layout_behavior="@string/bottom_sheet_behavior"
+      android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+      <ImageView
+          android:id="@+id/drawer_handle"
+          android:layout_width="25dp"
+          android:layout_height="3dp"
+          android:layout_gravity="center"
+          android:background="@drawable/drawer_handle" />
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="统计信息1"/>
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="统计信息2"/>
+         <androidx.recyclerview.widget.RecyclerView
+             android:layout_width="match_parent"
+             android:id="@+id/recycler"
+             tools:itemCount="8"
+             tools:listitem="@layout/openmap_detai"
+             android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+  </androidx.core.widget.NestedScrollView>
 
 
   <!--<com.lapism.search.widget.MaterialSearchView-->

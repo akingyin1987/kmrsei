@@ -146,7 +146,8 @@
           android:id="@+id/iv_show_pwd"
           android:layout_width="40dp"
           android:layout_height="fill_parent"
-          android:contentDescription="TODO" android:scaleType="centerInside"
+          android:contentDescription="TODO"
+          android:scaleType="centerInside"
           android:src="@drawable/pass_gone" />
     </LinearLayout>
 
@@ -292,12 +293,25 @@
         android:layout_height="wrap_content"
         android:text="关键字："
         android:layout_gravity="center"/>
+    <com.google.android.material.textfield.TextInputLayout
 
-       <com.akingyin.base.widget.ClearEditText
-           android:layout_width="match_parent"
-           android:id="@+id/edit_keywork"
-           android:text="zlcdgroup"
-           android:layout_height="wrap_content"/>
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/edit_keywork"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="输入关键字"
+
+          android:singleLine="true"
+          android:ellipsize="end"
+
+          android:textSize="@dimen/ground_truth_text_size_expanded" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
   </LinearLayout>
 
   <LinearLayout

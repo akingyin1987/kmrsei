@@ -17,12 +17,13 @@
         <item name="colorAccent">@color/sunflower_green_700</item>
         <item name="colorSurface">@color/sunflower_gray_50</item>
         <item name="colorSecondary">@color/sunflower_yellow_500</item>
-        <item name="android:colorBackground">@color/sunflower_green_500</item>
+        <item name="android:colorBackground">@color/transparent</item>
+        <!--<item name="android:colorBackground">@color/sunflower_green_500</item>-->
 
 
         <!--**********************************************
-               *             qmui tip dialog                    *
-               **********************************************-->
+                      *             qmui tip dialog                    *
+                      **********************************************-->
         <item name="qmui_tip_dialog_min_width">120dp</item>
         <item name="qmui_tip_dialog_min_height">40dp</item>
         <item name="qmui_tip_dialog_max_width">270dp</item>
@@ -40,6 +41,8 @@
         <item name="qmui_skin_support_tip_dialog_icon_error_src">@drawable/qmui_icon_notify_error</item>
         <item name="qmui_skin_support_tip_dialog_icon_info_src">@drawable/qmui_icon_notify_info</item>
         <item name="qmui_skin_support_loading_color">@color/qmui_config_color_gray_5</item>
+
+
 
     </style>
 

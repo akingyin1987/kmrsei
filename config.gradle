@@ -15,7 +15,7 @@ ext{
     androidXTestVersion = '1.1.1'
     androidXAnnotations = '1.0.1'
     androidXLegacySupport = '1.0.0'
-    materialVersion = '1.2.0-beta01'
+    materialVersion = '1.3.0-alpha01'
     cardVersion = '1.0.0'
     recyclerViewVersion = '1.1.0'
     appCompatVersion = '1.3.0-alpha01'
@@ -28,6 +28,7 @@ ext{
     rulesVersion = '1.0.1'
     espressoVersion = '3.1.1'
     roomVersion = '2.0.0'
+    constraintLayoutVersion = '2.0.0-beta3'
   }
   dependVersion = [
       androidSupportSdkVersion: "27.1.1",

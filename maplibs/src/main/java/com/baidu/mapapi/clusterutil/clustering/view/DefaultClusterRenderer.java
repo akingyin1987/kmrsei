@@ -24,6 +24,7 @@ import android.os.MessageQueue;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import androidx.annotation.Nullable;
 import com.akingyin.map.R;
 import com.baidu.mapapi.clusterutil.MarkerManager;
 import com.baidu.mapapi.clusterutil.clustering.Cluster;
@@ -122,6 +123,15 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
         mIconGenerator.setTextAppearance(R.style.ClusterIcon_TextAppearance);
         mIconGenerator.setBackground(makeClusterBackground());
         mClusterManager = clusterManager;
+    }
+
+    @Nullable
+    @Override public T findClusterMarkerData(Marker marker) {
+         return mMarkerCache.get(marker);
+    }
+
+    @Nullable @Override public Cluster<T> findClusterMarkersData(Marker marker) {
+        return mMarkerToCluster.get(marker);
     }
 
     @Override

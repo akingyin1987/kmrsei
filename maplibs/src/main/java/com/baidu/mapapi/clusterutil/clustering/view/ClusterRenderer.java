@@ -5,10 +5,11 @@
 package com.baidu.mapapi.clusterutil.clustering.view;
 
 
+import androidx.annotation.Nullable;
 import com.baidu.mapapi.clusterutil.clustering.Cluster;
 import com.baidu.mapapi.clusterutil.clustering.ClusterItem;
 import com.baidu.mapapi.clusterutil.clustering.ClusterManager;
-
+import com.baidu.mapapi.map.Marker;
 import java.util.Set;
 
 /**
@@ -30,6 +31,22 @@ public interface ClusterRenderer<T extends ClusterItem> {
     void setOnClusterItemClickListener(ClusterManager.OnClusterItemClickListener<T> listener);
 
     void setOnClusterItemInfoWindowClickListener(ClusterManager.OnClusterItemInfoWindowClickListener<T> listener);
+
+    /**
+     * 通过marker 返回聚合点数据(单个)
+     * @param marker
+     * @return
+     */
+     @Nullable
+     T   findClusterMarkerData(Marker marker);
+
+    /**
+     * 返回聚合点数据
+     * @param marker
+     * @return
+     */
+    @Nullable
+    Cluster<T>  findClusterMarkersData(Marker  marker);
 
     /**
      * Called when the view is added.

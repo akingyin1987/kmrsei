@@ -395,7 +395,10 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: A
      * 初始化地图marker 相关类
      */
     fun initMapMarkerConfig(callBack: (Marker) -> Unit) {
-
+        baiduMap.setOnMarkerClickListener {
+            callBack.invoke(it)
+            true
+        }
         overlayManager = BdCustomOverlayManager(baiduMap, callBack)
         baiduMap.setOnMarkerClickListener(overlayManager)
     }

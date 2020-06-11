@@ -56,7 +56,6 @@ class MarkerInfoViewPager2Adapter<T:IMarker> :BaseQuickAdapter<T,BaseViewHolder>
         val btn_poidetail_showmap: TextView = holder.getView(R.id.btn_poidetail_showmap)
 
 
-        println("adapter--->dis-->"+item.disFromPostion)
         btn_poidetail_showmap.text = if(item.sortInfo.isNullOrEmpty()){
             MessageFormat.format("详情   {0}/{1}   {2}", holder.adapterPosition + 1, data.size,item.disFromPostion?.let {
                 "距离当前位置约："+MessageFormat.format("{0,number,#.##}",it)+"米"

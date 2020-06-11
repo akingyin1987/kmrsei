@@ -52,6 +52,7 @@
         android:name=".ui.LoginActivity"
         android:configChanges="orientation|keyboardHidden|screenSize"
         android:screenOrientation="portrait"
+        android:theme="@style/Base.Theme.Sunflower"
        >
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -68,7 +69,7 @@
     <activity android:name=".ui.FragmentTestActivity"
       />
     <activity android:name=".ui.TestBaiduMapActivity"
-        android:theme="@style/Base.Theme.Sunflower"
+
     />
     <activity android:name="com.akingyin.map.ui.MapSettingActivity"/>
     <activity android:name="com.akingyin.map.MapCoordinatePickupActivity"/>
@@ -114,5 +115,7 @@
         android:screenOrientation="portrait"/>
 
     <activity android:name=".ui.TestTuwenActivity"/>
+    <activity android:name=".ui.MotionTestActivity"
+             android:theme="@style/Theme.MaterialComponents.Light.DarkActionBar"/>
   </application>
 </manifest>

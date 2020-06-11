@@ -7,6 +7,7 @@ package com.baidu.mapapi.clusterutil.clustering;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
+import androidx.annotation.Nullable;
 import com.baidu.mapapi.clusterutil.MarkerManager;
 import com.baidu.mapapi.clusterutil.clustering.algo.Algorithm;
 import com.baidu.mapapi.clusterutil.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
@@ -85,6 +86,21 @@ public class ClusterManager<T extends ClusterItem> implements
 
     public MarkerManager getMarkerManager() {
         return mMarkerManager;
+    }
+
+    /**
+     * 通过marker 获取数据
+     * @param marker
+     * @return
+     */
+    @Nullable
+    public T findClusterMarkerData(Marker marker) {
+        return mRenderer.findClusterMarkerData(marker);
+    }
+
+    @Nullable
+    public Cluster<T> findClusterMarkersData(Marker marker) {
+        return mRenderer.findClusterMarkersData(marker);
     }
 
     public void setRenderer(ClusterRenderer<T> view) {

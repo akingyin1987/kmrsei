@@ -104,16 +104,20 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
         })
         bdMapManager.initMapMarkerConfig {
             if(supportMapCluster()){
+
+                onMapMarkerClick(0,null,it)
+            }else{
                 bindClusterManagerMarkerClick()?.onMarkerClick(it)
+                bdMapManager.findMarkerDataAndIndexByMarker(it,dataQueue)?.let {
+                    pair ->
+                    initLastMarkerIcon()
+                    mCurrentMarker = it
+                    lastClickMarkerIcon = it.icon
+                    mCurrentMarker?.icon = readBitmap
+                    onMapMarkerClick(pair.first,pair.second,it)
+                }
             }
-            bdMapManager.findMarkerDataAndIndexByMarker(it,dataQueue)?.let {
-                pair ->
-                initLastMarkerIcon()
-                mCurrentMarker = it
-                lastClickMarkerIcon = it.icon
-                mCurrentMarker?.icon = readBitmap
-                onMapMarkerClick(pair.first,pair.second,it)
-            }
+
         }
         bdMapManager.setMapStatusChange(onChange = {
 
@@ -153,6 +157,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
                 showLoading()
                 withContext(IO){
                     dataQueue.clear()
+
                     dataQueue.addAll(searchMarkerData())
                     addClusterManagerData(dataQueue)
                     dataKeyMap.clear()
@@ -177,6 +182,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
      */
     open   fun    loadMarkerDataComplete(){
         println("loadMarkerDataComplete")
+
         loadMapMarker(firstLoadMarker)
         firstLoadMarker = false
     }
@@ -292,7 +298,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
     /**
      * 显示当前marker详情
      */
-     private fun    showMapMarkerListInfo(postion: Int,viewDatas:List<T>){
+     public fun    showMapMarkerListInfo(postion: Int,viewDatas:List<T>){
         try {
 
             mPopupBottonWindow?.let {
@@ -379,14 +385,21 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
         }
     }
 
+    /**
+     * 处理当前点击的marker
+     */
+    public  fun   initClickMarkerIcon(marker: Marker){
+        mCurrentMarker = marker
+        lastClickMarkerIcon = mCurrentMarker?.icon
+        mCurrentMarker?.icon = readBitmap
+        bdMapManager.setMapCenter(marker.position.latitude,marker.position.longitude,bdMapManager.getCurrentZoomLevel())
+    }
+
     open   fun   onViewPageSelected(data:T){
         println("onViewPageSelected=${data.uuid}")
         bdMapManager.findMarkerByData(data)?.let {
             initLastMarkerIcon()
-            mCurrentMarker = it
-            lastClickMarkerIcon = mCurrentMarker?.icon
-            mCurrentMarker?.icon = readBitmap
-            bdMapManager.setMapCenter(it.position.latitude,it.position.longitude,bdMapManager.getCurrentZoomLevel())
+            initClickMarkerIcon(it)
         }?:showError("未找到当前对应的marker")
     }
 
@@ -527,8 +540,21 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
     /**
      * 当前marker点被点击
      */
-    open   fun    onMapMarkerClick( postion:Int,data:T,marker: Marker){
-        showMapMarkerListInfo(postion,dataQueue)
+    open   fun    onMapMarkerClick( postion:Int,data:T?,marker: Marker){
+        initLastMarkerIcon()
+        if(supportMapCluster()){
+            onClusterMarkerClick(marker)
+        }else{
+            showMapMarkerListInfo(postion,dataQueue)
+        }
+
+    }
+
+    /**
+     * 聚合点，点击事件
+     */
+    open   fun   onClusterMarkerClick(marker: Marker){
+
     }
 
     /**
