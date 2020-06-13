@@ -69,7 +69,7 @@
     <activity android:name=".ui.FragmentTestActivity"
       />
     <activity android:name=".ui.TestBaiduMapActivity"
-
+        android:theme="@style/Base.Theme.Sunflower"
     />
     <activity android:name="com.akingyin.map.ui.MapSettingActivity"/>
     <activity android:name="com.akingyin.map.MapCoordinatePickupActivity"/>

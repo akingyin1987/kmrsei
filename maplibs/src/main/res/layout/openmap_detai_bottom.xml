@@ -3,50 +3,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="5dp"
-    android:layout_margin="5dp"
-    android:padding="3dp"
-    app:cardElevation="5dp"
+    app:cardCornerRadius="3dp"
+    android:layout_margin="3dp"
+    android:padding="2dp"
+
+    app:cardElevation="3dp"
 
     android:orientation="vertical">
 
   <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="140dp"
-      android:orientation="vertical" >
+      android:layout_height="wrap_content"
+      android:orientation="horizontal" >
 
-    <RelativeLayout android:layout_width="match_parent"
+
+    <TextView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/tv_index"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:padding="3dp"
+        android:text="22"
+        android:layout_margin="3dp"
+        android:layout_gravity="center"
+        android:gravity="center"/>
+    <View
+        android:layout_width="2sp"
+        android:layout_height="match_parent"
+        android:padding="1dp"
+        android:layout_margin="1dp"
+        android:background="@color/line" />
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-      <TextView
-          android:id="@+id/btn_poidetail_showmap"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="2.0dip"
-          android:layout_alignParentLeft="true"
-          android:layout_marginRight="8.0dip"
-          android:background="#00000000"
-          android:drawableLeft="@drawable/mylocation_detail"
-          android:singleLine="true"
-          android:text="详情"
-          android:textColor="#ff008afc"
-          android:textSize="16.0sp" />
-
-      <CheckBox android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="显示当前保护区"
-          android:visibility="gone"
-
-          android:layout_centerHorizontal="true"
-          android:id="@+id/cb_show"/>
-    </RelativeLayout>
-
+        android:orientation="vertical">
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+
         android:padding="2dp"
         android:orientation="horizontal" >
 
@@ -89,12 +87,15 @@
       </ScrollView>
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:background="@color/line" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:orientation="horizontal"
-        android:paddingLeft="6dp"
-        android:paddingRight="6dp" >
+        >
 
       <TextView
           android:id="@+id/openmap_detai_leftbtn"
@@ -106,7 +107,11 @@
           android:text="操作"
           android:textColor="#3333FF"
           android:textSize="14.0sp"/>
-
+      <ImageView
+          android:layout_width="2dp"
+          android:id="@+id/iv_line1"
+          android:layout_height="match_parent"
+          android:src="@drawable/line_s" />
       <TextView
           android:id="@+id/openmap_detai_middlebtn"
           android:layout_width="0dp"
@@ -116,7 +121,11 @@
           android:text="路径"
           android:textColor="#3333FF"
           android:textSize="14.0sp" />
-
+      <ImageView
+          android:layout_width="2dp"
+          android:id="@+id/iv_line2"
+          android:layout_height="match_parent"
+          android:src="@drawable/line_s" />
       <TextView
           android:id="@+id/openmap_detai_rightbtn"
           android:layout_width="0dp"
@@ -128,6 +137,13 @@
           android:text="图文"
           android:textColor="#3333FF"
           android:textSize="14.0sp" />
+
+      <ImageView
+          android:layout_width="2dp"
+          android:id="@+id/iv_line3"
+          android:visibility="gone"
+          android:layout_height="match_parent"
+          android:src="@drawable/line_s" />
 
       <TextView
           android:id="@+id/openmap_detai_other"
@@ -141,6 +157,7 @@
           android:visibility="gone"
           android:textColor="#3333FF"
           android:textSize="14.0sp" />
+    </LinearLayout>
     </LinearLayout>
   </LinearLayout>
 

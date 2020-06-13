@@ -13,7 +13,6 @@ import com.akingyin.base.net.mode.ApiHost
 import com.akingyin.base.net.okhttp.OkHttpUtils
 import com.akingyin.map.BdMapApp
 import com.alibaba.android.arouter.launcher.ARouter
-import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.Utils
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
@@ -27,7 +26,6 @@ import com.zlcdgroup.mrsei.utils.RetrofitConfig
 import com.zlcdgroup.mrsei.utils.ThemeHelper
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
-import leakcanary.LeakCanary
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

@@ -38,26 +38,44 @@
 
   </com.google.android.material.appbar.AppBarLayout>
 
+  <androidx.drawerlayout.widget.DrawerLayout
+      android:layout_width="match_parent"
+      android:id="@+id/drawer_view"
+      android:fitsSystemWindows="true"
+      app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+      android:layout_height="match_parent">
 
-  <FrameLayout android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior">
-    <include layout="@layout/base_baidumap"/>
+    <!--主布局-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:orientation="vertical">
+      <include layout="@layout/base_baidumap"/>
+
+    </FrameLayout>
 
 
+    <!--侧滑菜单-->
+    <include layout="@layout/custom_drawer_menu_layout"/>
 
-  </FrameLayout>
-  <androidx.core.widget.NestedScrollView
+
+  </androidx.drawerlayout.widget.DrawerLayout>
+
+  <LinearLayout
       android:layout_width="match_parent"
       android:id="@+id/bottom_sheet_view"
       android:layout_alignParentBottom="true"
+
       app:behavior_hideable="true"
+      android:visibility="visible"
+      app:layout_insetEdge="bottom"
       app:behavior_peekHeight="160dp"
       android:background="@drawable/sliding_panel_header_background"
       android:layout_margin="3dp"
       android:padding="5dp"
       app:layout_behavior="@string/bottom_sheet_behavior"
-      android:layout_height="wrap_content">
+      android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -81,12 +99,13 @@
              android:layout_width="match_parent"
              android:id="@+id/recycler"
              tools:itemCount="8"
+             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
              tools:listitem="@layout/openmap_detai"
              android:layout_height="wrap_content"/>
     </LinearLayout>
 
 
-  </androidx.core.widget.NestedScrollView>
+  </LinearLayout>
 
 
   <!--<com.lapism.search.widget.MaterialSearchView-->

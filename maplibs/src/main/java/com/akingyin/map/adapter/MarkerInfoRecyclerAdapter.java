@@ -1,12 +1,12 @@
 package com.akingyin.map.adapter;
 
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import com.akingyin.base.utils.HtmlUtils;
 import com.akingyin.map.R;
 import com.akingyin.map.base.ILoadImage;
 import com.akingyin.map.base.IOperationListen;
@@ -89,7 +89,7 @@ public class MarkerInfoRecyclerAdapter<T extends IMarkerModel> extends
     TextView  detai_title = helper.getView(R.id.detai_title);
     detai_title.setVisibility(View.GONE);
     TextView  detai_info = helper.getView(R.id.detai_info);
-    detai_info.setText(Html.fromHtml(iMarkerModel.getBaseInfo()));
+    detai_info.setText(HtmlUtils.getTextHtml(iMarkerModel.getBaseInfo()));
     TextView  left = helper.getView(R.id.openmap_detai_leftbtn);
     TextView  right = helper.getView(R.id.openmap_detai_rightbtn);
     TextView  center = helper.getView(R.id.openmap_detai_middlebtn);

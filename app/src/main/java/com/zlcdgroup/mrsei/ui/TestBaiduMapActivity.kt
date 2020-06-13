@@ -11,13 +11,20 @@ package com.zlcdgroup.mrsei.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.DefaultItemAnimator
 import com.akingyin.base.dialog.TaskShowDialog
 import com.akingyin.base.utils.StringUtils
 import com.akingyin.bmap.AbstractBaiduMapMarkersActivity
 import com.akingyin.img.ImageLoadUtil
+import com.akingyin.map.adapter.MarkerInfoListRecycleAdapter
+
 import com.baidu.mapapi.clusterutil.clustering.ClusterManager
 import com.baidu.mapapi.map.BaiduMap
 import com.baidu.mapapi.map.BitmapDescriptor
@@ -28,7 +35,7 @@ import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.model.BdModel
 import com.zlcdgroup.nfcsdk.RfidInterface
 import kotlinx.android.synthetic.main.activity_test_baidu_marker.*
-import kotlinx.android.synthetic.main.layout_bottom_sheet.*
+
 
 
 /**
@@ -96,11 +103,13 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
 
     }
 
+    lateinit var  behavior : BottomSheetBehavior<LinearLayout>
     override fun initView() {
         super.initView()
         val bar = findViewById<Toolbar>(R.id.toolbar)
         setToolBar(bar,"百度地图marker测试")
-       val behavior = from(bottom_sheet_view)
+        behavior = from(bottom_sheet_view)
+        behavior.state = STATE_HIDDEN
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
             }
@@ -112,7 +121,10 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
                  STATE_SETTLING ->  "STATE_SETTLING" // 视图从脱离手指自由滑动到最终停下的这一小段时间
                  STATE_EXPANDED ->  "STATE_EXPANDED" //处于完全展开的状态
                  STATE_COLLAPSED ->  "STATE_COLLAPSED" //默认的折叠状态
-                 STATE_HIDDEN ->  "STATE_HIDDEN" //下滑动完全隐藏 bottom sheet
+                 STATE_HIDDEN ->  {
+                     initLastMarkerIcon()
+                     "STATE_HIDDEN" //下滑动完全隐藏 bottom sheet
+                 }
                  STATE_HALF_EXPANDED -> "STATE_HALF_EXPANDED"
                     else ->""
                 }
@@ -196,8 +208,11 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
     }
 
     override fun onSearchMapData() {
-        println("onSearchMapData")
-        TaskShowDialog().showLoadDialog(this,"search")
+        if (drawer_view.isDrawerOpen(GravityCompat.START)) {
+            drawer_view.closeDrawer(GravityCompat.START)
+        }else{
+            drawer_view.openDrawer(GravityCompat.END,true)
+        }
 
     }
 
@@ -206,6 +221,7 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
         println("对话框被取消---->>>>")
     }
 
+    var  viewPager2Adapter: MarkerInfoListRecycleAdapter<BdModel>?= null
     override fun onClusterMarkerClick(marker: Marker) {
         super.onClusterMarkerClick(marker)
         println("onClusterMarkerClick")
@@ -214,10 +230,25 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
              initClickMarkerIcon(marker)
              showMapMarkerListInfo(0, arrayListOf<BdModel>().apply {
                  add(it)
-             })
+             },true)
          }
 
-        val cluster  = clusterManager.findClusterMarkersData(marker)
-        println("cluster=${cluster?.size}")
+        clusterManager.findClusterMarkersData(marker)?.let {
+            initClickMarkerIcon(marker)
+            if(null == viewPager2Adapter){
+                viewPager2Adapter = MarkerInfoListRecycleAdapter()
+                recycler.adapter = viewPager2Adapter
+                recycler.itemAnimator = DefaultItemAnimator()
+            }
+            viewPager2Adapter?.setNewInstance(it.items.toMutableList())
+            behavior.state = STATE_COLLAPSED
+
+        }
+
+    }
+
+    override fun onMapMarkerClick(postion: Int, data: BdModel?, marker: Marker) {
+        behavior.state = STATE_HIDDEN
+        super.onMapMarkerClick(postion, data, marker)
     }
 }

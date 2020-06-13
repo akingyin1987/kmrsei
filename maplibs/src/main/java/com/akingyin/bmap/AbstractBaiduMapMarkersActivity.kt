@@ -98,7 +98,10 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
         viewPager2.registerOnPageChangeCallback(object :ViewPager2.OnPageChangeCallback(){
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                onViewPageSelected(markerInfoViewPager2Adapter.getItem(position))
+                if(!supportMapCluster()){
+                    onViewPageSelected(markerInfoViewPager2Adapter.getItem(position))
+
+                }
                // initSelectedIndexViewDis(position)
             }
         })
@@ -298,7 +301,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
     /**
      * 显示当前marker详情
      */
-     public fun    showMapMarkerListInfo(postion: Int,viewDatas:List<T>){
+    fun    showMapMarkerListInfo(postion: Int,viewDatas:List<T> ,notsetMarker: Boolean = false){
         try {
 
             mPopupBottonWindow?.let {
@@ -339,12 +342,15 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
                 mPopupBottonWindow?.isOutsideTouchable = true
                 mPopupBottonWindow?.isFocusable = true
             }
-            initLastMarkerIcon()
-            mCurrentMarker = bdMapManager.findMarkerByData(viewDatas[postion])
-            if(null != mCurrentMarker){
-                lastClickMarkerIcon = mCurrentMarker?.icon
+            if(!notsetMarker){
+                initLastMarkerIcon()
+                mCurrentMarker = bdMapManager.findMarkerByData(viewDatas[postion])
+                if(null != mCurrentMarker){
+                    lastClickMarkerIcon = mCurrentMarker?.icon
+                }
+                mCurrentMarker?.icon = readBitmap
             }
-            mCurrentMarker?.icon = readBitmap
+
             if (mPopupBottonWindow!!.isShowing) {
                 mPopupBottonWindow!!.dismiss()
             } else {
@@ -379,7 +385,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
 
     }
 
-    private   fun    initLastMarkerIcon(){
+    fun    initLastMarkerIcon(){
         if(null != mCurrentMarker && null != lastClickMarkerIcon){
             mCurrentMarker?.icon = lastClickMarkerIcon
         }
@@ -388,7 +394,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
     /**
      * 处理当前点击的marker
      */
-    public  fun   initClickMarkerIcon(marker: Marker){
+    fun   initClickMarkerIcon(marker: Marker){
         mCurrentMarker = marker
         lastClickMarkerIcon = mCurrentMarker?.icon
         mCurrentMarker?.icon = readBitmap
@@ -400,7 +406,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
         bdMapManager.findMarkerByData(data)?.let {
             initLastMarkerIcon()
             initClickMarkerIcon(it)
-        }?:showError("未找到当前对应的marker")
+        }
     }
 
     open   fun   initPopupWindow(){
@@ -542,6 +548,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
      */
     open   fun    onMapMarkerClick( postion:Int,data:T?,marker: Marker){
         initLastMarkerIcon()
+        mPopupBottonWindow?.dismiss()
         if(supportMapCluster()){
             onClusterMarkerClick(marker)
         }else{
@@ -722,4 +729,6 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
     open  fun     onSearchMapData(){
 
     }
+
+
 }

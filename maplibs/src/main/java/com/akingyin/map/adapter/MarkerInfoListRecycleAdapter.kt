@@ -9,7 +9,6 @@
 
 package com.akingyin.map.adapter
 
-
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -28,16 +27,13 @@ import java.text.MessageFormat
 /**
  * @ Description:
  * @author king
- * @ Date 2020/5/25 17:41
+ * @ Date 2020/6/12 11:28
  * @version V1.0
  */
-
-
-class MarkerInfoViewPager2Adapter<T:IMarker> :BaseQuickAdapter<T,BaseViewHolder> (R.layout.openmap_detai){
-
+class MarkerInfoListRecycleAdapter<T: IMarker> : BaseQuickAdapter<T, BaseViewHolder>(R.layout.openmap_detai_bottom){
     var iOperationListen : IOperationListion<T>? = null
 
-    var loadImage:ILoadImage? = null
+    var loadImage: ILoadImage? = null
 
     override fun convert(holder: BaseViewHolder, item: T) {
         val detai_img = holder.getView<ImageView>(R.id.detai_img)
@@ -45,7 +41,7 @@ class MarkerInfoViewPager2Adapter<T:IMarker> :BaseQuickAdapter<T,BaseViewHolder>
         loadImage?.let {
             item.markerDetaiImgPath?.let {
                 it1 ->
-                 detai_img.visiable()
+                detai_img.visiable()
                 it.loadImageView( it1,context,detai_img)
             }
         }
@@ -53,18 +49,10 @@ class MarkerInfoViewPager2Adapter<T:IMarker> :BaseQuickAdapter<T,BaseViewHolder>
             iOperationListen?.onObjectImg(holder.adapterPosition,item,detai_img)
         }
 
-        val btn_poidetail_showmap: TextView = holder.getView(R.id.btn_poidetail_showmap)
+        val tv_index: TextView = holder.getView(R.id.tv_index)
 
+        tv_index.text=MessageFormat.format("{0}",holder.adapterPosition+1)
 
-        btn_poidetail_showmap.text = if(item.sortInfo.isNullOrEmpty()){
-            MessageFormat.format("详情   {0}/{1}   {2}", holder.adapterPosition + 1, data.size,item.disFromPostion?.let {
-                "距离当前位置约："+MessageFormat.format("{0,number,#.##}",it)+"米"
-            }?:"")
-        }else{
-            item.sortInfo+(item.disFromPostion?.let {
-                "距离当前位置约："+MessageFormat.format("{0,number,#.##}",it)+"米"
-            }?:"")
-        }
         holder.getView<View>(R.id.detai_title).gone()
         val detai_info: TextView = holder.getView(R.id.detai_info)
         detai_info.text = HtmlUtils.getTextHtml(item.baseInfo)
@@ -73,9 +61,9 @@ class MarkerInfoViewPager2Adapter<T:IMarker> :BaseQuickAdapter<T,BaseViewHolder>
         val center: TextView = holder.getView(R.id.openmap_detai_middlebtn)
         val other: TextView = holder.getView(R.id.openmap_detai_other)
 
-        val  iv1 : ImageView  = holder.getView(R.id.iv_line1)
-        val  iv2 : ImageView  = holder.getView(R.id.iv_line2)
-        val  iv3 : ImageView  = holder.getView(R.id.iv_line3)
+        val  iv1 : ImageView = holder.getView(R.id.iv_line1)
+        val  iv2 : ImageView = holder.getView(R.id.iv_line2)
+        val  iv3 : ImageView = holder.getView(R.id.iv_line3)
         iOperationListen?.initView(left,center,right,holder.adapterPosition,item,other,iv1,iv2,iv3)
         other.click {
             iOperationListen?.onOtherOperation(holder.adapterPosition,item,other)
