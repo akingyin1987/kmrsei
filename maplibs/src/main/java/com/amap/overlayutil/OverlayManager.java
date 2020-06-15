@@ -1,6 +1,7 @@
 package com.amap.overlayutil;
 
 import android.text.TextUtils;
+import com.akingyin.amap.AMapManager;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.model.LatLngBounds;
@@ -88,14 +89,15 @@ public abstract class OverlayManager implements AMap.OnMarkerClickListener,
   }
 
 
-  public Marker getMarker(int  index){
+  public Marker getMarker(String  key){
 
     for (Marker overlay : mOverlayList) {
        String  jsonStr =  overlay.getSnippet();
        if(!TextUtils.isEmpty(jsonStr)){
          try {
            JSONObject  jsonObject =  new JSONObject(jsonStr);
-           if(index == jsonObject.getInt("index")){
+           String  uuid  = jsonObject.getString(AMapManager.AMAP_MARKER_UUID);
+           if(uuid.equalsIgnoreCase(key)){
              return  overlay;
            }
 
