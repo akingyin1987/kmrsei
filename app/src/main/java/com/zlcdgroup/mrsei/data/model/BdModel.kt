@@ -36,7 +36,7 @@ class BdModel(uuid: String ) : IMarker(uuid), ClusterItem {
       return LatLng(getLat(),getLng())
     }
 
-       var   bitmap: BitmapDescriptor?=null
+    var   bitmap: BitmapDescriptor?=null
 
     override fun getBitmapDescriptor(): BitmapDescriptor? {
         return  bitmap

@@ -11,10 +11,10 @@ package com.zlcdgroup.mrsei.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.widget.NestedScrollView
@@ -49,7 +49,10 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
 
 
 
-    override fun onFilterMarkerData(data: BdModel)=true
+    override fun onFilterMarkerData(data: BdModel): Boolean {
+       data.bitmap?:getBitmapDescriptor(data)
+       return  true
+    }
 
     override fun getBitmapDescriptor(data: BdModel): BitmapDescriptor {
 
@@ -68,6 +71,7 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
 
               })
           }
+          println("size====${list.size}")
 
       }
 
@@ -208,9 +212,14 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
     }
 
     override fun onSearchMapData() {
-        if (drawer_view.isDrawerOpen(GravityCompat.START)) {
-            drawer_view.closeDrawer(GravityCompat.START)
+        if(supportMapCluster()){
+            behavior.state = STATE_HIDDEN
+        }
+        if (drawer_view.isDrawerOpen(GravityCompat.END)) {
+            println("---------isDrawerOpen---------")
+            drawer_view.closeDrawer(GravityCompat.END)
         }else{
+            println("openDrawer---------")
             drawer_view.openDrawer(GravityCompat.END,true)
         }
 
@@ -250,5 +259,17 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
     override fun onMapMarkerClick(postion: Int, data: BdModel?, marker: Marker) {
         behavior.state = STATE_HIDDEN
         super.onMapMarkerClick(postion, data, marker)
+    }
+
+    override fun onBackPressed() {
+        if(behavior.state != STATE_HIDDEN){
+            behavior.state = STATE_HIDDEN
+            return
+        }
+        if(drawer_view.isDrawerOpen(GravityCompat.END)){
+            drawer_view.closeDrawer(GravityCompat.END)
+            return
+        }
+        super.onBackPressed()
     }
 }

@@ -40,6 +40,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.set
 
 
@@ -110,10 +112,9 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
 
                 onMapMarkerClick(0,null,it)
             }else{
-                bindClusterManagerMarkerClick()?.onMarkerClick(it)
                 bdMapManager.findMarkerDataAndIndexByMarker(it,dataQueue)?.let {
                     pair ->
-                    initLastMarkerIcon()
+
                     mCurrentMarker = it
                     lastClickMarkerIcon = it.icon
                     mCurrentMarker?.icon = readBitmap
@@ -145,6 +146,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
 
 
     private   var   loadMarkerData = AtomicBoolean(false)
+    private   var   lock :Lock = ReentrantLock()
     /**
      * 加载地图marker数据
      */
@@ -156,11 +158,11 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
         }
         try {
             loadMarkerData.set(true)
+            lock.lock()
             GlobalScope.launch (Main){
                 showLoading()
                 withContext(IO){
                     dataQueue.clear()
-
                     dataQueue.addAll(searchMarkerData())
                     addClusterManagerData(dataQueue)
                     dataKeyMap.clear()
@@ -176,6 +178,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
             loadMarkerDataComplete()
         }finally {
             loadMarkerData.set(false)
+            lock.unlock()
         }
     }
 
@@ -236,6 +239,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
      * 通过当前坐标记录最佳轨迹路线图
      */
     open   fun   onFilterMapMarkerBestPath(latlng:LatLng){
+
          try {
              GlobalScope.launch(Main) {
                  if(customList.isEmpty()){
@@ -274,7 +278,10 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
                              .position(pathLatlngs[pathLatlngs.size-1]).animateType(
                                      MarkerOptions.MarkerAnimateType.drop).icon(endBitmap).draggable(false)
                      endMarker = bdMapManager.addSingleMarker(endmarker)
-                     showMapMarkerListInfo(0,pathDataQueue)
+                     if(!supportMapClusterValue){
+                         showMapMarkerListInfo(0,pathDataQueue)
+
+                     }
 
                  }
              }
@@ -537,6 +544,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
         /**
      * 查询地图数据
      */
+
     abstract  fun   searchMarkerData():List<T>
 
     protected var mShowAction: Animation? = null
@@ -700,12 +708,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
           return null
     }
 
-    /**
-     * 获取marker 点击事件
-     */
-    open  fun   bindClusterManagerMarkerClick():BaiduMap.OnMarkerClickListener?{
-        return null
-    }
+
 
 
 

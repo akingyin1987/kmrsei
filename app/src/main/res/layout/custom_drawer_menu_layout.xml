@@ -11,9 +11,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="match_parent"
-    android:layout_margin="3dp"
+    android:layout_marginStart="5dp"
     android:background="@color/white"
-    android:layout_gravity="right"
+    android:layout_gravity="end"
     android:padding="3dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
