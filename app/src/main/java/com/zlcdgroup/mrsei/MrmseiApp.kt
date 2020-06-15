@@ -38,6 +38,9 @@ import retrofit2.Retrofit
  * @version V1.0
  */
 class MrmseiApp :BaseApp() {
+
+
+
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
         val  configmodel : GlobalConfigModule.GlobalProvideModule =GlobalConfigModule.Builder().okhttpConfiguration(object :ClientModule.ClientProvideModule.OkhttpConfiguration{
             override fun configOkhttp(context: Context, builder: OkHttpClient.Builder) {
