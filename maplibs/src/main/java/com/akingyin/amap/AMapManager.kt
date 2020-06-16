@@ -131,7 +131,7 @@ class AMapManager(var aMap: AMap, var mapView: MapView, var activity: Activity, 
                            onChangeFinish: Func<CameraPosition>? = null, onChangeLocation: Func<CameraPosition>? = null) {
         aMap.setOnCameraChangeListener(object : AMap.OnCameraChangeListener{
             override fun onCameraChangeFinish(p0: CameraPosition?) {
-
+                 onChangeFinish?.invoke(p0)
             }
 
             override fun onCameraChange(p0: CameraPosition?) {
@@ -197,6 +197,28 @@ class AMapManager(var aMap: AMap, var mapView: MapView, var activity: Activity, 
      */
     private var aMapLocationListener: AMapLocationListener? = null
 
+    private val locationListener:AMap.OnMyLocationChangeListener?=null
+
+
+    /**
+     * 设置地图默认的定位
+     */
+    fun   registerAmapDefaultLocationListener(onLocationChange: (Location) -> Unit, onFristLocation: (Location) -> Unit){
+        locationListener?: AMap.OnMyLocationChangeListener{
+            if(!mapLoadComplete){
+                return@OnMyLocationChangeListener
+            }
+            it?.let{
+                location ->
+                if (firstLocation) {
+                    firstLocation = false
+                    onFristLocation(location)
+                }
+                onLocationChange(location)
+            }
+        }
+        aMap.setOnMyLocationChangeListener(locationListener)
+    }
 
     /**
      * 注册监听定位
@@ -276,16 +298,14 @@ class AMapManager(var aMap: AMap, var mapView: MapView, var activity: Activity, 
         mapView.onResume()
 
         if (autoLoc) {
-            aLocationService.start()
+            aMap.isMyLocationEnabled = true
         }
 
     }
 
     override fun onPause() {
         mapView.onPause()
-        if (autoLoc) {
-            aLocationService.stop()
-        }
+
 
 
     }
