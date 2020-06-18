@@ -71,6 +71,14 @@
         android:title="刷新推荐路径的最小距离"
         android:defaultValue="50"
         android:summary="50米"/>
+
+    <EditTextPreference
+        app:allowDividerBelow="true"
+        app:allowDividerAbove="true"
+        android:key="map_path_min_time"
+        android:title="刷新推荐路径的最短时间"
+        android:defaultValue="3"
+        android:summary="3分钟"/>
   </PreferenceCategory>
   <!-- 设置的类别 -->
   <PreferenceCategory

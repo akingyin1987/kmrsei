@@ -17,12 +17,13 @@
 package com.amap.clustering;
 
 
+import androidx.annotation.Nullable;
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.LatLng;
-import com.amap.api.maps.model.Marker;
 
 /**
  * ClusterItem represents a marker on the map.
+ * @author zlcd
  */
 public interface ClusterItem {
 
@@ -31,17 +32,19 @@ public interface ClusterItem {
      */
     LatLng getPosition();
 
-    /**
-     * The title of this marker.
-     */
-    String getTitle();
-
-    /**
-     * The description of this marker.
-     */
+    ///**
+    // * The title of this marker.
+    // */
+   String getTitle();
+    //
+    ///**
+    // * The description of this marker.
+    // */
     String getSnippet();
 
-    Marker getMarker();
+    //@Nullable
+    //Marker getMarker();
 
+    @Nullable
     BitmapDescriptor getBitmapDescriptor();
 }

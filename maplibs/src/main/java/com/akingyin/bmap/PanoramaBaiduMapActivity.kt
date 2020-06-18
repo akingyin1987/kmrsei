@@ -36,16 +36,10 @@ class PanoramaBaiduMapActivity : SimpleActivity() {
     override fun initInjection() {
         lat = intent.getDoubleExtra(LAT_KEY, lat)
         lng = intent.getDoubleExtra(LNG_KEY, lng)
-        addr = intent.getStringExtra(ADDR_KEY).run {
-            if (isNullOrEmpty()) {
-                ""
-            } else {
-                this
-            }
+        addr = intent.getStringExtra(ADDR_KEY)?:""
         }
-    }
 
-    override fun getLayoutId() = R.layout.activity_baidu_panorama
+    override fun getLayoutId()= R.layout.activity_baidu_panorama
 
     override fun initializationData(savedInstanceState: Bundle?) {
 
@@ -62,8 +56,8 @@ class PanoramaBaiduMapActivity : SimpleActivity() {
             setMarkerPosition(Point(lat,lng))
             setMarker(getDrawable(R.drawable.icon_openmap_mark))
         }
-                                                                                                        imageMarker.`setOnTabMarkListener` {
-           showTips(addr.isEmpty().yes { "这是目标位置" }.no { addr })
+        imageMarker.setOnTabMarkListener {
+            showTips(addr.isEmpty().yes { "这是目标位置" }.no { addr })
         }
         panorama.addMarker(imageMarker)
         panorama.setPanoramaViewListener(object :PanoramaViewListener{
@@ -76,7 +70,7 @@ class PanoramaBaiduMapActivity : SimpleActivity() {
             }
 
             override fun onLoadPanoramaEnd(p0: String?) {
-               println("onLoadPanoramaEnd")
+                println("onLoadPanoramaEnd")
             }
 
             override fun onMessage(p0: String?, p1: Int) {
@@ -89,7 +83,7 @@ class PanoramaBaiduMapActivity : SimpleActivity() {
             }
 
             override fun onLoadPanoramaError(p0: String?) {
-                 println("onLoadPanoramaError=$p0")
+                println("onLoadPanoramaError=$p0")
                 showError(p0)
             }
 
@@ -128,3 +122,8 @@ class PanoramaBaiduMapActivity : SimpleActivity() {
         panorama.destroy()
     }
 }
+
+
+
+
+

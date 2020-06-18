@@ -1,8 +1,8 @@
 package com.akingyin.base.rx
 
-import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.functions.Function
+import io.reactivex.rxjava3.functions.Function
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Observable
 import java.util.concurrent.TimeUnit
 
 /**
@@ -14,11 +14,12 @@ import java.util.concurrent.TimeUnit
 fun <T> Flowable<T>.retryWithDelay(maxRetries: Int, delayInMillis: Long) = retryWhen (RetryWithDelayFlowableFunction(maxRetries,delayInMillis))
 
 
-fun <T>Observable<T>.retryWithDelay(maxRetries: Int, delayInMillis: Long)= retryWhen(RetryWithDelayObservableFunction(maxRetries,delayInMillis))
+fun <T> Observable<T>.retryWithDelay(maxRetries: Int, delayInMillis: Long)= retryWhen(RetryWithDelayObservableFunction(maxRetries,delayInMillis))
 
 private   class    RetryWithDelayObservableFunction(private  val maxRetries: Int, private  val delayInMillis: Long) : Function<Observable<out  Throwable>,Observable<*>>{
 
     private var retryCount = 0
+
     override fun apply(attempts: Observable<out Throwable>): Observable<*> {
         return   attempts.flatMap { throwable ->
             if(retryCount++ < maxRetries){

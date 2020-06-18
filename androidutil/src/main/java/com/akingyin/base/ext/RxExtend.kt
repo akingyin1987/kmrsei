@@ -2,11 +2,12 @@ package com.akingyin.base.ext
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import autodispose2.ObservableSubscribeProxy
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider
+import autodispose2.autoDispose
 import com.akingyin.base.net.utils.RxSchedulers
-import com.uber.autodispose.ObservableSubscribeProxy
-import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
-import com.uber.autodispose.autoDisposable
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
+
 
 /**
  * @ Description:
@@ -21,5 +22,5 @@ import io.reactivex.Observable
 *
 * */
 fun <T> Observable<T>.transform(owner: LifecycleOwner): ObservableSubscribeProxy<T> {
-    return this.compose(RxSchedulers.IO_Main()).autoDisposable(AndroidLifecycleScopeProvider.from(owner, Lifecycle.Event.ON_DESTROY))
+    return this.compose(RxSchedulers.IO_Main()).autoDispose(AndroidLifecycleScopeProvider.from(owner, Lifecycle.Event.ON_DESTROY))
 }

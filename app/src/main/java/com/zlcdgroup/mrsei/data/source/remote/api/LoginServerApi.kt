@@ -2,7 +2,8 @@ package com.zlcdgroup.mrsei.data.source.remote.api
 
 import com.akingyin.base.net.mode.ApiResult
 import com.zlcdgroup.mrsei.data.source.remote.model.LoginResultModel
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
+
 import kotlinx.coroutines.Deferred
 import okhttp3.ResponseBody
 import retrofit2.http.*
@@ -21,7 +22,7 @@ interface LoginServerApi {
 
     @FormUrlEncoded
     @POST("login")
-    fun   login(@Field("data")data:String,@Field("token")token:String):Observable<ApiResult<LoginResultModel>>
+    fun   login(@Field("data")data:String,@Field("token")token:String): Observable<ApiResult<LoginResultModel>>
 
 
     @FormUrlEncoded

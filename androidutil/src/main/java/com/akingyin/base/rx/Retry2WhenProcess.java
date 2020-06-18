@@ -41,4 +41,14 @@ public class Retry2WhenProcess  implements Function<Observable<? extends Throwab
       });
     });
   }
+
+
+  public  void  test(){
+    Observable.just("1").retryWhen(new Function<Observable<Throwable>, ObservableSource<?>>() {
+      @Override public ObservableSource<?> apply(Observable<Throwable> throwableObservable)
+          throws Exception {
+        return null;
+      }
+    });
+  }
 }

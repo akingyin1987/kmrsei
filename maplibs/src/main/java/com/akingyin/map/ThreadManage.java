@@ -10,13 +10,13 @@ import java.util.concurrent.Executors;
  * @ Description:
  * @ Date 2019/12/30 16:06
  */
-public class ThreadManager {
+public class ThreadManage {
 
   private volatile static ExecutorService singleton;
 
   public static ExecutorService createPool(int poolSize) {
     if (singleton == null) {
-      synchronized (ThreadManager.class) {
+      synchronized (ThreadManage.class) {
         if (singleton == null) {
           singleton = Executors.newFixedThreadPool(poolSize);
         }
@@ -35,7 +35,7 @@ public class ThreadManager {
   }
 
 
-  private ThreadManager() {
+  private ThreadManage() {
 
   }
 }

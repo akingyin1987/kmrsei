@@ -1,20 +1,21 @@
 package com.zlcdgroup.mrsei.data.source.remote
 
-import android.os.Environment
+
 import com.akingyin.base.call.ApiCallBack
 import com.akingyin.base.net.config.CommonConstants.imei
 import com.akingyin.base.rx.RxUtil
 import com.akingyin.base.rx.retryWithDelay
-import com.akingyin.base.utils.FileUtils
+
 import com.zlcdgroup.mrsei.data.entity.PersonEntity
 import com.zlcdgroup.mrsei.data.source.IPersonSource
 import com.zlcdgroup.mrsei.data.source.remote.api.LoginServerApi
 import com.zlcdgroup.mrsei.data.source.remote.model.LoginResultModel
 import com.zlcdgroup.mrsei.utils.RQ
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.disposables.Disposable
+
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import java.io.File
+
 import javax.inject.Inject
 
 
@@ -51,7 +52,7 @@ class PersonRemoteSource @Inject constructor()  : IPersonSource{
         return null
     }
 
-     var disposable :Disposable?=null
+     var disposable : Disposable?=null
     override fun login(name: String, pass: String, callBack: ApiCallBack<LoginResultModel>) {
         try {
             val   serverApi = retrofits.create(LoginServerApi::class.java)

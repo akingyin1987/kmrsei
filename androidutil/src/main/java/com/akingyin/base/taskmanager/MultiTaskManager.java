@@ -13,9 +13,9 @@ import com.akingyin.base.taskmanager.enums.TaskManagerStatusEnum;
 import com.akingyin.base.taskmanager.enums.TaskStatusEnum;
 import com.akingyin.base.taskmanager.enums.ThreadTypeEnum;
 import com.blankj.utilcode.util.StringUtils;
-import io.reactivex.Observable;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -72,10 +72,10 @@ public class MultiTaskManager implements  ITaskResultCallBack{
     private   StringBuilder    errorMsg = new StringBuilder();
     private   String    lastErrorMsg;
 
-    private CompositeDisposable   mCompositeDisposable = new CompositeDisposable();
+    private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
 
-    public   void  addSubscription(Disposable  disposable){
+    public   void  addSubscription(Disposable disposable){
         mCompositeDisposable.add(disposable);
     }
 
@@ -119,7 +119,7 @@ public class MultiTaskManager implements  ITaskResultCallBack{
         // 创建线程池，核心线程数、最大线程数、空闲保持时间、队列长度、拒绝策略可自行定义
         taskManager.threadPool = new ThreadPoolExecutor(poolSize, poolSize*40,
             0L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<>(1024),
+            new LinkedBlockingQueue<>(MAX_CACHE_SIZE),
             new ThreadFactoryBuilder().setNameFormat("multitask-pool-%d").build(),new ThreadPoolExecutor.AbortPolicy());
          taskManager.nThreads = poolSize;
         return  taskManager;
@@ -173,6 +173,7 @@ public class MultiTaskManager implements  ITaskResultCallBack{
 
   private void executeTask(int  postion) {
     int   index = 1;
+
     for(AbsTaskRunner  taskRunner : queueTasks){
       if(index>= postion && index<(MAX_CACHE_SIZE+postion)){
         threadPool.execute(taskRunner);
@@ -326,6 +327,7 @@ public class MultiTaskManager implements  ITaskResultCallBack{
                 }
             }else{
                 status.getAndSet(5);
+
                 Disposable  disposable = Observable.just(count.get()).compose(RxUtil.IO_Main())
                     .subscribe(
                         integer -> callBack.onError(error,TaskManagerStatusEnum.NETError),

@@ -118,20 +118,20 @@ abstract class BaseAMapActivity : BaseNfcTagActivity() {
             when( aMapManager.aMap.myLocationStyle.myLocationType){
                 MyLocationStyle.LOCATION_TYPE_MAP_ROTATE_NO_CENTER->{
                     location_icon.setImageResource(R.drawable.main_icon_follow)
-                    aMapManager.aMap.myLocationStyle = MyLocationStyle().interval(3000)
-                            .myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW_NO_CENTER)
+                    aMapManager.aMap.myLocationStyle = MyLocationStyle().interval(3000).showMyLocation(true)
+                            .myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW)
                 }
 
-                MyLocationStyle.LOCATION_TYPE_FOLLOW_NO_CENTER->{
+                MyLocationStyle.LOCATION_TYPE_FOLLOW->{
                     location_icon.setImageResource(R.drawable.main_icon_location)
-                    aMapManager.aMap.myLocationStyle = MyLocationStyle().interval(3000)
+                    aMapManager.aMap.myLocationStyle = MyLocationStyle().interval(3000).showMyLocation(true)
                             .myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER)
 
                 }
 
                 MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER->{
                     location_icon.setImageResource(R.drawable.main_icon_compass)
-                    aMapManager.aMap.myLocationStyle = MyLocationStyle().interval(3000)
+                    aMapManager.aMap.myLocationStyle = MyLocationStyle().interval(3000).showMyLocation(true)
                             .myLocationType(MyLocationStyle.LOCATION_TYPE_MAP_ROTATE_NO_CENTER)
 
                 }
@@ -245,7 +245,7 @@ abstract class BaseAMapActivity : BaseNfcTagActivity() {
 
 
     private   fun  goToMapStreet(){
-        aMapManager.getMyLocationData().let {
+        aMapManager.getMyLocationData()?.let {
             locationData->
             startActivity(Intent(this, BaiduPanoramaActivity::class.java).apply {
                 putExtra("lat",locationData.latitude)
@@ -301,6 +301,7 @@ abstract class BaseAMapActivity : BaseNfcTagActivity() {
      * 获取到第一次定位信息
      */
     open   fun   onFristMyLocation(bdLocation: Location){
+        println("第一次获取定位----》")
         aMapManager.setMapCenter(bdLocation.latitude,bdLocation.longitude,aMapManager.getMapMaxZoomLevel()-1)
     }
 

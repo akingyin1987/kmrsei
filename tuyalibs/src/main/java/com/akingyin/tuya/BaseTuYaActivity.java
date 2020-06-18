@@ -18,16 +18,19 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.Toast;
+import autodispose2.AutoDispose;
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import com.akingyin.base.SimpleActivity;
+import com.akingyin.base.rx.RxUtil;
 import com.akingyin.base.utils.DateUtil;
 import com.akingyin.base.utils.StringUtils;
 import com.akingyin.tuya.shape.ShapeType;
 import com.blankj.utilcode.util.FileUtils;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -61,6 +64,7 @@ import org.jetbrains.annotations.Nullable;
  * intent.putExtra(TuYaActivity.KEY_SAVE_RENAME, realName + "_tuya.jpg");<br>
  * intent.putExtra("image_id", bi.getId());<br>
  * startActivity(intent);<br>
+ * @author zlcd
  */
 public abstract class BaseTuYaActivity extends SimpleActivity implements TuyaListion {
 
@@ -263,13 +267,12 @@ public abstract class BaseTuYaActivity extends SimpleActivity implements TuyaLis
         if (tuyaView.isShowDrag() && tuyaView.getShapCount() > 0) {
           tuyaView.setShowDrag(false);
           tuyaView.invalidate();
-          Disposable disposable = Observable.timer(500, TimeUnit.MILLISECONDS)
-              .observeOn(AndroidSchedulers.mainThread())
-              .subscribe(new Consumer<Long>() {
-                @Override public void accept(Long aLong) throws Exception {
-                  saveBitmap();
-                }
-              });
+         Observable.timer(500, TimeUnit.MILLISECONDS)
+              .compose(RxUtil.IO_Main())
+              .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(BaseTuYaActivity.this)))
+              .subscribe(
+                  aLong -> saveBitmap()
+              );
 
         } else {
           saveBitmap();
@@ -492,9 +495,10 @@ public abstract class BaseTuYaActivity extends SimpleActivity implements TuyaLis
   private Disposable subscriber = null;
 
   @Override public void onDelayInvalidate(long delay) {
+
     subscriber = Observable.timer(delay, TimeUnit.MILLISECONDS)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribeOn(Schedulers.io())
+         .compose(RxUtil.IO_Main())
+        .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(BaseTuYaActivity.this)))
         .subscribe(new Consumer<Long>() {
           @Override public void accept(Long aLong) throws Exception {
             tuyaView.setShowDrag(false);

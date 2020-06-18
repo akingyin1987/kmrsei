@@ -46,12 +46,12 @@ class MarkerInfoListRecycleAdapter<T: IMarker> : BaseQuickAdapter<T, BaseViewHol
             }
         }
         detai_img.click {
-            iOperationListen?.onObjectImg(holder.adapterPosition,item,detai_img)
+            iOperationListen?.onObjectImg(holder.bindingAdapterPosition,item,detai_img)
         }
 
         val tv_index: TextView = holder.getView(R.id.tv_index)
 
-        tv_index.text=MessageFormat.format("{0}",holder.adapterPosition+1)
+        tv_index.text=MessageFormat.format("{0}",holder.bindingAdapterPosition+1)
 
         holder.getView<View>(R.id.detai_title).gone()
         val detai_info: TextView = holder.getView(R.id.detai_info)
@@ -64,19 +64,19 @@ class MarkerInfoListRecycleAdapter<T: IMarker> : BaseQuickAdapter<T, BaseViewHol
         val  iv1 : ImageView = holder.getView(R.id.iv_line1)
         val  iv2 : ImageView = holder.getView(R.id.iv_line2)
         val  iv3 : ImageView = holder.getView(R.id.iv_line3)
-        iOperationListen?.initView(left,center,right,holder.adapterPosition,item,other,iv1,iv2,iv3)
+        iOperationListen?.initView(left,center,right,holder.bindingAdapterPosition,item,other,iv1,iv2,iv3)
         other.click {
-            iOperationListen?.onOtherOperation(holder.adapterPosition,item,other)
+            iOperationListen?.onOtherOperation(holder.bindingAdapterPosition,item,other)
         }
         left.click {
-            iOperationListen?.onOperation(holder.adapterPosition,item)
+            iOperationListen?.onOperation(holder.bindingAdapterPosition,item)
         }
         center.click {
-            iOperationListen?.onPathPlan(holder.adapterPosition,item)
+            iOperationListen?.onPathPlan(holder.bindingAdapterPosition,item)
         }
 
         right.click {
-            iOperationListen?.onTuWen(holder.adapterPosition,item)
+            iOperationListen?.onTuWen(holder.bindingAdapterPosition,item)
         }
     }
 }

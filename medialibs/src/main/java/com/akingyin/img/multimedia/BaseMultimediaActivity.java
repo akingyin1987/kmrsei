@@ -31,6 +31,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import autodispose2.AutoDispose;
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import com.akingyin.base.dialog.MaterialDialogUtil;
 import com.akingyin.base.utils.FileUtils;
 import com.akingyin.base.utils.PreferencesUtil;
@@ -49,13 +51,11 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnItemDragListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.uber.autodispose.AutoDispose;
-import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
-import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Iterator;
@@ -1061,9 +1061,10 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
             return temps;
           }
         })
+
        .subscribeOn(Schedulers.io())
        .observeOn(AndroidSchedulers.mainThread())
-        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+        .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
 
         .subscribe(new Consumer<List<T>>() {
           @Override public void accept(List<T> ts) throws Exception {
@@ -1072,7 +1073,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
               t.setSelected(false);
               t.setViewStatus(ViewDataStatusEnum.NULL);
             }
-            adapter.setNewData(ts);
+            adapter.setNewInstance(ts);
           }
         }, new Consumer<Throwable>() {
           @Override public void accept(Throwable throwable) throws Exception {
@@ -1125,7 +1126,7 @@ public abstract class BaseMultimediaActivity<T extends IDataMultimedia>
         })
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+        .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
 
         .subscribe(new Consumer<String>() {
           @Override public void accept(String s) throws Exception {

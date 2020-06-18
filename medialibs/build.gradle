@@ -39,7 +39,6 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
   implementation "androidx.appcompat:appcompat:$appCompatVersion"
   implementation "androidx.core:core-ktx:$coreKtxVersion"
-
   testImplementation 'junit:junit:4.13'
   implementation project(':androidutil')
   androidTestImplementation 'androidx.test.ext:junit:1.1.1'

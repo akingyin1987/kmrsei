@@ -43,7 +43,7 @@ abstract  class  IMarker constructor(var uuid:String ) {
      * 定位对象基础图片路径
      * @return
      */
- var   markerDetaiImgPath:String?=null
+    var   markerDetaiImgPath:String?=null
 
 
 
@@ -57,7 +57,7 @@ abstract  class  IMarker constructor(var uuid:String ) {
      * marker 在地图上显示的说明
      * @return
      */
-     var   title: String?=null
+     var   titleStr: String?=null
 
     /**
      * 定位对象

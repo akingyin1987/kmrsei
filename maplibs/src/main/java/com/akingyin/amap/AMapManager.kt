@@ -74,8 +74,11 @@ class AMapManager(var aMap: AMap, var mapView: MapView, var activity: Activity, 
             mapType = getShowMapType()
             //开始交通地图
             isTrafficEnabled = getShowMapTraffic()
+            myLocationStyle = MyLocationStyle().showMyLocation(true)
+                    .interval(3000).myLocationType(MyLocationStyle.LOCATION_TYPE_MAP_ROTATE_NO_CENTER)
             // 开启定位图层
             isMyLocationEnabled = true
+
         }
 
     }
@@ -183,7 +186,7 @@ class AMapManager(var aMap: AMap, var mapView: MapView, var activity: Activity, 
     /**
      * 获取当前位置信息
      */
-    fun getMyLocationData(): Location {
+    fun getMyLocationData(): Location? {
         return aMap.myLocation
     }
 
@@ -197,14 +200,15 @@ class AMapManager(var aMap: AMap, var mapView: MapView, var activity: Activity, 
      */
     private var aMapLocationListener: AMapLocationListener? = null
 
-    private val locationListener:AMap.OnMyLocationChangeListener?=null
+    private var locationListener:AMap.OnMyLocationChangeListener?=null
 
 
     /**
      * 设置地图默认的定位
      */
     fun   registerAmapDefaultLocationListener(onLocationChange: (Location) -> Unit, onFristLocation: (Location) -> Unit){
-        locationListener?: AMap.OnMyLocationChangeListener{
+      locationListener =  locationListener?: AMap.OnMyLocationChangeListener{
+            println("获取定位")
             if(!mapLoadComplete){
                 return@OnMyLocationChangeListener
             }
@@ -297,9 +301,7 @@ class AMapManager(var aMap: AMap, var mapView: MapView, var activity: Activity, 
     override fun onResume() {
         mapView.onResume()
 
-        if (autoLoc) {
-            aMap.isMyLocationEnabled = true
-        }
+
 
     }
 

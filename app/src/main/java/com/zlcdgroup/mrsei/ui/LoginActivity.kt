@@ -7,30 +7,30 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.util.Base64
-import androidx.viewbinding.ViewBinding
+import autodispose2.ScopeProvider
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider
+import autodispose2.autoDispose
 import com.akingyin.base.BaseDaggerActivity
 import com.akingyin.base.dialog.MaterialDialogUtil
 import com.akingyin.base.ext.*
 import com.akingyin.base.utils.DateUtil
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.base.utils.StringUtils
-import com.akingyin.bmap.CoordinatePickupBaiduMapActivity
-import com.akingyin.bmap.SelectLocationBaiduActivity
 import com.akingyin.tuya.BaseTuYaActivity
 import com.alibaba.fastjson.JSONObject
 import com.baidu.mapapi.model.LatLng
 import com.baidu.mapapi.utils.AreaUtil
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.uber.autodispose.ScopeProvider
-import com.uber.autodispose.autoDisposable
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
+
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
 import com.zlcdgroup.mrsei.utils.ThemeHelper
-import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable.just
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
+
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.delay
 import permissions.dispatcher.ktx.withPermissionsCheck
@@ -76,6 +76,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
 
         btn_login.click {
             testCameraAuth()
+
             userLoginPersenterImpl.login(et_mobile.text.toString(),et_password.text.toString())
         }
 
@@ -142,18 +143,30 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
         }
     }
 
+    var  d1 :Disposable? = null
+    var  d2 :Disposable? = null
+    var  d3 :Disposable? = null
     override fun startRequest() {
-      Completable.create {
-
-      }.autoDisposable(ScopeProvider.UNBOUND).subscribe {
+     d1 = Completable.create {
+            it.onComplete()
+      }.autoDispose(Completable.complete()).subscribe {
 
       }
-      Observable.just("1")
-              .autoDisposable(Completable.complete())
-
+     d2 = Observable.just("1").autoDispose(ScopeProvider.UNBOUND)
               .subscribe {
-                   println("on complete")
+                  println("it1=${it}")
               }
+      d3 =  Observable.just("2").autoDispose(AndroidLifecycleScopeProvider.from(this))
+                .subscribe {
+                    println("it=${it}")
+                }
+
+        println("d1=${d1?.isDisposed}   d2=${d2?.isDisposed}   d3=${d3?.isDisposed}")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        println("ondestory ->d1=${d1?.isDisposed}   d2=${d2?.isDisposed}   d3=${d3?.isDisposed}")
     }
 
     override fun dismissLoading() {
@@ -198,7 +211,8 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
         // startActivityForResult<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"),requestCode = 100)
         // startActivity<TestMarkerMapActivity>()
         //  startActivity<TestTuwenActivity>()
-        startActivity<TestBaiduMapActivity>()
+
+        startActivity<TestAmapActivity>()
     }
 
     override fun setAppTheme(theme: String) {

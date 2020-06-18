@@ -756,6 +756,8 @@ public abstract class AbstractAMapMarkersActivity extends BaseAMapActivity imple
    */
   protected abstract   int   getMinDisFlushPath();
 
+
+
   @Override public void onOtherOperation(int postion, IMarkerModel iMarkerModel, View view) {
 
   }
@@ -818,7 +820,7 @@ public abstract class AbstractAMapMarkersActivity extends BaseAMapActivity imple
     public Marker getMarker(IMarkerModel  iMarkerModel){
       for (int i = 0; i < mIMarkerModels.size(); i++) {
         if(mIMarkerModels.get(i) == iMarkerModel){
-          return getMarker(i);
+
         }
       }
       return null;

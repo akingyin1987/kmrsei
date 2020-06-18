@@ -11,16 +11,16 @@ package com.akingyin.base.net.utils;
 import com.akingyin.base.net.RxException;
 import com.akingyin.base.net.exception.ApiException;
 import com.akingyin.base.net.mode.ApiResult;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
-import io.reactivex.ObservableTransformer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableEmitter;
+import io.reactivex.rxjava3.core.ObservableOnSubscribe;
+import io.reactivex.rxjava3.core.ObservableSource;
+import io.reactivex.rxjava3.core.ObservableTransformer;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * 调度器
@@ -108,7 +108,7 @@ public class RxSchedulers {
 
   public   void    demo(){
    ApiResult<String> apiResult = new ApiResult<>();
-   Disposable  disposable = Observable.just(apiResult).compose(RxSchedulers.<ApiResult<String>>IO_Main())
+   Disposable disposable = Observable.just(apiResult).compose(RxSchedulers.<ApiResult<String>>IO_Main())
         .compose(RxSchedulers.<String>handleResult())
         .subscribe(new Consumer<String>() {
           @Override public void accept(String s) throws Exception {
@@ -116,7 +116,7 @@ public class RxSchedulers {
           }
         },new RxException<Throwable>(new Consumer<Throwable>() {
           @Override public void accept(Throwable throwable) throws Exception {
-            throwable.printStackTrace();
+
           }
         }){
 

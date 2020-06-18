@@ -12,13 +12,14 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+import autodispose2.AutoDispose;
+import autodispose2.ScopeProvider;
 import com.akingyin.base.rx.RxUtil;
 import com.akingyin.tuya.shape.Pt;
 import com.blankj.utilcode.util.SizeUtils;
-import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.functions.Function;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -421,7 +422,7 @@ public class TuyaCircleView extends View {
   public    void     saveTuyaViewByLocalCircle(LoctionCircle loctionCircle, final String  dir,
       final float scale){
 
-    Disposable  disposable = Observable.just(loctionCircle).map(new Function<LoctionCircle, String>() {
+     Observable.just(loctionCircle).map(new Function<LoctionCircle, String>() {
       @Override public String apply(LoctionCircle loctionCircle) throws Exception {
         String    name = UUID.randomUUID().toString().replace("-","")+".jpg";
         Bitmap   mBitmap = null;
@@ -447,9 +448,6 @@ public class TuyaCircleView extends View {
           } else {
             result = saveBitmap.compress(Bitmap.CompressFormat.JPEG, BaseTuYaActivity.quality,out);
           }
-
-
-
         }catch (Exception | Error e){
           e.printStackTrace();
         } finally {
@@ -464,7 +462,7 @@ public class TuyaCircleView extends View {
         }
         return result?outFile.getAbsolutePath():"";
       }
-    }).compose(RxUtil.<String>IO_Main())
+    }).compose(RxUtil.IO_Main()).to(AutoDispose.autoDisposable(ScopeProvider.UNBOUND))
         .subscribe(new Consumer<String>() {
           @Override public void accept(String s) throws Exception {
 

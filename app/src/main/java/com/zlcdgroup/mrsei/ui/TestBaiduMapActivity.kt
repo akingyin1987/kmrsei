@@ -23,6 +23,7 @@ import com.akingyin.base.dialog.TaskShowDialog
 import com.akingyin.base.utils.StringUtils
 import com.akingyin.bmap.AbstractBaiduMapMarkersActivity
 import com.akingyin.img.ImageLoadUtil
+import com.akingyin.map.ThreadManage
 import com.akingyin.map.adapter.MarkerInfoListRecycleAdapter
 
 import com.baidu.mapapi.clusterutil.clustering.ClusterManager
@@ -62,7 +63,7 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
     val  list = arrayListOf<BdModel>()
     override fun searchMarkerData(): List<BdModel> {
       if(list.size == 0){
-          for (index in 0..200){
+          for (index in 0 until 200){
               list.add(BdModel(StringUtils.getUUID()).apply {
                   baseInfo="test${index}  --->${supportMapCluster()}---${null == bitmap}"
                   if(supportMapCluster() && (null == bitmap  || bitmap!!.bitmap.isRecycled)){
@@ -163,6 +164,7 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
     override fun initClusterManager(baiduMap: BaiduMap) {
         super.initClusterManager(baiduMap)
         clusterManager = ClusterManager(this,bdMapManager.baiduMap)
+        clusterManager.setExecutorService(ThreadManage.createPool(3))
 
 
     }

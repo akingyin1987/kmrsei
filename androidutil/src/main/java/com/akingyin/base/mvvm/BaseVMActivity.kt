@@ -5,11 +5,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider
 import com.akingyin.base.BaseDataBindActivity
 import com.akingyin.base.mvvm.viewmodel.BaseViewModel
 import com.akingyin.base.net.exception.ApiException
 import com.akingyin.base.repo.StateActionEvent
-import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
+
 
 /**
  * @ Description:

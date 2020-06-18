@@ -11,9 +11,7 @@ package com.akingyin.map.ui
 
 import android.os.Bundle
 import android.text.InputType
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.core.text.isDigitsOnly
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -47,14 +45,22 @@ class MapSettingFragment : PreferenceFragmentCompat() {
         }
         setPreferencesFromResource(R.xml.map_preferences_fragment, rootKey)
 
+        findPreference<EditTextPreference>("map_path_min_time")?.let {
+            it.summary = preferenceManager.sharedPreferences.getString("map_path_min_time","3")+"(分)"
+            it.setOnBindEditTextListener {
+                editText ->
+                editText.inputType = InputType.TYPE_CLASS_NUMBER
+
+            }
+        }
         findPreference<EditTextPreference>("map_path_min_dis")?.let {
-            it.summary = preferenceManager.sharedPreferences.getString("map_path_min_dis","")
+            it.summary = preferenceManager.sharedPreferences.getString("map_path_min_dis","50")+"(米)"
             it.setOnBindEditTextListener {
                   editText ->
                 editText.inputType = InputType.TYPE_CLASS_NUMBER
             }
-            it.setOnPreferenceChangeListener { preference, newValue ->
-                 it.summary = newValue.toString()
+            it.setOnPreferenceChangeListener { _, newValue ->
+                 it.summary = "$newValue(米)"
                 true
             }
         }

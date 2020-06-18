@@ -17,6 +17,7 @@
 package com.amap.clustering.algo;
 
 import androidx.collection.LruCache;
+import com.akingyin.map.ThreadManage;
 import com.amap.clustering.Cluster;
 import com.amap.clustering.ClusterItem;
 import java.util.Collection;
@@ -71,10 +72,11 @@ public class PreCachingAlgorithmDecorator<T extends ClusterItem> implements Algo
         Set<? extends Cluster<T>> results = getClustersInternal(discreteZoom);
         // TODO: Check if requests are already in-flight.
         if (mCache.get(discreteZoom + 1) == null) {
-            new Thread(new PrecacheRunnable(discreteZoom + 1)).start();
+
+            ThreadManage.createPool(5).execute(new PrecacheRunnable(discreteZoom + 1));
         }
         if (mCache.get(discreteZoom - 1) == null) {
-            new Thread(new PrecacheRunnable(discreteZoom - 1)).start();
+            ThreadManage.createPool(5).execute(new PrecacheRunnable(discreteZoom - 1));
         }
         return results;
     }

@@ -93,7 +93,7 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
         final int discreteZoom = (int) zoom;
 
         final double zoomSpecificSpan = MAX_DISTANCE_AT_ZOOM / Math.pow(2, discreteZoom) / 256;
-        System.out.println("NonHierarchicalDistanceBasedAlgorithm"+discreteZoom+":"+zoomSpecificSpan);
+
         final Set<QuadItem<T>> visitedCandidates = new HashSet<>();
         final Set<Cluster<T>> results = new HashSet<>();
         final Map<QuadItem<T>, Double> distanceToCluster = new HashMap<>();
@@ -129,7 +129,7 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
                     Double existingDistance = distanceToCluster.get(clusterItem);
                     double distance = distanceSquared(clusterItem.getPoint(), candidate.getPoint());
                     if (existingDistance != null) {
-                        System.out.println("existingDistance="+existingDistance+":"+distance);
+
                         // Item already belongs to another cluster. Check if it's closer to this cluster.
                         if (existingDistance < distance) {
                             continue;

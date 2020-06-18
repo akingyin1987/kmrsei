@@ -37,6 +37,7 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import com.akingyin.map.R;
+import com.akingyin.map.ThreadManage;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.Projection;
 import com.amap.api.maps.model.BitmapDescriptor;
@@ -289,7 +290,8 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements ClusterRen
             });
             renderTask.setProjection(projection);
             renderTask.setMapZoom(mMap.getCameraPosition().zoom);
-            new Thread(renderTask).start();
+            ThreadManage.createPool(2).execute(renderTask);
+           // new Thread(renderTask).start();
         }
 
         public void queue(Set<? extends Cluster<T>> clusters) {
@@ -572,14 +574,20 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements ClusterRen
          * @param m        the markerWithPosition to remove.
          */
         public void remove(boolean priority, Marker m) {
-            lock.lock();
-            sendEmptyMessage(BLANK);
-            if (priority) {
-                mOnScreenRemoveMarkerTasks.add(m);
-            } else {
-                mRemoveMarkerTasks.add(m);
+            try{
+                lock.lock();
+                sendEmptyMessage(BLANK);
+                if (priority) {
+                    mOnScreenRemoveMarkerTasks.add(m);
+                } else {
+                    mRemoveMarkerTasks.add(m);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+                lock.unlock();
             }
-            lock.unlock();
+
         }
 
         /**

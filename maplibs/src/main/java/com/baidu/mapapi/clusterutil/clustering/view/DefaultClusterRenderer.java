@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import androidx.annotation.Nullable;
 import com.akingyin.map.R;
+import com.akingyin.map.ThreadManage;
 import com.baidu.mapapi.clusterutil.MarkerManager;
 import com.baidu.mapapi.clusterutil.clustering.Cluster;
 import com.baidu.mapapi.clusterutil.clustering.ClusterItem;
@@ -263,7 +264,8 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
             });
             renderTask.setProjection(mMap.getProjection());
             renderTask.setMapZoom(mMap.getMapStatus().zoom);
-            new Thread(renderTask).start();
+            ThreadManage.createPool(2).execute(renderTask);
+            //new Thread(renderTask).start();
         }
 
         public void queue(Set<? extends Cluster<T>> clusters) {

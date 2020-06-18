@@ -17,15 +17,17 @@ import com.qmuiteam.qmui.util.QMUIResHelper;
 import com.qmuiteam.qmui.widget.QMUILoadingView;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialogView;
 import com.qmuiteam.qmui.widget.textview.QMUISpanTouchFixTextView;
-import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Consumer;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Administrator on 2017/12/29.
+ *
+ * @author Administrator
+ * @date 2017/12/29
  */
 
 public class TaskShowDialog {
