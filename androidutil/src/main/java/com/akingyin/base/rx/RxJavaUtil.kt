@@ -81,6 +81,20 @@ object RxJavaUtil {
         }
     }
 
+
+    fun <T> createObservableData(t: T): Observable<T> {
+        return Observable.create { emitter ->
+            try {
+                emitter.onNext(t)
+                emitter.onComplete()
+            }catch (e:Exception){
+                e.printStackTrace()
+                emitter.onError(e)
+            }
+
+        }
+    }
+
     /**
      * 创建Flowable 定阅
      */

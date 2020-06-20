@@ -27,7 +27,7 @@ import com.amap.clustering.ClusterItem
 
     override fun getLng() = alng
 
-    override fun isComplete() = true
+    override fun isComplete() = false
 
     override fun getPosition(): LatLng {
        return  LatLng(alat,alng)
@@ -50,7 +50,7 @@ import com.amap.clustering.ClusterItem
 
     var  abitmap : BitmapDescriptor?= null
    override fun getBitmapDescriptor(): BitmapDescriptor? {
-       println("abitmap=${abitmap == null}")
+
        return abitmap
     }
 }

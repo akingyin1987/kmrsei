@@ -11,7 +11,6 @@ import com.akingyin.map.TestUtil
 import com.amap.api.maps.model.*
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.model.AMarker
-import com.zlcdgroup.mrsei.data.model.BdModel
 import com.zlcdgroup.nfcsdk.RfidInterface
 
 /**
@@ -59,7 +58,7 @@ class TestAmapActivity : AbstractAmapMarkersActivity<AMarker>() {
                 list.add(AMarker(StringUtils.getUUID(), localInfo[0], localInfo[1]).apply {
                     baseInfo = "test${index}  --->${supportMapCluster()}---${null == bitmapDescriptor}"
                     abitmap =  abitmap?:getBitmapDescriptor(this)
-                    println("abitmap=${null == abitmap}")
+
 
                 })
             }
@@ -77,7 +76,6 @@ class TestAmapActivity : AbstractAmapMarkersActivity<AMarker>() {
     }
 
     override fun getBitmapDescriptor(data: AMarker): BitmapDescriptor {
-        println("getBitmapDescriptor=${null == personADescriptor}")
 
          personADescriptor=personADescriptor?: BitmapDescriptorFactory.fromResource(R.drawable.person)
         return  personADescriptor

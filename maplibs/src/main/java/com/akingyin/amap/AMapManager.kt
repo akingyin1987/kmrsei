@@ -208,7 +208,7 @@ class AMapManager(var aMap: AMap, var mapView: MapView, var activity: Activity, 
      */
     fun   registerAmapDefaultLocationListener(onLocationChange: (Location) -> Unit, onFristLocation: (Location) -> Unit){
       locationListener =  locationListener?: AMap.OnMyLocationChangeListener{
-            println("获取定位")
+
             if(!mapLoadComplete){
                 return@OnMyLocationChangeListener
             }

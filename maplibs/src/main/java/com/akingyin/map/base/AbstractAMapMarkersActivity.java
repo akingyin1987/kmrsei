@@ -39,7 +39,6 @@ import com.amap.overlayutil.OverlayManager;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -333,23 +332,19 @@ public abstract class AbstractAMapMarkersActivity extends BaseAMapActivity imple
         filterMakerToPath(temps);
         isMapLoaded.getAndSet(false);
         List<IMarkerModel> iMarkerModels1  = new ArrayList<>();
-        Iterator<IMarkerModel> iterator = iMarkerModels.iterator();
-        while (iterator.hasNext()){
-          IMarkerModel  iMarkerModel = iterator.next();
-          if(!iMarkerModel.isComplete()){
+        for (IMarkerModel iMarkerModel : iMarkerModels) {
+          if (!iMarkerModel.isComplete()) {
             iMarkerModels1.add(iMarkerModel);
           }
         }
         if(displayInOrder() || null == currentLatlng){
-          Collections.sort(iMarkerModels1, new Comparator<IMarkerModel>() {
-            @Override public int compare(IMarkerModel o1, IMarkerModel o2) {
-              if(o1.getAppointSort() > o2.getAppointSort()){
-                return 1;
-              }else if(o1.getAppointSort() < o2.getAppointSort()){
-                return  -1;
-              }
-              return 0;
+          Collections.sort(iMarkerModels1, (o1, o2) -> {
+            if(o1.getAppointSort() > o2.getAppointSort()){
+              return 1;
+            }else if(o1.getAppointSort() < o2.getAppointSort()){
+              return  -1;
             }
+            return 0;
           });
         }else{
            CoordinateConverter  coordinateConverter = new CoordinateConverter();

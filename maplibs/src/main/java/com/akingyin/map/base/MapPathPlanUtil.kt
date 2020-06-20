@@ -47,19 +47,18 @@ object MapPathPlanUtil {
                 }
             }
             val pathPlanModelList = getCalculatDistance(iMarkerModels, currentLatlnt)
-            pathPlanModelList.forEach {
-                println("dis=${it.distance}")
-            }
-            if (iMarkerModels.size <= MIN_MARKER_COUNT) {
-                val iMarkerModelList: MutableList<T> = LinkedList()
-                for (planModel in pathPlanModelList) {
-                    planModel.iMarkerModel?.let {
-                        iMarkerModelList.add(it)
-                    }
 
-                }
-                iMarkerModelList.addAll(0, tempcompleteMarkers)
-                return iMarkerModelList
+            //当前数，小于指定量则不提供建议路径
+            if (iMarkerModels.size <= MIN_MARKER_COUNT) {
+//                val iMarkerModelList: MutableList<T> = LinkedList()
+//                for (planModel in pathPlanModelList) {
+//                    planModel.iMarkerModel?.let {
+//                        iMarkerModelList.add(it)
+//                    }
+//
+//                }
+//                iMarkerModelList.addAll(0, tempcompleteMarkers)
+                return iMarkerModels
             }
 //            if (pathPlanModelList.size > MAX_MARKER_COUNT) {
 //               pathPlanModelList = pathPlanModelList.toMutableList().subList(0, MAX_MARKER_COUNT).toList()

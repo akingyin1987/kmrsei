@@ -12,6 +12,7 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -49,7 +50,7 @@ abstract class ClientModule {
                           okHttpClient: OkHttpClient, httpUrl: HttpUrl):Retrofit{
             builder.baseUrl(httpUrl)
                     .client(okHttpClient)
-            builder.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            builder.addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                     .addConverterFactory(FastJsonConverterFactory.create())
             configuration.configRetrofit(context,builder)
             return  builder.build()

@@ -98,10 +98,10 @@
             </ScrollView>
         </LinearLayout>
 
-        <ImageView
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/signin_line" />
+            android:layout_height="2px"
+            android:background="@drawable/signin_line" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="32dp"

@@ -32,7 +32,7 @@ ext{
   }
   dependVersion = [
       androidSupportSdkVersion: "27.1.1",
-      retrofitSdkVersion      : "2.8.1",
+      retrofitSdkVersion      : "2.9.0",
       okhttpSdkVersion        : "4.6.0",
       glideSdkVersion         : "4.11.0",
       rxJava                  : "3.0.0",
@@ -55,7 +55,8 @@ ext{
       retrofit                : "com.squareup.retrofit2:retrofit:$dependVersion.retrofitSdkVersion",
       retrofitConverterGson   : "com.squareup.retrofit2:converter-gson:$dependVersion.retrofitSdkVersion",
       retrofitAdapterRxjava2  : "com.squareup.retrofit2:adapter-rxjava2:$dependVersion.retrofitSdkVersion",
-      retrofitAdapterCoroutines : "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
+      retrofitAdapterCoroutines : "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2",
+      retrofitAdapterRxjava3  : "com.squareup.retrofit2:adapter-rxjava3:$dependVersion.retrofitSdkVersion"
 
   ]
 

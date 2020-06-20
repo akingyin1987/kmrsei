@@ -56,8 +56,8 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
     var pathRead = BitmapDescriptorFactory.fromAsset("icon_road_red_arrow.png")
     var pathGreen = BitmapDescriptorFactory.fromAsset("icon_road_green_arrow.png")
     protected var readBitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_openmap_mark)
-    protected var startBitmap = BitmapDescriptorFactory.fromResource(R.drawable.ic_start)
-    protected var endBitmap = BitmapDescriptorFactory.fromResource(R.drawable.ic_end)
+    protected var startBitmap = BitmapDescriptorFactory.fromResource(R.drawable.amap_start)
+    protected var endBitmap = BitmapDescriptorFactory.fromResource(R.drawable.amap_end)
     protected var personADescriptor = BitmapDescriptorFactory.fromResource(R.drawable.person)
 
     private   var  supportMapClusterValue = false
@@ -115,6 +115,7 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
                     pair ->
                     mCurrentMarker = it
                     lastClickMarkerIcon = it.options.icon
+
                     mCurrentMarker?.setIcon(readBitmap)
                     onMapMarkerClick(pair.first,pair.second,it)
                 }
@@ -185,8 +186,8 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
      * 数据加载完成UI 线程
      */
     open   fun    loadMarkerDataComplete(){
-        println("loadMarkerDataComplete")
 
+        mPopupBottonWindow?.dismiss()
         loadMapMarker(firstLoadMarker)
         firstLoadMarker = false
     }
@@ -241,6 +242,8 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
         try {
             GlobalScope.launch(Dispatchers.Main) {
                 if(customList.isEmpty()){
+                    pathGreen = pathGreen?:BitmapDescriptorFactory.fromAsset("icon_road_green_arrow.png")
+                    pathRead = pathRead?:BitmapDescriptorFactory.fromAsset("icon_road_red_arrow.png")
                     customList.add(pathGreen)
                     customList.add(pathRead)
                 }
@@ -249,10 +252,12 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
                 pathDataQueue.filter {
                     !it.isComplete()
                 }
+                println("路径显示：${pathDataQueue.size}")
                 pathDataQueue =  withContext(Dispatchers.IO){
 
                     MapPathPlanUtil.getOptimalPathPlan(pathDataQueue,com.baidu.mapapi.model.LatLng(latlng.latitude,latlng.longitude)).toMutableList()
                 }
+                println("计算后路径显示：${pathDataQueue.size}")
 
                 val  pathIndex = mutableListOf<Int>()
                 val  pathLatlngs = pathDataQueue.map {
@@ -267,6 +272,9 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
                 endMarker?.remove()
 
                 if(pathLatlngs.size>1){
+                    startBitmap = startBitmap?:BitmapDescriptorFactory.fromResource(R.drawable.amap_start)
+                    endBitmap = endBitmap?:BitmapDescriptorFactory.fromResource(R.drawable.amap_end)
+                    println("startBitmap=${null == startBitmap}")
                     polylineMarker =  aMapManager.addPolylineMarker(pathLatlngs,pathIndex,customList)
                     val startmarker: MarkerOptions = MarkerOptions()
                             .position(pathLatlngs[0]).icon(startBitmap).draggable(getMapMarkerDrag())
@@ -337,7 +345,7 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
                 it as T
             }.toMutableList())
             viewPager2.startAnimation(mShowAction)
-            viewPager2.currentItem = postion
+            viewPager2.setCurrentItem(postion,false)
             if (showPathPlan()) {
                 mPopupBottonWindow?.isOutsideTouchable = false
                 mPopupBottonWindow?.isFocusable = false
@@ -349,7 +357,10 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
                 initLastMarkerIcon()
                 mCurrentMarker = aMapManager.findMarkerByData(viewDatas[postion])
                 if(null != mCurrentMarker){
+
                     lastClickMarkerIcon = mCurrentMarker?.options?.icon
+
+                    println("找到上一次marker=${null == lastClickMarkerIcon}")
                 }
                 mCurrentMarker?.setIcon(readBitmap)
             }
@@ -386,23 +397,27 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
     }
 
     fun    initLastMarkerIcon(){
+        println("还原当前marker 图标--->${null== lastClickMarkerIcon}")
         if(null != mCurrentMarker && null != lastClickMarkerIcon){
+            println("last=${lastClickMarkerIcon == readBitmap},${lastClickMarkerIcon == personADescriptor}")
             mCurrentMarker?.setIcon(lastClickMarkerIcon)
+            lastClickMarkerIcon = null
         }
     }
 
     /**
      * 处理当前点击的marker
      */
-    fun   initClickMarkerIcon(marker: Marker){
+    private fun   initClickMarkerIcon(marker: Marker){
         mCurrentMarker = marker
         lastClickMarkerIcon = marker.options.icon
+        readBitmap = readBitmap?:BitmapDescriptorFactory.fromResource(R.drawable.icon_openmap_mark)
         mCurrentMarker?.setIcon(readBitmap)
         aMapManager.setMapCenter(marker.position.latitude,marker.position.longitude,aMapManager.getCurrentZoomLevel())
     }
 
     open   fun   onViewPageSelected(data:T){
-        println("onViewPageSelected=${data.uuid}")
+
         aMapManager.findMarkerByData(data)?.let {
             initLastMarkerIcon()
             initClickMarkerIcon(it)
@@ -418,7 +433,9 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
                 isFocusable = true
                 setBackgroundDrawable(BitmapDrawable(resources,""))
                 setOnDismissListener {
+                     println("setOnDismissListener--->${null == lastClickMarkerIcon}")
                     if(null != mCurrentMarker && null != lastClickMarkerIcon){
+
                         mCurrentMarker?.setIcon(lastClickMarkerIcon)
                     }
                 }
@@ -642,6 +659,7 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
     }
 
     override fun onFristMyLocation(bdLocation: Location) {
+        super.onFristMyLocation(bdLocation)
         if(showPathPlan()){
             onFilterMapMarkerBestPath(LatLng(bdLocation.latitude,bdLocation.longitude))
         }
