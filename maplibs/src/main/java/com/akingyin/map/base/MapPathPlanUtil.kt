@@ -98,7 +98,6 @@ object MapPathPlanUtil {
                 //}
             }
            return  sortPathPlanModels.map {
-                 println("返回结果->>>${DistanceUtil.getDistance(currentLatlnt,it.latLng)}  uuid=${it.iMarkerModel?.uuid}")
 
                 it.iMarkerModel!!
             }

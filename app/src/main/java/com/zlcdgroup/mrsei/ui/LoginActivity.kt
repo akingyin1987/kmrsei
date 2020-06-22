@@ -212,7 +212,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
         // startActivity<TestMarkerMapActivity>()
         //  startActivity<TestTuwenActivity>()
 
-        startActivity<TestAmapActivity>()
+        startActivity<TestBaiduMapActivity>()
     }
 
     override fun setAppTheme(theme: String) {

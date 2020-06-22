@@ -19,8 +19,11 @@ package com.amap.clustering;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
+import androidx.annotation.Nullable;
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.model.CameraPosition;
+import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.clustering.algo.Algorithm;
 import com.amap.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
@@ -220,8 +223,10 @@ public class ClusterManager<T extends ClusterItem> implements
 
     @Override
     public void onCameraChangeFinish(CameraPosition cameraPosition) {
+
         if (mRenderer instanceof AMap.OnCameraChangeListener) {
             ((AMap.OnCameraChangeListener) mRenderer).onCameraChangeFinish(cameraPosition);
+            System.out.println("onCamera Change Finish");
         }
 
         mAlgorithm.onCameraChange(mMap.getCameraPosition());
@@ -229,12 +234,27 @@ public class ClusterManager<T extends ClusterItem> implements
         // delegate clustering to the algorithm
         if (mAlgorithm.shouldReclusterOnMapMovement()) {
             cluster();
-
+            System.out.println("shouldReclusterOnMapMovement");
             // Don't re-compute clusters if the map has just been panned/tilted/rotated.
         } else if (mPreviousCameraPosition == null || mPreviousCameraPosition.zoom != mMap.getCameraPosition().zoom) {
             mPreviousCameraPosition = mMap.getCameraPosition();
             cluster();
         }
+    }
+
+    /**
+     * 通过marker 获取数据
+     * @param marker
+     * @return
+     */
+    @Nullable
+    public T findClusterMarkerData(Marker marker) {
+        return mRenderer.findClusterMarkerData(marker);
+    }
+
+    @Nullable
+    public Cluster<T> findClusterMarkersData(Marker marker) {
+        return mRenderer.findClusterMarkersData(marker);
     }
 
     /**
@@ -324,5 +344,19 @@ public class ClusterManager<T extends ClusterItem> implements
      */
     public interface OnClusterItemInfoWindowClickListener<T extends ClusterItem> {
         void onClusterItemInfoWindowClick(T item);
+    }
+
+
+    public void zoomToSpan() {
+        if (mMap == null) {
+            return;
+        }
+        Collection<T>  items = mAlgorithm.getItems();
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (T item : items) {
+            builder.include(item.getPosition());
+        }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),0));
     }
 }

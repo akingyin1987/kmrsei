@@ -60,6 +60,7 @@ import static com.baidu.mapapi.clusterutil.clustering.algo.NonHierarchicalDistan
 
 /**
  * The default view for a ClusterManager. Markers are animated in and out of clusters.
+ * @author zlcd
  */
 public class DefaultClusterRenderer<T extends ClusterItem> implements
         com.baidu.mapapi.clusterutil.clustering.view.ClusterRenderer<T> {
@@ -561,9 +562,17 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
          * @param to     the position to animate to.
          */
         public void animate(MarkerWithPosition marker, LatLng from, LatLng to) {
-            lock.lock();
-            mAnimationTasks.add(new AnimationTask(marker, from, to));
-            lock.unlock();
+
+            try {
+                lock.lock();
+                mAnimationTasks.add(new AnimationTask(marker, from, to));
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+                lock.unlock();
+            }
+
+
         }
 
         /**

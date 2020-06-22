@@ -229,11 +229,7 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
     }
 
     override fun hideLoadDialog() {
-        loadingDialog?.let {
-            it.isShowing.yes {
-                it.dismiss()
-            }.no {  }
-        }
+        loadingDialog?.dismiss()
     }
 
     override fun showLoading() {

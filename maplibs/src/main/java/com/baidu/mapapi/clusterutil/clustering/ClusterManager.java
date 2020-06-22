@@ -168,6 +168,9 @@ public class ClusterManager<T extends ClusterItem> implements
         }
     }
 
+
+
+
     /**
      * Force a re-cluster. You may want to call this after adding new item(s).
      */
@@ -201,6 +204,22 @@ public class ClusterManager<T extends ClusterItem> implements
 
     @Override
     public void onMapStatusChange(MapStatus mapStatus) {
+        //if (mRenderer instanceof BaiduMap.OnMapStatusChangeListener) {
+        //    ((BaiduMap.OnMapStatusChangeListener) mRenderer).onMapStatusChange(mapStatus);
+        //}
+        //
+        //// Don't re-compute clusters if the map has just been panned/tilted/rotated.
+        //MapStatus position = mMap.getMapStatus();
+        //if (mPreviousCameraPosition != null && mPreviousCameraPosition.zoom == position.zoom) {
+        //    return;
+        //}
+        //mPreviousCameraPosition = mMap.getMapStatus();
+        //
+        //cluster();
+    }
+
+    @Override
+    public void onMapStatusChangeFinish(MapStatus mapStatus) {
         if (mRenderer instanceof BaiduMap.OnMapStatusChangeListener) {
             ((BaiduMap.OnMapStatusChangeListener) mRenderer).onMapStatusChange(mapStatus);
         }
@@ -213,11 +232,6 @@ public class ClusterManager<T extends ClusterItem> implements
         mPreviousCameraPosition = mMap.getMapStatus();
 
         cluster();
-    }
-
-    @Override
-    public void onMapStatusChangeFinish(MapStatus mapStatus) {
-
     }
 
     @Override

@@ -16,6 +16,8 @@
 
 package com.amap.clustering.view;
 
+import androidx.annotation.Nullable;
+import com.amap.api.maps.model.Marker;
 import com.amap.clustering.Cluster;
 import com.amap.clustering.ClusterItem;
 import com.amap.clustering.ClusterManager;
@@ -41,6 +43,22 @@ public interface ClusterRenderer<T extends ClusterItem> {
 
     void setOnClusterItemInfoWindowClickListener(
         ClusterManager.OnClusterItemInfoWindowClickListener<T> listener);
+
+
+    /**
+     * 通过marker 返回聚合点数据(单个)
+     * @param marker
+     * @return
+     */
+    @Nullable
+    T   findClusterMarkerData(Marker marker);
+
+    /**
+     * 返回聚合点数据
+     * @param marker
+     * @return
+     */
+    @Nullable Cluster<T> findClusterMarkersData(Marker  marker);
 
     /**
      * Called to set animation on or off

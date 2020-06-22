@@ -136,6 +136,12 @@ public class MarkerManager implements BaiduMap.OnMarkerClickListener, BaiduMap.O
             mMarkers.clear();
         }
 
+        /**
+         * 这个可以得到一个集合的镜像，
+         * 它的返回结果不可直接被改变
+         * 即表示此集合只可读
+         * @return
+         */
         public java.util.Collection<Marker> getMarkers() {
             return Collections.unmodifiableCollection(mMarkers);
         }

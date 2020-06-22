@@ -36,6 +36,7 @@ import android.os.MessageQueue;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import androidx.annotation.Nullable;
 import com.akingyin.map.R;
 import com.akingyin.map.ThreadManage;
 import com.amap.api.maps.AMap;
@@ -177,6 +178,14 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements ClusterRen
         mClusterManager.getMarkerCollection().setOnInfoWindowClickListener(null);
         mClusterManager.getClusterMarkerCollection().setOnMarkerClickListener(null);
         mClusterManager.getClusterMarkerCollection().setOnInfoWindowClickListener(null);
+    }
+
+    @Nullable @Override public T findClusterMarkerData(Marker marker) {
+        return mMarkerCache.get(marker);
+    }
+
+    @Nullable @Override public Cluster<T> findClusterMarkersData(Marker marker) {
+        return mMarkerToCluster.get(marker);
     }
 
     private LayerDrawable makeClusterBackground() {
@@ -360,6 +369,7 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements ClusterRen
         @SuppressLint("NewApi")
         @Override
         public void run() {
+
             if (clusters.equals(DefaultClusterRenderer.this.mClusters)) {
                 mCallback.run();
                 return;
@@ -574,8 +584,8 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements ClusterRen
          * @param m        the markerWithPosition to remove.
          */
         public void remove(boolean priority, Marker m) {
+            lock.lock();
             try{
-                lock.lock();
                 sendEmptyMessage(BLANK);
                 if (priority) {
                     mOnScreenRemoveMarkerTasks.add(m);
@@ -599,8 +609,15 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements ClusterRen
          */
         public void animate(MarkerWithPosition marker, LatLng from, LatLng to) {
             lock.lock();
-            mAnimationTasks.add(new AnimationTask(marker, from, to));
-            lock.unlock();
+            try{
+                mAnimationTasks.add(new AnimationTask(marker, from, to));
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+                lock.unlock();
+            }
+
+
         }
 
         /**
@@ -614,10 +631,17 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements ClusterRen
         @TargetApi(Build.VERSION_CODES.HONEYCOMB)
         public void animateThenRemove(MarkerWithPosition marker, LatLng from, LatLng to) {
             lock.lock();
-            AnimationTask animationTask = new AnimationTask(marker, from, to);
-            animationTask.removeOnAnimationComplete(mClusterManager.getMarkerManager());
-            mAnimationTasks.add(animationTask);
-            lock.unlock();
+            try{
+                AnimationTask animationTask = new AnimationTask(marker, from, to);
+                animationTask.removeOnAnimationComplete(mClusterManager.getMarkerManager());
+                mAnimationTasks.add(animationTask);
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+                lock.unlock();
+            }
+
+
         }
 
         @Override
@@ -684,8 +708,8 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements ClusterRen
          * @return true if there is still work to be processed.
          */
         public boolean isBusy() {
+            lock.lock();
             try {
-                lock.lock();
                 return !(mCreateMarkerTasks.isEmpty() && mOnScreenCreateMarkerTasks.isEmpty() &&
                         mOnScreenRemoveMarkerTasks.isEmpty() && mRemoveMarkerTasks.isEmpty() &&
                         mAnimationTasks.isEmpty()
@@ -765,6 +789,7 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements ClusterRen
     protected void onBeforeClusterRendered(Cluster<T> cluster, MarkerOptions markerOptions) {
         int bucket = getBucket(cluster);
         BitmapDescriptor descriptor = mIcons.get(bucket);
+
         if (descriptor == null) {
             mColoredCircleBackground.getPaint().setColor(getColor(bucket));
             descriptor = BitmapDescriptorFactory.fromBitmap(mIconGenerator.makeIcon(getClusterText(bucket)));
@@ -854,6 +879,9 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements ClusterRen
                             markerOptions.position(animateFrom);
                         } else {
                             markerOptions.position(item.getPosition());
+                        }
+                        if(null != item.getBitmapDescriptor()){
+                            markerOptions.icon(item.getBitmapDescriptor());
                         }
                         if (!(item.getTitle()== null) && !(item.getSnippet() == null)) {
                             markerOptions.title(item.getTitle());

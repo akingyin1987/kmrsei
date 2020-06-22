@@ -124,12 +124,11 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
             }
 
         }
-        bdMapManager.setMapStatusChange(onChange = {
-
+        bdMapManager.setMapStatusChange(onChangeFinish = {
             it?.let {
                 mapStatus ->
                 if(supportMapCluster()){
-                    bindClusterManagerMapStatusChange()?.onMapStatusChange(mapStatus)
+                    bindClusterManagerMapStatusChange()?.onMapStatusChangeFinish(mapStatus)
                 }
             }
 
@@ -158,6 +157,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
             return
         }
         try {
+            loadMarkerComplete.set(false)
             loadMarkerData.set(true)
             lock.lock()
             GlobalScope.launch (Main){
@@ -213,7 +213,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
     override fun changeMyLocation(bdLocation: BDLocation) {
         super.changeMyLocation(bdLocation)
 
-        if(!loadMarkerData.get() && showPathPlan()){
+        if(!loadMarkerData.get() && showPathPlan() && getMapLoadMarkerComplete()){
             lastLocation?.let {
                 val  dis = DistanceUtil.getDistance(LatLng(it.latitude,it.longitude),LatLng(bdLocation.latitude,bdLocation.longitude))
                 if(dis>= getMinDisFlushPath()){
@@ -224,7 +224,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
                     onFilterMapMarkerBestPath(LatLng(bdLocation.latitude,bdLocation.longitude))
                 }
 
-            }
+            }?:onFilterMapMarkerBestPath(LatLng(bdLocation.latitude,bdLocation.longitude))
 
 
         }
@@ -470,6 +470,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
         }
         try {
           showLoading()
+            loadMarkerComplete.set(false)
           GlobalScope.launch(Main) {
               withContext(IO){
                   val   list = mutableListOf<T>().apply {
@@ -505,6 +506,8 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
           }
         }catch (e : Exception){
             e.printStackTrace()
+        }finally {
+            loadMarkerComplete.set(true)
         }
     }
 
@@ -606,6 +609,13 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
     /** 第一次加载 marker */
     private   var   firstLoadMarker = true
     private   var   firstonResume = true
+
+    /** 地图marker 是否加载完成 */
+    private   var   loadMarkerComplete = AtomicBoolean(false)
+
+    /** 地图上marker 是否加载完成 */
+    open fun    getMapLoadMarkerComplete() = loadMarkerComplete.get()
+
     override fun onResume() {
         super.onResume()
         minDisFlushPath = SPUtils.getInstance("map_setting").getString("map_path_min_dis","50").toInt()
@@ -665,12 +675,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
         bdMapManager.recycleMapBitmap(pathGreen,pathRead,readBitmap,startBitmap,endBitmap,personDescriptor)
     }
 
-    override fun onFristMyLocation(bdLocation: BDLocation) {
-        if(showPathPlan()){
 
-            onFilterMapMarkerBestPath(LatLng(bdLocation.latitude,bdLocation.longitude))
-        }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_map_setting,menu)

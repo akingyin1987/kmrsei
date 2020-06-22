@@ -8,10 +8,14 @@ import androidx.appcompat.widget.Toolbar
 import com.akingyin.amap.AbstractAmapMarkersActivity
 import com.akingyin.base.utils.StringUtils
 import com.akingyin.map.TestUtil
+import com.amap.api.maps.AMap
 import com.amap.api.maps.model.*
+import com.amap.clustering.ClusterManager
+import com.amap.clustering.algo.GridBasedAlgorithm
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.model.AMarker
 import com.zlcdgroup.nfcsdk.RfidInterface
+
 
 /**
  * @ Description:
@@ -57,7 +61,7 @@ class TestAmapActivity : AbstractAmapMarkersActivity<AMarker>() {
                 val localInfo = TestUtil.Latlng()
                 list.add(AMarker(StringUtils.getUUID(), localInfo[0], localInfo[1]).apply {
                     baseInfo = "test${index}  --->${supportMapCluster()}---${null == bitmapDescriptor}"
-                    abitmap =  abitmap?:getBitmapDescriptor(this)
+                     abitmap?:getBitmapDescriptor(this)
 
 
                 })
@@ -72,13 +76,14 @@ class TestAmapActivity : AbstractAmapMarkersActivity<AMarker>() {
 
     override fun onFilterMarkerData(data: AMarker):Boolean{
         data.abitmap?:getBitmapDescriptor(data)
+
         return true
     }
 
     override fun getBitmapDescriptor(data: AMarker): BitmapDescriptor {
 
-         personADescriptor=personADescriptor?: BitmapDescriptorFactory.fromResource(R.drawable.person)
-        return  personADescriptor
+
+        return  personADescriptor?:BitmapDescriptorFactory.fromResource(R.drawable.person)
     }
 
     override fun startRequest() {
@@ -101,10 +106,72 @@ class TestAmapActivity : AbstractAmapMarkersActivity<AMarker>() {
 
     }
 
-    override fun supportMapCluster()=false
+
 
     override fun onMapMarkerClick(postion: Int, data: AMarker?, marker: Marker) {
         println("onMapMarkerClick-->>>>>")
         super.onMapMarkerClick(postion, data, marker)
+    }
+
+    lateinit var  clusterManager : ClusterManager<AMarker>
+    override fun initClusterManager(aMap: AMap) {
+        super.initClusterManager(aMap)
+        clusterManager = ClusterManager(this,aMap)
+        clusterManager.setAnimation(true)
+        clusterManager.algorithm = GridBasedAlgorithm()
+    }
+
+    override fun onShowClusterManagerChange(change: Boolean) {
+        super.onShowClusterManagerChange(change)
+        if(!change){
+            println("清除---->>>>>>")
+            clusterManager.clearItems()
+            clusterManager.markerCollection.clear()
+            clusterManager.clusterMarkerCollection.clear()
+            println("清玩数据完成---->>>>>>>")
+        }else{
+            aMapManager.cleanOverlayManagerMarkers()
+        }
+    }
+
+    override fun addClusterManagerData(data: List<AMarker>) {
+        super.addClusterManagerData(data)
+        println("开始添加聚合数据------>>>>>>")
+        data.forEach {
+           it.abitmap = getBitmapDescriptor(it)
+
+        }
+        clusterManager.addItems(data)
+        clusterManager.cluster()
+
+    }
+
+    override fun loadMapClusterMarker(frist: Boolean) {
+        super.loadMapClusterMarker(frist)
+        if(frist){
+            clusterManager.zoomToSpan()
+        }
+    }
+
+    override fun bindClusterManagerMapStatusChange(): AMap.OnCameraChangeListener? {
+        return clusterManager
+    }
+
+    override fun onClusterMarkerClick(marker: Marker) {
+        super.onClusterMarkerClick(marker)
+        println("onClusterMarkerClick-->${marker.options.icon},${marker.options.icon == personADescriptor}")
+
+        clusterManager.findClusterMarkerData(marker)?.let {
+            initClickMarkerIcon(marker)
+            showMapMarkerListInfo(0, arrayListOf<AMarker>().apply {
+                add(it)
+            },true)
+        }
+
+        clusterManager.findClusterMarkersData(marker)?.let {
+            initClickMarkerIcon(marker)
+
+        }
+
     }
 }

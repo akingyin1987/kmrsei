@@ -378,6 +378,7 @@ class AMapManager(var aMap: AMap, var mapView: MapView, var activity: Activity, 
     }
 
     fun<T : IMarker>  findMarkerByData(data:T): Marker?{
+        println("findMarkerByData=${overlayManager?.getSize()}")
         return overlayManager?.getMarker(data.uuid)
     }
 
@@ -410,6 +411,10 @@ class AMapManager(var aMap: AMap, var mapView: MapView, var activity: Activity, 
 
         fun removeOverlay(option: MarkerOptions) {
             overlays.remove(option)
+        }
+
+        fun   getSize():Int{
+            return  overlays.size
         }
 
         fun removeAll() {
