@@ -188,7 +188,8 @@ abstract class BaseAMapActivity : BaseNfcTagActivity() {
 
         zoom_in.click {
             val  currentZoom = aMapManager.getCurrentZoomLevel()
-            if(currentZoom == aMapManager.getMapMaxZoomLevel()){
+            println("zoom=${currentZoom}")
+            if(currentZoom >= aMapManager.getMapMaxZoomLevel()){
                 it.isEnabled = false
                 showError("已到支持最大级别")
                 return@click
@@ -197,7 +198,7 @@ abstract class BaseAMapActivity : BaseNfcTagActivity() {
             aMapManager.setMapZoom(currentZoom+0.5F)
         }
         zoom_out.click {
-            val  currentZoom = aMapManager.getCurrentZoomLevel()
+            val  currentZoom = aMapManager.aMap.cameraPosition.zoom
             if(currentZoom <= aMapManager.getMapMinZoomLevel()){
                 it.isEnabled = false
                 showError("已到支持最小级别")
@@ -283,6 +284,21 @@ abstract class BaseAMapActivity : BaseNfcTagActivity() {
      */
     open  fun  onMapLoadComplete(){
 
+    }
+
+    fun   initMapZoomUiEnable(){
+        val   zoom  =  aMapManager.aMap.cameraPosition.zoom
+        println("initMapZoomUiEnable=${zoom}")
+        if(zoom < aMapManager.getMapMaxZoomLevel() && zoom > aMapManager.getMapMinZoomLevel()){
+            zoom_in.isEnabled = true
+            zoom_out.isEnabled = true
+        }else if(zoom >= aMapManager.getMapMaxZoomLevel()){
+            zoom_out.isEnabled = true
+            zoom_in.isEnabled = false
+        }else if(zoom <= aMapManager.getMapMinZoomLevel()){
+            zoom_out.isEnabled = false
+            zoom_in.isEnabled = true
+        }
     }
 
     open  fun    onSeeAllMarkers(){

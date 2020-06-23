@@ -5,11 +5,11 @@
 package com.baidu.mapapi.clusterutil.clustering.algo;
 
 import androidx.collection.LruCache;
+import com.akingyin.map.ThreadManage;
 import com.baidu.mapapi.clusterutil.clustering.Cluster;
 import com.baidu.mapapi.clusterutil.clustering.ClusterItem;
 import java.util.Collection;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -29,11 +29,7 @@ public class PreCachingAlgorithmDecorator<T extends ClusterItem> implements Algo
         mAlgorithm = algorithm;
     }
 
-    private ExecutorService   mExecutorService;
 
-    public void setExecutorService(ExecutorService executorService) {
-        mExecutorService = executorService;
-    }
 
     @Override
     public void addItem(T item) {
@@ -65,20 +61,18 @@ public class PreCachingAlgorithmDecorator<T extends ClusterItem> implements Algo
 
     @Override
     public Set<? extends Cluster<T>> getClusters(double zoom) {
-        System.out.println("onGetClusters--->zoom"+zoom);
+
         int discreteZoom = (int) zoom;
         Set<? extends Cluster<T>> results = getClustersInternal(discreteZoom);
         // TODO: Check if requests are already in-flight.
         if (mCache.get(discreteZoom + 1) == null) {
-            if(null != mExecutorService){
-                mExecutorService.execute(new PrecacheRunnable(discreteZoom + 1));
-            }
+            ThreadManage.createPool(5).execute(new PrecacheRunnable(discreteZoom + 1));
+
 
         }
         if (mCache.get(discreteZoom - 1) == null) {
-            if(null != mExecutorService){
-                mExecutorService.execute(new PrecacheRunnable(discreteZoom - 1));
-            }
+            ThreadManage.createPool(5).execute(new PrecacheRunnable(discreteZoom - 1));
+
         }
         return results;
     }
@@ -86,6 +80,16 @@ public class PreCachingAlgorithmDecorator<T extends ClusterItem> implements Algo
     @Override
     public Collection<T> getItems() {
         return mAlgorithm.getItems();
+    }
+
+    @Override public void setMaxDistanceBetweenClusteredItems(int maxDistance) {
+        mAlgorithm.setMaxDistanceBetweenClusteredItems(maxDistance);
+        System.out.println("百度->设置两点最大距离："+maxDistance);
+        clearCache();
+    }
+
+    @Override public int getMaxDistanceBetweenClusteredItems() {
+        return mAlgorithm.getMaxDistanceBetweenClusteredItems();
     }
 
     private Set<? extends Cluster<T>> getClustersInternal(int discreteZoom) {

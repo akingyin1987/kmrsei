@@ -162,6 +162,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
             lock.lock()
             GlobalScope.launch (Main){
                 showLoading()
+
                 withContext(IO){
                     dataQueue.clear()
                     dataQueue.addAll(searchMarkerData())
@@ -190,7 +191,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
     open   fun    loadMarkerDataComplete(){
         println("loadMarkerDataComplete")
 
-        loadMapMarker(firstLoadMarker)
+        loadMapMarkerView(firstLoadMarker)
         firstLoadMarker = false
     }
 
@@ -203,7 +204,6 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
     open  fun    loadMapMarkerViewComplete(){
         if(fristLoadMarker){
             fristLoadMarker = false
-            bdMapManager.zoomToSpan()
         }
     }
 
@@ -459,10 +459,24 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
         mPopupBottonWindow?.dismiss()
     }
 
+
+    /**
+     * 加载地图marker 之前 调用
+     */
+    open   fun    onBeforeLoadMapMarker(){
+        mPopupBottonWindow?.dismiss()
+        startMarker?.remove()
+        endMarker?.remove()
+        polylineMarker?.remove()
+        if(showPathPlan()){
+            bdMapManager.cleanOverlayManagerMarkers()
+        }
+    }
+
     /**
      * 加载地图marker
      */
-    open   fun    loadMapMarker(firstLoad:Boolean = false){
+    open   fun    loadMapMarkerView(firstLoad:Boolean = false){
         println("loadMapMarker")
         if(loadMarkerData.get()){
             showError("当前数据正在加载中请稍后再试")
@@ -470,8 +484,9 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
         }
         try {
           showLoading()
-            loadMarkerComplete.set(false)
+          loadMarkerComplete.set(false)
           GlobalScope.launch(Main) {
+              onBeforeLoadMapMarker()
               withContext(IO){
                   val   list = mutableListOf<T>().apply {
                       dataQueue.forEach {
@@ -492,7 +507,6 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
                                   .draggable(getMapMarkerDrag())
 
                       }
-                      println("addDataToMap->"+DateUtil.getNowTimeString(DateUtil.HH_MM_SS_SSS)+":"+Thread.currentThread().name+":"+Thread.currentThread().id)
                       bdMapManager.addDataToMap(overlays)
                       if(firstLoad){
                           bdMapManager.zoomToSpan()

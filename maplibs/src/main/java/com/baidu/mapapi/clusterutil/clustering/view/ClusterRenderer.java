@@ -40,6 +40,13 @@ public interface ClusterRenderer<T extends ClusterItem> {
      @Nullable
      T   findClusterMarkerData(Marker marker);
 
+
+    @Nullable
+    Set<T>  findClusterSingleMarkerDatas();
+
+    @Nullable
+    Set<Cluster<T>>  findClusterMarkerDatas();
+
     /**
      * 返回聚合点数据
      * @param marker
@@ -57,4 +64,9 @@ public interface ClusterRenderer<T extends ClusterItem> {
      * Called when the view is removed.
      */
     void onRemove();
+
+    /**
+     * Called to set animation on or off
+     */
+    void setAnimation(boolean animate);
 }

@@ -16,8 +16,6 @@ import java.util.Set;
  */
 public interface Algorithm<T extends ClusterItem> {
 
-
-
     void addItem(T item);
 
     void addItems(Collection<T> items);
@@ -30,7 +28,9 @@ public interface Algorithm<T extends ClusterItem> {
 
     Collection<T> getItems();
 
-    //void setMaxDistanceBetweenClusteredItems(int maxDistance);
-    //
-    //int getMaxDistanceBetweenClusteredItems();
+
+
+    void setMaxDistanceBetweenClusteredItems(int maxDistance);
+
+    int getMaxDistanceBetweenClusteredItems();
 }

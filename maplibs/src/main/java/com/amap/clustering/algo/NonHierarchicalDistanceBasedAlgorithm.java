@@ -103,6 +103,7 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
 
         final double zoomSpecificSpan = mMaxDistance / Math.pow(2, discreteZoom) / 256;
 
+        System.out.println("amap ="+discreteZoom+",zoomSpecificSpan="+zoomSpecificSpan);
         final Set<QuadItem<T>> visitedCandidates = new HashSet<QuadItem<T>>();
         final Set<Cluster<T>> results = new HashSet<Cluster<T>>();
         final Map<QuadItem<T>, Double> distanceToCluster = new HashMap<QuadItem<T>, Double>();
@@ -166,6 +167,7 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
 
     @Override
     public void setMaxDistanceBetweenClusteredItems(int maxDistance) {
+        System.out.println("ampa->setMaxDistanceBetweenClusteredItems");
         mMaxDistance = maxDistance;
     }
 

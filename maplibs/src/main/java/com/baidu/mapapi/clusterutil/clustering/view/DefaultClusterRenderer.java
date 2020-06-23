@@ -55,21 +55,20 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.baidu.mapapi.clusterutil.clustering.algo.NonHierarchicalDistanceBasedAlgorithm.MAX_DISTANCE_AT_ZOOM;
+
 
 
 /**
  * The default view for a ClusterManager. Markers are animated in and out of clusters.
  * @author zlcd
  */
-public class DefaultClusterRenderer<T extends ClusterItem> implements
-        com.baidu.mapapi.clusterutil.clustering.view.ClusterRenderer<T> {
+public class DefaultClusterRenderer<T extends ClusterItem> implements ClusterRenderer<T> {
     private static final boolean SHOULD_ANIMATE = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     private final BaiduMap mMap;
     private final IconGenerator mIconGenerator;
     private final ClusterManager<T> mClusterManager;
     private final float mDensity;
-
+    private boolean mAnimate;
     private static final int[] BUCKETS = {10, 20, 50, 100, 200, 500, 1000};
     private ShapeDrawable mColoredCircleBackground;
 
@@ -119,6 +118,7 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
 
     public DefaultClusterRenderer(Context context, BaiduMap map, ClusterManager<T> clusterManager) {
         mMap = map;
+        mAnimate = true;
         mDensity = context.getResources().getDisplayMetrics().density;
         mIconGenerator = new IconGenerator(context);
         mIconGenerator.setContentView(makeSquareTextView(context));
@@ -132,8 +132,22 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
          return mMarkerCache.get(marker);
     }
 
+    @Nullable @Override public Set<T> findClusterSingleMarkerDatas() {
+        return mMarkerCache.mCache.keySet();
+    }
+
+    @Nullable @Override public Set<Cluster<T>> findClusterMarkerDatas() {
+        return mClusterToMarker.keySet();
+    }
+
     @Nullable @Override public Cluster<T> findClusterMarkersData(Marker marker) {
         return mMarkerToCluster.get(marker);
+    }
+
+
+
+    @Override public void setAnimation(boolean animate) {
+        this.mAnimate = animate;
     }
 
     @Override
@@ -265,7 +279,7 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
             });
             renderTask.setProjection(mMap.getProjection());
             renderTask.setMapZoom(mMap.getMapStatus().zoom);
-            ThreadManage.createPool(2).execute(renderTask);
+            ThreadManage.createPool(5).execute(renderTask);
             //new Thread(renderTask).start();
         }
 
@@ -350,11 +364,11 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
             final Set<MarkerWithPosition> markersToRemove = mMarkers;
             final LatLngBounds visibleBounds = mMap.getMapStatus().bound;
             // TODO: Add some padding, so that markers can animate in from off-screen.
-
+            // 当聚合点添加动画
             // Find all of the existing clusters that are on-screen. These are candidates for
             // markers to animate from.
             List<Point> existingClustersOnScreen = null;
-            if (DefaultClusterRenderer.this.mClusters != null && SHOULD_ANIMATE) {
+            if (DefaultClusterRenderer.this.mClusters != null && SHOULD_ANIMATE && mAnimate) {
                 existingClustersOnScreen = new ArrayList<Point>();
                 for (Cluster<T> c : DefaultClusterRenderer.this.mClusters) {
                     if (shouldRenderAsCluster(c) && visibleBounds.contains(c.getPosition())) {
@@ -369,7 +383,7 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
                     new ConcurrentHashMap<MarkerWithPosition, Boolean>());
             for (Cluster<T> c : clusters) {
                 boolean onScreen = visibleBounds.contains(c.getPosition());
-                if (zoomingIn && onScreen && SHOULD_ANIMATE) {
+                if (zoomingIn && onScreen && SHOULD_ANIMATE && mAnimate) {
                     Point point = mSphericalMercatorProjection.toPoint(c.getPosition());
                     Point closest = findClosestCluster(existingClustersOnScreen, point);
                     if (closest != null) {
@@ -393,7 +407,7 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
             // Find all of the new clusters that were added on-screen. These are candidates for
             // markers to animate from.
             List<Point> newClustersOnScreen = null;
-            if (SHOULD_ANIMATE) {
+            if (SHOULD_ANIMATE && mAnimate) {
                 newClustersOnScreen = new ArrayList<Point>();
                 for (Cluster<T> c : clusters) {
                     if (shouldRenderAsCluster(c) && visibleBounds.contains(c.getPosition())) {
@@ -408,7 +422,7 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
                 boolean onScreen = visibleBounds.contains(marker.position);
                 // Don't animate when zooming out more than 3 zoom levels.
                 // TODO: drop animation based on speed of device & number of markers to animate.
-                if (!zoomingIn && zoomDelta > -3 && onScreen && SHOULD_ANIMATE) {
+                if (!zoomingIn && zoomDelta > -3 && onScreen && SHOULD_ANIMATE && mAnimate) {
                     final Point point = mSphericalMercatorProjection.toPoint(marker.position);
                     final Point closest = findClosestCluster(newClustersOnScreen, point);
                     if (closest != null) {
@@ -453,23 +467,13 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
         mItemClickListener = listener;
     }
 
-    @Override
-    public void setOnClusterItemInfoWindowClickListener(ClusterManager
-                                                                    .OnClusterItemInfoWindowClickListener<T> listener) {
-        mItemInfoWindowClickListener = listener;
-    }
-
-    private static double distanceSquared(Point a, Point b) {
-        return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
-    }
-
-    private static Point findClosestCluster(List<Point> markers, Point point) {
+    private Point findClosestCluster(List<Point> markers, Point point) {
         if (markers == null || markers.isEmpty()) {
             return null;
         }
 
-        // TODO: make this configurable.
-        double minDistSquared = MAX_DISTANCE_AT_ZOOM * MAX_DISTANCE_AT_ZOOM;
+        int maxDistance = mClusterManager.getAlgorithm().getMaxDistanceBetweenClusteredItems();
+        double minDistSquared = maxDistance * maxDistance;
         Point closest = null;
         for (Point candidate : markers) {
             double dist = distanceSquared(candidate, point);
@@ -480,6 +484,18 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
         }
         return closest;
     }
+
+    @Override
+    public void setOnClusterItemInfoWindowClickListener(ClusterManager
+                                                                    .OnClusterItemInfoWindowClickListener<T> listener) {
+        mItemInfoWindowClickListener = listener;
+    }
+
+    private static double distanceSquared(Point a, Point b) {
+        return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
+    }
+
+
 
     /**
      * Handles all markerWithPosition manipulations on the map. Work (such as adding, removing, or
@@ -562,9 +578,9 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
          * @param to     the position to animate to.
          */
         public void animate(MarkerWithPosition marker, LatLng from, LatLng to) {
-
+            lock.lock();
             try {
-                lock.lock();
+
                 mAnimationTasks.add(new AnimationTask(marker, from, to));
             }catch (Exception e){
                 e.printStackTrace();
@@ -585,10 +601,17 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
          */
         public void animateThenRemove(MarkerWithPosition marker, LatLng from, LatLng to) {
             lock.lock();
-            AnimationTask animationTask = new AnimationTask(marker, from, to);
-            animationTask.removeOnAnimationComplete(mClusterManager.getMarkerManager());
-            mAnimationTasks.add(animationTask);
-            lock.unlock();
+            try{
+                AnimationTask animationTask = new AnimationTask(marker, from, to);
+                animationTask.removeOnAnimationComplete(mClusterManager.getMarkerManager());
+                mAnimationTasks.add(animationTask);
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+                lock.unlock();
+            }
+
+
         }
 
         @Override
@@ -654,8 +677,9 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements
          * @return true if there is still work to be processed.
          */
         public boolean isBusy() {
+            lock.lock();
             try {
-                lock.lock();
+
                 return !(mCreateMarkerTasks.isEmpty() && mOnScreenCreateMarkerTasks.isEmpty()
                         && mOnScreenRemoveMarkerTasks.isEmpty() && mRemoveMarkerTasks.isEmpty()
                                 && mAnimationTasks.isEmpty());

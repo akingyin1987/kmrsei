@@ -23,6 +23,7 @@ import com.akingyin.base.dialog.TaskShowDialog
 import com.akingyin.base.utils.StringUtils
 import com.akingyin.bmap.AbstractBaiduMapMarkersActivity
 import com.akingyin.img.ImageLoadUtil
+import com.akingyin.map.TestUtil
 import com.akingyin.map.ThreadManage
 import com.akingyin.map.adapter.MarkerInfoListRecycleAdapter
 
@@ -64,8 +65,9 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
     override fun searchMarkerData(): List<BdModel> {
       if(list.size == 0){
           for (index in 0 until 200){
-              list.add(BdModel(StringUtils.getUUID()).apply {
-                  baseInfo="test${index}  --->${supportMapCluster()}---${null == bitmap}"
+              val  bdinfo = TestUtil.Latlng()
+              list.add(BdModel(StringUtils.getUUID(),bdinfo[0],bdinfo[1]).apply {
+
                   if(supportMapCluster() && (null == bitmap  || bitmap!!.bitmap.isRecycled)){
                       bitmap = getBitmapDescriptor(this)
                   }
@@ -164,7 +166,6 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
     override fun initClusterManager(baiduMap: BaiduMap) {
         super.initClusterManager(baiduMap)
         clusterManager = ClusterManager(this,bdMapManager.baiduMap)
-        clusterManager.setExecutorService(ThreadManage.createPool(3))
 
 
     }
@@ -181,6 +182,8 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
             clusterManager.markerCollection.clear()
             clusterManager.clusterMarkerCollection.clear()
             println("清玩数据完成---->>>>>>>")
+        }else{
+            bdMapManager.cleanOverlayManagerMarkers()
         }
     }
 
@@ -191,6 +194,7 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
             it.bitmapDescriptor?:getBitmapDescriptor(it)
         }
         clusterManager.addItems(data)
+        clusterManager.cluster()
     }
 
     override fun loadMapClusterMarker(frist: Boolean) {
@@ -205,11 +209,7 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
     }
 
     override fun onMapRefresh() {
-        println("onMapRefresh")
-        TaskShowDialog().setCallBack {
-            println("it=${it}")
-        }.showLoadDialog(this,"测试")
-
+        println("baidu marker.size=${clusterManager.renderer.findClusterSingleMarkerDatas()?.size}  cluster=${clusterManager.renderer.findClusterMarkerDatas()?.size}")
 
     }
 

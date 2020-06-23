@@ -71,6 +71,7 @@
     <activity android:name=".ui.SteperActivity" />
     <activity android:name=".ui.UserListActivity" />
     <activity android:name=".ui.AuthActivity" />
+    <activity android:name=".ui.TestFunActivity"/>
     <activity android:name=".ui.UserListDataBindActivity" />
     <activity android:name=".ui.CoroutinesDemo" />
     <activity android:name=".ui.FragmentTestActivity" />

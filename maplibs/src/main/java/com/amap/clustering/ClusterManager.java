@@ -41,6 +41,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Groups many items on a map based on zoom level.
  * <p/>
  * <li>{@link AMap.OnMarkerClickListener}</li> </ul>
+ * @author zlcd
  */
 public class ClusterManager<T extends ClusterItem> implements
         AMap.OnCameraChangeListener,
@@ -71,6 +72,7 @@ public class ClusterManager<T extends ClusterItem> implements
 
     public ClusterManager(Context context, AMap map, MarkerManager markerManager) {
         mMap = map;
+
         mMarkerManager = markerManager;
         mClusterMarkers = markerManager.newCollection();
         mMarkers = markerManager.newCollection();
@@ -239,6 +241,7 @@ public class ClusterManager<T extends ClusterItem> implements
         } else if (mPreviousCameraPosition == null || mPreviousCameraPosition.zoom != mMap.getCameraPosition().zoom) {
             mPreviousCameraPosition = mMap.getCameraPosition();
             cluster();
+            System.out.println("高德markers 刷新："+mPreviousCameraPosition.zoom);
         }
     }
 

@@ -12,6 +12,8 @@ import com.baidu.mapapi.clusterutil.MarkerManager;
 import com.baidu.mapapi.clusterutil.clustering.algo.Algorithm;
 import com.baidu.mapapi.clusterutil.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
 import com.baidu.mapapi.clusterutil.clustering.algo.PreCachingAlgorithmDecorator;
+import com.baidu.mapapi.clusterutil.clustering.algo.ScreenBasedAlgorithm;
+import com.baidu.mapapi.clusterutil.clustering.algo.ScreenBasedAlgorithmAdapter;
 import com.baidu.mapapi.clusterutil.clustering.view.ClusterRenderer;
 import com.baidu.mapapi.clusterutil.clustering.view.DefaultClusterRenderer;
 import com.baidu.mapapi.map.BaiduMap;
@@ -21,7 +23,6 @@ import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.model.LatLngBounds;
 import java.util.Collection;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -37,13 +38,13 @@ public class ClusterManager<T extends ClusterItem> implements
     private final MarkerManager.Collection mMarkers;
     private final MarkerManager.Collection mClusterMarkers;
 
-    private PreCachingAlgorithmDecorator<T> mAlgorithm;
+    private ScreenBasedAlgorithm<T> mAlgorithm;
     private final ReadWriteLock mAlgorithmLock = new ReentrantReadWriteLock();
     private ClusterRenderer<T> mRenderer;
 
 
 
-    private ExecutorService   mExecutorService=null;
+
 
     private BaiduMap mMap;
     private MapStatus mPreviousCameraPosition;
@@ -65,16 +66,13 @@ public class ClusterManager<T extends ClusterItem> implements
         mClusterMarkers = markerManager.newCollection();
         mMarkers = markerManager.newCollection();
         mRenderer = new DefaultClusterRenderer<T>(context, map, this);
-        mAlgorithm = new PreCachingAlgorithmDecorator<T>(new NonHierarchicalDistanceBasedAlgorithm<T>());
+        mAlgorithm = new ScreenBasedAlgorithmAdapter<>(new PreCachingAlgorithmDecorator<T>(new NonHierarchicalDistanceBasedAlgorithm<T>()));
 
         mClusterTask = new ClusterTask();
         mRenderer.onAdd();
     }
 
-    public void setExecutorService(ExecutorService executorService) {
-        mExecutorService = executorService;
-        mAlgorithm.setExecutorService(mExecutorService);
-    }
+
 
     public MarkerManager.Collection getMarkerCollection() {
         return mMarkers;
@@ -102,7 +100,13 @@ public class ClusterManager<T extends ClusterItem> implements
     public Cluster<T> findClusterMarkersData(Marker marker) {
         return mRenderer.findClusterMarkersData(marker);
     }
+    public ClusterRenderer<T> getRenderer() {
+        return mRenderer;
+    }
 
+    public Algorithm<T> getAlgorithm() {
+        return mAlgorithm;
+    }
     public void setRenderer(ClusterRenderer<T> view) {
         mRenderer.setOnClusterClickListener(null);
         mRenderer.setOnClusterItemClickListener(null);
@@ -117,17 +121,29 @@ public class ClusterManager<T extends ClusterItem> implements
         mRenderer.setOnClusterItemInfoWindowClickListener(mOnClusterItemInfoWindowClickListener);
         cluster();
     }
-
     public void setAlgorithm(Algorithm<T> algorithm) {
+        if (algorithm instanceof ScreenBasedAlgorithm) {
+            setAlgorithm((ScreenBasedAlgorithm<T>) algorithm);
+        } else {
+            setAlgorithm(new ScreenBasedAlgorithmAdapter<>(algorithm));
+        }
+    }
+    public void setAlgorithm(ScreenBasedAlgorithm<T> algorithm) {
         mAlgorithmLock.writeLock().lock();
         try {
             if (mAlgorithm != null) {
                 algorithm.addItems(mAlgorithm.getItems());
             }
-            mAlgorithm = new PreCachingAlgorithmDecorator<T>(algorithm);
+
+            mAlgorithm = algorithm;
         } finally {
             mAlgorithmLock.writeLock().unlock();
         }
+
+        if (mAlgorithm.shouldReclusterOnMapMovement()) {
+            mAlgorithm.onMapStatusChange(mMap.getMapStatus());
+        }
+
         cluster();
     }
 
@@ -224,14 +240,19 @@ public class ClusterManager<T extends ClusterItem> implements
             ((BaiduMap.OnMapStatusChangeListener) mRenderer).onMapStatusChange(mapStatus);
         }
 
-        // Don't re-compute clusters if the map has just been panned/tilted/rotated.
-        MapStatus position = mMap.getMapStatus();
-        if (mPreviousCameraPosition != null && mPreviousCameraPosition.zoom == position.zoom) {
-            return;
-        }
-        mPreviousCameraPosition = mMap.getMapStatus();
+        mAlgorithm.onMapStatusChange(mMap.getMapStatus());
 
-        cluster();
+        // delegate clustering to the algorithm
+        if (mAlgorithm.shouldReclusterOnMapMovement()) {
+            cluster();
+            System.out.println("shouldReclusterOnMapMovement");
+            // Don't re-compute clusters if the map has just been panned/tilted/rotated.
+        } else if (mPreviousCameraPosition == null || mPreviousCameraPosition.zoom != mMap.getMapStatus().zoom) {
+            mPreviousCameraPosition = mMap.getMapStatus();
+            cluster();
+            System.out.println("百度markers 刷新："+mPreviousCameraPosition.zoom);
+        }
+
     }
 
     @Override

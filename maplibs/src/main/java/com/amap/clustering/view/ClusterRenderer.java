@@ -53,6 +53,13 @@ public interface ClusterRenderer<T extends ClusterItem> {
     @Nullable
     T   findClusterMarkerData(Marker marker);
 
+
+    @Nullable
+    Set<T>  findClusterSingleMarkerDatas();
+
+    @Nullable
+    Set<Cluster<T>>  findClusterMarkerDatas();
+
     /**
      * 返回聚合点数据
      * @param marker

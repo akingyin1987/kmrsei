@@ -118,7 +118,7 @@ class TestAmapActivity : AbstractAmapMarkersActivity<AMarker>() {
         super.initClusterManager(aMap)
         clusterManager = ClusterManager(this,aMap)
         clusterManager.setAnimation(true)
-        clusterManager.algorithm = GridBasedAlgorithm()
+
     }
 
     override fun onShowClusterManagerChange(change: Boolean) {
@@ -172,6 +172,11 @@ class TestAmapActivity : AbstractAmapMarkersActivity<AMarker>() {
             initClickMarkerIcon(marker)
 
         }
+
+    }
+
+    override fun onMapRefresh() {
+       println("amap marker.size=${clusterManager.renderer.findClusterSingleMarkerDatas()?.size}  cluster=${clusterManager.renderer.findClusterMarkerDatas()?.size}")
 
     }
 }

@@ -41,7 +41,7 @@ public abstract class AbstractClusterBMapMarkerActivity<T extends ClusterItem> e
       mClusterManager = new ClusterManager<>(this,getmBaiduMap());
 
       mExecutorService = Executors.newFixedThreadPool(2);
-      mClusterManager.setExecutorService(mExecutorService);
+
       mExecutorService.execute(new Runnable() {
         @Override public void run() {
           mClusterManager.addItems(loadMarkers());

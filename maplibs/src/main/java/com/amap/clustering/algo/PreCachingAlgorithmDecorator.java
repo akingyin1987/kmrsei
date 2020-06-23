@@ -89,6 +89,7 @@ public class PreCachingAlgorithmDecorator<T extends ClusterItem> implements Algo
     @Override
     public void setMaxDistanceBetweenClusteredItems(int maxDistance) {
         mAlgorithm.setMaxDistanceBetweenClusteredItems(maxDistance);
+        System.out.println("高德->设置两点最大距离："+maxDistance);
         clearCache();
     }
 

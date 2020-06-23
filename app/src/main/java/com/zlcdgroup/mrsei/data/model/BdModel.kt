@@ -22,13 +22,13 @@ import com.baidu.mapapi.model.LatLng
  * @ Date 2020/5/28 11:32
  * @version V1.0
  */
-class BdModel(uuid: String ) : IMarker(uuid), ClusterItem {
+class BdModel(uuid: String,var bdlat:Double,var bdlng:Double ) : IMarker(uuid), ClusterItem {
 
-    private   var  dbLat:Double = TestUtil.Latlng()[0]
-    override fun getLat() = dbLat
 
-    private   val  dbLng:Double = TestUtil.Latlng()[1]
-    override fun getLng() =  dbLng
+    override fun getLat() = bdlat
+
+
+    override fun getLng() =  bdlng
 
     override fun isComplete()= false
 

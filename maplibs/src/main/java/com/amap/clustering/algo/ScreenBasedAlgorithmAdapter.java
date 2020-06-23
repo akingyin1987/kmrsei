@@ -78,7 +78,7 @@ public class ScreenBasedAlgorithmAdapter<T extends ClusterItem> implements Scree
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
         // stub
-        System.out.println("onCameraChange  ScreenBasedAlgorithmAdapter");
+
     }
 
 }

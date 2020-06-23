@@ -184,6 +184,14 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements ClusterRen
         return mMarkerCache.get(marker);
     }
 
+    @Nullable @Override public Set<T> findClusterSingleMarkerDatas() {
+        return mMarkerCache.mCache.keySet();
+    }
+
+    @Nullable @Override public Set<Cluster<T>> findClusterMarkerDatas() {
+        return mClusterToMarker.keySet();
+    }
+
     @Nullable @Override public Cluster<T> findClusterMarkersData(Marker marker) {
         return mMarkerToCluster.get(marker);
     }
@@ -299,7 +307,7 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements ClusterRen
             });
             renderTask.setProjection(projection);
             renderTask.setMapZoom(mMap.getCameraPosition().zoom);
-            ThreadManage.createPool(2).execute(renderTask);
+            ThreadManage.createPool(5).execute(renderTask);
            // new Thread(renderTask).start();
         }
 

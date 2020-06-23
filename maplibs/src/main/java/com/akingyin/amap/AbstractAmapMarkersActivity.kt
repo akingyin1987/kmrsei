@@ -129,7 +129,7 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
 
             it?.let {
                 mapStatus ->
-
+                initMapZoomUiEnable()
                 if(supportMapCluster()){
                     bindClusterManagerMapStatusChange()?.onCameraChangeFinish(mapStatus)
                 }
