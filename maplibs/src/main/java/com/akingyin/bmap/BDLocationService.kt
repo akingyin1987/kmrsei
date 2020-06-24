@@ -3,6 +3,7 @@ package com.akingyin.bmap
 import android.content.Context
 import android.webkit.WebView
 import com.baidu.location.BDAbstractLocationListener
+import com.baidu.location.BDLocation
 import com.baidu.location.LocationClient
 import com.baidu.location.LocationClientOption
 
@@ -18,6 +19,8 @@ class BDLocationService  private constructor(){
     private var client: LocationClient? = null
     private var mOption: LocationClientOption? = null
     private var DIYoption: LocationClientOption? = null
+
+
 
     private var objLock: Any? = null
     companion object{
@@ -198,5 +201,16 @@ class BDLocationService  private constructor(){
 
     fun requestHotSpotState(): Boolean {
         return client?.requestHotSpotState()?:false
+    }
+
+    class  MyLocationListenner(var callBack:(BDLocation) ->Unit) : BDAbstractLocationListener(){
+        override fun onReceiveLocation(location: BDLocation?) {
+           location?.let {
+               if(it.locType == BDLocation.TypeNetWorkLocation||
+                       it.locType == BDLocation.TypeGpsLocation){
+                   callBack(it)
+               }
+           }
+        }
     }
 }

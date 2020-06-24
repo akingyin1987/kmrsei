@@ -103,9 +103,13 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
 
         final double zoomSpecificSpan = mMaxDistance / Math.pow(2, discreteZoom) / 256;
 
-        System.out.println("amap ="+discreteZoom+",zoomSpecificSpan="+zoomSpecificSpan);
+        /** 已验证过的对象 */
         final Set<QuadItem<T>> visitedCandidates = new HashSet<QuadItem<T>>();
+
+        /** 返回结果 */
         final Set<Cluster<T>> results = new HashSet<Cluster<T>>();
+
+
         final Map<QuadItem<T>, Double> distanceToCluster = new HashMap<QuadItem<T>, Double>();
         final Map<QuadItem<T>, StaticCluster<T>> itemToCluster = new HashMap<QuadItem<T>, StaticCluster<T>>();
 
@@ -117,8 +121,7 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> implem
                 }
 
                 Bounds searchBounds = createBoundsFromSpan(candidate.getPoint(), zoomSpecificSpan);
-                Collection<QuadItem<T>> clusterItems;
-                clusterItems = mQuadTree.search(searchBounds);
+                Collection<QuadItem<T>> clusterItems = mQuadTree.search(searchBounds);
                 if (clusterItems.size() == 1) {
                     // Only the current marker is in range. Just add the single item to the results.
                     results.add(candidate);

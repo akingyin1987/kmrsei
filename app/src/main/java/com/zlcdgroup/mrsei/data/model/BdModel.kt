@@ -39,6 +39,7 @@ class BdModel(uuid: String,var bdlat:Double,var bdlng:Double ) : IMarker(uuid), 
     var   bitmap: BitmapDescriptor?=null
 
     override fun getBitmapDescriptor(): BitmapDescriptor? {
+        println("bitmap=${bitmap == null}")
         return  bitmap
     }
 }

@@ -189,7 +189,7 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: A
     /**
      * 获取当前位置信息
      */
-    fun getMyLocationData(): MyLocationData {
+    fun getMyLocationData(): MyLocationData? {
         return baiduMap.locationData
     }
 

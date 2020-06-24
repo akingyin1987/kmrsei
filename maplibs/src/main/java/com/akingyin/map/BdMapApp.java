@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.widget.Toast;
 import com.baidu.lbsapi.BMapManager;
 import com.baidu.lbsapi.MKGeneralListener;
+import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
 import timber.log.Timber;
 
@@ -57,6 +58,7 @@ public class BdMapApp {
 
   public   void   initBaiDuMap(Context  context){
     SDKInitializer.initialize(context.getApplicationContext());
+    SDKInitializer.setCoordType(CoordType.GCJ02);
     iFilter = new IntentFilter();
     iFilter.addAction(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_ERROR);
     iFilter.addAction(SDKInitializer.SDK_BROADCAST_ACTION_STRING_NETWORK_ERROR);

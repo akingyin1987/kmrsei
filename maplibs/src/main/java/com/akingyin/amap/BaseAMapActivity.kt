@@ -20,9 +20,10 @@ import android.view.ViewGroup
 import android.widget.*
 import com.akingyin.base.BaseNfcTagActivity
 import com.akingyin.base.ext.click
+import com.akingyin.base.ext.gone
+import com.akingyin.bmap.PanoramaBaiduMapActivity
 
 import com.akingyin.map.R
-import com.akingyin.map.base.BaiduPanoramaActivity
 import com.akingyin.map.base.MapLoadingDialog
 import com.amap.api.maps.AMap
 import com.amap.api.maps.CameraUpdateFactory
@@ -89,6 +90,7 @@ abstract class BaseAMapActivity : BaseNfcTagActivity() {
 
     override fun initView() {
         location_icon = findViewById(R.id.location_icon)
+        findViewById<View>(R.id.ll_zoom).gone()
         zoom_out = findViewById(R.id.zoom_out)
         zoom_in = findViewById(R.id.zoom_in)
         road_condition = findViewById(R.id.road_condition)
@@ -248,7 +250,7 @@ abstract class BaseAMapActivity : BaseNfcTagActivity() {
     private   fun  goToMapStreet(){
         aMapManager.getMyLocationData()?.let {
             locationData->
-            startActivity(Intent(this, BaiduPanoramaActivity::class.java).apply {
+            startActivity(Intent(this, PanoramaBaiduMapActivity::class.java).apply {
                 putExtra("lat",locationData.latitude)
                 putExtra("lng",locationData.longitude)
             })

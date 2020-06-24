@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.akingyin.base.ext.click
 import com.akingyin.base.ext.startActivity
-import com.akingyin.base.utils.DateUtil
 import com.akingyin.map.IMarker
 import com.akingyin.map.R
 import com.akingyin.map.adapter.MarkerInfoViewPager2Adapter
@@ -110,15 +109,10 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
         })
         bdMapManager.initMapMarkerConfig {
             if(supportMapCluster()){
-
                 onMapMarkerClick(0,null,it)
             }else{
                 bdMapManager.findMarkerDataAndIndexByMarker(it,dataQueue)?.let {
                     pair ->
-
-                    mCurrentMarker = it
-                    lastClickMarkerIcon = it.icon
-                    mCurrentMarker?.icon = readBitmap
                     onMapMarkerClick(pair.first,pair.second,it)
                 }
             }
@@ -127,6 +121,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
         bdMapManager.setMapStatusChange(onChangeFinish = {
             it?.let {
                 mapStatus ->
+                initMapZoomUiEnable()
                 if(supportMapCluster()){
                     bindClusterManagerMapStatusChange()?.onMapStatusChangeFinish(mapStatus)
                 }
@@ -162,11 +157,12 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
             lock.lock()
             GlobalScope.launch (Main){
                 showLoading()
-
                 withContext(IO){
                     dataQueue.clear()
                     dataQueue.addAll(searchMarkerData())
-                    addClusterManagerData(dataQueue)
+                    if(supportMapCluster()){
+                        addClusterManagerData(dataQueue)
+                    }
                     dataKeyMap.clear()
                     dataQueue.forEach {
                         dataKeyMap[it.uuid] = it
@@ -204,6 +200,15 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
     open  fun    loadMapMarkerViewComplete(){
         if(fristLoadMarker){
             fristLoadMarker = false
+        }
+        if(showPathPlan() && !supportMapCluster()){
+            bdMapManager.getMyLocationData()?.apply {
+                if(latitude>0 && longitude>0){
+                    onFilterMapMarkerBestPath(LatLng(latitude,longitude))
+                }else{
+                    showError("当前无位置信息，无法推荐最佳路径")
+                }
+            }
         }
     }
 
@@ -323,7 +328,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
      */
     fun    showMapMarkerListInfo(postion: Int,viewDatas:List<T> ,notsetMarker: Boolean = false){
         try {
-
+           println("showMapMarkerListInfo-> size=${viewDatas.size},postion=${postion}")
             mPopupBottonWindow?.let {
                 if(it.isShowing){
                     it.dismiss()
@@ -332,7 +337,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
             initPopupWindow()
             val showMarkers = mutableListOf<IMarker>()
             viewDatas.forEachIndexed { index, t ->
-                bdMapManager.getMyLocationData().apply {
+                bdMapManager.getMyLocationData()?.apply {
                     if(latitude>0 && longitude>0){
                         t.disFromPostion = DistanceUtil.getDistance(LatLng(latitude,longitude), LatLng(t.getLat(),t.getLng()))
                     }
@@ -347,6 +352,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
                }else{
                    t.sortInfo = "详情   ${viewDatas.size} - ${index+1} "
                    showMarkers.add(t)
+                   println("这是 sortInfo=${t.sortInfo}")
                }
             }
 
@@ -388,13 +394,9 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
      */
     private   fun    initSelectedIndexViewDis(postion: Int){
         markerInfoViewPager2Adapter.getItem(postion).apply {
-            disFromPostion = when {
-                bdMapManager.getMyLocationData().longitude>1 -> {
-                    DistanceUtil.getDistance(LatLng(getLat(),getLng()), LatLng(bdMapManager.getMyLocationData().latitude,bdMapManager.getMyLocationData().longitude))
-                }
-                else -> {
-                    null
-                }
+            disFromPostion = bdMapManager.getMyLocationData()?.let {
+                location->
+                DistanceUtil.getDistance(LatLng(getLat(),getLng()), LatLng(location.latitude,location.longitude))
             }
         }
         viewPager2.post {
@@ -593,10 +595,13 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
     open   fun    onMapMarkerClick( postion:Int,data:T?,marker: Marker){
         initLastMarkerIcon()
         mPopupBottonWindow?.dismiss()
+        mCurrentMarker = marker
+        lastClickMarkerIcon = marker.icon
+        mCurrentMarker?.icon = readBitmap
         if(supportMapCluster()){
             onClusterMarkerClick(marker)
         }else{
-            showMapMarkerListInfo(postion,dataQueue)
+            showMapMarkerListInfo(postion,dataQueue,true)
         }
 
     }
@@ -649,8 +654,9 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
             firstonResume = false
             return
         }
-        println("------onResume------")
+
        loadMarkerData()
+
     }
 
     /**
@@ -664,23 +670,14 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(),I
      * 显示推荐路径发生改变
      */
     open   fun   onShowSuggestedPathChange(change: Boolean){
-        if(change){
-            bdMapManager.getMyLocationData().apply {
-                if(latitude>0 && longitude>0){
-
-                    onFilterMapMarkerBestPath(LatLng(latitude,longitude))
-                }else{
-                    showError("当前无位置信息，无法推荐最佳路径")
-                }
-            }
-
-        }else{
-             onCleanMapMarkerBestPath()
+        if(!change){
+            onCleanMapMarkerBestPath()
             mPopupBottonWindow?.let {
                 if(it.isShowing){
                     it.dismiss()
                 }
             }
+
         }
     }
 

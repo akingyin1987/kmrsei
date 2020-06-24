@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2020. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
   ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
@@ -10,75 +9,85 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-  <PreferenceCategory
-      android:title="base">
+  <PreferenceCategory android:title="base">
 
     <Preference
-        android:key="preference"
-        android:title="title"
-
         android:iconSpaceReserved="false"
-        android:summary="summary"/>
+        android:key="preference"
 
-    <Preference
-        android:key="stylized"
-        android:title="title22222222"
-        app:allowDividerAbove="true"
-
-        app:allowDividerBelow="true"
-        android:layout="@layout/itme_xml_test"
-        android:summary="summary"/>
-
-    <Preference
-        android:key="icon"
-        android:title="title"
         android:summary="summary"
-        app:allowDividerAbove="true"
+        android:title="title" />
 
-        app:allowDividerBelow="true"
-        android:icon="@android:drawable/ic_menu_camera"/>
+    <Preference
+        android:key="baidu_map_offline"
+        android:summary="进入百度地图离线下载、更新、删除"
+        android:title="百度离线地图"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true">
+      <intent android:action="com.akingyin.baidu.map.offline" />
+    </Preference>
+
+
+    <Preference
+        android:key="amap_offline"
+        android:summary="进入高德地图离线下载、更新、删除"
+        android:title="高德离线地图"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true">
+
+      <intent android:action="com.akingyin.amap.offline" />
+    </Preference>
+
+    <Preference
+        android:icon="@android:drawable/ic_menu_camera"
+        android:key="icon"
+        android:summary="summary"
+        android:title="title"
+
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true" />
 
     <Preference
         android:key="single_line_title"
-        android:title="title"
         android:summary="summary"
-        app:singleLineTitle="true"/>
+        android:title="title"
+        app:singleLineTitle="true" />
   </PreferenceCategory>
   <PreferenceCategory
-        android:summary="我的路径"
-        android:title="路径设置"
-        android:key="map_path">
+      android:key="map_path"
+      android:summary="我的路径"
+      android:title="路径设置">
 
-
-  <SwitchPreferenceCompat
-          android:title="路径优化"
-          android:key="map_suggest_path_key"
-          android:summary="通过当前位置，提供建议路径(距离最短)"
-          android:defaultValue="true"/>
 
     <SwitchPreferenceCompat
-        android:title="点聚合"
+        android:defaultValue="true"
+        android:key="map_suggest_path_key"
+        android:summary="通过当前位置，提供建议路径(距离最短)"
+        android:title="路径优化" />
+
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
         android:key="support_map_cluster"
         android:summary="通过聚合方式展现"
+        android:title="点聚合"
         app:allowDividerAbove="true"
-        app:allowDividerBelow="true"
-        android:defaultValue="false"/>
+        app:allowDividerBelow="true" />
 
     <EditTextPreference
-        app:allowDividerBelow="true"
-        app:allowDividerAbove="true"
-        android:key="map_path_min_dis"
-        android:title="刷新推荐路径的最小距离"
         android:defaultValue="50"
-        android:summary="50米"/>
+        android:key="map_path_min_dis"
+        android:summary="50米"
+        android:title="刷新推荐路径的最小距离"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true" />
 
     <EditTextPreference
-        app:allowDividerBelow="true"
-        app:allowDividerAbove="true"
-        android:key="map_path_min_time"
-        android:title="刷新推荐路径的最短时间"
         android:defaultValue="3"
-        android:summary="3分钟"/>
+        android:key="map_path_min_time"
+        android:summary="3分钟"
+        android:title="刷新推荐路径的最短时间"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true" />
   </PreferenceCategory>
   <!-- 设置的类别 -->
   <PreferenceCategory
@@ -88,7 +97,7 @@
     <CheckBoxPreference
         android:key="wireless_network"
         android:summary="使用无线网络查看应用程序中的位置"
-        android:title="使用无线网络"/>
+        android:title="使用无线网络" />
   </PreferenceCategory>
 
   <PreferenceCategory
@@ -97,10 +106,10 @@
       android:title="个人信息">
     <EditTextPreference
         android:key="myname"
-        android:title="请输入真实姓名"
+        android:summary="姓名"
 
 
-        android:summary="姓名"/>
+        android:title="请输入真实姓名" />
 
     <ListPreference
         android:entries="@array/cities_test"

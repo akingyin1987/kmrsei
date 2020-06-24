@@ -67,10 +67,8 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
           for (index in 0 until 200){
               val  bdinfo = TestUtil.Latlng()
               list.add(BdModel(StringUtils.getUUID(),bdinfo[0],bdinfo[1]).apply {
-
-                  if(supportMapCluster() && (null == bitmap  || bitmap!!.bitmap.isRecycled)){
-                      bitmap = getBitmapDescriptor(this)
-                  }
+                   baseInfo = "test${index}"
+                   bitmap = getBitmapDescriptor(this)
 
               })
           }
@@ -191,7 +189,7 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
         super.addClusterManagerData(data)
         println("开始添加聚合数据------>>>>>>")
         data.forEach {
-            it.bitmapDescriptor?:getBitmapDescriptor(it)
+            it.bitmap?:getBitmapDescriptor(it)
         }
         clusterManager.addItems(data)
         clusterManager.cluster()

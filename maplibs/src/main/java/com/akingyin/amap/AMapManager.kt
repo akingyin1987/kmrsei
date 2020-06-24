@@ -66,7 +66,7 @@ class AMapManager(var aMap: AMap, var mapView: MapView, var activity: Activity, 
      */
     fun initMapConfig() {
         aMap.uiSettings.apply {
-            isZoomControlsEnabled = false
+            isZoomControlsEnabled = true
         }
         //普通地图
         aMap.apply {

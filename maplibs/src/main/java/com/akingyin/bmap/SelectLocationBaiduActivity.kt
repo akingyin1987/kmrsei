@@ -16,7 +16,7 @@ import com.akingyin.base.ext.visiable
 import com.akingyin.bmap.adapter.BaiduPoiListAdapter
 import com.akingyin.bmap.vo.PoiInfoVo
 import com.akingyin.map.R
-import com.akingyin.map.base.BaiduPanoramaActivity
+
 import com.baidu.mapapi.map.*
 import com.baidu.mapapi.model.LatLng
 import kotlinx.android.synthetic.main.activity_select_baidu_location.*

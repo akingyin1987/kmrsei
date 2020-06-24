@@ -11,12 +11,16 @@ package com.akingyin.map.ui
 
 import android.os.Bundle
 import android.text.InputType
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.akingyin.base.ext.inflate
 import com.akingyin.map.R
+import kotlinx.android.synthetic.*
 
 /**
  * @ Description:
@@ -44,6 +48,7 @@ class MapSettingFragment : PreferenceFragmentCompat() {
             }
         }
         setPreferencesFromResource(R.xml.map_preferences_fragment, rootKey)
+
 
         findPreference<EditTextPreference>("map_path_min_time")?.let {
             it.summary = preferenceManager.sharedPreferences.getString("map_path_min_time","3")+"(分)"

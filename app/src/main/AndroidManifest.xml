@@ -56,6 +56,19 @@
           android:resource="@xml/file_paths_public" />
     </provider>
 
+    <activity android:name="com.akingyin.bmap.BaiduMapOfflineActivity">
+      <intent-filter >
+        <action android:name="com.akingyin.baidu.map.offline"/>
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+    </activity>
+
+    <activity android:name="com.akingyin.amap.AMapOfflineActivity">
+      <intent-filter >
+        <action android:name="com.akingyin.amap.offline"/>
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+    </activity>
     <activity
         android:name=".ui.LoginActivity"
         android:configChanges="orientation|keyboardHidden|screenSize"
@@ -67,7 +80,7 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <activity android:name=".ui.TestClusterMarkerActivity" />
+
     <activity android:name=".ui.SteperActivity" />
     <activity android:name=".ui.UserListActivity" />
     <activity android:name=".ui.AuthActivity" />
@@ -79,12 +92,12 @@
         android:name=".ui.TestBaiduMapActivity"
         android:theme="@style/Base.Theme.Sunflower" />
     <activity android:name="com.akingyin.map.ui.MapSettingActivity" />
-    <activity android:name="com.akingyin.map.MapCoordinatePickupActivity" />
+
     <activity android:name="com.akingyin.bmap.PanoramaBaiduMapActivity" />
     <activity
         android:name=".ui.CameraXActivity"
         android:theme="@style/FullscreenTheme" />
-    <activity android:name="com.akingyin.map.base.BaiduPanoramaActivity" />
+
     <activity
         android:name="com.tencent.tauth.AuthActivity"
         android:launchMode="singleTask"
@@ -108,8 +121,8 @@
         android:configChanges="orientation|keyboardHidden|screenSize"
         android:screenOrientation="portrait"
         android:theme="@style/Theme.TranslucentNavigationBar" />
-    <activity android:name="com.akingyin.map.TestMarkerMapActivity" />
-    <activity android:name=".ui.TestAmapMarkerActivity" />
+
+
     <activity android:name=".ui.TestAmapActivity" />
     <activity android:name="com.akingyin.bmap.SelectLocationBaiduActivity" />
     <activity android:name="com.akingyin.bmap.CoordinatePickupBaiduMapActivity" />

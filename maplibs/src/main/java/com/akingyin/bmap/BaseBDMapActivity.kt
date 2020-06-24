@@ -11,7 +11,7 @@ import android.widget.*
 import com.akingyin.base.BaseNfcTagActivity
 import com.akingyin.base.ext.click
 import com.akingyin.map.R
-import com.akingyin.map.base.BaiduPanoramaActivity
+
 import com.akingyin.map.base.MapLoadingDialog
 import com.baidu.location.BDLocation
 import com.baidu.mapapi.map.*
@@ -232,7 +232,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
     private   fun  goToMapStreet(){
         bdMapManager.baiduMap.locationData?.let {
             locationData->
-            startActivity(Intent(this, BaiduPanoramaActivity::class.java).apply {
+            startActivity(Intent(this, PanoramaBaiduMapActivity::class.java).apply {
                 putExtra("lat",locationData.latitude)
                 putExtra("lng",locationData.longitude)
             })
@@ -292,6 +292,21 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
      */
     open   fun   onFristMyLocation(bdLocation: BDLocation){
          bdMapManager.setMapCenter(bdLocation.latitude,bdLocation.longitude,bdMapManager.getMapMaxZoomLevel()-1)
+    }
+
+    fun   initMapZoomUiEnable(){
+        val   zoom  =  bdMapManager.getCurrentZoomLevel()
+
+        if(zoom < bdMapManager.getMapMaxZoomLevel() && zoom > bdMapManager.getMapMinZoomLevel()){
+            zoom_in.isEnabled = true
+            zoom_out.isEnabled = true
+        }else if(zoom >= bdMapManager.getMapMaxZoomLevel()){
+            zoom_out.isEnabled = true
+            zoom_in.isEnabled = false
+        }else if(zoom <= bdMapManager.getMapMinZoomLevel()){
+            zoom_out.isEnabled = false
+            zoom_in.isEnabled = true
+        }
     }
 
     override fun onResume() {
