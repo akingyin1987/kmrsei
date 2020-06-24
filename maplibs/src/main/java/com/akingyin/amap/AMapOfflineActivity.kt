@@ -80,10 +80,11 @@ class AMapOfflineActivity : SimpleActivity(),OfflineMapManager.OfflineMapDownloa
                    if(location.city.isNotEmpty()){
                        offlineMapManager.getItemByCityCode(location.cityCode)?.let {
                            offlineMapCity ->
-                           offineListAdapter.addOrUpdateElement(offlineMapCity)
+                           offineListAdapter.addOrUpdateElement(offlineMapCity,true)
                        }
 
                    }
+                   aLocationService.stop()
                }
            }
        }

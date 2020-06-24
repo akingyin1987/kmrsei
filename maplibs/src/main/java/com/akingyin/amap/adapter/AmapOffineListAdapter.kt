@@ -37,14 +37,21 @@ class AmapOffineListAdapter : BaseQuickAdapter<OfflineMapCity,BaseViewHolder>(R.
         }
     }
 
-    fun   addOrUpdateElement(offlineMapCity: OfflineMapCity){
+    fun   addOrUpdateElement(offlineMapCity: OfflineMapCity,sortFrist:Boolean = false ){
         data.forEachIndexed { index, data ->
             if(data.code == offlineMapCity.code){
-                setData(index,offlineMapCity)
+                if(sortFrist){
+                    val  frist = getItem(0)
+                    setData(0,offlineMapCity)
+                    setData(index,frist)
+                }else{
+                    setData(index,offlineMapCity)
+                }
+
                 return
             }
         }
-        addData(offlineMapCity)
+        addData(0,offlineMapCity)
     }
 
 
