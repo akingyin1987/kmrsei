@@ -38,7 +38,7 @@
 
 
 
-  <com.akingyin.img.widget.AudioPlayerView
+  <com.akingyin.media.widget.AudioPlayerView
           android:layout_width="match_parent"
           android:id="@+id/audio_player"
           android:background="@android:color/holo_green_dark"
@@ -60,7 +60,7 @@
       android:visibility="gone"/>
 
 
-  <com.akingyin.img.widget.SuperCheckBox
+  <com.akingyin.media.widget.SuperCheckBox
       android:id="@+id/cb_check"
       style="@style/SuperCheckboxTheme"
       android:layout_width="wrap_content"

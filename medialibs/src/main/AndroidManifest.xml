@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.akingyin.img">
+    package="com.akingyin.media">
 
   <application
       android:allowBackup="true"
@@ -8,11 +8,11 @@
 
 
     <activity
-        android:name=".ImagesDetailActivity"
+        android:name="com.akingyin.media.ImagesDetailActivity"
         android:hardwareAccelerated="true"
         android:screenOrientation="portrait" />
     <activity
-        android:name=".ImageTextPagerActivity"
+        android:name="com.akingyin.media.ImageTextPagerActivity"
         android:configChanges="orientation|screenSize|keyboardHidden"
         android:hardwareAccelerated="true"
         android:launchMode="singleTop"
@@ -21,7 +21,7 @@
 
 
     <activity
-        android:name=".ImageTextTypesActivity"
+        android:name="com.akingyin.media.ImageTextTypesActivity"
         android:configChanges="orientation|screenSize|keyboardHidden"
         android:hardwareAccelerated="true"
         android:launchMode="singleTop"
@@ -29,7 +29,7 @@
          />
 
     <activity
-        android:name=".ui.ImageVideoPagerActivity"
+        android:name="com.akingyin.media.ui.ImageVideoPagerActivity"
         android:configChanges="orientation|screenSize|keyboardHidden"
         android:hardwareAccelerated="true"
         android:launchMode="singleTop"

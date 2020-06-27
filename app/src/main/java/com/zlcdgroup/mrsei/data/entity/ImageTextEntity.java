@@ -2,8 +2,8 @@ package com.zlcdgroup.mrsei.data.entity;
 
 import android.text.TextUtils;
 import androidx.annotation.Nullable;
-import com.akingyin.img.model.IDataMultimedia;
-import com.akingyin.img.model.MultimediaEnum;
+import com.akingyin.media.model.IDataMultimedia;
+import com.akingyin.media.model.MultimediaEnum;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;

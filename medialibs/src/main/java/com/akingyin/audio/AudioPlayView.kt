@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.RelativeLayout
 import android.widget.SeekBar
 import com.akingyin.base.utils.FileUtils
-import com.akingyin.img.R
+import com.akingyin.media.R
 import kotlinx.android.synthetic.main.dialog_audio_play_layout.view.*
 import java.lang.ref.WeakReference
 

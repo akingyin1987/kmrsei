@@ -12,12 +12,12 @@ import com.akingyin.base.ext.startActivityForResult
 
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.base.utils.StringUtils
-import com.akingyin.img.callback.AppCallBack3
-import com.akingyin.img.model.MultimediaEnum
-import com.akingyin.img.model.ValMessage
-import com.akingyin.img.multimedia.AbsCreateMultimediaActivity
-import com.akingyin.img.multimedia.BaseMultimediaActivity
-import com.akingyin.img.multimedia.MultimediaHelper
+import com.akingyin.media.callback.AppCallBack3
+import com.akingyin.media.model.MultimediaEnum
+import com.akingyin.media.model.ValMessage
+import com.akingyin.media.multimedia.AbsCreateMultimediaActivity
+import com.akingyin.media.multimedia.BaseMultimediaActivity
+import com.akingyin.media.multimedia.MultimediaHelper
 
 import com.zlcdgroup.mrsei.data.db.dao.ImageTextEntityDao
 import com.zlcdgroup.mrsei.data.db.help.DbCore

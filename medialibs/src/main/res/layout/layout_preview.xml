@@ -19,7 +19,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/background_dark"/>
 
-    <com.akingyin.img.widget.HackyViewPager
+    <com.akingyin.media.widget.HackyViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

@@ -17,14 +17,11 @@ import android.widget.LinearLayout
 
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
-import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.DefaultItemAnimator
-import com.akingyin.base.dialog.TaskShowDialog
 import com.akingyin.base.utils.StringUtils
 import com.akingyin.bmap.AbstractBaiduMapMarkersActivity
-import com.akingyin.img.ImageLoadUtil
+import com.akingyin.media.ImageLoadUtil
 import com.akingyin.map.TestUtil
-import com.akingyin.map.ThreadManage
 import com.akingyin.map.adapter.MarkerInfoListRecycleAdapter
 
 import com.baidu.mapapi.clusterutil.clustering.ClusterManager

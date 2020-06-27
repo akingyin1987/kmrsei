@@ -15,15 +15,12 @@ import com.akingyin.amap.adapter.AmapOffineListAdapter
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.dialog.MaterialDialogUtil
 import com.akingyin.base.ext.click
-import com.akingyin.base.ext.no
-import com.akingyin.base.ext.yes
 import com.akingyin.map.R
 import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationListener
-import com.amap.api.maps.offlinemap.OfflineMapCity
 import com.amap.api.maps.offlinemap.OfflineMapManager
+import com.amap.api.maps.offlinemap.OfflineMapProvince
 import com.amap.api.maps.offlinemap.OfflineMapStatus
-import com.baidu.mapapi.map.offline.MKOLUpdateElement
 import kotlinx.android.synthetic.main.activity_baidumap_offline.*
 
 /**
@@ -53,15 +50,16 @@ class AMapOfflineActivity : SimpleActivity(),OfflineMapManager.OfflineMapDownloa
     private lateinit var  aLocationService: ALocationService
     private lateinit var  offlineMapManager: OfflineMapManager
     override fun initView() {
-       setToolBar(toolbar,"高德地图离线下载")
+        setToolBar(toolbar,"高德地图离线下载")
         recycler.itemAnimator = DefaultItemAnimator()
         offineListAdapter = AmapOffineListAdapter()
         recycler.adapter = offineListAdapter
         offlineMapManager = OfflineMapManager(this,this)
-        offineListAdapter.setNewInstance(offlineMapManager.offlineMapCityList)
+        offineListAdapter.setNewInstance(offlineMapManager.offlineMapProvinceList)
+
         offineListAdapter.addChildClickViewIds(R.id.download,R.id.remove)
-        offineListAdapter.setOnItemClickListener { _, view, postion ->
-            var  data = offineListAdapter.getItem(postion)
+        offineListAdapter.setOnItemChildClickListener   { _, view, postion ->
+            val  data = offineListAdapter.getItem(postion)
             when(view.id){
                 R.id.download -> {
                     downloadAndPaseOffline(data)
@@ -78,7 +76,7 @@ class AMapOfflineActivity : SimpleActivity(),OfflineMapManager.OfflineMapDownloa
                location ->
                if(location.errorCode == AMapLocation.LOCATION_SUCCESS){
                    if(location.city.isNotEmpty()){
-                       offlineMapManager.getItemByCityCode(location.cityCode)?.let {
+                       offlineMapManager.getItemByProvinceName(location.city)?.let {
                            offlineMapCity ->
                            offineListAdapter.addOrUpdateElement(offlineMapCity,true)
                        }
@@ -97,24 +95,24 @@ class AMapOfflineActivity : SimpleActivity(),OfflineMapManager.OfflineMapDownloa
     override fun startRequest() {
 
     }
-    private  fun   downloadAndPaseOffline(offlineMapCity: OfflineMapCity){
+    private  fun   downloadAndPaseOffline(offlineMapCity: OfflineMapProvince){
         if(offlineMapCity.getcompleteCode() != 100){
 
             if(offlineMapCity.state == OfflineMapStatus.LOADING){
                 offlineMapManager.stop()
             }else{
-                offlineMapManager.downloadByCityCode(offlineMapCity.code)
+                offlineMapManager.downloadByProvinceName(offlineMapCity.provinceName)
             }
         }else{
             showTips("当前已是最新，无需更新！")
         }
     }
 
-    private fun   removeOfflineElement(mkolUpdateElement: OfflineMapCity){
-        MaterialDialogUtil.showConfigDialog(context = this,message = "确定要删除${mkolUpdateElement.city}地图离线数据?",
+    private fun   removeOfflineElement(mkolUpdateElement: OfflineMapProvince){
+        MaterialDialogUtil.showConfigDialog(context = this,message = "确定要删除${mkolUpdateElement.provinceName}地图离线数据?",
                 positive = "删除",negative = "再看看"){
             if(it){
-                offlineMapManager.remove(mkolUpdateElement.city)
+                offlineMapManager.remove(mkolUpdateElement.provinceName)
                 showSucces("删除成功")
                 offineListAdapter.remove(mkolUpdateElement)
             }
@@ -122,9 +120,11 @@ class AMapOfflineActivity : SimpleActivity(),OfflineMapManager.OfflineMapDownloa
         }
     }
     override fun onDownload(status: Int, completeCode: Int, downName: String?) {
+        println("status=${status},completecode=${completeCode},downName=${downName}")
         downName?.let {
-            offlineMapManager.getItemByCityName(it)?.let {
+            offlineMapManager.getItemByProvinceName(it)?.let {
                 offlineMapCity ->
+                offlineMapCity.setCompleteCode(completeCode)
                 offineListAdapter.updateElement(offlineMapCity)
             }
         }

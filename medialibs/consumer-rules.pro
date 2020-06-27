@@ -1,4 +1,4 @@
--keep  class com.akingyin.img.model**{*;}
+-keep  class com.akingyin.media.model**{*;}
 -dontwarn  com.akingyin.img.*
 
 # glide

@@ -7,10 +7,10 @@
   ~ Vestibulum commodo. Ut rhoncus gravida arcu.
   -->
 
-<com.akingyin.img.widget.HackyViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+<com.akingyin.media.widget.HackyViewPager xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:id="@+id/viewpager"
     android:layout_height="match_parent">
 
-</com.akingyin.img.widget.HackyViewPager>
+</com.akingyin.media.widget.HackyViewPager>

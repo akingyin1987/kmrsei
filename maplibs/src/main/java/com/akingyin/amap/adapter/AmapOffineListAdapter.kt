@@ -13,7 +13,7 @@ import android.widget.Button
 import com.akingyin.base.ext.gone
 import com.akingyin.base.ext.visiable
 import com.akingyin.map.R
-import com.amap.api.maps.offlinemap.OfflineMapCity
+import com.amap.api.maps.offlinemap.OfflineMapProvince
 import com.amap.api.maps.offlinemap.OfflineMapStatus
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -26,20 +26,20 @@ import java.util.*
  * @ Date 2020/6/24 16:42
  * @version V1.0
  */
-class AmapOffineListAdapter : BaseQuickAdapter<OfflineMapCity,BaseViewHolder>(R.layout.item_offine) {
+class AmapOffineListAdapter : BaseQuickAdapter<OfflineMapProvince,BaseViewHolder>(R.layout.item_offine) {
 
 
-    fun   updateElement(offlineMapCity: OfflineMapCity){
+    fun   updateElement(offlineMapCity: OfflineMapProvince){
         data.forEachIndexed { index, data ->
-            if(data.code == offlineMapCity.code){
+            if(data.provinceCode == offlineMapCity.provinceCode){
                 setData(index,offlineMapCity)
             }
         }
     }
 
-    fun   addOrUpdateElement(offlineMapCity: OfflineMapCity,sortFrist:Boolean = false ){
+    fun   addOrUpdateElement(offlineMapCity: OfflineMapProvince,sortFrist:Boolean = false ){
         data.forEachIndexed { index, data ->
-            if(data.code == offlineMapCity.code){
+            if(data.provinceCode == offlineMapCity.provinceCode){
                 if(sortFrist){
                     val  frist = getItem(0)
                     setData(0,offlineMapCity)
@@ -55,9 +55,9 @@ class AmapOffineListAdapter : BaseQuickAdapter<OfflineMapCity,BaseViewHolder>(R.
     }
 
 
-    override fun convert(holder: BaseViewHolder, item: OfflineMapCity) {
+    override fun convert(holder: BaseViewHolder, item: OfflineMapProvince) {
        with(holder){
-           setText(R.id.title,MessageFormat.format("{0}({1})",item.city,item.code))
+           setText(R.id.title,MessageFormat.format("{0}({1})",item.provinceName,item.provinceCode))
            setText(R.id.update,if(item.getcompleteCode()<100 || item.state == OfflineMapStatus.NEW_VERSION){"可更新"}else{"已最新"})
            getView<Button>(R.id.download).let {
                if(item.getcompleteCode() == 100){

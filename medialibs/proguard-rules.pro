@@ -20,7 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep  class com.akingyin.img.model**{*;}
+-keep  class com.akingyin.media.model**{*;}
 
 # glide
 -keep public class * implements com.bumptech.glide.module.GlideModule

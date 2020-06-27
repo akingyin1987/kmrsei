@@ -14,7 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.SeekBar
-import com.akingyin.img.R
+import com.akingyin.media.R
 import kotlinx.android.synthetic.main.dialog_audio_play_layout.*
 import java.lang.ref.WeakReference
 
