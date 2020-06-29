@@ -5,25 +5,24 @@
  * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
+package com.akingyin.media.model
 
-package com.akingyin.media.model;
-
-import java.io.Serializable;
-import java.util.List;
+import java.io.Serializable
 
 /**
- * Created by Administrator on 2016/10/10.
+ * 图文集合
+ * @author king
+ * @version V1.0
+ * @ Description:
+ *
+ *
+ * @ Date 2017/12/5 11:35
  */
+class ImageTextList : Serializable {
+    var items: List<ImageTextModel>? = null
 
-public class ImageTextTypeList  implements Serializable {
-
-    private List<ImageTextTypeModel>   items;
-
-    public List<ImageTextTypeModel> getItems() {
-        return items;
-    }
-
-    public void setItems(List<ImageTextTypeModel> items) {
-        this.items = items;
+    constructor() {}
+    constructor(items: List<ImageTextModel>?) {
+        this.items = items
     }
 }

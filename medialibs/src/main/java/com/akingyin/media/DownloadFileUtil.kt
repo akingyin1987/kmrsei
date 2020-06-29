@@ -63,8 +63,8 @@ object DownloadFileUtil {
         val response = OkHttpUtils.getInstance().newCall(Request.Builder().url(url).build()).execute()
         if(response.isSuccessful){
             var input: InputStream? = null
-            var buf = ByteArray(2048)
-            var len = 0
+            val buf = ByteArray(2048)
+            var len: Int
             var fos: FileOutputStream? = null
             try {
                 response.body?.let {

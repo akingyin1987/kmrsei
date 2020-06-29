@@ -46,7 +46,7 @@ public class ImageTextPagerActivity  extends AppCompatActivity {
         try {
             ImageViwPageAdapter adapter = new ImageViwPageAdapter(this);
             adapter.setFragmentManager(getSupportFragmentManager());
-            adapter.addDatas(imageTextTypeList.getItems());
+            adapter.addDatas(imageTextTypeList.items);
 
             viewPager.setAdapter(adapter);
             viewPager.setCurrentItem(postion);

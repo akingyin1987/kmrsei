@@ -42,6 +42,7 @@
         <!--<item>7</item>-->
     </string-array>
     <string name="mulitimedia_camera_audio_default_values">8</string>
+    <string name="contentdescription">contentDescription</string>
     <string-array name="mulitimedia_camera_audio">
         <item>8</item>
         <!--<item>9</item>-->

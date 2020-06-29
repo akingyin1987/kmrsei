@@ -45,7 +45,7 @@ public class ImageTextTypesActivity  extends AppCompatActivity {
             finish();
             return;
         }
-        datas = imageTextTypeList.getItems();
+        datas = imageTextTypeList.items;
         final HackyViewPager viewPager = (HackyViewPager)findViewById(R.id.viewpager);
 
         final MultiStateToggleButton multiStateToggleButton = (MultiStateToggleButton)findViewById(R.id.mstb_multi);
@@ -61,7 +61,7 @@ public class ImageTextTypesActivity  extends AppCompatActivity {
                 }else{
                     int  postion =0;
                     for(int i=0;i<value;i++){
-                        postion+=datas.get(i).getItems().size();
+                        postion+= datas.get(i).items.size();
                     }
                     viewPager.setCurrentItem(postion);
                 }
@@ -75,17 +75,18 @@ public class ImageTextTypesActivity  extends AppCompatActivity {
             }
 
             @Override public void onPageSelected(int position) {
-                if(position<datas.get(0).getItems().size()){
+                if(position< datas.get(0).items.size()){
                     if(multiStateToggleButton.getValue() != 0){
                         onChange = false;
                         multiStateToggleButton.setValue(0);
                     }
-                }else if(position <(datas.get(0).getItems().size()+datas.get(1).getItems().size())){
+                }else if(position <(datas.get(0).items.size()+ datas.get(1).items.size())){
                     if(multiStateToggleButton.getValue() != 1){
                         onChange = false;
                         multiStateToggleButton.setValue(1);
                     }
-                }else if(position <(datas.get(0).getItems().size()+datas.get(1).getItems().size())+datas.get(2).getItems().size()){
+                }else if(position <(datas.get(0).items.size()+ datas.get(1).items.size())+ datas.get(2).items
+                    .size()){
                     if(multiStateToggleButton.getValue() != 2){
                         onChange = false;
                         multiStateToggleButton.setValue(2);
@@ -107,8 +108,8 @@ public class ImageTextTypesActivity  extends AppCompatActivity {
             adapter.setFragmentManager(getSupportFragmentManager());
             List<ImageTextModel> imageTextModels = new LinkedList<>();
             for (ImageTextTypeModel data : datas) {
-                if(null != data.getItems() && data.getItems().size()>0){
-                    imageTextModels.addAll(data.getItems());
+                if(null != data.items && data.items.size()>0){
+                    imageTextModels.addAll(data.items);
                 }
             }
             adapter.addDatas(imageTextModels);

@@ -36,15 +36,15 @@ public class RxException <T extends Throwable> implements Consumer<T> {
   @Override public void accept(T t) throws Throwable {
     if (t instanceof SocketTimeoutException) {
       Timber.e("onError: SocketTimeoutException----%s", SOCKETTIMEOUTEXCEPTION);
-     // ToastUtils.show(SOCKETTIMEOUTEXCEPTION);
+
       onError.accept(new Throwable(SOCKETTIMEOUTEXCEPTION));
     } else if (t instanceof ConnectException) {
       Timber.e("onError: ConnectException-----%s", CONNECTEXCEPTION);
-     // ToastUtils.show(CONNECTEXCEPTION);
+
       onError.accept(new Throwable(CONNECTEXCEPTION));
     } else if (t instanceof UnknownHostException) {
       Timber.e("onError: UnknownHostException-----%s", UNKNOWNHOSTEXCEPTION);
-     // ToastUtils.show(UNKNOWNHOSTEXCEPTION);
+
       onError.accept(new Throwable(UNKNOWNHOSTEXCEPTION));
     } else {
       Timber.e("onError:----%s", t.getMessage());

@@ -17,7 +17,9 @@ import java.net.SocketTimeoutException;
 import retrofit2.HttpException;
 
 /**
- * Created by Administrator on 2017/9/12.
+ *
+ * @author Administrator
+ * @date 2017/9/12
  */
 
 public class ApiException extends Exception {
