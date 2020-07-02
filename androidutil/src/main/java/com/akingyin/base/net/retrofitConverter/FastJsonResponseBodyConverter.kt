@@ -15,27 +15,30 @@
  *   limitations under the License.
  *
  */
+package com.akingyin.base.net.retrofitConverter
 
-package com.akingyin.base.net.retrofitConverter;
-
-import com.alibaba.fastjson.JSON;
-import java.io.IOException;
-
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-import retrofit2.Converter;
+import com.alibaba.fastjson.JSON
+import okhttp3.ResponseBody
+import okio.BufferedSource
+import retrofit2.Converter
+import java.io.IOException
+import java.lang.reflect.Type
 
 /**
  * Created by Administrator on 2016/3/10.
  */
-public class FastJsonRequestBodyConverter<T> implements Converter<T, RequestBody> {
+class FastJsonResponseBodyConverter<T>(private val type: Type) : Converter<ResponseBody, T> {
 
+    /*
+    * 转换方法
+    */
+    @Throws(IOException::class)
+    override fun convert(value: ResponseBody): T {
+        val bufferedSource: BufferedSource = value.source().buffer
+        val tempStr = bufferedSource.readUtf8()
+        bufferedSource.close()
 
-    private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=UTF-8");
-
-    @Override
-    public RequestBody convert(T value) throws IOException {
-
-        return RequestBody.create( JSON.toJSONBytes(value),MEDIA_TYPE);
+        return JSON.parseObject(tempStr, type)
     }
+
 }

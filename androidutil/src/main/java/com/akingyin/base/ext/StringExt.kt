@@ -2,6 +2,7 @@ package com.akingyin.base.ext
 
 import android.text.TextUtils
 import java.security.MessageDigest
+import java.text.MessageFormat
 
 /**
  * @ Description:
@@ -42,6 +43,10 @@ fun String.isEmail(): Boolean {
 fun String.isNumeric(): Boolean {
     val p = "^[0-9]+$".toRegex()
     return matches(p)
+}
+
+fun String.messageFormat(vararg arguments:Any):String{
+    return MessageFormat.format(this,arguments)
 }
 
 fun String.equalsIgnoreCase(other: String) = this.toLowerCase().contentEquals(other.toLowerCase())

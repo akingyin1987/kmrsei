@@ -50,7 +50,7 @@ public class ImageVideoPagerActivity extends AppCompatActivity {
 
    ImageViwPageAdapter adapter = new ImageViwPageAdapter(imageTextList.items,this);
    viewPager.setAdapter(adapter);
-   adapter.setFragmentManager(getSupportFragmentManager());
+   adapter.fragmentManager = getSupportFragmentManager();
 
     if(imageTextList.items.size()<=postion){
       postion = 0;

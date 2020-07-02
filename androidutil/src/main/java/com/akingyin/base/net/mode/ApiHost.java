@@ -21,9 +21,10 @@ public class ApiHost {
   private    static   final   String  HTTP_HEADER="http://";
   private    static   final   String  HTTPS_HEADER="https://";
 
-  private static String host = CommonConstants.API_HOST;
+  private static String host = CommonConstants.INSTANCE.getAPI_HOST();
 
   public static String getHost() {
+
     if(!TextUtils.isEmpty(host) && !host.endsWith(File.separator)){
       return host+File.separator;
     }

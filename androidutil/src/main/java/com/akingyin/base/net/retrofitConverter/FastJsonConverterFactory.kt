@@ -15,40 +15,36 @@
  *   limitations under the License.
  *
  */
+package com.akingyin.base.net.retrofitConverter
 
-package com.akingyin.base.net.retrofitConverter;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Converter;
-import retrofit2.Retrofit;
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import retrofit2.Converter
+import retrofit2.Retrofit
+import java.lang.reflect.Type
 
 /**
  * Created by Administrator on 2016/3/10.
  */
-public class FastJsonConverterFactory  extends Converter.Factory {
-
-    public static FastJsonConverterFactory create() {
-        return new FastJsonConverterFactory();
-    }
-
+class FastJsonConverterFactory : Converter.Factory() {
     /**
      * 需要重写父类中responseBodyConverter，该方法用来转换服务器返回数据
      */
-    @Override
-    public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
-        return new FastJsonResponseBodyConverter<>(type);
+    override fun responseBodyConverter(type: Type, annotations: Array<Annotation>, retrofit: Retrofit): Converter<ResponseBody, *> {
+        return FastJsonResponseBodyConverter<Any>(type)
     }
-
 
     /**
      * 需要重写父类中responseBodyConverter，该方法用来转换发送给服务器的数据
      */
-    @Override
-    public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
-        return new FastJsonRequestBodyConverter<>();
+    override fun requestBodyConverter(type: Type, parameterAnnotations: Array<Annotation>, methodAnnotations: Array<Annotation>, retrofit: Retrofit): Converter<*, RequestBody> {
+        return FastJsonRequestBodyConverter<Any>()
+    }
+
+    companion object {
+        @JvmStatic
+        fun create(): FastJsonConverterFactory {
+            return FastJsonConverterFactory()
+        }
     }
 }

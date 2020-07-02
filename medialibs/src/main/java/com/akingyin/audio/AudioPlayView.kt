@@ -73,6 +73,10 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
         dialog_audio_name.text = FileUtils.getFileName(url)
     }
 
+    fun   setPlayError(error:String){
+        dialog_audio_name.text = error
+    }
+
 
     class AudioHandler(dialog: AudioPlayView) : Handler() {
         private val week: WeakReference<AudioPlayView> by lazy {

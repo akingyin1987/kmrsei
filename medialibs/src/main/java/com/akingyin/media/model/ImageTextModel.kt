@@ -20,16 +20,16 @@ import java.io.Serializable
  */
 class ImageTextModel : Serializable {
 
-    var localPath: String=""
+    var localPath: String = ""
 
-    var serverPath: String=""
+    var serverPath: String = ""
 
     /** 下载文件地址 */
-    var  downloadPath:String=""
+    var downloadPath: String = ""
 
     var text: String = ""
 
-    var title: String= ""
+    var title: String = ""
 
     /**
      * 0=文字 1=图片 2=视频 3=音频
@@ -42,11 +42,19 @@ class ImageTextModel : Serializable {
     var haveNetServer = false
 
 
+    /** 关联的外部数据ID */
+    var objectId = 0L
+
+
     companion object {
         private const val serialVersionUID = -3037511222172328451L
 
-        fun buildModel(localPath: String, serverPath: String,downloadPath:String="",text:String="", title: String="", multimediaType: Int =1,haveNetServer:Boolean = true): ImageTextModel {
-           return ImageTextModel().apply {
+        const val TEXT = 0
+        const val IMAGE = 1
+        const val VIDEO = 2
+        const val AUDIO = 3
+        fun buildModel(localPath: String, serverPath: String, downloadPath: String = "", text: String = "", title: String = "", multimediaType: Int = 1, haveNetServer: Boolean = true): ImageTextModel {
+            return ImageTextModel().apply {
                 this.multimediaType = multimediaType
                 this.haveNetServer = haveNetServer
                 this.serverPath = serverPath
@@ -58,4 +66,10 @@ class ImageTextModel : Serializable {
 
         }
     }
+
+    override fun toString(): String {
+        return "ImageTextModel(localPath='$localPath', serverPath='$serverPath', text='$text', multimediaType=$multimediaType)"
+    }
+
+
 }

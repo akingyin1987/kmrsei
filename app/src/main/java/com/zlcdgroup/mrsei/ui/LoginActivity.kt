@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.util.Base64
+import android.view.inputmethod.EditorInfo
 import autodispose2.ScopeProvider
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider
 import autodispose2.autoDispose
@@ -72,6 +73,14 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
             et_mobile.setText(it.personAccount.isEmptyOrNull())
             et_password.setText(it.personPassword.isEmptyOrNull())
         }
+       et_password.setOnEditorActionListener { _, actionId, _ ->
+           if(actionId == EditorInfo.IME_ACTION_GO){
+               userLoginPersenterImpl.login(et_mobile.text.toString(),et_password.text.toString())
+
+               return@setOnEditorActionListener  true
+           }
+           return@setOnEditorActionListener false
+       }
         println("btn_login2")
 
         btn_login.click {
