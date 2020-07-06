@@ -45,15 +45,16 @@ fun String.isNumeric(): Boolean {
     return matches(p)
 }
 
-fun String.messageFormat(vararg arguments:Any):String{
-    return MessageFormat.format(this,arguments)
-}
+
 
 fun String.equalsIgnoreCase(other: String) = this.toLowerCase().contentEquals(other.toLowerCase())
 
 private fun encrypt(string: String?, type: String): String {
     val bytes = MessageDigest.getInstance(type).digest(string!!.toByteArray())
     return bytes2Hex(bytes)
+}
+fun String.messageFormat(vararg arguments:Any):String{
+    return MessageFormat.format(this,*arguments)
 }
 
 internal fun bytes2Hex(bts: ByteArray): String {

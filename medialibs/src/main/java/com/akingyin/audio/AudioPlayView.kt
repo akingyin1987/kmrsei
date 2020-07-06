@@ -32,10 +32,10 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
 
     /** 音频路径 */
     var url: String = ""
-    set(value)  {
-        field = value
-        initView()
-    }
+        set(value)  {
+            field = value
+            initView()
+        }
 
     private val UNIT = -1
     private val PLAY = 0
@@ -53,8 +53,7 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
 
 
     private fun initView() {
-        audioHandler = AudioHandler(this)
-
+        audioHandler = audioHandler ?:AudioHandler(this)
         dialog_audio_play.setOnClickListener {
             // 播放
             if (playerState == PAUSE) {
@@ -73,10 +72,10 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
         dialog_audio_name.text = FileUtils.getFileName(url)
     }
 
-    fun   setPlayError(error:String){
+
+    fun  setPlayError(error:String){
         dialog_audio_name.text = error
     }
-
 
     class AudioHandler(dialog: AudioPlayView) : Handler() {
         private val week: WeakReference<AudioPlayView> by lazy {
@@ -84,35 +83,41 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
         }
 
         override fun handleMessage(msg: Message?) {
+            println("handleMessage->${week.get()?.mediaPlayer?.currentPosition}")
             week.get()?.dialog_audio_bar?.progress = week.get()?.mediaPlayer?.currentPosition ?: 0
         }
     }
 
 
     private fun initPlayer() {
-        mediaPlayer = MediaPlayer()
-        mediaPlayer?.setDataSource(url)
-        mediaPlayer?.prepareAsync()
-        mediaPlayer?.setOnPreparedListener { play ->
-            dialog_audio_bar.max = play.duration
-            audioHandler?.post(this)
-            dialog_audio_countTime.text = secToTime(play.duration / 1000)
+        println("url=${url}")
+        mediaPlayer=mediaPlayer?:MediaPlayer()
+        if(url.isNotEmpty()){
+            mediaPlayer?.setDataSource(url)
+            mediaPlayer?.prepareAsync()
+            mediaPlayer?.setOnPreparedListener { play ->
+                println("资源加载成功--->${null == audioHandler}")
+                dialog_audio_bar.max = play.duration
+                audioHandler?.post(this)
+                dialog_audio_countTime.text = secToTime(play.duration / 1000)
+                // 设置运动时间
+                falgTime = SystemClock.elapsedRealtime()
+                pauseTime = 0
+                startPlay()
+                dialog_audio_nowTime.base = falgTime
+                dialog_audio_nowTime.start()
+            }
+            mediaPlayer?.setOnCompletionListener {
+                println("setOnCompletionListener")
+                stopPlay()
+                dialog_audio_bar.progress = 0
 
-            // 设置运动时间
-            falgTime = SystemClock.elapsedRealtime()
-            pauseTime = 0
-            dialog_audio_nowTime.base = falgTime
-            dialog_audio_nowTime.start()
+                dialog_audio_nowTime.base = SystemClock.elapsedRealtime()
+                dialog_audio_nowTime.start()
+                dialog_audio_nowTime.stop()
+            }
         }
-        mediaPlayer?.setOnCompletionListener {
-            println("setOnCompletionListener")
-            stopPlay()
-            dialog_audio_bar.progress = 0
 
-            dialog_audio_nowTime.base = SystemClock.elapsedRealtime()
-            dialog_audio_nowTime.start()
-            dialog_audio_nowTime.stop()
-        }
     }
 
     private  fun  pausePlay(){
@@ -121,13 +126,12 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
             mediaPlayer?.pause()
             playerState = PAUSE
 
-            dialog_audio_nowTime.stop()
-            pauseTime = SystemClock.elapsedRealtime()
-
-            dialog_audio_play.visibility = View.VISIBLE
-            dialog_audio_pause.visibility = View.GONE
-            dialog_audio_bar.isEnabled = false
         }
+        dialog_audio_nowTime.stop()
+        pauseTime = SystemClock.elapsedRealtime()
+        dialog_audio_play.visibility = View.VISIBLE
+        dialog_audio_pause.visibility = View.GONE
+        dialog_audio_bar.isEnabled = false
     }
 
     // 开始播放
@@ -167,12 +171,16 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
     }
 
     override fun run() {
+
         // 获得歌曲现在播放位置并设置成播放进度条的值
-        if (mediaPlayer != null) {
+        if(mediaPlayer?.isPlaying == true){
+
             audioHandler?.sendEmptyMessage(0)
             // 每次延迟100毫秒再启动线程
             audioHandler?.postDelayed(this, 100)
         }
+
+
     }
 
 
@@ -206,7 +214,7 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
         if(!hasWindowFocus){
             pausePlay()
         }
-        println("onWindowFocusChanged=${hasWindowFocus}")
+
     }
 
     override fun onDetachedFromWindow() {
@@ -218,6 +226,6 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
         audioHandler?.removeCallbacks(this)
         audioHandler?.removeCallbacksAndMessages(null)
         audioHandler = null
-        println("onDetachedFromWindow")
+        println("onDetachedFromWindow-->>${url}")
     }
 }

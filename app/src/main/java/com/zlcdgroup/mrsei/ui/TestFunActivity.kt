@@ -14,6 +14,9 @@ import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.akingyin.base.SimpleActivity
+import com.akingyin.media.model.ImageTextList
+import com.akingyin.media.model.ImageTextModel
+import com.akingyin.media.ui.MediaViewPager2Activity
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.model.FunModel
 import com.zlcdgroup.mrsei.ui.adapter.FunListAdapter
@@ -59,6 +62,20 @@ class TestFunActivity : SimpleActivity() {
                         mutableListOf<FunModel>().apply {
                             add(FunModel("百度地图marker", Intent(this@TestFunActivity,TestBaiduMapActivity::class.java)))
                             add(FunModel("高德地图marker", Intent(this@TestFunActivity,TestAmapActivity::class.java)))
+                            add(FunModel("多媒体查看", Intent(this@TestFunActivity,MediaViewPager2Activity::class.java).apply {
+                                putExtra("data",ImageTextList().apply {
+                                  items = arrayListOf<ImageTextModel>().apply {
+                                      add(ImageTextModel.buildModel(localPath = "",serverPath = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594014042023&di=1eefe5aba70bb14eee01111dff4b8813&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F64%2F76%2F20300001349415131407760417677.jpg"))
+                                      add(ImageTextModel.buildModel(localPath = "",serverPath = "",text = "这是测试",multimediaType = 0))
+                                      add(ImageTextModel.buildModel(localPath = "",serverPath = "http://7xjmzj.com1.z0.glb.clouddn.com/20171026175005_JObCxCE2.mp4",
+                                      multimediaType = 2))
+                                      add(ImageTextModel.buildModel(localPath = "",serverPath = "https://m3.8js.net/20200306/57_yelangDISCOrap.mp3",multimediaType = 3))
+                                  }
+
+
+
+                                })
+                            }))
                         }
                     }
             )

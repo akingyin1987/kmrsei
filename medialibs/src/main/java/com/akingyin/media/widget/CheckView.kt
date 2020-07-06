@@ -89,7 +89,7 @@ class CheckView : View {
     }
 
     fun setChecked(checked: Boolean) {
-        check(!mCountable) { "CheckView is countable, call setCheckedNum() instead." }
+        check(!mCountable) { "CheckView is countable mCountable=$mCountable, call setCheckedNum() instead." }
         mChecked = checked
         invalidate()
     }

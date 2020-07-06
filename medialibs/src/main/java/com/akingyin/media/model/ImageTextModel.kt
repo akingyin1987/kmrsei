@@ -41,6 +41,9 @@ class ImageTextModel : Serializable {
 
     var haveNetServer = false
 
+    /** 是否被选中 */
+    var  checked = false
+
 
     /** 关联的外部数据ID */
     var objectId = 0L

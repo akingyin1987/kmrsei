@@ -220,7 +220,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
         // startActivityForResult<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"),requestCode = 100)
         // startActivity<TestMarkerMapActivity>()
         //  startActivity<TestTuwenActivity>()
-
+         println("message={0}".messageFormat("test"))
         startActivity<TestFunActivity>()
     }
 

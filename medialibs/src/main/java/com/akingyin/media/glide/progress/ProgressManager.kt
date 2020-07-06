@@ -57,7 +57,7 @@ object  ProgressManager {
         override fun onProgress(url: String, bytesRead: Long, totalBytes: Long) {
             val onProgressListener = getProgressListener(url)
             if (onProgressListener != null) {
-                val percentage = (bytesRead * 1f / totalBytes * 100f) as Int
+                val percentage = (bytesRead * 1f / totalBytes * 100f).toInt()
                 val isComplete = percentage >= 100
                 onProgressListener.onProgress(isComplete, percentage, bytesRead, totalBytes)
                 if (isComplete) {

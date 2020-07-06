@@ -124,7 +124,11 @@
 
 
     <activity android:name=".ui.TestAmapActivity" />
-    <activity android:name="com.akingyin.bmap.SelectLocationBaiduActivity" />
+    <activity android:name="com.akingyin.media.ui.MediaViewPager2Activity"/>
+    <activity android:name="com.akingyin.bmap.SelectLocationBaiduActivity"
+             android:screenOrientation="portrait"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+        />
     <activity android:name="com.akingyin.bmap.CoordinatePickupBaiduMapActivity" />
     <activity
         android:name=".ui.TuyaTestActivity"

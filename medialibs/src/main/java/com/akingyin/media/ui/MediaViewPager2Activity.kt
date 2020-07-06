@@ -18,7 +18,9 @@ import com.akingyin.media.R
 import com.akingyin.media.adapter.MediaViewpager2Adapter
 import com.akingyin.media.model.ImageTextList
 import com.akingyin.media.model.ImageTextModel
+import com.shuyu.gsyvideoplayer.GSYVideoManager
 import kotlinx.android.synthetic.main.activity_media_viewpager2_info.*
+
 import kotlin.properties.Delegates
 
 /**
@@ -64,6 +66,7 @@ class MediaViewPager2Activity : SimpleActivity(){
                     return  oldItem.toString() == newItem.toString()
                 }
             })
+            mediaViewpager2Adapter.setDiffNewData(it.toMutableList())
         }?:finish()
     }
 
@@ -77,5 +80,27 @@ class MediaViewPager2Activity : SimpleActivity(){
                 putExtra("data",imageTextList)
             })
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        GSYVideoManager.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        GSYVideoManager.onPause()
+    }
+
+    override fun onBackPressed() {
+        if (GSYVideoManager.backFromWindowFull(this)) {
+            return
+        }
+        super.onBackPressed()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        GSYVideoManager.releaseAllVideos()
     }
 }

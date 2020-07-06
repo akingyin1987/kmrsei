@@ -42,17 +42,17 @@ public class ImageVideoPagerActivity extends AppCompatActivity {
     ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
     ImageTextList imageTextList = (ImageTextList) getIntent().getSerializableExtra(DATA_KEY);
     int  postion = getIntent().getIntExtra(POSTION_KEY,0);
-    if(null == imageTextList ||  null == imageTextList.items || imageTextList.items.size()==0){
+    if(null == imageTextList ||  null == imageTextList.getItems() || imageTextList.getItems().size()==0){
       finish();
       Toast.makeText(this,"数据出错了",Toast.LENGTH_SHORT).show();
       return;
     }
 
-   ImageViwPageAdapter adapter = new ImageViwPageAdapter(imageTextList.items,this);
+   ImageViwPageAdapter adapter = new ImageViwPageAdapter(imageTextList.getItems(),this);
    viewPager.setAdapter(adapter);
-   adapter.fragmentManager = getSupportFragmentManager();
+   adapter.setFragmentManager( getSupportFragmentManager());
 
-    if(imageTextList.items.size()<=postion){
+    if(imageTextList.getItems().size()<=postion){
       postion = 0;
     }
    viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
