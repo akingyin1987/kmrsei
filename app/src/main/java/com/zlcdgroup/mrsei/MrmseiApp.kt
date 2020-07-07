@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.widget.Toast
 import androidx.multidex.MultiDex
 import com.akingyin.base.BaseApp
+import com.akingyin.base.config.AppFileConfig
 import com.akingyin.base.ext.Ext
 import com.akingyin.base.ext.spGetString
 import com.akingyin.base.ext.spSetString
@@ -96,7 +97,7 @@ class MrmseiApp :BaseApp() {
         Constants.MODEL = Build.MODEL
         UMConfigure.setLogEnabled(true)
         UMConfigure.init(this,UMConfigure.DEVICE_TYPE_PHONE,"5cd152274ca357112b000a24")
-
+        AppFileConfig.APP_FILE_ROOT = AppFileConfig.getAppFileRoot(this,"download").absolutePath
     }
 
     override fun attachBaseContext(base: Context?) {

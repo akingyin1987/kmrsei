@@ -105,12 +105,15 @@ dependencies {
 
 
   // paging
-  def paging_version = "3.0.0-alpha01"
+  def paging_version = "3.0.0-alpha02"
   api  "androidx.paging:paging-runtime:$paging_version"
+
+  def work_version = "1.0.1"
+  api "android.arch.work:work-runtime-ktx:$work_version"
+  api "android.arch.work:work-runtime:$work_version"
 
 
   def room_version = "2.2.5"
-
   api "androidx.room:room-runtime:$room_version"
   kapt "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
 

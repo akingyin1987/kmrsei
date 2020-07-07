@@ -12,9 +12,10 @@ package com.akingyin.media.glide
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.AttributeSet
-import android.widget.ImageView
+
 import androidx.annotation.DrawableRes
 import androidx.annotation.NonNull
+import com.akingyin.media.GlideRequest
 import com.akingyin.media.glide.transformation.CircleTransformation
 import com.akingyin.media.glide.transformation.RadiusTransformation
 import com.bumptech.glide.load.Transformation
@@ -29,15 +30,11 @@ import com.github.chrisbanes.photoview.PhotoView
  * @ Date 2020/7/6 17:18
  * @version V1.0
  */
-class GlideImageView :PhotoView{
+class GlideImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : PhotoView(context, attrs, defStyleAttr) {
     private var enableState = false
     private var pressedAlpha = 0.4f
     private var unableAlpha = 0.3f
-     private var imageLoader: GlideImageLoader = GlideImageLoader.create(this)
-
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    private var imageLoader: GlideImageLoader = GlideImageLoader.create(this)
 
 
     fun getImageLoader(): GlideImageLoader {
@@ -45,49 +42,48 @@ class GlideImageView :PhotoView{
         return imageLoader
     }
 
-    fun apply(options: RequestOptions): GlideImageView? {
-        imageLoader.getGlideRequest()?.apply(options)
-        return this
+    fun apply(options: RequestOptions): GlideRequest<*> {
+       return imageLoader.getGlideRequest().apply(options)
     }
 
-    fun centerCrop(): GlideImageView? {
-        getImageLoader().getGlideRequest()!!.centerCrop()
-        return this
+    fun centerCrop(): GlideRequest<*>  {
+       return getImageLoader().getGlideRequest().centerCrop()
+
     }
 
-    fun fitCenter(): GlideImageView? {
-        getImageLoader().getGlideRequest()!!.fitCenter()
-        return this
+    fun fitCenter(): GlideRequest<*>  {
+      return  getImageLoader().getGlideRequest().fitCenter()
+
     }
 
-    fun diskCacheStrategy(@NonNull strategy: DiskCacheStrategy?): GlideImageView? {
-        getImageLoader().getGlideRequest()!!.diskCacheStrategy(strategy!!)
-        return this
+    fun diskCacheStrategy(@NonNull strategy: DiskCacheStrategy): GlideRequest<*>  {
+       return getImageLoader().getGlideRequest().diskCacheStrategy(strategy)
+
     }
 
-    fun placeholder(@DrawableRes resId: Int): GlideImageView? {
-        getImageLoader().getGlideRequest()!!.placeholder(resId)
-        return this
+    fun placeholder(@DrawableRes resId: Int): GlideRequest<*>  {
+       return getImageLoader().getGlideRequest().placeholder(resId)
+
     }
 
-    fun error(@DrawableRes resId: Int): GlideImageView? {
-        getImageLoader().getGlideRequest()!!.error(resId)
-        return this
+    fun error(@DrawableRes resId: Int): GlideRequest<*>  {
+       return getImageLoader().getGlideRequest().error(resId)
+
     }
 
-    fun fallback(@DrawableRes resId: Int): GlideImageView? {
-        getImageLoader().getGlideRequest()!!.fallback(resId)
-        return this
+    fun fallback(@DrawableRes resId: Int): GlideRequest<*>  {
+       return getImageLoader().getGlideRequest().fallback(resId)
+
     }
 
-    fun dontAnimate(): GlideImageView? {
-        getImageLoader().getGlideRequest()!!.dontTransform()
-        return this
+    fun dontAnimate(): GlideRequest<*>  {
+       return getImageLoader().getGlideRequest().dontTransform()
+
     }
 
-    fun dontTransform(): GlideImageView? {
-        getImageLoader().getGlideRequest()!!.dontTransform()
-        return this
+    fun dontTransform(): GlideRequest<*>  {
+        return getImageLoader().getGlideRequest().dontTransform()
+
     }
 
     fun load(url: String?) {
@@ -115,7 +111,7 @@ class GlideImageView :PhotoView{
     }
 
     fun load(obj: Any?, @DrawableRes placeholder: Int, transformation: Transformation<Bitmap?>?, onProgressListener: OnProgressListener?) {
-        getImageLoader().listener(obj, onProgressListener)!!.loadImage(obj, placeholder, transformation)
+        getImageLoader().listener(obj, onProgressListener).loadImage(obj, placeholder, transformation)
     }
 
     fun loadCircle(url: String?) {

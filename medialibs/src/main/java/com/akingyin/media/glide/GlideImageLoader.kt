@@ -18,10 +18,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import com.akingyin.media.GlideApp
-
 import com.akingyin.media.GlideRequest
 import com.akingyin.media.glide.progress.ProgressManager
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.transition.Transition
@@ -34,17 +32,17 @@ import java.lang.ref.WeakReference
  * @ Date 2020/7/6 16:54
  * @version V1.0
  */
-class GlideImageLoader {
+class GlideImageLoader private constructor(imageView: ImageView) {
 
-    protected val ANDROID_RESOURCE = "android.resource://"
-    protected val FILE = "file://"
-    protected val SEPARATOR = "/"
+    private val ANDROID_RESOURCE = "android.resource://"
+    private val FILE = "file://"
+    private val SEPARATOR = "/"
 
     private var url: String=""
     private var imageViewWeakReference: WeakReference<ImageView>? = null
     private var glideRequest: GlideRequest<Drawable>? = null
 
-    private constructor(imageView: ImageView){
+    init {
         imageViewWeakReference = WeakReference(imageView)
         glideRequest = getContext()?.let {
             GlideApp.with(it).asDrawable()
@@ -71,29 +69,28 @@ class GlideImageLoader {
         return  getImageView()?.context
     }
 
-    fun getUrl(): String {
-        return url
-    }
 
-    fun getGlideRequest(): GlideRequest<*>? {
+
+    fun getGlideRequest(): GlideRequest<*> {
 
         if (glideRequest == null) {
-         glideRequest =  getContext()?.let {
+          glideRequest =  getContext()?.let {
                GlideApp.with(it).asDrawable()
            }
+
         }
-        return glideRequest
+        return glideRequest!!
     }
 
-    protected fun resId2Uri(@DrawableRes resId: Int): Uri? {
+    protected fun resId2Uri(@DrawableRes resId: Int): Uri {
         return Uri.parse(ANDROID_RESOURCE + getContext()?.packageName.toString() + SEPARATOR + resId)
     }
 
-    fun load(@DrawableRes resId: Int, @DrawableRes placeholder: Int, @NonNull transformation: Transformation<Bitmap?>?): GlideImageLoader? {
+    fun load(@DrawableRes resId: Int, @DrawableRes placeholder: Int, @NonNull transformation: Transformation<Bitmap?>?): GlideImageLoader {
         return loadImage(resId2Uri(resId), placeholder, transformation)
     }
 
-    protected fun loadImage(obj: Any?): GlideRequest<Drawable>? {
+    private fun loadImage(obj: Any?): GlideRequest<Drawable>? {
         if (obj is String) {
             url = obj
         }
@@ -101,7 +98,7 @@ class GlideImageLoader {
     }
 
 
-    fun loadImage(obj: Any?, @DrawableRes placeholder: Int, transformation: Transformation<Bitmap?>?): GlideImageLoader? {
+    fun loadImage(obj: Any?, @DrawableRes placeholder: Int, transformation: Transformation<Bitmap?>?): GlideImageLoader {
         glideRequest = loadImage(obj)
         if (placeholder != 0) {
             glideRequest = glideRequest?.placeholder(placeholder)
@@ -116,7 +113,7 @@ class GlideImageLoader {
         return this
     }
 
-    fun listener(obj: Any?, onProgressListener: OnProgressListener?): GlideImageLoader? {
+    fun listener(obj: Any?, onProgressListener: OnProgressListener?): GlideImageLoader {
         if (obj is String) {
             url = obj
         }
@@ -129,6 +126,7 @@ class GlideImageLoader {
 
 
         override fun onLoadFailed(@Nullable errorDrawable: Drawable?) {
+            println("onLoadFailed->>")
              ProgressManager.getProgressListener(uri)?.let {
                  it.onProgress(true,100,0,0)
                  ProgressManager.removeListener(uri)
@@ -138,12 +136,16 @@ class GlideImageLoader {
         }
 
         override fun onResourceReady(@NonNull resource: Drawable, @Nullable transition: Transition<in Drawable?>?) {
+            println("onResourceReady->>")
+
            ProgressManager.getProgressListener(uri)?.let {
+               println("onResourceReady->资源加载完毕")
                it.onProgress(true,100,0,0)
                ProgressManager.removeListener(uri)
            }
 
             super.onResourceReady(resource, transition)
         }
+
     }
 }

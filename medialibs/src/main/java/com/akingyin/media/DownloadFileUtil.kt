@@ -35,15 +35,21 @@ object DownloadFileUtil {
     /**
      * 通过协程下载文件
      */
-    fun  coordinateDownloadFile(url:String,dir:String,fileName:String,callBack:(Boolean)->Unit):Job{
+    fun  coordinateDownloadFile(url:String,dir:String,fileName:String,callBack:(Boolean,String?)->Unit):Job{
        return GlobalScope.launch(Main) {
-            withContext(IO){
-                asycDownloadFile(url,dir,fileName){
-                    _, _ ->
-                }
-            }?.let {
-               callBack(true)
-            }?:callBack.invoke(false)
+           try {
+               withContext(IO){
+                   asycDownloadFile(url,dir,fileName){
+                       _, _ ->
+                   }
+               }?.let {
+                   callBack(true,File(dir,fileName).absolutePath)
+               }?:callBack.invoke(false,null)
+           }catch (e:Exception){
+               e.printStackTrace()
+               callBack.invoke(false,"出错了"+e.message)
+           }
+
         }
     }
 

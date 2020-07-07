@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  ~ akingyin@163.com
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.viewpager2.widget.ViewPager2
+      android:layout_width="match_parent"
+      android:id="@+id/viewpager"
+      app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+      android:orientation="horizontal"
+      android:layout_height="match_parent"/>
+  <FrameLayout
+      android:id="@+id/bottom_toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:background="#CC000000"
+      android:elevation="4dp"
+     >
+
+    <TextView
+        android:id="@+id/button_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:padding="16dp"
+        android:layout_gravity="start"
+        android:text="返回"
+
+        android:textSize="16sp"/>
+
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+      <LinearLayout
+          android:padding="16dp"
+          android:id="@+id/originalLayout"
+          android:visibility="visible"
+          android:orientation="horizontal"
+          android:layout_gravity="center"
+          android:layout_width="wrap_content"
+          android:background="?selectableItemBackground"
+          android:layout_height="wrap_content"
+         >
+
+
+        <com.akingyin.media.widget.CheckRadioView
+            android:id="@+id/original"
+            android:src="@drawable/ic_preview_radio_off"
+            android:layout_gravity="center_vertical"
+            android:tint="#ffffff"
+            android:layout_width="16dp"
+            android:layout_height="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:enabled="true"
+            android:paddingStart="4dp"
+            android:paddingLeft="4dp"
+            android:text="原图"
+
+            android:textSize="14sp" />
+
+      </LinearLayout>
+
+
+
+      <TextView
+          android:id="@+id/size"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:textColor="#61FFFFFF"
+          android:textSize="16sp"
+          android:visibility="gone"/>
+    </LinearLayout>
+
+
+
+    <TextView
+        android:id="@+id/button_apply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="?selectableItemBackground"
+        android:padding="16dp"
+        android:text="使用"
+        android:textSize="16sp"/>
+
+  </FrameLayout>
+</RelativeLayout>

@@ -27,14 +27,14 @@ import kotlin.collections.HashMap
  */
 object  ProgressManager {
 
-    private val listenersMap: MutableMap<String, OnProgressListener>? = Collections.synchronizedMap(HashMap())
+    private val listenersMap: MutableMap<String, OnProgressListener> = Collections.synchronizedMap(HashMap())
 
 
-    private  var okHttpClient: OkHttpClient? = null
+     private var okHttpClient: OkHttpClient? = null
 
-    private fun ProgressManager() {}
 
-    fun getOkHttpClient(): OkHttpClient {
+     @JvmStatic
+    fun getGlideOkHttpClient(): OkHttpClient {
         okHttpClient = okHttpClient?:  OkHttpClient.Builder()
                 .addNetworkInterceptor(Interceptor { chain: Interceptor.Chain ->
                     val request: Request = chain.request()
@@ -70,20 +70,20 @@ object  ProgressManager {
     }
 
     fun addListener(url: String, listener: OnProgressListener?) {
-        if (url.isEmpty() && listener != null) {
-            listenersMap!![url] = listener
+        if (url.isNotEmpty() && listener != null) {
+            listenersMap[url] = listener
             listener.onProgress(false, 1, 0, 0)
         }
     }
 
     fun removeListener(url: String) {
         if (url.isNotEmpty()) {
-            listenersMap!!.remove(url)
+            listenersMap.remove(url)
         }
     }
 
     fun getProgressListener(url: String): OnProgressListener? {
-        return if (TextUtils.isEmpty(url) || listenersMap == null || listenersMap.size == 0) {
+        return if (TextUtils.isEmpty(url) || listenersMap.isEmpty()) {
             null
         } else listenersMap[url]
     }

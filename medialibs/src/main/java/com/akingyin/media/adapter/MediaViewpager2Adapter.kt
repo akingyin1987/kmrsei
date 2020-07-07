@@ -40,7 +40,14 @@ import java.text.MessageFormat
  */
 class MediaViewpager2Adapter : BaseQuickAdapter<ImageTextModel,BaseViewHolder>(R.layout.item_media_viewpager) {
 
+    /** 选中或被选中消息 */
     var  liveEvent : SingleLiveEvent<Int> = SingleLiveEvent()
+
+    /** 下载文件 */
+    var  downloadLiveEvent:SingleLiveEvent<Int> = SingleLiveEvent()
+
+    /** 是否显示选择 */
+    var   showChecked = false
 
     fun   getCheckedNum():Int{
         var  num  = 0
@@ -54,16 +61,23 @@ class MediaViewpager2Adapter : BaseQuickAdapter<ImageTextModel,BaseViewHolder>(R
 
     override fun convert(holder: BaseViewHolder, item: ImageTextModel) {
        with(holder){
+
            getView<CheckView>(R.id.check_view).click {
-               it.setCountable(false)
-               it.setCheckedNum(getCheckedNum()+1)
-               it.setCountable(true)
-               it.setChecked(!item.checked)
-               item.checked = !item.checked
-               liveEvent.postValue(bindingAdapterPosition)
+               if(showChecked){
+                   it.setCountable(false)
+                   it.setChecked(!item.checked)
+                   item.checked = !item.checked
+                   liveEvent.value = bindingAdapterPosition
+               }else{
+                   it.gone()
+               }
+
            }
            setText(R.id.tv_page, MessageFormat.format("{0}/{1}",bindingAdapterPosition+1,getDefItemCount()))
            val downloadView :ImageView = getView(R.id.iv_download)
+           downloadView.click {
+               downloadLiveEvent.value = bindingAdapterPosition
+           }
            val textView : TextView = getView(R.id.tv_text)
            textView.gone()
            val glideImageView: GlideImageView = getView(R.id.iv_image)
@@ -96,9 +110,10 @@ class MediaViewpager2Adapter : BaseQuickAdapter<ImageTextModel,BaseViewHolder>(R
                                circleProgressView.visiable()
                                circleProgressView.progress = 0
                                circleProgressView.max = 100
-                               ImageLoadUtil.loadImageServerFile(item.serverPath,context,it)
+
                                it.load(item.serverPath,R.drawable.big_img_error,object :OnProgressListener{
                                    override fun onProgress(isComplete: Boolean, percentage: Int, bytesRead: Long, totalBytes: Long) {
+                                       println("isComplete=${isComplete} percentage=${percentage}")
                                        if(isComplete){
                                            circleProgressView.gone()
                                        }

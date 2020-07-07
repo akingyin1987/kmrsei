@@ -57,6 +57,7 @@ class ProgressResponseBody constructor(var url: String, var internalProgressList
                 internalProgressListener?.let {
                     if (lastTotalBytesRead != totalBytesRead) {
                         lastTotalBytesRead = totalBytesRead
+                        println("read->$lastTotalBytesRead  : $totalBytesRead")
                         mainThreadHandler.post { it.onProgress(url, totalBytesRead, contentLength()) }
                     }
                 }

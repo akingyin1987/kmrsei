@@ -99,6 +99,7 @@ class CheckView : View {
     }
 
     fun setCheckedNum(checkedNum: Int) {
+
         check(mCountable) { "CheckView is not countable, call setChecked() instead." }
         require(!(checkedNum != UNCHECKED && checkedNum <= 0)) { "checked num can't be negative." }
         mCheckedNum = checkedNum

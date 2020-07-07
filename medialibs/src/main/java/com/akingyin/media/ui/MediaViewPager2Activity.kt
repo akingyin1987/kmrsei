@@ -12,6 +12,7 @@ package com.akingyin.media.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import com.akingyin.base.SimpleActivity
 import com.akingyin.media.R
@@ -21,7 +22,6 @@ import com.akingyin.media.model.ImageTextModel
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import kotlinx.android.synthetic.main.activity_media_viewpager2_info.*
 
-import kotlin.properties.Delegates
 
 /**
  * @ Description:
@@ -29,19 +29,15 @@ import kotlin.properties.Delegates
  * @ Date 2020/7/2 17:56
  * @version V1.0
  */
-class MediaViewPager2Activity : SimpleActivity(){
+open class MediaViewPager2Activity : SimpleActivity() {
 
-     var  data:ImageTextList by Delegates.observable(initialValue = ImageTextList(),onChange = {
-
-        property, oldValue, newValue ->
-
-     })
+    var data: ImageTextList = ImageTextList()
 
     override fun initInjection() {
 
     }
 
-    override fun getLayoutId()= R.layout.activity_media_viewpager2_info
+    override fun getLayoutId() = R.layout.activity_media_viewpager2_info
 
     override fun initializationData(savedInstanceState: Bundle?) {
 
@@ -51,33 +47,62 @@ class MediaViewPager2Activity : SimpleActivity(){
 
     }
 
-    lateinit var  mediaViewpager2Adapter: MediaViewpager2Adapter
+    lateinit var mediaViewpager2Adapter: MediaViewpager2Adapter
     override fun initView() {
         data = intent.getSerializableExtra("data") as ImageTextList
         data.items?.let {
             mediaViewpager2Adapter = MediaViewpager2Adapter()
-            viewpager.adapter = mediaViewpager2Adapter
-            mediaViewpager2Adapter.setDiffCallback(object :DiffUtil.ItemCallback<ImageTextModel>(){
+            onBindAdapter()
+            mediaViewpager2Adapter.downloadLiveEvent.observe(this, Observer { postion ->
+                downloadItemFile(mediaViewpager2Adapter.getItem(postion))
+            })
+            mediaViewpager2Adapter.liveEvent.observe(this, Observer { postion ->
+                onCheckedItem(mediaViewpager2Adapter.getItem(postion))
+            })
+
+            mediaViewpager2Adapter.setDiffCallback(object : DiffUtil.ItemCallback<ImageTextModel>() {
                 override fun areItemsTheSame(oldItem: ImageTextModel, newItem: ImageTextModel): Boolean {
-                   return  oldItem.objectId == newItem.objectId
+                    return oldItem.objectId == newItem.objectId
                 }
 
                 override fun areContentsTheSame(oldItem: ImageTextModel, newItem: ImageTextModel): Boolean {
-                    return  oldItem.toString() == newItem.toString()
+                    return oldItem.toString() == newItem.toString()
                 }
             })
             mediaViewpager2Adapter.setDiffNewData(it.toMutableList())
-        }?:finish()
+        } ?: finish()
     }
 
     override fun startRequest() {
 
     }
 
-    companion object{
-        fun  startMediaViewPager(context: Context,imageTextList: ImageTextList){
-            context.startActivity(Intent(context,MediaViewPager2Activity::class.java).apply {
-                putExtra("data",imageTextList)
+
+    /**
+     * 绑定适配器
+     */
+    open fun onBindAdapter() {
+        viewpager.adapter = mediaViewpager2Adapter
+    }
+
+    /**
+     * 下载某项文件
+     */
+    open fun downloadItemFile(imageTextModel: ImageTextModel) {
+
+    }
+
+    /**
+     * 选中某项文件
+     */
+    open fun onCheckedItem(imageTextModel: ImageTextModel) {
+
+    }
+
+    companion object {
+        fun startMediaViewPager(context: Context, imageTextList: ImageTextList) {
+            context.startActivity(Intent(context, MediaViewPager2Activity::class.java).apply {
+                putExtra("data", imageTextList)
             })
         }
     }

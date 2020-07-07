@@ -3,6 +3,7 @@ package com.akingyin.base.ext
 import android.text.TextUtils
 import java.security.MessageDigest
 import java.text.MessageFormat
+import java.util.*
 
 /**
  * @ Description:
@@ -47,7 +48,7 @@ fun String.isNumeric(): Boolean {
 
 
 
-fun String.equalsIgnoreCase(other: String) = this.toLowerCase().contentEquals(other.toLowerCase())
+fun String.equalsIgnoreCase(other: String) = this.toLowerCase(Locale.ROOT).contentEquals(other.toLowerCase(Locale.ROOT))
 
 private fun encrypt(string: String?, type: String): String {
     val bytes = MessageDigest.getInstance(type).digest(string!!.toByteArray())

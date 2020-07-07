@@ -31,17 +31,7 @@ import com.akingyin.util.Utils
  * @ Description:
  * @ Date 2020/6/4 12:19
  */
-class CircleProgressView : ProgressBar {
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int,
-                defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes){
-        attrs?.let {
-            obtainAttributes(it)
-        }
-        initPaint()
-    }
+class CircleProgressView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) : ProgressBar(context, attrs, defStyleAttr, defStyleRes) {
 
 
     private var mReachBarSize: Int = Utils.dp2px(context, 2) // 未完成进度条大小
@@ -615,5 +605,12 @@ class CircleProgressView : ProgressBar {
     override fun invalidate() {
         initPaint()
         super.invalidate()
+    }
+
+    init {
+        attrs?.let {
+            obtainAttributes(it)
+        }
+        initPaint()
     }
 }

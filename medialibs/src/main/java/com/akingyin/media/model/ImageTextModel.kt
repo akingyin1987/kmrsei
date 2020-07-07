@@ -48,6 +48,9 @@ class ImageTextModel : Serializable {
     /** 关联的外部数据ID */
     var objectId = 0L
 
+    /** 对象类 */
+    var  itemType = 0
+
 
     companion object {
         private const val serialVersionUID = -3037511222172328451L
@@ -56,7 +59,7 @@ class ImageTextModel : Serializable {
         const val IMAGE = 1
         const val VIDEO = 2
         const val AUDIO = 3
-        fun buildModel(localPath: String, serverPath: String, downloadPath: String = "", text: String = "", title: String = "", multimediaType: Int = 1, haveNetServer: Boolean = true): ImageTextModel {
+        fun buildModel(localPath: String, serverPath: String, downloadPath: String = "", text: String = "", title: String = "", multimediaType: Int = 1, haveNetServer: Boolean = true,objectId:Long =0L,itemType:Int = 0): ImageTextModel {
             return ImageTextModel().apply {
                 this.multimediaType = multimediaType
                 this.haveNetServer = haveNetServer
@@ -65,6 +68,8 @@ class ImageTextModel : Serializable {
                 this.text = text
                 this.localPath = localPath
                 this.downloadPath = downloadPath
+                this.itemType = itemType
+                this.objectId = objectId
             }
 
         }

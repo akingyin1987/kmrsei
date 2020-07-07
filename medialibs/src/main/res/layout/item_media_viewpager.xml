@@ -30,13 +30,13 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintBottom_toBottomOf="parent"
-      android:progress="0"
-      android:visibility="gone"
+      android:progress="55"
+      android:visibility="visible"
       app:innerPadding="2dp"
-      app:outerColor="#80000000"
+      app:outerColor="@color/white"
       app:outerSize="1dp"
       app:progressNormalColor="@color/transparent"
-      app:progressReachColor="#80000000"
+      app:progressReachColor="@color/white"
       app:progressStyle="FillInnerArc"/>
 
   <com.akingyin.media.widget.SampleCoverVideo
