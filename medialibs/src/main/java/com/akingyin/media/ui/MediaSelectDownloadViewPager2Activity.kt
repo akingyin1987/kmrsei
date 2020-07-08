@@ -9,13 +9,21 @@
 
 package com.akingyin.media.ui
 
+import android.app.Activity
+import android.content.Intent
+import android.os.Parcelable
+import androidx.room.util.FileUtil
 import com.akingyin.base.config.AppFileConfig
+import com.akingyin.base.ext.click
 import com.akingyin.base.ext.messageFormat
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.media.DownloadFileUtil
 import com.akingyin.media.R
 import com.akingyin.media.model.ImageTextModel
 import kotlinx.android.synthetic.main.activity_media_select_download_viewpager2.*
+import java.io.File
+import java.util.ArrayList
+
 
 /**
  * 可选择及下载文件类 多媒体浏览
@@ -30,7 +38,25 @@ class MediaSelectDownloadViewPager2Activity : MediaViewPager2Activity() {
 
     override fun onBindAdapter() {
         mediaViewpager2Adapter.showChecked = true
+        mediaViewpager2Adapter.supportDownload = true
         viewpager.adapter = mediaViewpager2Adapter
+    }
+
+    override fun initView() {
+        super.initView()
+        button_back.click {
+            onBackPressed()
+        }
+
+        button_apply.click {
+
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putParcelableArrayListExtra("result",mediaViewpager2Adapter.data.filter {
+                    it.checked
+                }.toMutableList() as ArrayList<out Parcelable>)
+            })
+            finish()
+        }
     }
 
     override fun onCheckedItem(imageTextModel: ImageTextModel) {
@@ -39,14 +65,28 @@ class MediaSelectDownloadViewPager2Activity : MediaViewPager2Activity() {
 
     override fun downloadItemFile(imageTextModel: ImageTextModel) {
         showLoading()
+
+        val  filePath = AppFileConfig.APP_FILE_ROOT+ File.separator+FileUtils.getFileName(imageTextModel.serverPath)
+        println("filepath=$filePath")
+        if(FileUtils.isFileExist(filePath)){
+            imageTextModel.localPath = filePath
+            hideLoadDialog()
+            showSucces("当前文件已存在：$filePath")
+            mediaViewpager2Adapter.notifyDataSetChanged()
+            return
+        }
         DownloadFileUtil.coordinateDownloadFile(imageTextModel.serverPath,AppFileConfig.APP_FILE_ROOT,FileUtils.getFileName(imageTextModel.serverPath)){
             result,str->
             hideLoadDialog()
             if(result){
+                imageTextModel.localPath = filePath
+                mediaViewpager2Adapter.notifyDataSetChanged()
                 showSucces("下载成功,$str")
             }else{
                 showError("下载失败,$str")
             }
         }
     }
+
+
 }

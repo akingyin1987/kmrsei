@@ -50,8 +50,8 @@ fun String.isNumeric(): Boolean {
 
 fun String.equalsIgnoreCase(other: String) = this.toLowerCase(Locale.ROOT).contentEquals(other.toLowerCase(Locale.ROOT))
 
-private fun encrypt(string: String?, type: String): String {
-    val bytes = MessageDigest.getInstance(type).digest(string!!.toByteArray())
+private fun encrypt(string: String, type: String): String {
+    val bytes = MessageDigest.getInstance(type).digest(string.toByteArray())
     return bytes2Hex(bytes)
 }
 fun String.messageFormat(vararg arguments:Any):String{

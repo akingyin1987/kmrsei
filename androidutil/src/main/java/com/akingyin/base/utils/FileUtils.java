@@ -8,6 +8,7 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import androidx.annotation.RequiresApi;
+import com.akingyin.base.ext.StringExtKt;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -346,7 +347,11 @@ public class FileUtils {
     }
 
     int filePosi = filePath.lastIndexOf(File.separator);
-    return (filePosi == -1) ? filePath : filePath.substring(filePosi + 1);
+    String  fileName = (filePosi == -1) ? filePath.replace("?","") : filePath.substring(filePosi + 1).replace("?","");
+    if(StringUtils.inputJudge(fileName)){
+      return StringExtKt.md5(fileName)+"."+getFileExtension(fileName);
+    }
+    return  fileName;
   }
 
   /**

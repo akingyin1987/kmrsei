@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import timber.log.Timber;
 
 /**
  * @ Description:
@@ -210,6 +211,16 @@ public class StringUtils {
       }
     }
     return str;
+
+
+  }
+  public static boolean inputJudge(String editText) {
+    String speChat = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+    Pattern pattern = Pattern.compile(speChat);
+    Timber.d("pattern: %s", pattern);
+    Matcher matcher = pattern.matcher(editText);
+    Timber.d("matcher: %s", matcher);
+    return matcher.find();
   }
 
   /**

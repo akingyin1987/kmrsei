@@ -63,7 +63,7 @@ class FragmentViewPager : SimpleFragment(){
                 arguments = Bundle().apply {
                     putString("data",str)
                 }
-            }
+    }
         }
     }
 

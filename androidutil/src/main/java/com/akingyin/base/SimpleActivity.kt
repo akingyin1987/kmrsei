@@ -1,6 +1,7 @@
 package com.akingyin.base
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -278,4 +279,7 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
         super.onDestroy()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 }

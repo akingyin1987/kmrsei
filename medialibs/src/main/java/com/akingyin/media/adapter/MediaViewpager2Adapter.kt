@@ -49,6 +49,8 @@ class MediaViewpager2Adapter : BaseQuickAdapter<ImageTextModel,BaseViewHolder>(R
     /** 是否显示选择 */
     var   showChecked = false
 
+    var  supportDownload = false
+
     fun   getCheckedNum():Int{
         var  num  = 0
         data.forEach {
@@ -88,10 +90,14 @@ class MediaViewpager2Adapter : BaseQuickAdapter<ImageTextModel,BaseViewHolder>(R
            sampleCoverVideo.gone()
            val audioPlayView : AudioPlayView = getView(R.id.audio_player)
            audioPlayView.gone()
-           if(item.downloadPath.isEmpty()){
-               downloadView.gone()
+           if(supportDownload && item.serverPath.isNotEmpty() ){
+               if(item.localPath.isEmpty() || !FileUtils.isFileExist(item.localPath)){
+                   downloadView.visiable()
+               }else{
+                   downloadView.gone()
+               }
            }else{
-               downloadView.visiable()
+               downloadView.gone()
            }
            when(item.multimediaType){
               ImageTextModel.TEXT ->{

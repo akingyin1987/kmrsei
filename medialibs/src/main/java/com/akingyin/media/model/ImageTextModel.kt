@@ -7,6 +7,8 @@
  */
 package com.akingyin.media.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import java.io.Serializable
 
 /**
@@ -18,7 +20,7 @@ import java.io.Serializable
  *
  * @ Date 2017/12/5 11:34
  */
-class ImageTextModel : Serializable {
+class ImageTextModel() : Serializable, Parcelable {
 
     var localPath: String = ""
 
@@ -42,14 +44,27 @@ class ImageTextModel : Serializable {
     var haveNetServer = false
 
     /** 是否被选中 */
-    var  checked = false
+    var checked = false
 
 
     /** 关联的外部数据ID */
     var objectId = 0L
 
     /** 对象类 */
-    var  itemType = 0
+    var itemType = 0
+
+    constructor(parcel: Parcel) : this() {
+        localPath = parcel.readString().toString()
+        serverPath = parcel.readString().toString()
+        downloadPath = parcel.readString().toString()
+        text = parcel.readString().toString()
+        title = parcel.readString().toString()
+        multimediaType = parcel.readInt()
+        haveNetServer = parcel.readByte() != 0.toByte()
+        checked = parcel.readByte() != 0.toByte()
+        objectId = parcel.readLong()
+        itemType = parcel.readInt()
+    }
 
 
     companion object {
@@ -59,7 +74,7 @@ class ImageTextModel : Serializable {
         const val IMAGE = 1
         const val VIDEO = 2
         const val AUDIO = 3
-        fun buildModel(localPath: String, serverPath: String, downloadPath: String = "", text: String = "", title: String = "", multimediaType: Int = 1, haveNetServer: Boolean = true,objectId:Long =0L,itemType:Int = 0): ImageTextModel {
+        fun buildModel(localPath: String, serverPath: String, downloadPath: String = "", text: String = "", title: String = "", multimediaType: Int = 1, haveNetServer: Boolean = true, objectId: Long = 0L, itemType: Int = 0): ImageTextModel {
             return ImageTextModel().apply {
                 this.multimediaType = multimediaType
                 this.haveNetServer = haveNetServer
@@ -73,10 +88,38 @@ class ImageTextModel : Serializable {
             }
 
         }
+
+        @JvmField
+        val CREATOR: Parcelable.Creator<ImageTextModel> = object : Parcelable.Creator<ImageTextModel> {
+            override fun createFromParcel(parcel: Parcel): ImageTextModel {
+                return ImageTextModel(parcel)
+            }
+
+            override fun newArray(size: Int): Array<ImageTextModel?> {
+                return arrayOfNulls(size)
+            }
+        }
     }
 
     override fun toString(): String {
         return "ImageTextModel(localPath='$localPath', serverPath='$serverPath', text='$text', multimediaType=$multimediaType)"
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(localPath)
+        parcel.writeString(serverPath)
+        parcel.writeString(downloadPath)
+        parcel.writeString(text)
+        parcel.writeString(title)
+        parcel.writeInt(multimediaType)
+        parcel.writeByte(if (haveNetServer) 1 else 0)
+        parcel.writeByte(if (checked) 1 else 0)
+        parcel.writeLong(objectId)
+        parcel.writeInt(itemType)
+    }
+
+    override fun describeContents(): Int {
+        return 0
     }
 
 
