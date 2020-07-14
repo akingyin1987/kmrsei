@@ -64,16 +64,18 @@ class MediaViewpager2Adapter : BaseQuickAdapter<ImageTextModel,BaseViewHolder>(R
     override fun convert(holder: BaseViewHolder, item: ImageTextModel) {
        with(holder){
 
-           getView<CheckView>(R.id.check_view).click {
+           getView<CheckView>(R.id.check_view).run {
                if(showChecked){
-                   it.setCountable(false)
-                   it.setChecked(!item.checked)
-                   item.checked = !item.checked
-                   liveEvent.value = bindingAdapterPosition
+                  click {
+                      checkView ->
+                      checkView.setCountable(false)
+                      checkView.setChecked(!item.checked)
+                      item.checked = !item.checked
+                      liveEvent.value = bindingAdapterPosition
+                  }
                }else{
-                   it.gone()
+                   gone()
                }
-
            }
            setText(R.id.tv_page, MessageFormat.format("{0}/{1}",bindingAdapterPosition+1,getDefItemCount()))
            val downloadView :ImageView = getView(R.id.iv_download)

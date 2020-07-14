@@ -70,7 +70,8 @@ dependencies {
   api "com.github.bumptech.glide:okhttp3-integration:4.11.0"
   kapt  'com.github.bumptech.glide:compiler:4.11.0'
 
-
+  // 对超大图片的显示
+  api 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 
   api 'cn.jzvd:jiaozivideoplayer:7.4.1'
   implementation 'com.shuyu:gsyVideoPlayer-java:7.1.4'

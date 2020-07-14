@@ -8,15 +8,17 @@
  */
 
 package com.akingyin.media.ui
+
 import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.akingyin.base.SimpleActivity
+import com.akingyin.base.ext.click
+import com.akingyin.media.MediaViewAndSelector
 import com.akingyin.media.R
 import com.akingyin.media.adapter.MediaViewpager2Adapter
 import com.akingyin.media.model.ImageTextModel
 import com.akingyin.media.model.ImageTextTypeList
-import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_media_type_viewpager2.*
 
 
@@ -27,7 +29,7 @@ import kotlinx.android.synthetic.main.activity_media_type_viewpager2.*
  * @ Date 2020/7/8 15:43
  * @version V1.0
  */
-class MediaTypeViewpagerActivity : SimpleActivity(){
+class MediaTypeViewpagerActivity : SimpleActivity() {
 
     override fun initInjection() {
 
@@ -42,93 +44,96 @@ class MediaTypeViewpagerActivity : SimpleActivity(){
     override fun onSaveInstanceData(outState: Bundle?) {
 
     }
-    var data: ImageTextTypeList? =null
-    lateinit var  mediaViewpager2Adapter: MediaViewpager2Adapter
+
+    var data: ImageTextTypeList? = null
+    lateinit var mediaViewpager2Adapter: MediaViewpager2Adapter
 
     override fun initView() {
-         data = intent.getSerializableExtra("data") as ImageTextTypeList
-         data?.items?.let {
-             val listData = mutableListOf<ImageTextModel>()
-             it.forEach {
-                 typeModel->
-                typeModel.items?.let {
-                    list ->
+        MediaViewAndSelector.Build().build(activity = this)
+        data = intent.getSerializableExtra("data") as ImageTextTypeList
+        data?.items?.let {
+            val listData = mutableListOf<ImageTextModel>()
+            it.forEach { typeModel ->
+                typeModel.items?.let { list ->
                     tablayout.addTab(tablayout.newTab().setText(typeModel.text))
-                     listData.addAll(list)
+                    listData.addAll(list)
                 }
 
-             }
+            }
+            for (index in 0..tablayout.tabCount) {
+                tablayout.getTabAt(index)?.view?.click {
+                    val postion = getViewpagerPostionByTabPos(index)
+                    if (postion != viewpager.currentItem) {
+                        viewpager.currentItem = postion
+                    }
+                }
+            }
 
-             mediaViewpager2Adapter = MediaViewpager2Adapter()
-             viewpager.adapter = mediaViewpager2Adapter
-             mediaViewpager2Adapter.setDiffCallback(object : DiffUtil.ItemCallback<ImageTextModel>(){
-                 override fun areItemsTheSame(oldItem: ImageTextModel, newItem: ImageTextModel): Boolean {
-                     return oldItem.objectId == newItem.objectId
-                 }
+            mediaViewpager2Adapter = MediaViewpager2Adapter()
+            mediaViewpager2Adapter.showChecked = false
+            viewpager.adapter = mediaViewpager2Adapter
+            mediaViewpager2Adapter.setDiffCallback(object : DiffUtil.ItemCallback<ImageTextModel>() {
+                override fun areItemsTheSame(oldItem: ImageTextModel, newItem: ImageTextModel): Boolean {
+                    return oldItem.objectId == newItem.objectId
+                }
 
-                 override fun areContentsTheSame(oldItem: ImageTextModel, newItem: ImageTextModel): Boolean {
-                     return oldItem.toString() == newItem.toString()
-                 }
-             })
-             mediaViewpager2Adapter.setDiffNewData(listData)
-             viewpager.registerOnPageChangeCallback(object :ViewPager2.OnPageChangeCallback(){
+                override fun areContentsTheSame(oldItem: ImageTextModel, newItem: ImageTextModel): Boolean {
+                    return oldItem.toString() == newItem.toString()
+                }
+            })
+            mediaViewpager2Adapter.setDiffNewData(listData)
+            viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 
-                 override fun onPageSelected(position: Int) {
-                     super.onPageSelected(position)
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    val index = getTablayPostionByViewpagerPos(position)
+                    println("viewpager = $index")
+                    if (index != tablayout.selectedTabPosition) {
+                        tablayout.selectTab(tablayout.getTabAt(index))
+                    }
 
-                     tablayout.selectTab(tablayout.getTabAt(getTablayPostionByViewpagerPos(position)))
-                 }
-             })
-             tablayout.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
-                 override fun onTabReselected(tab: TabLayout.Tab?) {
+                }
+            })
 
-                 }
 
-                 override fun onTabUnselected(tab: TabLayout.Tab?) {
-
-                 }
-
-                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                     tab?.let {
-                         itab->
-                         viewpager.currentItem = getViewpagerPostionByTabPos(itab.position)
-                     }
-                 }
-             })
-         }?:finish()
+        } ?: finish()
     }
 
     override fun startRequest() {
 
     }
 
-    fun  getViewpagerPostionByTabPos(position: Int):Int{
+    private fun getViewpagerPostionByTabPos(position: Int): Int {
         return data?.items?.let {
-            var  len = 0
+            var len = 0
             it.forEachIndexed { index, imageTextTypeModel ->
                 len += (imageTextTypeModel.items?.size ?: 0)
-                if(position == index){
-                    return@let len
+                if (position == index) {
+                    println("size->>$len")
+                    return@let len-(imageTextTypeModel.items?.size ?: 0)
                 }
             }
             0
-        }?:0
+        } ?: 0
     }
 
-    fun   getTablayPostionByViewpagerPos(position: Int):Int{
-      return  data?.items?.let {
-          var  len = 0
-          it.forEachIndexed { index, imageTextTypeModel ->
-              len += (imageTextTypeModel.items?.size ?: 0)
-              if(position<= len-1){
-                  return@let index
-              }
-          }
-          0
-        }?:0
+
+
+    fun getTablayPostionByViewpagerPos(position: Int): Int {
+        return data?.items?.let {
+            var len = 0
+            it.forEachIndexed { index, imageTextTypeModel ->
+                len += (imageTextTypeModel.items?.size ?: 0)
+                if (position <= len - 1) {
+                    println("index->>$len")
+                    return@let index
+                }
+            }
+            0
+        } ?: 0
     }
 
-    fun  switchFragment(position: Int){
+    fun switchFragment(position: Int) {
         viewpager.currentItem = position
     }
 

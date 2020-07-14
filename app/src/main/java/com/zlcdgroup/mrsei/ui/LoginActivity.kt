@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Base64
 import android.view.inputmethod.EditorInfo
+import androidx.lifecycle.ViewModelProvider
 import autodispose2.ScopeProvider
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider
 import autodispose2.autoDispose
@@ -26,6 +27,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
+import com.zlcdgroup.mrsei.ui.mvvm.LoginViewModel
 import com.zlcdgroup.mrsei.utils.ThemeHelper
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable.just
@@ -53,6 +55,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
     @Inject
     lateinit var userLoginPersenterImpl: UserLoginPersenterImpl
 
+    lateinit var  viewModel :LoginViewModel
 
 
     override fun getLayoutId(): Int = R.layout.activity_login
@@ -66,7 +69,8 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
     }
 
     override fun initView() {
-
+          viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(app).create(LoginViewModel::class.java)
+          viewModel.Login("123","456")
         val person = userLoginPersenterImpl.getLastPerson()
         person?.let {
 

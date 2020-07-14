@@ -56,4 +56,8 @@
         <!--<item>自定义录音2</item>-->
 
     </string-array>
+
+    <string name="picture_error">图片已损坏</string>
+    <string name="picture_video_error">视频已损坏</string>
+    <string name="picture_audio_error">音频已损坏</string>
 </resources>

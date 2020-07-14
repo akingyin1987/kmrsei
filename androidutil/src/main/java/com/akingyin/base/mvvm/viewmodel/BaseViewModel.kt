@@ -1,6 +1,7 @@
 package com.akingyin.base.mvvm.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.akingyin.base.mvvm.SingleLiveEvent
 import com.akingyin.base.net.Result
 import com.akingyin.base.net.ResultList
@@ -8,13 +9,12 @@ import com.akingyin.base.net.exception.ApiException
 import com.akingyin.base.net.mode.ApiCode
 import com.akingyin.base.net.mode.ApiListResult
 import com.akingyin.base.net.mode.ApiResult
-import com.akingyin.base.repo.Resource
 import com.akingyin.base.repo.StateActionEvent
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.*
+import org.jetbrains.anko.AnkoLogger
 import kotlin.coroutines.CoroutineContext
-
 
 
 /**
@@ -23,7 +23,7 @@ import kotlin.coroutines.CoroutineContext
  * @ Date 2019/7/31 17:55
  * @version V1.0
  */
-open  class BaseViewModel :AutoDisposeViewModel(), CoroutineScope {
+open  class BaseViewModel :AutoDisposeViewModel(), CoroutineScope by MainScope() , AnkoLogger {
 
 
     val mException: MutableLiveData<ApiException> = MutableLiveData()
@@ -32,12 +32,25 @@ open  class BaseViewModel :AutoDisposeViewModel(), CoroutineScope {
     val mStateLiveData = SingleLiveEvent<StateActionEvent>()
     private var mCompositeDisposable: CompositeDisposable? = null
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
+
 
     private val mLaunchManager: MutableList<Job> = mutableListOf()
 
+    fun <T> execute(
+            scope: CoroutineScope = this,
+            context: CoroutineContext = Dispatchers.IO,
+            block: suspend CoroutineScope.() -> T
+    ): Coroutine<T> {
+        return Coroutine.async(scope, context) { block() }
+    }
 
+    fun <R> submit(
+            scope: CoroutineScope = this,
+            context: CoroutineContext = Dispatchers.IO,
+            block: suspend CoroutineScope.() -> Deferred<R>
+    ): Coroutine<R> {
+        return Coroutine.async(scope, context) { block().await() }
+    }
     protected fun launchOnUITryCatch(tryBlock: suspend CoroutineScope.() -> Unit,
                                      cacheBlock: suspend CoroutineScope.(Throwable) -> Unit,
                                      finallyBlock: suspend CoroutineScope.() -> Unit,
@@ -83,7 +96,6 @@ open  class BaseViewModel :AutoDisposeViewModel(), CoroutineScope {
              is Result.Success ->{
                  data = result.data
              }
-
              is Result.Error ->{
 
                  errorCall(result.exception.code,result.exception.msg)
@@ -135,6 +147,7 @@ open  class BaseViewModel :AutoDisposeViewModel(), CoroutineScope {
 
     override fun onCleared() {
         super.onCleared()
+        cancel()
         mCompositeDisposable?.apply {
             if(!isDisposed){
                 dispose()
