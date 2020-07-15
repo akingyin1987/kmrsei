@@ -497,4 +497,12 @@ public class DateUtil {
     Date date=cal.getTime();
     return date.getTime();
   }
+
+  public static String formatDurationTime(long duration) {
+    return String.format(Locale.getDefault(), "%02d:%02d",
+        java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(duration),
+        java.util.concurrent.TimeUnit.MILLISECONDS.toSeconds(duration)
+            - java.util.concurrent.TimeUnit.MINUTES.toSeconds(
+            java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(duration)));
+  }
 }

@@ -19,10 +19,15 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.akingyin.media.GlideApp
 import com.akingyin.media.MediaUtils
 import com.akingyin.media.R
+import com.akingyin.media.engine.Func
 import com.akingyin.media.engine.ImageEngine
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.bumptech.glide.request.target.ImageViewTarget
+import com.bumptech.glide.request.target.Target
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.ImageViewState
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
@@ -42,12 +47,30 @@ class GlideEngine :ImageEngine{
      * @param url
      * @param imageView
      */
-    override fun loadImage(context: Context, url: String, imageView: ImageView) {
-        GlideApp.with(context)
-                .load(url)
-                .fitCenter()
-                .applyDefaultImage()
-                .into(imageView)
+    override fun loadImage(context: Context, url: String, imageView: ImageView, callBack: Func?) {
+        GlideApp.with(context).apply {
+            if(null == callBack){
+                load(url).fitCenter()
+                        .applyDefaultImage()
+                        .into(imageView)
+            }else{
+                asBitmap().load(url)
+                        .fitCenter().applyDefaultImage()
+                        .listener(object : RequestListener<Bitmap>{
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                callBack.invoke(false)
+                                return false
+                            }
+
+                            override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                callBack.invoke(true)
+                                return false
+                            }
+                        }).into(imageView)
+            }
+        }
+
+
     }
 
     /**
@@ -111,6 +134,7 @@ class GlideEngine :ImageEngine{
      * @param imageView
      */
     override fun loadFolderImage(context: Context, url: String, imageView: ImageView) {
+
         GlideApp.with(context)
                 .asBitmap()
                 .load(url)
@@ -148,13 +172,34 @@ class GlideEngine :ImageEngine{
      * @param url
      * @param imageView
      */
-    override fun loadGridImage(context: Context, url: String, imageView: ImageView) {
-        GlideApp.with(context)
-                .load(url)
-                .override(200, 200)
-                .centerCrop()
-                .applyDefaultImage()
-                .into(imageView)
+    override fun loadGridImage(context: Context, url: String, imageView: ImageView,callBack: Func?) {
+        GlideApp.with(context).run {
+            if(null == callBack){
+                load(url)
+                        .override(200, 200)
+                        .centerCrop()
+                        .applyDefaultImage()
+                        .into(imageView)
+            }else{
+                asBitmap().load(url)
+                        .override(200, 200)
+                        .centerCrop()
+                        .applyDefaultImage()
+                        .listener(object : RequestListener<Bitmap>{
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                callBack.invoke(false)
+                                return false
+                            }
+
+                            override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                callBack.invoke(true)
+                                return false
+                            }
+                        })
+                        .into(imageView)
+            }
+        }
+
     }
 
     companion object {

@@ -26,7 +26,6 @@ object MediaIntentUtil {
     fun getMediaSelectAndDownloadItems(requestCode: Int, resultCode: Int, data: Intent?, call: (ImageTextModel) -> Unit) {
         if (requestCode == ACTIVITY_REQUEST_MEDIA_SELECT_DOWNLOAD_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-
                 data?.getParcelableArrayListExtra<ImageTextModel>("result")?.forEach {
                     call(it)
                 }

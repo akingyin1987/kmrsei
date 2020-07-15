@@ -9,6 +9,10 @@
 
 package com.akingyin.media
 
+import android.view.View
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy
+
 /**
  * @ Description:
  * @author king
@@ -61,12 +65,21 @@ object MediaConfig {
 
     const val CAMERA_BEFORE = 1
 
+
+
+    /** 所有类型 */
     const val TYPE_ALL = 0
+    /** 图片类型 */
     const val TYPE_IMAGE = 1
+
+    /** 视频类型 */
     const val TYPE_VIDEO = 2
 
-    @Deprecated("")
-    val TYPE_AUDIO = 3
+    /** 声音文件类型 */
+    const val TYPE_AUDIO = 3
+
+    /** 文本类型 */
+    const val TYPE_TEXT = 4
 
     const val MAX_COMPRESS_SIZE = 100
 

@@ -11,6 +11,7 @@ package com.akingyin.media
 
 import android.content.Context
 import android.text.TextUtils
+import androidx.annotation.IntDef
 import java.io.File
 
 /**
@@ -21,18 +22,30 @@ import java.io.File
  */
 object MediaMimeType {
 
+    @MediaType
     fun ofAll(): Int {
+
         return MediaConfig.TYPE_ALL
     }
-
+    @MediaType
     fun ofImage(): Int {
         return MediaConfig.TYPE_IMAGE
     }
-
+    @MediaType
     fun ofVideo(): Int {
         return MediaConfig.TYPE_VIDEO
     }
 
+    // 表示开启Doc文档
+    @MustBeDocumented
+    //限定为 参数
+    @IntDef(value = [MediaConfig.TYPE_ALL,MediaConfig.TYPE_IMAGE,MediaConfig.TYPE_VIDEO,
+        MediaConfig.TYPE_AUDIO,MediaConfig.TYPE_TEXT])
+    //表示注解作用范围，参数注解，成员注解，方法注解
+    @Target(AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION)
+    //表示注解所存活的时间,在运行时,而不会存在 .class 文件中
+    @Retention(AnnotationRetention.SOURCE)
+    annotation class MediaType
     /**
      * # No longer maintain audio related functions,
      * but can continue to use but there will be phone compatibility issues
@@ -40,9 +53,13 @@ object MediaMimeType {
      *
      * 不再维护音频相关功能，但可以继续使用但会有机型兼容性问题
      */
-    @Deprecated("")
+    @MediaType
     fun ofAudio(): Int {
         return MediaConfig.TYPE_AUDIO
+    }
+    @MediaType
+    fun  ofText():Int{
+        return MediaConfig.TYPE_TEXT
     }
 
 
@@ -50,40 +67,40 @@ object MediaMimeType {
         return MIME_TYPE_PNG
     }
 
-    fun ofJPEG(): String? {
+    fun ofJPEG(): String{
         return MIME_TYPE_JPEG
     }
 
-    fun ofBMP(): String? {
+    fun ofBMP(): String {
         return MIME_TYPE_BMP
     }
 
-    fun ofGIF(): String? {
+    fun ofGIF(): String {
         return MIME_TYPE_GIF
     }
 
-    fun ofWEBP(): String? {
+    fun ofWEBP(): String{
         return MIME_TYPE_WEBP
     }
 
-    fun of3GP(): String? {
+    fun of3GP(): String {
         return MIME_TYPE_3GP
     }
 
-    fun ofMP4(): String? {
+    fun ofMP4(): String {
         return MIME_TYPE_MP4
     }
 
-    fun ofMPEG(): String? {
+    fun ofMPEG(): String {
         return MIME_TYPE_MPEG
     }
 
-    fun ofAVI(): String? {
+    fun ofAVI(): String {
         return MIME_TYPE_AVI
     }
 
     private val MIME_TYPE_PNG = "image/png"
-    val MIME_TYPE_JPEG = "image/jpeg"
+    private val MIME_TYPE_JPEG = "image/jpeg"
     private val MIME_TYPE_JPG = "image/jpg"
     private val MIME_TYPE_BMP = "image/bmp"
     private val MIME_TYPE_GIF = "image/gif"

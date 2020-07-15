@@ -19,6 +19,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
  * @ Date 2020/7/14 11:09
  * @version V1.0
  */
+internal typealias Func = (Boolean) -> Unit
 interface ImageEngine {
     /**
      * Loading image
@@ -27,7 +28,10 @@ interface ImageEngine {
      * @param url
      * @param imageView
      */
-    fun loadImage(context: Context, url: String, imageView: ImageView)
+    fun loadImage(context: Context, url: String, imageView: ImageView ,callBack:Func?=null)
+
+
+
 
     /**
      * Loading image
@@ -65,7 +69,7 @@ interface ImageEngine {
      * @param url
      * @param imageView
      */
-    fun loadGridImage(context: Context, url: String, imageView: ImageView)
+    fun loadGridImage(context: Context, url: String, imageView: ImageView,callBack: Func?=null)
 
 
     interface  OnImageCompleteCallback{

@@ -21,6 +21,10 @@
   <color name="item_checkCircle_borderColor">#FFFFFF</color>
   <color name="check_original_radio_disable">#808080</color>
 
+
+  <color name="picture_color_white">#FFFFFF</color>
   <color name="picture_color_grey">#393a3e</color>
   <color name="picture_color_light_grey">#999999</color>
+  <color name="picture_color_ba3">#b0567ba3</color>
+  <color name="picture_color_bfe85d">#7D7DFF</color>
 </resources>
