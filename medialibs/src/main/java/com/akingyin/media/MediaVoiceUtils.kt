@@ -30,7 +30,7 @@ class MediaVoiceUtils private constructor(){
      */
     private var soundID = 0
 
-    private fun  initPool(context:Context){
+     fun  initPool(context:Context){
        if(null == soundPool){
            soundPool = SoundPool.Builder().setMaxStreams(1)
                    .setAudioAttributes(AudioAttributes.Builder().
@@ -70,8 +70,8 @@ class MediaVoiceUtils private constructor(){
 
 
         @JvmStatic
-        fun getMediaVoiceInstance(context: Context):MediaVoiceUtils{
-            mediaVoiceUtils.initPool(context)
+        fun getMediaVoiceInstance():MediaVoiceUtils{
+
             return  mediaVoiceUtils
         }
     }

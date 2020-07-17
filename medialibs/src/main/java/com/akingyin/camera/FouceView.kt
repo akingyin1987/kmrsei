@@ -1,0 +1,119 @@
+/*
+ * Copyright (c) 2020. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * akingyin@163.com
+ */
+
+package com.akingyin.camera
+
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
+import android.hardware.Camera
+import android.util.AttributeSet
+import android.view.View
+
+/**
+ * @ Description:
+ * @author king
+ * @ Date 2020/7/16 17:20
+ * @version V1.0
+ */
+
+@Suppress("DEPRECATION")
+class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) :
+        View(context, attrs, defStyleAttr, defStyleRes) {
+
+    ////焦点附近设置矩形区域作为对焦区域
+    private var touchFocusRect: Rect? = null
+
+     private val mPaint: Paint = Paint().apply {
+         isAntiAlias = true
+         isDither = true
+         color = Color.GREEN
+         strokeWidth = 3F
+         style = Paint.Style.STROKE
+     }
+
+
+    override fun onDraw(canvas: Canvas?) {
+        canvas?.let {
+            drawTouchFocusRect(it)
+        }
+        super.onDraw(canvas)
+
+
+    }
+
+    //对焦并绘制对焦矩形框
+    fun  setTouchFoucusRect(camera:Camera,autoFocusCallback: Camera.AutoFocusCallback,x:Float,y:Float){
+        //以焦点为中心，宽度为200的矩形框
+
+        //以焦点为中心，宽度为200的矩形框
+        touchFocusRect = Rect((x - 100).toInt(), (y - 100).toInt(), (x + 100).toInt(), (y + 100).toInt())
+        //对焦区域
+        val targetFocusRect = Rect().apply {
+           touchFocusRect?.let {
+               left = it.left * 2000/width - 1000
+               top = it.top * 2000/height - 1000
+               right = it.right * 2000/width - 1000
+               bottom = it.bottom *2000/height - 1000
+           }
+        }
+        doTouchFocus(camera,autoFocusCallback,targetFocusRect)
+        postInvalidate()//刷新界面，
+    }
+
+    private fun  doTouchFocus(camera:Camera, autoFocusCallback: Camera.AutoFocusCallback, tfocusRect: Rect){
+        try {
+            val focusList = arrayListOf<Camera.Area>()
+            val focus = Camera.Area(tfocusRect, 1000) //相机参数：对焦区域
+            focusList.add(focus)
+            val par =   camera.parameters.apply {
+                focusAreas = focusList
+                meteringAreas = focusList
+            }
+            camera.parameters = par
+            camera.autoFocus(autoFocusCallback)
+
+        }catch (e : Exception){
+            e.printStackTrace()
+            autoFocusCallback.onAutoFocus(false,camera)
+        }
+
+    }
+
+    //对焦完成后，清除对焦矩形框
+    fun disDrawTouchFocusRect(){
+        touchFocusRect = null//将对焦区域设置为null，刷新界面后对焦框消失
+        postInvalidate()
+    }
+
+    private fun drawTouchFocusRect(canvas: Canvas){
+        touchFocusRect?.run {
+            canvas.run {
+                //左下角
+                drawRect((left-2).toFloat(), bottom.toFloat(), (left+20).toFloat(), (bottom+2).toFloat(),mPaint)
+                drawRect((left-2).toFloat(), (bottom-20).toFloat(), left.toFloat(), bottom.toFloat(),mPaint)
+
+                //左上角
+                drawRect((left-2).toFloat(), (top-2).toFloat(), (left+20).toFloat(), top.toFloat(),mPaint)
+                drawRect((left-2).toFloat(), top.toFloat(), (right+2).toFloat(), (top+20).toFloat(),mPaint)
+
+                //右上角
+                drawRect((right-20).toFloat(), (top-2).toFloat(), (right+2).toFloat(), top.toFloat(),mPaint)
+                drawRect(right.toFloat(), top.toFloat(), (right+2).toFloat(), (top+20).toFloat(),mPaint)
+
+                //右下角
+                drawRect((right-20).toFloat(), bottom.toFloat(), (right+2).toFloat(), (bottom+2).toFloat(),mPaint)
+                drawRect(right.toFloat(), (bottom-20).toFloat(), (right+2).toFloat(), bottom.toFloat(),mPaint)
+            }
+        }
+    }
+
+}

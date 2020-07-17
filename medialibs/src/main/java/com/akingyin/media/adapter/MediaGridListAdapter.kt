@@ -9,17 +9,18 @@
 
 package com.akingyin.media.adapter
 
+import android.graphics.PorterDuff
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.akingyin.base.ext.click
 import com.akingyin.base.ext.gone
 import com.akingyin.base.ext.visiable
 import com.akingyin.base.mvvm.SingleLiveEvent
 import com.akingyin.base.utils.DateUtil
 import com.akingyin.base.utils.FileUtils
-import com.akingyin.media.MediaConfig
-import com.akingyin.media.MediaUtils
-import com.akingyin.media.R
+import com.akingyin.media.*
 import com.akingyin.media.engine.ImageEngine
 import com.akingyin.media.model.LocalMediaData
 import com.akingyin.media.widget.CheckView
@@ -44,6 +45,8 @@ class MediaGridListAdapter<T : LocalMediaData>(imageEngine: ImageEngine, support
 
     /** 删除 */
     var delectLiveEvent: SingleLiveEvent<Int> = SingleLiveEvent()
+
+
 
     init {
         addItemProvider(MediaGridItemProvider(imageEngine, supportDel, supportChecked, checkLiveEvent, delectLiveEvent))
@@ -92,6 +95,7 @@ class MediaGridListAdapter<T : LocalMediaData>(imageEngine: ImageEngine, support
                 val tv_duration = getView<TextView>(R.id.tv_duration)
                 tv_duration.gone()
                 val check_view = getView<CheckView>(R.id.check_view)
+                dispatchHandle(item,ivImage,tvText)
                 if (supportChecked) {
                     check_view.visiable()
                     check_view.setCountable(true)
@@ -100,6 +104,10 @@ class MediaGridListAdapter<T : LocalMediaData>(imageEngine: ImageEngine, support
                         it.setChecked(!item.mediaChecked)
                         item.mediaChecked = !item.mediaChecked
                         checkLiveEvent.value = bindingAdapterPosition
+                        if(item.mediaChecked){
+                            MediaVoiceUtils.getMediaVoiceInstance().play()
+                            MediaAnimUtils.disZoom(ivImage,true)
+                        }
 
                     }
                 } else {
@@ -133,11 +141,15 @@ class MediaGridListAdapter<T : LocalMediaData>(imageEngine: ImageEngine, support
                             MediaConfig.TYPE_AUDIO -> {
                                 ivImage.setImageResource(R.drawable.picture_audio_placeholder)
                                 bindVideoAudioDuration(item, tv_duration)
-
+                                tv_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.picture_icon_audio,0,0,0)
                             }
-                            else -> {
+                            MediaConfig.TYPE_VIDEO ->{
                                 bindImageAndVideo(item, ivImage, tv_isGif, imageEngine)
                                 bindVideoAudioDuration(item, tv_duration)
+                                tv_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.picture_icon_video,0,0,0)
+                            }
+                            else -> {
+
                             }
                         }
                     }
@@ -182,6 +194,14 @@ class MediaGridListAdapter<T : LocalMediaData>(imageEngine: ImageEngine, support
                         textView.gone()
                     }
                 }
+            }
+        }
+
+        private  fun  dispatchHandle(data: T,imageView: ImageView,textView: TextView){
+            if(data.mediaType == MediaConfig.TYPE_TEXT){
+                textView.setBackgroundColor(ContextCompat.getColor(context,if(data.mediaSelected){R.color.picture_color_half_white}else{R.color.transparent}))
+            }else{
+               imageView.setColorFilter(ContextCompat.getColor(context,(if(data.mediaSelected){R.color.picture_color_half_white}else{R.color.picture_color_20})),PorterDuff.Mode.SRC_ATOP)
             }
         }
     }

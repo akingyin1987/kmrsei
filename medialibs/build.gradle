@@ -16,6 +16,12 @@ android {
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     consumerProguardFiles 'consumer-rules.pro'
   }
+  buildFeatures{
+    //dataBinding = true
+    // for view binding :
+     viewBinding = true
+  }
+
   lintOptions {
     disable 'GoogleAppIndexingWarning'
     abortOnError false
@@ -76,4 +82,19 @@ dependencies {
   api 'cn.jzvd:jiaozivideoplayer:7.4.1'
   implementation 'com.shuyu:gsyVideoPlayer-java:7.1.4'
   implementation 'com.shuyu:gsyVideoPlayer-armv7a:7.1.4'
+
+  // CameraX
+  // CameraX
+  def camerax_version = "1.0.0-beta06"
+  implementation "androidx.camera:camera-core:${camerax_version}"
+  implementation "androidx.camera:camera-camera2:${camerax_version}"
+  implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+
+  def camerax_view_version = "1.0.0-alpha13"
+  def camerax_ext_version = "1.0.0-alpha13"
+  //other
+  // If you to use the Camera View class
+  implementation "androidx.camera:camera-view:$camerax_view_version"
+  // If you to use Camera Extensions
+  implementation "androidx.camera:camera-extensions:$camerax_ext_version"
 }

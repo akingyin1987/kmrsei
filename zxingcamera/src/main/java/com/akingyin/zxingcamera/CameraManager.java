@@ -865,17 +865,17 @@ public final class CameraManager implements AutoFocusListion {
 			if (null == parameters) {
 				parameters = camera.getParameters();
 			}
-			List<String> supportedFlashModes = parameters.getSupportedFlashModes();
+			List<String> supportedFlahsModes = parameters.getSupportedFlashModes();
 			String flashMode = "";
 			switch (lightMode) {
 			case AUTO:
-				flashMode = CameraConfigurationUtils.findSettableValue("flash mode", supportedFlashModes, Parameters.FLASH_MODE_AUTO);
+				flashMode = CameraConfigurationUtils.findSettableValue("flash mode", supportedFlahsModes, Parameters.FLASH_MODE_AUTO);
 				break;
 			case ON:
-				flashMode = CameraConfigurationUtils.findSettableValue("flash mode", supportedFlashModes, Parameters.FLASH_MODE_TORCH, Parameters.FLASH_MODE_ON);
+				flashMode = CameraConfigurationUtils.findSettableValue("flash mode", supportedFlahsModes, Parameters.FLASH_MODE_TORCH, Parameters.FLASH_MODE_ON);
 				break;
 			case OFF:
-				flashMode = CameraConfigurationUtils.findSettableValue("flash mode", supportedFlashModes, Parameters.FLASH_MODE_OFF);
+				flashMode = CameraConfigurationUtils.findSettableValue("flash mode", supportedFlahsModes, Parameters.FLASH_MODE_OFF);
 				break;
 			default:
 				break;

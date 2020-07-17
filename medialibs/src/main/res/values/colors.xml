@@ -27,4 +27,9 @@
   <color name="picture_color_light_grey">#999999</color>
   <color name="picture_color_ba3">#b0567ba3</color>
   <color name="picture_color_bfe85d">#7D7DFF</color>
+  <color name="picture_color_80">#80000000</color>
+  <color name="picture_color_half_white">#99FFFFFF</color>
+  <color name="picture_color_20">#20000000</color>
+
+  <color name="colorButtonGreyBg">#444444</color>
 </resources>

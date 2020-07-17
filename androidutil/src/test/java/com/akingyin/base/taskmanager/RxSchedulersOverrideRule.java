@@ -1,7 +1,7 @@
 package com.akingyin.base.taskmanager;
 
 import io.reactivex.Scheduler;
-import io.reactivex.android.plugins.RxAndroidPlugins;
+import io.reactivex.android.plugin.RxAndroidPlugins;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
