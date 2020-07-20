@@ -115,6 +115,8 @@ class TestFunActivity : SimpleActivity() {
                                         })
 
                             }))
+
+                            add(FunModel("camera 测试",Intent(this@TestFunActivity,CameraTestActivity::class.java)))
                         }
                     }
             )

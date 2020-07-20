@@ -84,11 +84,7 @@ class SampleCoverVideo  : StandardGSYVideoPlayer {
     override fun startWindowFullscreen(context: Context?, actionBar: Boolean, statusBar: Boolean): GSYBaseVideoPlayer? {
         val gsyBaseVideoPlayer = super.startWindowFullscreen(context, actionBar, statusBar)
         val sampleCoverVideo = gsyBaseVideoPlayer as SampleCoverVideo
-        if (mCoverOriginUrl != null) {
-            sampleCoverVideo.loadCoverImage(mCoverOriginUrl!!, mDefaultRes)
-        } else if (mCoverOriginId != 0) {
-            sampleCoverVideo.loadCoverImageBy(mCoverOriginId, mDefaultRes)
-        }
+        sampleCoverVideo.loadCoverImage(mCoverOriginUrl, mDefaultRes)
         return gsyBaseVideoPlayer
     }
 

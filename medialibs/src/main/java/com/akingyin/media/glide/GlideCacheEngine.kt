@@ -27,7 +27,7 @@ object GlideCacheEngine : CacheResourcesEngine {
      * @param context
      * @param url
      */
-    override fun onCachePath(context: Context, url: String): String? {
+    override fun onCachePath(context: Context, url: String): String {
         try {
             return GlideApp.with(context).downloadOnly().load(url).submit().get().absolutePath
         }catch (e:Exception){

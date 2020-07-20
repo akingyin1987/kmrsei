@@ -21,7 +21,7 @@ import android.provider.MediaStore
 object AudioUtil {
 
     fun getMediaDuration(localpath: String?): Int {
-        var duration: Int = 0
+        var duration = 0
         try {
             val mediaPlayer = MediaPlayer()
             mediaPlayer.setDataSource(localpath)
@@ -34,6 +34,7 @@ object AudioUtil {
         }
         return duration
     }
+
 
     fun getSoundDuration(context: Context, localPath: String): Long {
         var duration: Long = 0

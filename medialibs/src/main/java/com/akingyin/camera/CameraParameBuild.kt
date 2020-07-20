@@ -27,6 +27,21 @@ class CameraParameBuild  {
     @CameraNetGrid
     var netGrid: Int = CameraNetGrid.CAMERA_NET_GRID_NONE
 
+    /** 手动区域对焦 */
+    var  supportManualFocus = true
+
+    /** 是否支持对焦成功后自动拍照 */
+    var  supportFocesedAutoPhoto = false
+
+    /** 对焦后自动拍照延迟时间 */
+    var  focesedAutoPhotoDelayTime = 0
+
+    /** 是否支持拍照后自动保存数据 */
+    var  supportAutoSavePhoto = false
+
+    /** 拍照后自动保存时间*/
+    var  autoSavePhotoDelayTime = 0
+
     /**
      * 设置相机分辨率
      */

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
   ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
@@ -8,115 +7,133 @@
   -->
 
 <resources>
-    <declare-styleable name="AudioPlayerTextView">
-        <attr name="playText" format="string"/>
-        <attr name="stopText" format="string"/>
-        <attr name="loadingText" format="string"/>
-        <attr name="useIcons" format="boolean"/>
-    </declare-styleable>
+  <declare-styleable name="AudioPlayerTextView">
+    <attr name="playText" format="string" />
+    <attr name="stopText" format="string" />
+    <attr name="loadingText" format="string" />
+    <attr name="useIcons" format="boolean" />
+  </declare-styleable>
 
 
-    <attr format="dimension" name="progressTextSize"/>
-    <attr format="color" name="progressTextColor"/>
-    <attr format="dimension" name="progressTextOffset"/>
-    <attr format="color" name="progressNormalColor"/>
-    <attr format="color" name="progressReachColor"/>
-    <attr format="dimension" name="progressNormalSize"/>
-    <attr format="dimension" name="progressReachSize"/>
-    <attr format="dimension" name="progressReachWidth"/>
-    <attr format="dimension" name="progressNormalWidth"/>
-    <attr format="boolean" name="progressTextVisible"/>
-    <attr format="dimension" name="progressTextSkewX"/>
-    <attr format="string" name="progressTextPrefix"/>
-    <attr format="string" name="progressTextSuffix"/>
-    <attr format="color" name="innerBackgroundColor"/>
+  <attr name="progressTextSize" format="dimension" />
+  <attr name="progressTextColor" format="color" />
+  <attr name="progressTextOffset" format="dimension" />
+  <attr name="progressNormalColor" format="color" />
+  <attr name="progressReachColor" format="color" />
+  <attr name="progressNormalSize" format="dimension" />
+  <attr name="progressReachSize" format="dimension" />
+  <attr name="progressReachWidth" format="dimension" />
+  <attr name="progressNormalWidth" format="dimension" />
+  <attr name="progressTextVisible" format="boolean" />
+  <attr name="progressTextSkewX" format="dimension" />
+  <attr name="progressTextPrefix" format="string" />
+  <attr name="progressTextSuffix" format="string" />
+  <attr name="innerBackgroundColor" format="color" />
 
-    <declare-styleable name="HorizontalProgressView">
-        <attr name="progressNormalColor"/>
-        <attr name="progressReachColor"/>
-        <attr name="progressTextColor"/>
-        <attr name="progressTextSize"/>
-        <attr name="progressTextOffset"/>
-        <attr name="progressNormalSize"/>
-        <attr name="progressReachSize"/>
-        <attr format="enum" name="progressTextPosition">
-            <enum name="TOP" value="1"/>
-            <enum name="BOTTOM" value="-1"/>
-            <enum name="CENTER" value="0"/>
-        </attr>
-        <attr name="progressTextVisible"/>
-        <attr name="progressTextSkewX"/>
-        <attr name="progressTextPrefix"/>
-        <attr name="progressTextSuffix"/>
-    </declare-styleable>
+  <declare-styleable name="HorizontalProgressView">
+    <attr name="progressNormalColor" />
+    <attr name="progressReachColor" />
+    <attr name="progressTextColor" />
+    <attr name="progressTextSize" />
+    <attr name="progressTextOffset" />
+    <attr name="progressNormalSize" />
+    <attr name="progressReachSize" />
+    <attr name="progressTextPosition" format="enum">
+      <enum name="TOP" value="1" />
+      <enum name="BOTTOM" value="-1" />
+      <enum name="CENTER" value="0" />
+    </attr>
+    <attr name="progressTextVisible" />
+    <attr name="progressTextSkewX" />
+    <attr name="progressTextPrefix" />
+    <attr name="progressTextSuffix" />
+  </declare-styleable>
 
-    <declare-styleable name="CircleProgressView">
-        <attr name="progressNormalColor"/>
-        <attr name="progressReachColor"/>
-        <attr name="progressTextColor"/>
-        <attr name="progressTextSize"/>
-        <attr name="progressTextOffset"/>
-        <attr name="progressNormalSize"/>
-        <attr name="progressReachSize"/>
-        <attr format="dimension" name="radius"/>
-        <attr name="progressTextVisible"/>
-        <attr format="integer" name="progressStartArc"/>
-        <attr name="progressTextSkewX"/>
-        <attr name="progressTextPrefix"/>
-        <attr name="progressTextSuffix"/>
-        <attr name="innerBackgroundColor"/>
-        <attr format="enum" name="progressStyle">
-            <enum name="Normal" value="0"/>
-            <enum name="FillInner" value="1"/>
-            <enum name="FillInnerArc" value="2"/>
-        </attr>
-        <attr format="color" name="innerProgressColor"/>
-        <attr format="dimension" name="innerPadding"/>
-        <attr format="color" name="outerColor"/>
-        <attr format="dimension" name="outerSize"/>
-        <attr format="boolean" name="reachCapRound"/>
-    </declare-styleable>
+  <declare-styleable name="CircleProgressView">
+    <attr name="progressNormalColor" />
+    <attr name="progressReachColor" />
+    <attr name="progressTextColor" />
+    <attr name="progressTextSize" />
+    <attr name="progressTextOffset" />
+    <attr name="progressNormalSize" />
+    <attr name="progressReachSize" />
+    <attr name="radius" format="dimension" />
+    <attr name="progressTextVisible" />
+    <attr name="progressStartArc" format="integer" />
+    <attr name="progressTextSkewX" />
+    <attr name="progressTextPrefix" />
+    <attr name="progressTextSuffix" />
+    <attr name="innerBackgroundColor" />
+    <attr name="progressStyle" format="enum">
+      <enum name="Normal" value="0" />
+      <enum name="FillInner" value="1" />
+      <enum name="FillInnerArc" value="2" />
+    </attr>
+    <attr name="innerProgressColor" format="color" />
+    <attr name="innerPadding" format="dimension" />
+    <attr name="outerColor" format="color" />
+    <attr name="outerSize" format="dimension" />
+    <attr name="reachCapRound" format="boolean" />
+  </declare-styleable>
 
-    <declare-styleable name="ShapeImageViewStyle">
-        <attr name="riv_border_color" format="color"/>
-        <attr name="riv_border_width" format="dimension"/>
-        <attr name="riv_corner_radius" format="dimension"/>
-        <attr name="riv_is_circle" format="boolean"/>
-        <attr name="riv_pressed_border_color" format="color"/>
-        <attr name="riv_pressed_border_width" format="dimension"/>
-        <attr name="riv_pressed_mask_color" format="color"/>
-        <attr name="riv_pressed_mode_enabled" format="boolean"/>
-    </declare-styleable>
+  <declare-styleable name="ShapeImageViewStyle">
+    <attr name="riv_border_color" format="color" />
+    <attr name="riv_border_width" format="dimension" />
+    <attr name="riv_corner_radius" format="dimension" />
+    <attr name="riv_is_circle" format="boolean" />
+    <attr name="riv_pressed_border_color" format="color" />
+    <attr name="riv_pressed_border_width" format="dimension" />
+    <attr name="riv_pressed_mask_color" format="color" />
+    <attr name="riv_pressed_mode_enabled" format="boolean" />
+  </declare-styleable>
 
 
+  <!--<declare-styleable name="CircleProgressView">-->
+  <!--    <attr name="cpv_progressNormalColor" format="color"/>-->
+  <!--    <attr name="cpv_progressReachColor" format="color"/>-->
+  <!--    <attr name="cpv_progressTextColor" format="color"/>-->
+  <!--    <attr name="cpv_progressTextSize" format="dimension"/>-->
+  <!--    <attr name="cpv_progressTextOffset" format="dimension"/>-->
+  <!--    <attr name="cpv_progressNormalSize" format="dimension"/>-->
+  <!--    <attr name="cpv_progressReachSize" format="dimension"/>-->
+  <!--    <attr name="cpv_radius" format="dimension"/>-->
+  <!--    <attr name="cpv_progressTextVisible" format="boolean"/>-->
+  <!--    <attr name="cpv_progressStartArc" format="integer"/>-->
+  <!--    <attr name="cpv_progressTextSkewX" format="dimension"/>-->
+  <!--    <attr name="cpv_progressTextPrefix" format="string"/>-->
+  <!--    <attr name="cpv_progressTextSuffix" format="string"/>-->
+  <!--    <attr name="cpv_innerBackgroundColor" format="color"/>-->
+  <!--    <attr name="cpv_progressStyle" format="enum">-->
+  <!--        <enum name="Normal" value="0"/>-->
+  <!--        <enum name="FillInner" value="1"/>-->
+  <!--        <enum name="FillInnerArc" value="2"/>-->
+  <!--    </attr>-->
+  <!--    <attr name="cpv_innerProgressColor" format="color"/>-->
+  <!--    <attr name="cpv_innerPadding" format="dimension"/>-->
+  <!--    <attr name="cpv_outerColor" format="color"/>-->
+  <!--    <attr name="cpv_outerSize" format="dimension"/>-->
+  <!--    <attr name="cpv_reachCapRound" format="boolean"/>-->
+  <!--</declare-styleable>-->
 
-    <!--<declare-styleable name="CircleProgressView">-->
-    <!--    <attr name="cpv_progressNormalColor" format="color"/>-->
-    <!--    <attr name="cpv_progressReachColor" format="color"/>-->
-    <!--    <attr name="cpv_progressTextColor" format="color"/>-->
-    <!--    <attr name="cpv_progressTextSize" format="dimension"/>-->
-    <!--    <attr name="cpv_progressTextOffset" format="dimension"/>-->
-    <!--    <attr name="cpv_progressNormalSize" format="dimension"/>-->
-    <!--    <attr name="cpv_progressReachSize" format="dimension"/>-->
-    <!--    <attr name="cpv_radius" format="dimension"/>-->
-    <!--    <attr name="cpv_progressTextVisible" format="boolean"/>-->
-    <!--    <attr name="cpv_progressStartArc" format="integer"/>-->
-    <!--    <attr name="cpv_progressTextSkewX" format="dimension"/>-->
-    <!--    <attr name="cpv_progressTextPrefix" format="string"/>-->
-    <!--    <attr name="cpv_progressTextSuffix" format="string"/>-->
-    <!--    <attr name="cpv_innerBackgroundColor" format="color"/>-->
-    <!--    <attr name="cpv_progressStyle" format="enum">-->
-    <!--        <enum name="Normal" value="0"/>-->
-    <!--        <enum name="FillInner" value="1"/>-->
-    <!--        <enum name="FillInnerArc" value="2"/>-->
-    <!--    </attr>-->
-    <!--    <attr name="cpv_innerProgressColor" format="color"/>-->
-    <!--    <attr name="cpv_innerPadding" format="dimension"/>-->
-    <!--    <attr name="cpv_outerColor" format="color"/>-->
-    <!--    <attr name="cpv_outerSize" format="dimension"/>-->
-    <!--    <attr name="cpv_reachCapRound" format="boolean"/>-->
-    <!--</declare-styleable>-->
+  <attr name="item.checkCircle.borderColor" format="reference|color" />
+  <attr name="item.checkCircle.backgroundColor" format="reference|color" />
 
-    <attr name="item.checkCircle.borderColor" format="reference|color"/>
-    <attr name="item.checkCircle.backgroundColor" format="reference|color"/>
+
+  <declare-styleable name="CaptureButton">
+    <attr name="capture_photo_video">
+      <enum name="Photo" value="1" />
+      <enum name="Video" value="2" />
+      <enum name="PhotoAndVideo" value="3" />
+    </attr>
+
+  </declare-styleable>
+
+  <declare-styleable name="TypeButton">
+    <attr name="btnConfigCancel">
+      <enum name="config" value="1"/>
+      <enum name="cancel" value="2"/>
+    </attr>
+  </declare-styleable>
+
+
 </resources>

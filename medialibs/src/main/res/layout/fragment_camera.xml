@@ -33,19 +33,29 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="@id/fabTakePicture" />
-
-  <ImageButton
+  <com.akingyin.camera.widget.CaptureButton
       android:id="@+id/fabTakePicture"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:background="@android:color/transparent"
-
+      app:capture_photo_video="Photo"
       android:padding="@dimen/double_margin"
-      android:src="@drawable/ic_take_picture"
+
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       tools:ignore="ContentDescription" />
+  <!--<ImageButton-->
+  <!--    android:id="@+id/fabTakePicture"-->
+  <!--    android:layout_width="wrap_content"-->
+  <!--    android:layout_height="wrap_content"-->
+  <!--    android:background="@android:color/transparent"-->
+
+  <!--    android:padding="@dimen/double_margin"-->
+  <!--    android:src="@drawable/ic_take_picture"-->
+  <!--    app:layout_constraintBottom_toBottomOf="parent"-->
+  <!--    app:layout_constraintEnd_toEndOf="parent"-->
+  <!--    app:layout_constraintStart_toStartOf="parent"-->
+  <!--    tools:ignore="ContentDescription" />-->
 
   <ImageButton
       android:id="@+id/buttonGallery"

@@ -49,7 +49,7 @@ class MediaTypeViewpagerActivity : SimpleActivity() {
     lateinit var mediaViewpager2Adapter: MediaViewpager2Adapter
 
     override fun initView() {
-        MediaViewAndSelector.Build().build(activity = this)
+        MediaViewAndSelector.BuildConfig().build(activity = this)
         data = intent.getSerializableExtra("data") as ImageTextTypeList
         data?.items?.let {
             val listData = mutableListOf<ImageTextModel>()

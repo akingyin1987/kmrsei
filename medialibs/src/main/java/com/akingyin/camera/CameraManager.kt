@@ -16,9 +16,14 @@ import android.hardware.Camera
 import android.view.SurfaceHolder
 import android.view.WindowManager
 import androidx.annotation.IntDef
+import autodispose2.autoDispose
 import com.akingyin.base.ext.no
 import com.akingyin.base.ext.yes
+import com.akingyin.base.rx.RxUtil
 import com.akingyin.base.utils.FileUtils
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -27,6 +32,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -281,10 +287,10 @@ class CameraManager  (content:Context) {
         }
     }
 
-    fun open( cameraId: Int): Camera? {
+    fun open( cameraOpenId: Int): Camera? {
 
         //手机上camera的数量 =0 则当前手机无摄像头
-        var cameraId = cameraId
+        var cameraId = cameraOpenId
         val numCameras = Camera.getNumberOfCameras()
         println("numCameras=$numCameras")
         if (numCameras == 0) {
@@ -419,6 +425,51 @@ class CameraManager  (content:Context) {
     }
 
 
+    private  var disposable:Disposable?=null
+    /**
+     * 延迟多少秒后自动拍照
+     */
+    fun   autoTakePhoto(delayTime:Int = 0,cameraParameBuild: CameraParameBuild,callBack: (result: Boolean, error: String?) -> Unit){
+      disposable?.dispose()
+      disposable =  Observable.timer(delayTime.toLong(),TimeUnit.SECONDS).compose(RxUtil.IO_Main()).autoDispose(Completable.complete())
+                .subscribe({
+                    takePictrue(cameraParameBuild,callBack)
+                },{
+                    callBack(false,"出错了,${it.message}")
+                })
+    }
+
+
+
+
+    /**
+     * 获取最佳cameraView
+     */
+    fun findBestViewSize(screenPoint: Point, cameraPoint: Point): Point? {
+
+        //屏幕的比例
+        val screenScale = max(screenPoint.x, screenPoint.y) / min(screenPoint.x, screenPoint.y).toFloat()
+
+        //相机预览的比例
+        val scale = max(cameraPoint.x, cameraPoint.y) / min(cameraPoint.x, cameraPoint.y).toFloat()
+        var width = min(screenPoint.x, screenPoint.y)
+        val height = max(screenPoint.x, screenPoint.y)
+
+        //如何比比例操作某个范围，则需要处理当前预览界面（默认是全屏）
+        //正常只需要修改高度
+        if (abs(scale - screenScale) > 0.01) {
+            val beseheight = (width * scale).toInt()
+            if (beseheight > height) {
+                //如果高度超出范围
+                width = (height / scale).toInt()
+                return Point(width, 0)
+            }
+            return Point(0, beseheight)
+        }
+        return null
+    }
+
+
     @IntDef(value = [CameraFlashModel.CAMERA_FLASH_AUTO, CameraFlashModel.CAMERA_FLASH_OFF,
         CameraFlashModel.CAMERA_FLASH_ON,CameraFlashModel.CAMERA_FLASH_NONE])
     @Retention(AnnotationRetention.SOURCE)
@@ -465,8 +516,7 @@ class CameraManager  (content:Context) {
     companion object{
         //480 * 320
         const val MIN_PREVIEW_PIXELS = 540 * 540 // normal screen
-        const val MAX_EXPOSURE_COMPENSATION = 1.5f
-        const val MIN_EXPOSURE_COMPENSATION = 0.0f
+
         const val MAX_ASPECT_DISTORTION = 0.15
     }
 }

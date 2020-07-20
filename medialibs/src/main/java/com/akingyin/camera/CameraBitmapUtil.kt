@@ -103,7 +103,7 @@ object CameraBitmapUtil {
     fun zipImageTo960x540(mBitmap: Bitmap, rotat: Int, time: Long = 0, landscape: Boolean = false, fileDir: String, fileName: String):Boolean {
         var srcBitmap: Bitmap = mBitmap
         var fos: FileOutputStream? = null
-        var bitmap: Bitmap? = null
+
         try {
             // 防止拍出的图片分辨率小于　960　*　540
             if (mBitmap.width < 540 || mBitmap.height < 960) {

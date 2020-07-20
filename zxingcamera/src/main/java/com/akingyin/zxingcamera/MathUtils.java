@@ -33,29 +33,29 @@ public class MathUtils {
       return (float) Math.sqrt(xDiff * xDiff + yDiff * yDiff);
     }
     
-    public   static   final   float   scale16_9 = 16f/9;
-    public   static   final   float   scale4_3 = 4f/3;
-    
-    public  static   Point   findBestViewSize(Point  screenPoint,Point  cameraPoint){
-      if(null == cameraPoint || null == screenPoint){
-        return null;
-      }
-      float  screenScale = Math.max(screenPoint.x,screenPoint.y)/(float)Math.min(screenPoint.x,screenPoint.y);
-      float  scale = Math.max(cameraPoint.x, cameraPoint.y)/(float)Math.min(cameraPoint.x, cameraPoint.y);
-      int  width = Math.min(screenPoint.x, screenPoint.y);
-      int  height = Math.max(screenPoint.x, screenPoint.y);
+      public   static   final   float   scale16_9 = 16f/9;
+      public   static   final   float   scale4_3 = 4f/3;
 
-      if(Math.abs(scale-screenScale)>0.01){
-        int   beseheight = (int) (width * scale);
-        if(beseheight>height){
-          //如果高度超出范围
-          width = (int) (height/scale);
-          return new Point(width, 0);
+      public  static   Point   findBestViewSize(Point  screenPoint,Point  cameraPoint){
+        if(null == cameraPoint || null == screenPoint){
+          return null;
         }
-        return new Point(0, beseheight);
-      }
+        float  screenScale = Math.max(screenPoint.x,screenPoint.y)/(float)Math.min(screenPoint.x,screenPoint.y);
+        float  scale = Math.max(cameraPoint.x, cameraPoint.y)/(float)Math.min(cameraPoint.x, cameraPoint.y);
+        int  width = Math.min(screenPoint.x, screenPoint.y);
+        int  height = Math.max(screenPoint.x, screenPoint.y);
 
-      return null;
+        if(Math.abs(scale-screenScale)>0.01){
+          int   beseheight = (int) (width * scale);
+          if(beseheight>height){
+            //如果高度超出范围
+            width = (int) (height/scale);
+            return new Point(width, 0);
+          }
+          return new Point(0, beseheight);
+        }
+
+        return null;
     }
 
 }
