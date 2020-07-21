@@ -8,155 +8,72 @@
  */
 
 package com.akingyin.camera
-
-import android.app.Activity
 import android.content.Context
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
+import android.view.OrientationEventListener
+import java.lang.ref.WeakReference
 import kotlin.math.abs
-import kotlin.math.sqrt
-
 
 /**
- * 通过加速器 控制相机自动对焦
  * @ Description:
  * @author king
- * @ Date 2020/7/16 14:37
+ * @ Date 2020/7/20 12:18
  * @version V1.0
  */
-class CameraSensorController (var content:Context,var callBack:()->Unit) : SensorEventListener {
+class CameraSensorController constructor(context: Context) {
 
-    private var mSensorManager: SensorManager? = null
-    private var mSensor: Sensor? = null
+    private var mContextWeakReference: WeakReference<Context> = WeakReference(context)
+
+    private var mLastOrientation = 0
+
+    private var rotation = 90
+    var mOrientationChangeListener: OrientationChangeListener? = null
+
+
+
+    var orientationEventListener: OrientationEventListener
 
     init {
-        mSensorManager = content.getSystemService(Activity.SENSOR_SERVICE) as SensorManager
-        if(null != mSensorManager){
-            mSensor = mSensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        }
-    }
 
 
-    val STATUS_NONE = 0
-    val STATUS_STATIC = 1
-    val STATUS_MOVE = 2
-    private var mX = 0
-    private  var mY:Int = 0
-    private  var mZ:Int = 0
-    private var STATUE = STATUS_NONE
-    var canFocus = false
-    var canFocusIn = false
-    var isFocusing = false
-    private val moveIs = 1.4
-    private var lastStaticStamp: Long = 0
-    val DELAY_DURATION = 500
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-
-    }
-
-    override fun onSensorChanged(event: SensorEvent) {
-        if (event.sensor == null) {
-            return
-        }
-
-        if (isFocusing) {
-            restParams()
-            return
-        }
-
-        if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
-            val x = event.values[0].toInt()
-            val y = event.values[1].toInt()
-            val z = event.values[2].toInt()
-            val stamp = System.currentTimeMillis()
-
-            if (STATUE != STATUS_NONE) {
-                val px = abs(mX - x)
-                val py = abs(mY - y)
-                val pz = abs(mZ - z)
-                val value = sqrt(px * px + py * py + (pz * pz).toDouble())
-                if (value > moveIs) {
-                    STATUE = STATUS_MOVE
-                } else {
-                    if (STATUE == STATUS_MOVE) {
-                        lastStaticStamp = stamp
-                        canFocusIn = true
-                    }
-                    if (canFocusIn) {
-                        if (stamp - lastStaticStamp > DELAY_DURATION) {
-                            //移动后静止一段时间，可以发生对焦行为
-                            if (!isFocusing) {
-                                canFocusIn = false
-                                //                                onCameraFocus();
-                                callBack.invoke()
-                            }
+        orientationEventListener = object : OrientationEventListener(context) {
+            override fun onOrientationChanged(orientation: Int) {
+                if (orientation == ORIENTATION_UNKNOWN) {
+                    return
+                }
+                var diff = abs(orientation - mLastOrientation)
+                if (diff > 180) {
+                    diff = 360 - diff
+                }
+                if (diff > 60) {
+                    var orientation2 = (orientation + 45) / 90 * 90
+                    orientation2 %= 360
+                    if (orientation2 != mLastOrientation) {
+                        mLastOrientation = orientation2
+                        if (null != mOrientationChangeListener) {
+                            val relative_orientation = (mLastOrientation + rotation) % 360
+                            val ui_rotation = (360 - relative_orientation) % 360
+                            mOrientationChangeListener?.onChange(relative_orientation, ui_rotation)
                         }
                     }
-                    STATUE = STATUS_STATIC
                 }
-            } else {
-                lastStaticStamp = stamp
-                STATUE = STATUS_STATIC
             }
-            mX = x
-            mY = y
-            mZ = z
         }
     }
 
-    /**
-     * 注册
-     */
-    fun onRegisterSensor() :Boolean {
-        restParams()
-        canFocus = true
-        return mSensorManager?.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL)?:false
+
+
+
+
+    fun onResume() {
+        orientationEventListener.enable()
+    }
+
+    fun onPause() {
+        orientationEventListener.disable()
     }
 
 
-    /**
-     *取消注册
-     */
-    fun unRegisterSensor()  {
-        mSensorManager?.unregisterListener(this, mSensor)
-        canFocus = false
+    interface OrientationChangeListener {
+        fun onChange(relativeRotation: Int, uiRotation: Int)
     }
-
-
-    private fun restParams() {
-        STATUE = STATUS_NONE
-        canFocusIn = false
-        mX = 0
-        mY = 0
-        mZ = 0
-    }
-
-    /**
-     * 对焦是否被锁定
-     * @return
-     */
-    fun isFocusLocked(): Boolean {
-        return canFocus && isFocusing
-    }
-
-    /**
-     * 锁定对焦
-     */
-    fun lockFocus() {
-        isFocusing = true
-    }
-
-    /**
-     * 解锁对焦
-     */
-    fun unlockFocus() {
-        isFocusing = false
-    }
-
-    fun restFocus() {
-        isFocusing = false
-    }
-
 }

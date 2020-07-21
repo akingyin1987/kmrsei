@@ -11,7 +11,7 @@ import androidx.databinding.ViewDataBinding
  * @ Date 2020/5/15 15:37
  * @version V1.0
  */
-abstract class BaseDataBindActivity<DB : ViewDataBinding> : BaseDaggerActivity(){
+abstract class BaseDataViewBindActivity<DB : ViewDataBinding> : BaseDaggerActivity(){
 
     lateinit var mDataBind: DB
 

@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider
-import com.akingyin.base.BaseDataBindActivity
+import com.akingyin.base.BaseDataViewBindActivity
 import com.akingyin.base.mvvm.viewmodel.BaseViewModel
 import com.akingyin.base.net.exception.ApiException
 import com.akingyin.base.repo.StateActionEvent
@@ -18,7 +18,7 @@ import com.akingyin.base.repo.StateActionEvent
  * @ Date 2019/8/1 11:23
  * @version V1.0
  */
-abstract class BaseVMActivity<DB : ViewDataBinding,VM:BaseViewModel>  :BaseDataBindActivity<DB>(),LifecycleObserver{
+abstract class BaseVMActivity<DB : ViewDataBinding,VM:BaseViewModel>  :BaseDataViewBindActivity<DB>(),LifecycleObserver{
 
     lateinit var mViewModel: VM
 

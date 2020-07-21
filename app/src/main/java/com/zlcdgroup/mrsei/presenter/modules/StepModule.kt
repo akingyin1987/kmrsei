@@ -34,7 +34,7 @@ abstract class StepModule {
 
 
 
-    @Module(includes = arrayOf(StepModule::class))
+    @Module(includes = [StepModule::class])
     class StepModuleFragmentManagerModule {
 
         @Provides

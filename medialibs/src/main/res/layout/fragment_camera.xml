@@ -15,7 +15,7 @@
     android:background="@android:color/black"
     android:layout_height="match_parent">
 
-  <TextureView
+  <com.akingyin.camera.CameraPreview
       android:id="@+id/viewFinder"
       android:layout_width="0dp"
       android:layout_height="0dp"
@@ -39,11 +39,21 @@
       android:layout_height="wrap_content"
       app:capture_photo_video="Photo"
       android:padding="@dimen/double_margin"
-
+      android:layout_marginBottom="10dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       tools:ignore="ContentDescription" />
+
+  <com.akingyin.camera.widget.TypeButton
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/btn_cancel"
+      app:layout_constraintBottom_toBottomOf="@id/fabTakePicture"
+      app:layout_constraintEnd_toStartOf="@id/fabTakePicture"
+      app:layout_constraintStart_toStartOf="parent"
+      app:btnConfigCancel="cancel"
+      app:layout_constraintTop_toTopOf="@id/fabTakePicture"/>
   <!--<ImageButton-->
   <!--    android:id="@+id/fabTakePicture"-->
   <!--    android:layout_width="wrap_content"-->
@@ -57,35 +67,43 @@
   <!--    app:layout_constraintStart_toStartOf="parent"-->
   <!--    tools:ignore="ContentDescription" />-->
 
-  <ImageButton
-      android:id="@+id/buttonGallery"
-      android:layout_width="@dimen/button_size_small"
-      android:layout_height="@dimen/button_size_small"
-      android:background="@android:color/transparent"
+  <!--<ImageButton-->
+  <!--    android:id="@+id/buttonGallery"-->
+  <!--    android:layout_width="@dimen/button_size_small"-->
+  <!--    android:layout_height="@dimen/button_size_small"-->
+  <!--    android:background="@android:color/transparent"-->
 
-      android:scaleType="centerCrop"
-      android:src="@drawable/ic_no_picture"
-      app:layout_constraintBottom_toBottomOf="@id/fabTakePicture"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@id/fabTakePicture"
-      app:layout_constraintTop_toTopOf="@id/fabTakePicture"
-      tools:ignore="ContentDescription" />
+  <!--    android:scaleType="centerCrop"-->
+  <!--    android:src="@drawable/ic_no_picture"-->
+  <!--    app:layout_constraintBottom_toBottomOf="@id/fabTakePicture"-->
+  <!--    app:layout_constraintEnd_toEndOf="parent"-->
+  <!--    app:layout_constraintStart_toEndOf="@id/fabTakePicture"-->
+  <!--    app:layout_constraintTop_toTopOf="@id/fabTakePicture"-->
+  <!--    tools:ignore="ContentDescription" />-->
 
-  <ImageButton
-      android:id="@+id/buttonSwitchCamera"
-      android:layout_width="@dimen/button_size_small"
-      android:layout_height="@dimen/button_size_small"
-      android:background="@drawable/bg_button_round"
+  <!--<ImageButton-->
+  <!--    android:id="@+id/buttonSwitchCamera"-->
+  <!--    android:layout_width="@dimen/button_size_small"-->
+  <!--    android:layout_height="@dimen/button_size_small"-->
+  <!--    android:background="@drawable/bg_button_round"-->
 
-      android:padding="@dimen/half_margin"
-      android:scaleType="centerInside"
-      android:src="@drawable/ic_outline_camera_front"
+  <!--    android:padding="@dimen/half_margin"-->
+  <!--    android:scaleType="centerInside"-->
+  <!--    android:src="@drawable/ic_outline_camera_front"-->
+  <!--    app:layout_constraintBottom_toBottomOf="@id/fabTakePicture"-->
+  <!--    app:layout_constraintEnd_toStartOf="@id/fabTakePicture"-->
+  <!--    app:layout_constraintStart_toStartOf="parent"-->
+  <!--    app:layout_constraintTop_toTopOf="@id/fabTakePicture"-->
+  <!--    tools:ignore="ContentDescription" />-->
+  <com.akingyin.camera.widget.TypeButton
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:btnConfigCancel="config"
+      android:id="@+id/btn_config"
       app:layout_constraintBottom_toBottomOf="@id/fabTakePicture"
       app:layout_constraintEnd_toStartOf="@id/fabTakePicture"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="@id/fabTakePicture"
-      tools:ignore="ContentDescription" />
-
+      app:layout_constraintTop_toTopOf="@id/fabTakePicture"/>
   <View
       android:id="@+id/viewBg2"
       android:layout_width="0dp"

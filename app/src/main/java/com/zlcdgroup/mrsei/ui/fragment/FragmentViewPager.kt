@@ -50,6 +50,10 @@ class FragmentViewPager : SimpleFragment(){
 
     }
 
+    override fun injection() {
+
+    }
+
     override fun lazyLoad() {
         println("lazyLoad=")
     }

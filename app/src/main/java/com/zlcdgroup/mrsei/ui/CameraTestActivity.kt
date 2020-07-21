@@ -9,9 +9,19 @@
 
 package com.zlcdgroup.mrsei.ui
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import com.akingyin.base.SimpleActivity
+import com.akingyin.base.ext.gone
+import com.akingyin.base.ext.visiable
+import com.akingyin.camera.CameraParameBuild
+import com.akingyin.camera.ui.BaseCameraFragment
 import com.akingyin.camera.widget.CaptureButton
+import com.akingyin.camera.widget.TypeButton
+import com.qmuiteam.qmui.util.QMUIStatusBarHelper
 import com.zlcdgroup.mrsei.R
 
 
@@ -25,10 +35,10 @@ import com.zlcdgroup.mrsei.R
 class CameraTestActivity : SimpleActivity() {
 
     override fun initInjection() {
-
+        QMUIStatusBarHelper.translucent(this)
     }
 
-    override fun getLayoutId()= R.layout.fragment_camera
+    override fun getLayoutId()= R.layout.activity_camera
 
     override fun initializationData(savedInstanceState: Bundle?) {
 
@@ -39,14 +49,13 @@ class CameraTestActivity : SimpleActivity() {
     }
 
     override fun initView() {
-        findViewById<CaptureButton>(R.id.fabTakePicture).captureLisenter = object :CaptureButton.onClickTakePicturesListener(){
-            override fun takePictures() {
-                println("takePictures")
-            }
-        }
+        supportFragmentManager.beginTransaction().add(R.id.container,BaseCameraFragment.newInstance(CameraParameBuild()),"camera")
+
 
 
     }
+
+
 
     override fun startRequest() {
 

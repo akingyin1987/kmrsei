@@ -33,6 +33,9 @@ class MediaViewPager2Fragment :SimpleFragment(){
     override fun getLayoutId() = R.layout.fragment_medial_viewpager2
 
     lateinit var  mediaViewpager2Adapter: MediaViewpager2Adapter
+    override fun injection() {
+
+    }
 
     /** 父viewpager2 */
     lateinit var  mainViewPager:ViewPager2

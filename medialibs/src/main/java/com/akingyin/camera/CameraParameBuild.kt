@@ -10,6 +10,7 @@ package com.akingyin.camera
 
 import android.graphics.Point
 import com.akingyin.camera.CameraManager.*
+import java.io.Serializable
 
 /**
  * @author king
@@ -17,7 +18,9 @@ import com.akingyin.camera.CameraManager.*
  * @ Description:
  * @ Date 2020/7/17 12:25
  */
-class CameraParameBuild  {
+
+
+class CameraParameBuild :Serializable {
     @CameraFlashModel
     var flashModel: Int = CameraFlashModel.CAMERA_FLASH_NONE
 

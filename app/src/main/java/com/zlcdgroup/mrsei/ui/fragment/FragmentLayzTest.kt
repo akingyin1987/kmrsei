@@ -58,7 +58,9 @@ class FragmentLayzTest : SimpleFragment() {
     }
 
 
+    override fun injection() {
 
+    }
 
     override fun lazyLoad() {
         println("第一次懒加载=${TAG}  time=${DateUtil.millis2String(currentTimeMillis)}")    }

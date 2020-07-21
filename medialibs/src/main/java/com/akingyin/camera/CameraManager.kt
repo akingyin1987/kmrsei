@@ -9,15 +9,22 @@
 
 package com.akingyin.camera
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.ImageFormat
 import android.graphics.Point
 import android.hardware.Camera
 import android.view.SurfaceHolder
+import android.view.View
 import android.view.WindowManager
 import androidx.annotation.IntDef
 import autodispose2.autoDispose
+import com.akingyin.base.ext.gone
 import com.akingyin.base.ext.no
+import com.akingyin.base.ext.visiable
 import com.akingyin.base.ext.yes
 import com.akingyin.base.rx.RxUtil
 import com.akingyin.base.utils.FileUtils
@@ -47,7 +54,8 @@ import kotlin.math.min
  */
 
 @Suppress("DEPRECATION")
-class CameraManager  (content:Context) {
+class CameraManager  (content:Context,cameraSensorChange:(relativeRotation: Int, uiRotation: Int)->Unit,
+                         autoFouceCall:()->Unit) {
 
     private  val  TAG = "camera-manager"
 
@@ -76,11 +84,22 @@ class CameraManager  (content:Context) {
 
     // 打开相机后默认使用的分辨率()
     var  defaultPreviewSize = Point()
+
+    var  cameraSensorController: CameraSensorController
+    var  cameraAutoFouceSensorController:CameraAutoFouceSensorController
+
     init {
         val windowManager: WindowManager = content.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val theScreenResolution = Point()
         windowManager.defaultDisplay.getRealSize(theScreenResolution)
         BEST_SCALE = max(theScreenResolution.x,theScreenResolution.y).toDouble()/ min(theScreenResolution.x,theScreenResolution.y).toDouble()
+        cameraSensorController = CameraSensorController(content)
+        cameraSensorController.mOrientationChangeListener = object :CameraSensorController.OrientationChangeListener {
+            override fun onChange(relativeRotation: Int, uiRotation: Int) {
+                cameraSensorChange(relativeRotation,uiRotation)
+            }
+        }
+        cameraAutoFouceSensorController = CameraAutoFouceSensorController(content,autoFouceCall)
 
     }
 
@@ -118,6 +137,7 @@ class CameraManager  (content:Context) {
         theCamera.setPreviewDisplay(holder)
     }
 
+    private  var   cameraParameBuild:CameraParameBuild ?= null
 
     /**
      * 设置相机参数
@@ -216,11 +236,14 @@ class CameraManager  (content:Context) {
      */
     @Synchronized
     fun startPreview() {
+
+        cameraSensorController.onResume()
         val theCamera = camera
         if (theCamera != null && !previewing) {
             theCamera.startPreview()
             previewing = true
         }
+        cameraAutoFouceSensorController.onRegisterSensor()
     }
 
 
@@ -230,12 +253,13 @@ class CameraManager  (content:Context) {
      */
     @Synchronized
     fun stopPreview() {
-
+        cameraSensorController.onPause()
         println("pr=$previewing")
         if (camera != null && previewing) {
             camera?.stopPreview()
             previewing = false
         }
+        cameraAutoFouceSensorController.unRegisterSensor()
     }
 
     /**
@@ -279,6 +303,7 @@ class CameraManager  (content:Context) {
      */
     @Synchronized
     fun closeDriver() {
+        cameraSensorController.onPause()
         if (camera != null) {
             camera?.release()
             camera = null
@@ -470,6 +495,9 @@ class CameraManager  (content:Context) {
     }
 
 
+
+
+
     @IntDef(value = [CameraFlashModel.CAMERA_FLASH_AUTO, CameraFlashModel.CAMERA_FLASH_OFF,
         CameraFlashModel.CAMERA_FLASH_ON,CameraFlashModel.CAMERA_FLASH_NONE])
     @Retention(AnnotationRetention.SOURCE)
@@ -518,5 +546,36 @@ class CameraManager  (content:Context) {
         const val MIN_PREVIEW_PIXELS = 540 * 540 // normal screen
 
         const val MAX_ASPECT_DISTORTION = 0.15
+
+        /**
+         * 点击开始拍照动画
+         */
+        @JvmStatic
+        fun  startTypeCaptureAnimator(captureButton:View,configBtn:View,cancelBtn:View){
+            captureButton.gone()
+            configBtn.visiable()
+            cancelBtn.visiable()
+
+            AnimatorSet().apply {
+                playTogether(ObjectAnimator.ofFloat(cancelBtn, "translationX", cancelBtn.width / 4F, 0F),
+                        ObjectAnimator.ofFloat(configBtn, "translationX", configBtn.width / -4f, 0F))
+                addListener(object :AnimatorListenerAdapter(){
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        cancelBtn.isClickable = true
+                        configBtn.isClickable = true
+                    }
+                })
+                duration = 200
+            }.start()
+
+        }
+
+        @JvmStatic
+        fun   recoveryCaptureAnimator(captureButton:View,configBtn:View,cancelBtn:View){
+            captureButton.visiable()
+            configBtn.gone()
+            cancelBtn.gone()
+        }
     }
 }
