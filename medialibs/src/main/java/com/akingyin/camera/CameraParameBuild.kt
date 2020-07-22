@@ -9,7 +9,10 @@
 package com.akingyin.camera
 
 import android.graphics.Point
+import com.akingyin.base.config.AppFileConfig
+import com.akingyin.base.utils.StringUtils
 import com.akingyin.camera.CameraManager.*
+import java.io.File
 import java.io.Serializable
 
 /**
@@ -25,7 +28,7 @@ class CameraParameBuild :Serializable {
     var flashModel: Int = CameraFlashModel.CAMERA_FLASH_NONE
 
     @CameraShutterSound
-    var shutterSound: Int = CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE
+    var shutterSound: Int = CameraShutterSound.CAMERA_SHUTTER_SOUND_OFF
 
     @CameraNetGrid
     var netGrid: Int = CameraNetGrid.CAMERA_NET_GRID_NONE
@@ -34,16 +37,16 @@ class CameraParameBuild :Serializable {
     var  supportManualFocus = true
 
     /** 是否支持对焦成功后自动拍照 */
-    var  supportFocesedAutoPhoto = false
+    var  supportFocesedAutoPhoto = true
 
     /** 对焦后自动拍照延迟时间 */
-    var  focesedAutoPhotoDelayTime = 0
+    var  focesedAutoPhotoDelayTime = 2
 
     /** 是否支持拍照后自动保存数据 */
-    var  supportAutoSavePhoto = false
+    var  supportAutoSavePhoto = true
 
     /** 拍照后自动保存时间*/
-    var  autoSavePhotoDelayTime = 0
+    var  autoSavePhotoDelayTime = 2
 
     /**
      * 设置相机分辨率
@@ -53,7 +56,7 @@ class CameraParameBuild :Serializable {
     /**
      * 当前图片保存路径
      */
-    var  localPath =""
+    var  localPath =AppFileConfig.APP_FILE_ROOT+ File.separator+StringUtils.getUUID()+".jpg"
 
     /**
      * 是否强制横向照片

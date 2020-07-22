@@ -129,8 +129,8 @@
   </declare-styleable>
 
   <declare-styleable name="TypeButton">
-    <attr name="btnConfigCancel">
-      <enum name="config" value="1"/>
+    <attr name="btnConfigCancel" format="integer">
+      <enum name="config" value="1" />
       <enum name="cancel" value="2"/>
     </attr>
   </declare-styleable>

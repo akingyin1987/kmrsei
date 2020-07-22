@@ -279,6 +279,14 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
         super.onDestroy()
     }
 
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
     }

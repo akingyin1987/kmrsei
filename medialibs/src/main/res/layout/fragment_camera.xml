@@ -35,24 +35,36 @@
       app:layout_constraintTop_toTopOf="@id/fabTakePicture" />
   <com.akingyin.camera.widget.CaptureButton
       android:id="@+id/fabTakePicture"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
       app:capture_photo_video="Photo"
-      android:padding="@dimen/double_margin"
-      android:layout_marginBottom="10dp"
+
+      android:layout_marginBottom="20dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       tools:ignore="ContentDescription" />
 
   <com.akingyin.camera.widget.TypeButton
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
       android:id="@+id/btn_cancel"
+      android:visibility="gone"
       app:layout_constraintBottom_toBottomOf="@id/fabTakePicture"
       app:layout_constraintEnd_toStartOf="@id/fabTakePicture"
       app:layout_constraintStart_toStartOf="parent"
       app:btnConfigCancel="cancel"
+      app:layout_constraintTop_toTopOf="@id/fabTakePicture"/>
+
+  <com.akingyin.camera.widget.TypeButton
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      app:btnConfigCancel="config"
+      android:id="@+id/btn_config"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="@id/fabTakePicture"
+      app:layout_constraintStart_toEndOf="@id/fabTakePicture"
+      app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="@id/fabTakePicture"/>
   <!--<ImageButton-->
   <!--    android:id="@+id/fabTakePicture"-->
@@ -95,15 +107,7 @@
   <!--    app:layout_constraintStart_toStartOf="parent"-->
   <!--    app:layout_constraintTop_toTopOf="@id/fabTakePicture"-->
   <!--    tools:ignore="ContentDescription" />-->
-  <com.akingyin.camera.widget.TypeButton
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      app:btnConfigCancel="config"
-      android:id="@+id/btn_config"
-      app:layout_constraintBottom_toBottomOf="@id/fabTakePicture"
-      app:layout_constraintEnd_toStartOf="@id/fabTakePicture"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="@id/fabTakePicture"/>
+
   <View
       android:id="@+id/viewBg2"
       android:layout_width="0dp"

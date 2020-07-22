@@ -11,11 +11,15 @@ package com.akingyin.camera
 
 import android.content.Context
 import android.hardware.Camera
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.*
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import com.akingyin.base.dialog.ToastUtil
+import com.akingyin.base.ext.gone
+import com.akingyin.base.ext.visiable
+import com.akingyin.base.utils.FileUtils
 import com.akingyin.media.R
 
 /**
@@ -59,7 +63,7 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
                 cameraManager.camera?.let {
                     camera_fouce.setTouchFoucusRect(it, Camera.AutoFocusCallback {
                         success, _ ->
-                        camera_fouce.disDrawTouchFocusRect()
+                        camera_fouce.disDrawTouchFocusRect(success)
                         if(success){
                             //手动对焦成功
                             authTakePhoto()
@@ -104,6 +108,24 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
              }
         }
         cameraManager.startPreview()
+
+    }
+
+    fun   takePhoto(cameraParame: CameraParameBuild = cameraParameBuild,callBack: (result: Boolean, error: String?) -> Unit){
+        cameraManager.takePictrue(cameraParame){
+            result, error ->
+            cameraManager.stopPreview()
+            camera_img.visiable()
+            camera_img.setImageURI(Uri.parse(cameraParame.localPath))
+            callBack.invoke(result,error)
+        }
+    }
+
+    fun   onStartCameraView(){
+        camera_img.setImageURI(null)
+        camera_img.gone()
+        cameraManager.startPreview()
+        FileUtils.deleteFile(cameraParameBuild.localPath)
 
     }
 

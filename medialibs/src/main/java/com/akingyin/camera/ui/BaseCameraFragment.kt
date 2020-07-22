@@ -18,17 +18,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.RotateAnimation
-
 import com.akingyin.base.SimpleFragment
 import com.akingyin.base.ext.click
+import com.akingyin.base.mvvm.SingleLiveEvent
+import com.akingyin.camera.CameraData
 import com.akingyin.camera.CameraManager
 import com.akingyin.camera.CameraParameBuild
-import com.akingyin.camera.CameraSensorController
 import com.akingyin.camera.widget.CaptureButton
+import com.akingyin.media.MediaConfig
 import com.akingyin.media.R
 import com.akingyin.media.databinding.FragmentCameraBinding
 import permissions.dispatcher.ktx.withPermissionsCheck
+import kotlin.properties.Delegates
 
 /**
  * @ Description:
@@ -37,10 +38,25 @@ import permissions.dispatcher.ktx.withPermissionsCheck
  * @version V1.0
  */
 
-@Suppress("DEPRECATION","ClickableViewAccessibility")
+@Suppress("DEPRECATION", "ClickableViewAccessibility")
 class BaseCameraFragment : SimpleFragment() {
 
-    lateinit var fragmentCameraBinding: FragmentCameraBinding
+    lateinit var bindView: FragmentCameraBinding
+
+
+    var camerarLiveData: SingleLiveEvent<CameraData> = SingleLiveEvent()
+
+
+    private var netGrid: Int by Delegates.observable(CameraManager.CameraNetGrid.CAMERA_NET_GRID_NONE) { property, oldValue, newValue ->
+        bindView.buttonGrid.setImageResource(when(newValue){
+            CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN ->{
+                R.drawable.ic_grid_on
+            }
+            else ->{
+                R.drawable.ic_grid_off
+            }
+        })
+    }
 
     override fun injection() {
 
@@ -50,8 +66,8 @@ class BaseCameraFragment : SimpleFragment() {
 
 
     override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View? {
-        fragmentCameraBinding = FragmentCameraBinding.inflate(inflater, container, false)
-        return fragmentCameraBinding.root
+        bindView = FragmentCameraBinding.inflate(inflater, container, false)
+        return bindView.root
     }
 
     override fun getLayoutId() = R.layout.fragment_camera
@@ -62,22 +78,43 @@ class BaseCameraFragment : SimpleFragment() {
 
     lateinit var cameraManager: CameraManager
 
+    var cameraRotation = 0
     override fun initView() {
 
-        cameraManager = CameraManager(mContext,{
-            relativeRotation, uiRotation ->
-        },{
+        cameraManager = CameraManager(mContext, { _, uiRotation ->
+            cameraRotation = uiRotation + 90
+            if (cameraRotation == 180) {
+                cameraRotation = 0
+            }
+            if (cameraRotation == 360) {
+                cameraRotation = 180
+            }
+            if (cameraManager.cameraUiAngle != cameraRotation) {
+                cameraManager.cameraUiAngle = cameraRotation
+                CameraManager.startCameraViewRoteAnimator(uiRotation.toFloat(), bindView.buttonFlash, bindView.buttonGrid, bindView.buttonHdr, bindView.textCountDown)
+            }
 
+        }, {
+            showSucces("运动对焦成功！")
         })
-        fragmentCameraBinding.fabTakePicture.captureLisenter = object : CaptureButton.onClickTakePicturesListener(){
+
+        bindView.fabTakePicture.captureLisenter = object : CaptureButton.onClickTakePicturesListener() {
             override fun takePictures() {
-               CameraManager.startTypeCaptureAnimator(fragmentCameraBinding.fabTakePicture, fragmentCameraBinding.btnConfig, fragmentCameraBinding.btnCancel)
+                bindView.fabTakePicture.isEnabled = false
+                bindView.viewFinder.takePhoto { result, error ->
+                    if (result) {
+                        CameraManager.startTypeCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel)
+                    } else {
+                        showError(error)
+                    }
+                }
             }
         }
-        fragmentCameraBinding.btnCancel.click {
-            CameraManager.recoveryCaptureAnimator(fragmentCameraBinding.fabTakePicture, fragmentCameraBinding.btnConfig, fragmentCameraBinding.btnCancel)
+        bindView.btnCancel.click {
+            CameraManager.recoveryCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel)
+            bindView.viewFinder.onStartCameraView()
         }
-        fragmentCameraBinding.viewFinder.errorCallback = Camera.ErrorCallback { error, _ ->
+        bindView.viewFinder.errorCallback = Camera.ErrorCallback { error, _ ->
             when (error) {
                 CAMERA_ERROR_SERVER_DIED -> {
                     showError("相机服务异常，请退出或重启手机,错误代码${error}")
@@ -87,13 +124,25 @@ class BaseCameraFragment : SimpleFragment() {
                 }
             }
         }
+        bindView.btnConfig.click {
+            camerarLiveData.value = CameraData().apply {
+                mediaType = MediaConfig.TYPE_IMAGE
+                localPath = bindView.viewFinder.cameraParameBuild.localPath
+            }
+        }
+        bindView.buttonGrid.click {
+            netGrid = if (netGrid == CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN) {
+                CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE
+            }else {
+                CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN
+            }
+        }
         withPermissionsCheck(Manifest.permission.CAMERA) {
-            fragmentCameraBinding.viewFinder.bindSurfaceView(cameraManager, CameraParameBuild())
+            bindView.viewFinder.bindSurfaceView(cameraManager, CameraParameBuild())
         }
 
 
     }
-
 
 
     override fun lazyLoad() {

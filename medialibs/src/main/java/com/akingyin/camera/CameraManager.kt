@@ -34,6 +34,7 @@ import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -61,6 +62,9 @@ class CameraManager  (content:Context,cameraSensorChange:(relativeRotation: Int,
 
     /** 拍照时相机旋转角度 */
     var  cameraAngle = 90
+
+    /** UI 显示旋转角度 */
+    var  cameraUiAngle = 90
 
     var requestedCameraId = -1
 
@@ -97,9 +101,25 @@ class CameraManager  (content:Context,cameraSensorChange:(relativeRotation: Int,
         cameraSensorController.mOrientationChangeListener = object :CameraSensorController.OrientationChangeListener {
             override fun onChange(relativeRotation: Int, uiRotation: Int) {
                 cameraSensorChange(relativeRotation,uiRotation)
+                if(previewing){
+                    var cameraRotation = uiRotation + 90
+                    if (cameraRotation == 180) {
+                        cameraRotation = 0
+                    }
+                    if (cameraRotation == 360) {
+                        cameraRotation = 180
+                    }
+                    cameraParameBuild?.cameraAngle = cameraRotation
+                }
             }
         }
-        cameraAutoFouceSensorController = CameraAutoFouceSensorController(content,autoFouceCall)
+        cameraAutoFouceSensorController = CameraAutoFouceSensorController(content){
+            autoStartFuoce { result, _ ->
+                if(result){
+                    autoFouceCall.invoke()
+                }
+            }
+        }
 
     }
 
@@ -187,6 +207,7 @@ class CameraManager  (content:Context,cameraSensorChange:(relativeRotation: Int,
                     CameraFlashModel.CAMERA_FLASH_ON ->{ flashMode = Camera.Parameters.FLASH_MODE_TORCH}
                 }
             }
+            cameraParameBuild?.flashModel = flashModel
             callBack(true,null)
         }catch (e : Exception){
             e.printStackTrace()
@@ -200,15 +221,16 @@ class CameraManager  (content:Context,cameraSensorChange:(relativeRotation: Int,
     /**
      * 这是自动对焦
      */
-    fun  autoStartFoce(callBack: (result: Boolean, error: String?) -> Unit){
-        if(focusing){
+    private fun  autoStartFuoce(callBack: (result: Boolean, error: String?) -> Unit){
+        if(focusing || previewing){
             return
         }
         focusing = true
         try {
             GlobalScope.launch(Main) {
+                delay(1000)
                 withContext(IO){
-                    Thread.sleep(1000)
+
                     camera?.let {
                         it.cancelAutoFocus()
                         it.autoFocus { success, _ ->
@@ -552,10 +574,10 @@ class CameraManager  (content:Context,cameraSensorChange:(relativeRotation: Int,
          */
         @JvmStatic
         fun  startTypeCaptureAnimator(captureButton:View,configBtn:View,cancelBtn:View){
-            captureButton.gone()
+            captureButton.visibility = View.INVISIBLE
             configBtn.visiable()
             cancelBtn.visiable()
-
+            println("with=${configBtn.width},${cancelBtn.width}")
             AnimatorSet().apply {
                 playTogether(ObjectAnimator.ofFloat(cancelBtn, "translationX", cancelBtn.width / 4F, 0F),
                         ObjectAnimator.ofFloat(configBtn, "translationX", configBtn.width / -4f, 0F))
@@ -572,8 +594,20 @@ class CameraManager  (content:Context,cameraSensorChange:(relativeRotation: Int,
         }
 
         @JvmStatic
+        fun  startCameraViewRoteAnimator(rotation:Float,vararg views:View){
+           AnimatorSet().apply {
+               playTogether(views.map {
+                   view ->
+                   ObjectAnimator.ofFloat(view,"rotation",rotation)
+               })
+               duration = 200
+           }.start()
+        }
+
+        @JvmStatic
         fun   recoveryCaptureAnimator(captureButton:View,configBtn:View,cancelBtn:View){
             captureButton.visiable()
+            captureButton.isEnabled = true
             configBtn.gone()
             cancelBtn.gone()
         }

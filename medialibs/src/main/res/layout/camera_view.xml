@@ -27,5 +27,8 @@
           <com.github.chrisbanes.photoview.PhotoView
               android:layout_width="match_parent"
               android:id="@+id/camera_img"
+              android:scaleType="fitCenter"
+              android:visibility="gone"
+              android:background="#000000"
               android:layout_height="match_parent"/>
 </RelativeLayout>

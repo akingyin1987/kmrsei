@@ -17,6 +17,10 @@ import android.graphics.Rect
 import android.hardware.Camera
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import com.akingyin.media.R
+
 
 /**
  * @ Description:
@@ -35,8 +39,8 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
      private val mPaint: Paint = Paint().apply {
          isAntiAlias = true
          isDither = true
-         color = Color.GREEN
-         strokeWidth = 3F
+         color = Color.WHITE
+         strokeWidth = 4F
          style = Paint.Style.STROKE
      }
 
@@ -88,10 +92,26 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     }
 
+
     //对焦完成后，清除对焦矩形框
-    fun disDrawTouchFocusRect(){
-        touchFocusRect = null//将对焦区域设置为null，刷新界面后对焦框消失
+    fun disDrawTouchFocusRect(result:Boolean = true){
+        mPaint.color = if(result) Color.GREEN else Color.RED
         postInvalidate()
+        AnimationUtils.loadAnimation(context, R.anim.camera_fouce_rotate).run {
+            setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation) {}
+                override fun onAnimationEnd(animation: Animation) {
+                    touchFocusRect =null
+                    mPaint.color = Color.WHITE
+                    postInvalidate()
+                }
+                override fun onAnimationRepeat(animation: Animation) {}
+            })
+            startAnimation(this)
+
+        }
+
+
     }
 
     private fun drawTouchFocusRect(canvas: Canvas){
@@ -103,7 +123,7 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
                 //左上角
                 drawRect((left-2).toFloat(), (top-2).toFloat(), (left+20).toFloat(), top.toFloat(),mPaint)
-                drawRect((left-2).toFloat(), top.toFloat(), (right+2).toFloat(), (top+20).toFloat(),mPaint)
+                drawRect((left-2).toFloat(), top.toFloat(), (left+2).toFloat(), (top+20).toFloat(),mPaint)
 
                 //右上角
                 drawRect((right-20).toFloat(), (top-2).toFloat(), (right+2).toFloat(), top.toFloat(),mPaint)

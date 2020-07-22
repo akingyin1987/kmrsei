@@ -16,6 +16,7 @@ import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
+import androidx.core.content.res.use
 import com.akingyin.media.R
 
 
@@ -29,12 +30,12 @@ class TypeButton @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private var button_type = 0
-    private var button_size = 0
+    private var buttonType = 0
+    private var buttonSize = 0
 
-    private var center_X = 0f
-    private var center_Y = 0f
-    private var button_radius = 0f
+    private var centerX = 0f
+    private var centerY = 0f
+    private var buttonRadius = 0f
 
     private var mPaint: Paint= Paint()
     private var path: Path= Path()
@@ -53,36 +54,40 @@ class TypeButton @JvmOverloads constructor(
         } else {
             outMetrics.widthPixels / 2
         }
-        button_size = ((layoutWidth / 4.5f).toInt())
-        button_type = attrs?.let {
-            context.theme.obtainStyledAttributes(it, R.styleable.TypeButton,defStyleAttr,0).getInteger(R.styleable.TypeButton_btnConfigCancel,TYPE_CANCEL)
-            0
+        buttonSize = ((layoutWidth / 4.5f).toInt())
+        buttonType = attrs?.let {
+            context.theme.obtainStyledAttributes(it, R.styleable.TypeButton,defStyleAttr,0).use {
+                typed->
+                typed.getInteger(R.styleable.TypeButton_btnConfigCancel,TYPE_CANCEL)
+            }
+
         }?:TYPE_CANCEL
 
-        button_radius = button_size / 2.0f
-        center_X = button_size / 2.0f
-        center_Y = button_size / 2.0f
+        buttonRadius = buttonSize / 2.0f
+        centerX = buttonSize / 2.0f
+        centerY = buttonSize / 2.0f
         mPaint = Paint()
         path = Path()
-        strokeWidth = button_size / 50f
-        index = button_size / 12f
-        rectF = RectF(center_X, center_Y - index, center_X + index * 2, center_Y + index)
+        strokeWidth = buttonSize / 50f
+        index = buttonSize / 12f
+        rectF = RectF(centerX, centerY - index, centerX + index * 2, centerY + index)
+        println("button_size=${buttonSize}")
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        setMeasuredDimension(button_size, button_size)
+        setMeasuredDimension(buttonSize, buttonSize)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         //如果类型为取消，则绘制内部为返回箭头
-        if (button_type == TYPE_CANCEL) {
+        if (buttonType == TYPE_CANCEL) {
             mPaint.apply {
                 isAntiAlias = true
                 color = -0x11232324
                 style = Paint.Style.FILL
-                canvas.drawCircle(center_X, center_Y, button_radius, this)
+                canvas.drawCircle(centerX, centerY, buttonRadius, this)
             }
 
             mPaint.apply {
@@ -91,11 +96,11 @@ class TypeButton @JvmOverloads constructor(
                 strokeWidth = strokeWidth
             }
             path.apply {
-                moveTo(center_X - index / 7, center_Y + index)
-                lineTo(center_X + index, center_Y + index)
+                moveTo(centerX - index / 7, centerY + index)
+                lineTo(centerX + index, centerY + index)
                 arcTo(rectF, 90f, -180f)
 
-                lineTo(center_X - index, center_Y - index)
+                lineTo(centerX - index, centerY - index)
                 canvas.drawPath(this, mPaint)
             }
 
@@ -103,22 +108,22 @@ class TypeButton @JvmOverloads constructor(
             mPaint.style = Paint.Style.FILL
             path.run {
                 reset()
-                moveTo(center_X - index, (center_Y - index * 1.5).toFloat())
-                lineTo(center_X - index, (center_Y - index / 2.3).toFloat())
-                lineTo((center_X - index * 1.6).toFloat(), center_Y - index)
+                moveTo(centerX - index, (centerY - index * 1.5).toFloat())
+                lineTo(centerX - index, (centerY - index / 2.3).toFloat())
+                lineTo((centerX - index * 1.6).toFloat(), centerY - index)
                 close()
                 canvas.drawPath(this, mPaint)
             }
-
+            println("画取消的按钮")
 
         }
         //如果类型为确认，则绘制绿色勾
-        if (button_type == TYPE_CONFIRM) {
+        if (buttonType == TYPE_CONFIRM) {
             mPaint.run {
                 isAntiAlias = true
                 color = -0x1
                 style = Paint.Style.FILL
-                canvas.drawCircle(center_X, center_Y, button_radius, this)
+                canvas.drawCircle(centerX, centerY, buttonRadius, this)
             }
 
             mPaint.run {
@@ -128,20 +133,21 @@ class TypeButton @JvmOverloads constructor(
                 strokeWidth = strokeWidth
 
                 path.run {
-                    moveTo(center_X - button_size / 6f, center_Y)
-                    lineTo(center_X - button_size / 21.2f, center_Y + button_size / 7.7f)
-                    lineTo(center_X + button_size / 4.0f, center_Y - button_size / 8.5f)
-                    lineTo(center_X - button_size / 21.2f, center_Y + button_size / 9.4f)
+                    moveTo(centerX - buttonSize / 6f, centerY)
+                    lineTo(centerX - buttonSize / 21.2f, centerY + buttonSize / 7.7f)
+                    lineTo(centerX + buttonSize / 4.0f, centerY - buttonSize / 8.5f)
+                    lineTo(centerX - buttonSize / 21.2f, centerY + buttonSize / 9.4f)
                     close()
 
                 }
                 canvas.drawPath(path, this)
             }
+            println("画确认的按钮")
         }
     }
 
     companion object{
-        val TYPE_CANCEL = 2
-        val TYPE_CONFIRM = 1
+       const val TYPE_CANCEL = 2
+       const val TYPE_CONFIRM = 1
     }
 }

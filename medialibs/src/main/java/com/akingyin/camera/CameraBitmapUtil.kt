@@ -67,11 +67,9 @@ object CameraBitmapUtil {
             }
             img_src.compress(Bitmap.CompressFormat.JPEG, quality, fos)
         } catch (e: Exception) {
-            img_src?.recycle()
             e.printStackTrace()
             throw e
         } catch (e: Error) {
-            img_src?.recycle()
             e.printStackTrace()
             throw  e
         } finally {
@@ -100,7 +98,7 @@ object CameraBitmapUtil {
      */
     @JvmOverloads
     @Throws(Exception::class, Error::class)
-    fun zipImageTo960x540(mBitmap: Bitmap, rotat: Int, time: Long = 0, landscape: Boolean = false, fileDir: String, fileName: String):Boolean {
+    fun zipImageTo960x540(mBitmap: Bitmap, rotat: Int, time: Long = System.currentTimeMillis(), landscape: Boolean = false, fileDir: String, fileName: String):Boolean {
         var srcBitmap: Bitmap = mBitmap
         var fos: FileOutputStream? = null
 
