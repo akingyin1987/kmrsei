@@ -7,27 +7,13 @@
  * akingyin@163.com
  */
 
-package com.akingyin
-
-import com.akingyin.media.engine.ImageEngine
-import com.akingyin.media.engine.PictureEngine
-import com.akingyin.media.glide.GlideEngine
+package com.akingyin.base.channel
 
 /**
+ * internal 修饰类或类的方法，限制跨module 的方法使用
  * @ Description:
  * @author king
- * @ Date 2020/7/14 14:46
+ * @ Date 2020/7/23 11:59
  * @version V1.0
  */
-object PictureEngineImp  : PictureEngine{
-
-    /**
-     * Create ImageLoad Engine
-     *
-     * @return
-     */
-    override fun createEngine(): ImageEngine {
-
-        return GlideEngine.getGlideEngineInstance()
-    }
-}
+internal class TagEvent

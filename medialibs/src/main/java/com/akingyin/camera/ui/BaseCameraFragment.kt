@@ -10,7 +10,6 @@
 package com.akingyin.camera.ui
 
 import android.Manifest
-
 import android.hardware.Camera
 import android.hardware.Camera.CAMERA_ERROR_SERVER_DIED
 import android.hardware.Camera.CAMERA_ERROR_UNKNOWN
@@ -19,7 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.akingyin.base.SimpleFragment
-import com.akingyin.base.ext.click
+import com.akingyin.base.ext.*
 import com.akingyin.base.mvvm.SingleLiveEvent
 import com.akingyin.camera.CameraData
 import com.akingyin.camera.CameraManager
@@ -46,14 +45,33 @@ class BaseCameraFragment : SimpleFragment() {
 
     var camerarLiveData: SingleLiveEvent<CameraData> = SingleLiveEvent()
 
-
+    @CameraManager.CameraNetGrid
     private var netGrid: Int by Delegates.observable(CameraManager.CameraNetGrid.CAMERA_NET_GRID_NONE) { property, oldValue, newValue ->
-        bindView.buttonGrid.setImageResource(when(newValue){
-            CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN ->{
+        bindView.buttonGrid.setImageResource(when (newValue) {
+            CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN -> {
+                bindView.groupGridLines.visiable()
                 R.drawable.ic_grid_on
             }
-            else ->{
+            else -> {
+                bindView.groupGridLines.gone()
                 R.drawable.ic_grid_off
+            }
+        })
+
+    }
+
+    @CameraManager.CameraFlashModel
+    private var flashMode:Int by Delegates.observable(CameraManager.CameraFlashModel.CAMERA_FLASH_NONE){
+        _, _, newValue ->
+        bindView.buttonFlash.setImageResource(when(newValue){
+            CameraManager.CameraFlashModel.CAMERA_FLASH_ON->{
+                R.drawable.ic_flash_on
+            }
+            CameraManager.CameraFlashModel.CAMERA_FLASH_OFF->{
+                R.drawable.ic_flash_off
+            }
+            else ->{
+                R.drawable.ic_flash_auto
             }
         })
     }
@@ -131,11 +149,19 @@ class BaseCameraFragment : SimpleFragment() {
             }
         }
         bindView.buttonGrid.click {
-            netGrid = if (netGrid == CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN) {
-                CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE
-            }else {
-                CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN
-            }
+            toggleGrid()
+        }
+        bindView.buttonFlash.click {
+            bindView.layoutFlashOptions.circularReveal(it)
+        }
+        bindView.buttonFlashAuto.click {
+            closeFlashAndSelect(CameraManager.CameraFlashModel.CAMERA_FLASH_AUTO)
+        }
+        bindView.buttonFlashOn.click {
+            closeFlashAndSelect(CameraManager.CameraFlashModel.CAMERA_FLASH_ON)
+        }
+        bindView.buttonFlashOff.click {
+            closeFlashAndSelect(CameraManager.CameraFlashModel.CAMERA_FLASH_OFF)
         }
         withPermissionsCheck(Manifest.permission.CAMERA) {
             bindView.viewFinder.bindSurfaceView(cameraManager, CameraParameBuild())
@@ -143,6 +169,33 @@ class BaseCameraFragment : SimpleFragment() {
 
 
     }
+
+    private fun closeFlashAndSelect(@CameraManager.CameraFlashModel flash: Int) = bindView.layoutFlashOptions.circularClose(bindView.buttonFlash){
+        flashMode = flash
+        cameraManager.camera?.let {
+            cameraManager.setCameraFlashModel(it,flashMode){
+                result, error ->
+                if(!result){
+                    showError("出错了,${error}")
+                }
+            }
+        }
+
+    }
+
+    private fun toggleGrid() {
+        bindView.buttonGrid.toggleButton(
+                netGrid==CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE,
+                180f,
+                R.drawable.ic_grid_off,
+               R.drawable.ic_grid_on
+        ) { flag ->
+            netGrid = if(flag) CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN else CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE
+            bindView.groupGridLines.visibility = if (flag) View.VISIBLE else View.GONE
+        }
+    }
+
+
 
 
     override fun lazyLoad() {
@@ -156,6 +209,10 @@ class BaseCameraFragment : SimpleFragment() {
     }
 
     companion object {
+        const val KEY_CAMERA_FLASH = "pre-flash-camera"
+        const val KEY_CAMERA_GRID = "pre-grid-camera"
+        const val KEY_CAMERA_SHUTTER_SOUND = "pre-shutter-sound-camera"
+
         fun newInstance(cameraParameBuild: CameraParameBuild): BaseCameraFragment {
             return BaseCameraFragment().apply {
                 arguments = Bundle().apply {
@@ -164,6 +221,7 @@ class BaseCameraFragment : SimpleFragment() {
             }
         }
     }
+
 
 
 }

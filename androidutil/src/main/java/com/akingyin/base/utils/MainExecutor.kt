@@ -7,27 +7,19 @@
  * akingyin@163.com
  */
 
-package com.akingyin
+package com.akingyin.base.utils
 
-import com.akingyin.media.engine.ImageEngine
-import com.akingyin.media.engine.PictureEngine
-import com.akingyin.media.glide.GlideEngine
+import android.os.Handler
+import android.os.Looper
 
 /**
  * @ Description:
  * @author king
- * @ Date 2020/7/14 14:46
+ * @ Date 2020/7/23 17:04
  * @version V1.0
  */
-object PictureEngineImp  : PictureEngine{
-
-    /**
-     * Create ImageLoad Engine
-     *
-     * @return
-     */
-    override fun createEngine(): ImageEngine {
-
-        return GlideEngine.getGlideEngineInstance()
+class MainExecutor :ThreadExecutor(Handler(Looper.getMainLooper())) {
+    override fun execute(command: Runnable) {
+        handler.post(command)
     }
 }

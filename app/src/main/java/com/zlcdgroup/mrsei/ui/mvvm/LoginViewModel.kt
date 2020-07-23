@@ -27,6 +27,7 @@ class LoginViewModel : BaseViewModel() {
 
    private  val  loginServerApi: LoginServerApi by lazy {
          RetrofitConfig.getDefaultCoroutineServer()
+
      }
 
     fun  Login(account:String,passWord:String){

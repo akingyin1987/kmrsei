@@ -7,27 +7,22 @@
  * akingyin@163.com
  */
 
-package com.akingyin
-
-import com.akingyin.media.engine.ImageEngine
-import com.akingyin.media.engine.PictureEngine
-import com.akingyin.media.glide.GlideEngine
+package com.akingyin.base.channel
 
 /**
  * @ Description:
  * @author king
- * @ Date 2020/7/14 14:46
+ * @ Date 2020/7/23 12:33
  * @version V1.0
  */
-object PictureEngineImp  : PictureEngine{
+interface Canceller {
+    /**
+     * Cancel operation.
+     */
+    fun cancel()
 
     /**
-     * Create ImageLoad Engine
-     *
-     * @return
+     * Operation is canceled.
      */
-    override fun createEngine(): ImageEngine {
-
-        return GlideEngine.getGlideEngineInstance()
-    }
+    val isCancelled: Boolean
 }

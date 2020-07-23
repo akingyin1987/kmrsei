@@ -7,27 +7,18 @@
  * akingyin@163.com
  */
 
-package com.akingyin
-
-import com.akingyin.media.engine.ImageEngine
-import com.akingyin.media.engine.PictureEngine
-import com.akingyin.media.glide.GlideEngine
+package com.akingyin.base.ext
 
 /**
  * @ Description:
  * @author king
- * @ Date 2020/7/14 14:46
+ * @ Date 2020/7/23 12:16
  * @version V1.0
  */
-object PictureEngineImp  : PictureEngine{
+typealias action<T> = suspend () -> T
 
-    /**
-     * Create ImageLoad Engine
-     *
-     * @return
-     */
-    override fun createEngine(): ImageEngine {
+typealias mapper<T,R> = (T) -> R
 
-        return GlideEngine.getGlideEngineInstance()
-    }
-}
+typealias zipper<T1, T2, R> = (T1, T2) -> R
+
+typealias coroutineErrorListener = (throwable: Throwable) -> Unit

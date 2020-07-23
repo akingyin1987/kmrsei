@@ -176,7 +176,7 @@
       android:elevation="1dp"
       android:padding="@dimen/half_margin"
       android:scaleType="centerInside"
-      android:src="@drawable/ic_hdr_off"
+      android:src="@drawable/ic_action_setting"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toEndOf="@+id/buttonFlash"
@@ -312,7 +312,7 @@
         android:layout_height="@dimen/button_size_small"
         android:layout_weight="1"
         android:background="@android:color/transparent"
-        android:onClick="@{()->fragment.closeFlashAndSelect(flash.OFF)}"
+
         android:src="@drawable/ic_flash_off"
         tools:ignore="ContentDescription" />
 
@@ -322,7 +322,7 @@
         android:layout_height="@dimen/button_size_small"
         android:layout_weight="1"
         android:background="@android:color/transparent"
-        android:onClick="@{()->fragment.closeFlashAndSelect(flash.AUTO)}"
+
         android:src="@drawable/ic_flash_auto"
         tools:ignore="ContentDescription"/>
 
@@ -332,7 +332,7 @@
         android:layout_height="@dimen/button_size_small"
         android:layout_weight="1"
         android:background="@android:color/transparent"
-        android:onClick="@{()->fragment.closeFlashAndSelect(flash.ON)}"
+
         android:src="@drawable/ic_flash_on"
         tools:ignore="ContentDescription"/>
 
