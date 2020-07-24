@@ -78,7 +78,8 @@ dependencies {
 
   // 对超大图片的显示
   api 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
-
+  //图片压缩
+  implementation 'id.zelory:compressor:3.0.0'
   api 'cn.jzvd:jiaozivideoplayer:7.4.1'
   implementation 'com.shuyu:gsyVideoPlayer-java:7.1.4'
   implementation 'com.shuyu:gsyVideoPlayer-armv7a:7.1.4'

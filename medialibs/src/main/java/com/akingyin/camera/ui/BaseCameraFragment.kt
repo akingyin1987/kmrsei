@@ -17,12 +17,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.MutableLiveData
 import com.akingyin.base.SimpleFragment
 import com.akingyin.base.ext.*
 import com.akingyin.base.mvvm.SingleLiveEvent
+import com.akingyin.base.utils.PreferencesUtil
 import com.akingyin.camera.CameraData
 import com.akingyin.camera.CameraManager
 import com.akingyin.camera.CameraParameBuild
+import com.akingyin.camera.CameraSensorController
 import com.akingyin.camera.widget.CaptureButton
 import com.akingyin.media.MediaConfig
 import com.akingyin.media.R
@@ -41,18 +44,27 @@ import kotlin.properties.Delegates
 class BaseCameraFragment : SimpleFragment() {
 
     lateinit var bindView: FragmentCameraBinding
+    lateinit var sharedPreferencesName: String
+    lateinit var cameraSensorController: CameraSensorController
+    var cameraParameBuild :CameraParameBuild  by Delegates.notNull()
 
+    var cameraLiveData: SingleLiveEvent<CameraData> = SingleLiveEvent()
 
-    var camerarLiveData: SingleLiveEvent<CameraData> = SingleLiveEvent()
+    //点击设置改变
+    var cameraSetting : MutableLiveData<Boolean> = MutableLiveData()
 
     @CameraManager.CameraNetGrid
-    private var netGrid: Int by Delegates.observable(CameraManager.CameraNetGrid.CAMERA_NET_GRID_NONE) { property, oldValue, newValue ->
+    private var netGrid: Int by Delegates.observable(CameraManager.CameraNetGrid.CAMERA_NET_GRID_NONE) { _, _, newValue ->
+
         bindView.buttonGrid.setImageResource(when (newValue) {
             CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN -> {
                 bindView.groupGridLines.visiable()
+                PreferencesUtil.put(sharedPreferencesName, KEY_CAMERA_GRID, true)
                 R.drawable.ic_grid_on
+
             }
             else -> {
+                PreferencesUtil.put(sharedPreferencesName, KEY_CAMERA_GRID, false)
                 bindView.groupGridLines.gone()
                 R.drawable.ic_grid_off
             }
@@ -61,17 +73,31 @@ class BaseCameraFragment : SimpleFragment() {
     }
 
     @CameraManager.CameraFlashModel
-    private var flashMode:Int by Delegates.observable(CameraManager.CameraFlashModel.CAMERA_FLASH_NONE){
-        _, _, newValue ->
-        bindView.buttonFlash.setImageResource(when(newValue){
-            CameraManager.CameraFlashModel.CAMERA_FLASH_ON->{
+    private var flashMode: Int by Delegates.observable(CameraManager.CameraFlashModel.CAMERA_FLASH_NONE) { _, _, newValue ->
+        PreferencesUtil.put(sharedPreferencesName, KEY_CAMERA_FLASH, newValue)
+        bindView.buttonFlash.setImageResource(when (newValue) {
+            CameraManager.CameraFlashModel.CAMERA_FLASH_ON -> {
                 R.drawable.ic_flash_on
             }
-            CameraManager.CameraFlashModel.CAMERA_FLASH_OFF->{
+            CameraManager.CameraFlashModel.CAMERA_FLASH_OFF -> {
                 R.drawable.ic_flash_off
             }
-            else ->{
+            else -> {
                 R.drawable.ic_flash_auto
+            }
+        })
+    }
+
+    @CameraManager.CameraShutterSound
+    private var shutterSound: Int by Delegates.observable(CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE) { property, oldValue, newValue ->
+        bindView.buttonShutter.setImageResource(when (newValue) {
+            CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON -> {
+                PreferencesUtil.put(sharedPreferencesName, KEY_CAMERA_SHUTTER_SOUND, true)
+                R.drawable.ic_action_volume_on
+            }
+            else ->{
+                PreferencesUtil.put(sharedPreferencesName, KEY_CAMERA_SHUTTER_SOUND, false)
+                R.drawable.ic_action_volume_off
             }
         })
     }
@@ -91,30 +117,38 @@ class BaseCameraFragment : SimpleFragment() {
     override fun getLayoutId() = R.layout.fragment_camera
 
     override fun initEventAndData() {
-
+        sharedPreferencesName = arguments?.getString("sharedPreferencesName", "app_setting")
+            ?: "app_setting"
+        cameraParameBuild = arguments?.let {
+            it.getSerializable("data") as CameraParameBuild
+        }?: CameraParameBuild()
     }
 
     lateinit var cameraManager: CameraManager
 
     var cameraRotation = 0
     override fun initView() {
-
-        cameraManager = CameraManager(mContext, { _, uiRotation ->
-            cameraRotation = uiRotation + 90
-            if (cameraRotation == 180) {
-                cameraRotation = 0
+        cameraSensorController = CameraSensorController(mContext)
+        cameraSensorController.mOrientationChangeListener = object : CameraSensorController.OrientationChangeListener {
+            override fun onChange(relativeRotation: Int, uiRotation: Int) {
+                var cameraRotation = uiRotation + 90
+                if (cameraRotation == 180) {
+                    cameraRotation = 0
+                }
+                if (cameraRotation == 360) {
+                    cameraRotation = 180
+                }
+                println("uiRotation=>$uiRotation")
+                if(cameraManager.cameraAngle != cameraRotation){
+                    cameraManager.cameraAngle = cameraRotation
+                    CameraManager.startCameraViewRoteAnimator((uiRotation+90).toFloat(),bindView.buttonShutter,bindView.buttonSetting,bindView.buttonFlash,
+                    bindView.buttonGrid,bindView.btnConfig,bindView.btnCancel,bindView.textCountDown)
+                }
             }
-            if (cameraRotation == 360) {
-                cameraRotation = 180
-            }
-            if (cameraManager.cameraUiAngle != cameraRotation) {
-                cameraManager.cameraUiAngle = cameraRotation
-                CameraManager.startCameraViewRoteAnimator(uiRotation.toFloat(), bindView.buttonFlash, bindView.buttonGrid, bindView.buttonHdr, bindView.textCountDown)
-            }
-
-        }, {
+        }
+        cameraManager = CameraManager(mContext) {
             showSucces("运动对焦成功！")
-        })
+        }
 
         bindView.fabTakePicture.captureLisenter = object : CaptureButton.onClickTakePicturesListener() {
             override fun takePictures() {
@@ -122,6 +156,7 @@ class BaseCameraFragment : SimpleFragment() {
                 bindView.viewFinder.takePhoto { result, error ->
                     if (result) {
                         CameraManager.startTypeCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel)
+
                     } else {
                         showError(error)
                     }
@@ -130,6 +165,8 @@ class BaseCameraFragment : SimpleFragment() {
         }
         bindView.btnCancel.click {
             CameraManager.recoveryCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel)
+            bindView.fabTakePicture.resetRecordAnim()
+            bindView.fabTakePicture.isEnabled = true
             bindView.viewFinder.onStartCameraView()
         }
         bindView.viewFinder.errorCallback = Camera.ErrorCallback { error, _ ->
@@ -143,13 +180,16 @@ class BaseCameraFragment : SimpleFragment() {
             }
         }
         bindView.btnConfig.click {
-            camerarLiveData.value = CameraData().apply {
+            cameraLiveData.value = CameraData().apply {
                 mediaType = MediaConfig.TYPE_IMAGE
                 localPath = bindView.viewFinder.cameraParameBuild.localPath
             }
         }
         bindView.buttonGrid.click {
             toggleGrid()
+        }
+        bindView.buttonShutter.click {
+            toggleShutter()
         }
         bindView.buttonFlash.click {
             bindView.layoutFlashOptions.circularReveal(it)
@@ -163,6 +203,11 @@ class BaseCameraFragment : SimpleFragment() {
         bindView.buttonFlashOff.click {
             closeFlashAndSelect(CameraManager.CameraFlashModel.CAMERA_FLASH_OFF)
         }
+        bindView.buttonSetting.click {
+            cameraSetting.value = cameraSetting.value?.let {
+                !it
+            }?:true
+        }
         withPermissionsCheck(Manifest.permission.CAMERA) {
             bindView.viewFinder.bindSurfaceView(cameraManager, CameraParameBuild())
         }
@@ -170,12 +215,11 @@ class BaseCameraFragment : SimpleFragment() {
 
     }
 
-    private fun closeFlashAndSelect(@CameraManager.CameraFlashModel flash: Int) = bindView.layoutFlashOptions.circularClose(bindView.buttonFlash){
+    private fun closeFlashAndSelect(@CameraManager.CameraFlashModel flash: Int) = bindView.layoutFlashOptions.circularClose(bindView.buttonFlash) {
         flashMode = flash
         cameraManager.camera?.let {
-            cameraManager.setCameraFlashModel(it,flashMode){
-                result, error ->
-                if(!result){
+            cameraManager.setCameraFlashModel(it, flashMode) { result, error ->
+                if (!result) {
                     showError("出错了,${error}")
                 }
             }
@@ -183,19 +227,28 @@ class BaseCameraFragment : SimpleFragment() {
 
     }
 
-    private fun toggleGrid() {
-        bindView.buttonGrid.toggleButton(
-                netGrid==CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE,
-                180f,
-                R.drawable.ic_grid_off,
-               R.drawable.ic_grid_on
-        ) { flag ->
-            netGrid = if(flag) CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN else CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE
-            bindView.groupGridLines.visibility = if (flag) View.VISIBLE else View.GONE
+    private  fun  toggleShutter(){
+        bindView.buttonShutter.toggleButton(shutterSound == CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON,
+        180F,
+        R.drawable.ic_action_volume_off,
+        R.drawable.ic_action_volume_on){
+            flag ->
+            shutterSound = if (flag) CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_OFF else CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON
+
         }
     }
 
+    private fun toggleGrid() {
+        bindView.buttonGrid.toggleButton(
+                netGrid == CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN,
+                180f,
+                R.drawable.ic_grid_off,
+                R.drawable.ic_grid_on
+        ) { flag ->
+            netGrid = if (flag) CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE else CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN
 
+        }
+    }
 
 
     override fun lazyLoad() {
@@ -209,19 +262,46 @@ class BaseCameraFragment : SimpleFragment() {
     }
 
     companion object {
-        const val KEY_CAMERA_FLASH = "pre-flash-camera"
-        const val KEY_CAMERA_GRID = "pre-grid-camera"
-        const val KEY_CAMERA_SHUTTER_SOUND = "pre-shutter-sound-camera"
+        const val KEY_CAMERA_FLASH = "key_camera_flash"
+        const val KEY_CAMERA_GRID = "key_camera_netgrid"
+        const val KEY_CAMERA_SHUTTER_SOUND = "key_camera_shutter_sound"
 
-        fun newInstance(cameraParameBuild: CameraParameBuild): BaseCameraFragment {
+        /** camera 相机分辨率 */
+        const val KEY_CAMERA_RESOLUTION = "camera_resolution"
+
+        const val KEY_CAMERA_PHTOT_HORIZONTAL = "key_camera_phtot_horizontal"
+
+        const val KEY_CAMERA_LOCATION = "key_camera_location"
+
+        const val KEY_CAMERA_AUTO_FOCUS = "key_camera_auto_focus"
+
+        const val KEY_CAMERA_FOCUS_TAKEPHOTO = "key_camera_focus_takephoto"
+
+        const val KEY_CAMERA_AUTO_TAKEPHOTO_DELAYTIME = "key_camera_auto_takephoto_delaytime"
+
+        const val KEY_CAMERA_AUTOSAVE_TAKEPHOTO = "key_camera_autosave_takephoto"
+
+        const val KEY_CAMERA_AUTO_SAVE_DELAYTIME = "key_camera_auto_save_delaytime"
+
+        /** camerax 相机分辨率 */
+        const val KEY_CAMERAX_RESOLUTION = "camerax_resolution"
+        fun newInstance(cameraParameBuild: CameraParameBuild, sharedPreferencesName: String = "app_setting"): BaseCameraFragment {
             return BaseCameraFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable("data", cameraParameBuild)
+                    putString("sharedPreferencesName", sharedPreferencesName)
                 }
             }
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        cameraSensorController.onResume()
+    }
 
-
+    override fun onPause() {
+        super.onPause()
+        cameraSensorController.onPause()
+    }
 }

@@ -9,14 +9,21 @@
 
 package com.zlcdgroup.mrsei.ui
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.ext.app
+import com.akingyin.base.ext.startActivityForResult
 import com.akingyin.camera.CameraParameBuild
 import com.akingyin.camera.ui.BaseCameraFragment
+import com.akingyin.camera.ui.CameraSettingActivity
 import com.zlcdgroup.mrsei.R
+import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.startActivityForResult
 
 
 /**
@@ -46,6 +53,12 @@ class CameraTestActivity : SimpleActivity() {
         val  fragment = supportFragmentManager.findFragmentByTag("camera")?.let {
             it as BaseCameraFragment
         }?: BaseCameraFragment.newInstance(CameraParameBuild())
+        fragment.cameraLiveData.observe(this, Observer {
+            println("data->$it")
+        })
+        fragment.cameraSetting.observe(this, Observer {
+            startActivityForResult<CameraSettingActivity>(requestCode = 100)
+        })
         supportFragmentManager.beginTransaction().add(R.id.container,fragment,"camera")
                 .commit()
 
@@ -75,5 +88,14 @@ class CameraTestActivity : SimpleActivity() {
 
     override fun startRequest() {
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 100){
+            if(resultCode == Activity.RESULT_OK){
+                showSucces("收到数据")
+            }
+        }
     }
 }

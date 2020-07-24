@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  ~ akingyin@163.com
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+  <PreferenceCategory android:title="相机设置">
+
+    <Preference
+        android:key="camera_resolution"
+        android:summary="设置相机分辨率"
+        android:title="默认[]"
+        android:icon="@drawable/ic_action_aspect"
+
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"/>
+    <Preference
+        android:key="camerax_resolution"
+        android:summary="设置相机分辨率"
+        android:title="默认[]"
+        android:icon="@drawable/ic_action_aspect"
+
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true">
+    </Preference>
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="key_camera_netgrid"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        android:icon="@drawable/ic_grid_on"
+        android:summary="显示网格参考线"
+        android:title="拍照参考线" />
+
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="key_camera_shutter_sound"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        android:icon="@drawable/ic_action_volume_on"
+        android:summary="拍照快门声音"
+        android:title="快门声" />
+    <ListPreference
+        android:entries="@array/camera_flash_view"
+        android:entryValues="@array/camera_flash_value"
+        android:key="key_camera_flash"
+        android:defaultValue="@integer/camera_flash_def_value"
+        android:icon="@drawable/ic_flash_on"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        android:summary="拍照闪光灯"
+        android:title="闪光灯" />
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:icon="@drawable/ic_screen_lock_horizontal"
+        android:key="key_camera_phtot_horizontal"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        android:summary="拍照的照片都是横向显示"
+        android:title="照片横向" />
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:icon="@drawable/ic_fab_loc"
+        android:key="key_camera_location"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        android:summary="允许相机获取定位信息"
+        android:title="定位" />
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:icon="@drawable/ic_action_focus"
+        android:key="key_camera_auto_focus"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        android:summary="当相机停止运动后，自动开启对焦"
+        android:title="运动对焦" />
+
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:icon="@drawable/picture_icon_camera"
+        android:key="key_camera_focus_takephoto"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        android:summary="允许相机对焦成功后自动拍照"
+        android:title="自动拍照" />
+
+    <EditTextPreference
+        android:defaultValue="1"
+        android:key="key_camera_auto_takephoto_delaytime"
+        android:icon="@drawable/ic_action_time"
+        android:summary="对焦成功后自动拍照延时(秒)"
+        android:title="拍照延时"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true" />
+
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:icon="@drawable/ic_no_picture"
+        android:key="key_camera_autosave_takephoto"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        android:summary="允许相机拍照成功后自动保存数据并退出"
+        android:title="自动保存" />
+    <EditTextPreference
+        android:defaultValue="1"
+        android:key="key_camera_auto_save_delaytime"
+        android:icon="@drawable/ic_action_time"
+        android:summary="拍照成功后自动保存延时(秒)"
+        android:title="保存延时"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true" />
+  </PreferenceCategory>
+
+
+
+</PreferenceScreen>

@@ -7,22 +7,24 @@
   ~ Vestibulum commodo. Ut rhoncus gravida arcu.
   ~ akingyin@163.com
   -->
-
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/black"
     android:layout_height="match_parent">
-
   <com.akingyin.camera.CameraPreview
       android:id="@+id/viewFinder"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+       />
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+
+    android:background="@android:color/black"
+    android:layout_height="match_parent">
+
+
 
   <View
       android:layout_width="0dp"
@@ -121,7 +123,7 @@
       app:layout_constraintTop_toTopOf="parent" />
 
   <ImageButton
-      android:id="@+id/buttonTimer"
+      android:id="@+id/buttonShutter"
       android:layout_width="@dimen/button_size_small"
       android:layout_height="@dimen/button_size_small"
       android:background="@android:color/transparent"
@@ -129,7 +131,7 @@
 
       android:padding="@dimen/half_margin"
       android:scaleType="centerInside"
-      android:src="@drawable/ic_timer_off"
+      android:src="@drawable/ic_action_volume_on"
       app:layout_constraintEnd_toStartOf="@+id/buttonGrid"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toStartOf="parent"
@@ -148,8 +150,8 @@
       android:src="@drawable/ic_grid_off"
       app:layout_constraintEnd_toStartOf="@+id/buttonFlash"
       app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintStart_toEndOf="@+id/buttonTimer"
-      app:layout_constraintTop_toTopOf="@id/buttonTimer"
+      app:layout_constraintStart_toEndOf="@+id/buttonShutter"
+      app:layout_constraintTop_toTopOf="@id/buttonShutter"
       tools:ignore="ContentDescription" />
 
   <ImageButton
@@ -162,14 +164,14 @@
       android:padding="@dimen/half_margin"
       android:scaleType="centerInside"
       android:src="@drawable/ic_flash_off"
-      app:layout_constraintEnd_toStartOf="@+id/buttonHdr"
+      app:layout_constraintEnd_toStartOf="@+id/buttonSetting"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toEndOf="@+id/buttonGrid"
       app:layout_constraintTop_toTopOf="@id/buttonGrid"
       tools:ignore="ContentDescription" />
 
   <ImageButton
-      android:id="@+id/buttonHdr"
+      android:id="@+id/buttonSetting"
       android:layout_width="@dimen/button_size_small"
       android:layout_height="@dimen/button_size_small"
       android:background="@android:color/transparent"
@@ -243,7 +245,7 @@
       app:constraint_referenced_ids="gridVertical1,gridVertical2,gridHorizontal1,gridHorizontal2" />
 
   <LinearLayout
-      android:id="@+id/layoutTimerOptions"
+      android:id="@+id/layoutShutterOptions"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:background="@android:color/black"
@@ -259,34 +261,25 @@
       app:layout_constraintTop_toTopOf="parent">
 
     <ImageButton
-        android:id="@+id/buttonTimerOff"
+        android:id="@+id/buttonShutterOff"
         android:layout_width="0dp"
         android:layout_height="@dimen/button_size_small"
         android:layout_weight="1"
         android:background="@android:color/transparent"
-        android:onClick="@{() -> fragment.closeTimerAndSelect(timer.OFF)}"
-        android:src="@drawable/ic_timer_off"
+
+        android:src="@drawable/ic_action_volume_off"
         tools:ignore="ContentDescription" />
 
     <ImageButton
-        android:id="@+id/buttonTimer3"
+        android:id="@+id/buttonShutterOn"
         android:layout_width="0dp"
         android:layout_height="@dimen/button_size_small"
         android:layout_weight="1"
         android:background="@android:color/transparent"
-        android:onClick="@{() -> fragment.closeTimerAndSelect(timer.S3)}"
-        android:src="@drawable/ic_timer_3"
+        android:src="@drawable/ic_action_volume_on"
         tools:ignore="ContentDescription" />
 
-    <ImageButton
-        android:id="@+id/buttonTimer10"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/button_size_small"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:onClick="@{() -> fragment.closeTimerAndSelect(timer.S10)}"
-        android:src="@drawable/ic_timer_10"
-        tools:ignore="ContentDescription" />
+
 
   </LinearLayout>
 
@@ -351,3 +344,5 @@
       app:layout_constraintTop_toTopOf="parent"
       tools:text="0" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

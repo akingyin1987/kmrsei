@@ -20,7 +20,7 @@ import com.akingyin.map.R
  * @ Date 2020/5/30 11:53
  * @version V1.0
  */
-class MapSettingActivity : AppCompatActivity() {
+ class MapSettingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +31,7 @@ class MapSettingActivity : AppCompatActivity() {
                 .commit()
     }
 
-    protected fun setToolBar(toolbar: Toolbar, title: String) {
+     fun setToolBar(toolbar: Toolbar, title: String) {
         toolbar.title = title
         setSupportActionBar(toolbar)
         supportActionBar?.let {

@@ -176,6 +176,7 @@ object CameraBitmapUtil {
             canvas.drawPath(desPath, p)
             canvas.drawText(arrowTxt, srcBitmap.width - 210.toFloat(), srcBitmap.height - 10.toFloat(), paint)
             canvas.save()
+            println("data-保存照片->>>$arrowTxt")
             file = File(fileDir, fileName)
             fos = FileOutputStream(file)
             mBitmap.compress(Bitmap.CompressFormat.JPEG, quality, fos)

@@ -48,6 +48,11 @@ class CameraData() : Parcelable {
         return 0
     }
 
+    override fun toString(): String {
+        return "CameraData(mediaType=$mediaType, localPath='$localPath', originalPath='$originalPath', result=$result)"
+    }
+
+
     companion object CREATOR : Parcelable.Creator<CameraData> {
         override fun createFromParcel(parcel: Parcel): CameraData {
             return CameraData(parcel)
@@ -57,4 +62,5 @@ class CameraData() : Parcelable {
             return arrayOfNulls(size)
         }
     }
+
 }

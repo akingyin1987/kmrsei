@@ -55,8 +55,7 @@ import kotlin.math.min
  */
 
 @Suppress("DEPRECATION")
-class CameraManager  (content:Context,cameraSensorChange:(relativeRotation: Int, uiRotation: Int)->Unit,
-                         autoFouceCall:()->Unit) {
+class CameraManager  (content:Context, autoFouceCall:()->Unit) {
 
     private  val  TAG = "camera-manager"
 
@@ -89,30 +88,13 @@ class CameraManager  (content:Context,cameraSensorChange:(relativeRotation: Int,
     // 打开相机后默认使用的分辨率()
     var  defaultPreviewSize = Point()
 
-    var  cameraSensorController: CameraSensorController
     var  cameraAutoFouceSensorController:CameraAutoFouceSensorController
 
     init {
         val windowManager: WindowManager = content.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val theScreenResolution = Point()
         windowManager.defaultDisplay.getRealSize(theScreenResolution)
         BEST_SCALE = max(theScreenResolution.x,theScreenResolution.y).toDouble()/ min(theScreenResolution.x,theScreenResolution.y).toDouble()
-        cameraSensorController = CameraSensorController(content)
-        cameraSensorController.mOrientationChangeListener = object :CameraSensorController.OrientationChangeListener {
-            override fun onChange(relativeRotation: Int, uiRotation: Int) {
-                cameraSensorChange(relativeRotation,uiRotation)
-                if(previewing){
-                    var cameraRotation = uiRotation + 90
-                    if (cameraRotation == 180) {
-                        cameraRotation = 0
-                    }
-                    if (cameraRotation == 360) {
-                        cameraRotation = 180
-                    }
-                    cameraParameBuild?.cameraAngle = cameraRotation
-                }
-            }
-        }
+
         cameraAutoFouceSensorController = CameraAutoFouceSensorController(content){
             autoStartFuoce { result, _ ->
                 if(result){
@@ -259,7 +241,6 @@ class CameraManager  (content:Context,cameraSensorChange:(relativeRotation: Int,
     @Synchronized
     fun startPreview() {
 
-        cameraSensorController.onResume()
         val theCamera = camera
         if (theCamera != null && !previewing) {
             theCamera.startPreview()
@@ -275,7 +256,7 @@ class CameraManager  (content:Context,cameraSensorChange:(relativeRotation: Int,
      */
     @Synchronized
     fun stopPreview() {
-        cameraSensorController.onPause()
+
         println("pr=$previewing")
         if (camera != null && previewing) {
             camera?.stopPreview()
@@ -325,7 +306,6 @@ class CameraManager  (content:Context,cameraSensorChange:(relativeRotation: Int,
      */
     @Synchronized
     fun closeDriver() {
-        cameraSensorController.onPause()
         if (camera != null) {
             camera?.release()
             camera = null

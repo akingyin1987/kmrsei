@@ -63,4 +63,17 @@
     <string name="picture_gif_tag">动图</string>
     <string name="picture_long_chart">长图</string>
     <string name="picture_take_picture">拍摄</string>
+    
+    <string-array name="camera_flash_view">
+        <item>自动模式</item>
+        <item>电筒模式</item>
+        <item>关闭</item>
+    </string-array>
+
+    <integer-array name="camera_flash_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </integer-array>
+    <integer name="camera_flash_def_value">1</integer>
 </resources>

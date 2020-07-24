@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers.Main
  * @ Date 2020/1/7 11:54
  * @version V1.0
  */
-private var job: Job? = null
+
 
 
 internal class CoroutineLifecycleListener(private val deferred: Deferred<*>) : LifecycleObserver {

@@ -188,7 +188,7 @@ class CaptureButton @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-
+                 println("state--->$state")
                 if (event.pointerCount > 1 || state != STATE_IDLE) {
                     return false
                 }
@@ -295,7 +295,7 @@ class CaptureButton @JvmOverloads constructor(
     }
 
     //重制状态
-    private fun resetRecordAnim() {
+     fun resetRecordAnim() {
         state = STATE_BAN
         progress = 0f //重制进度
         invalidate()

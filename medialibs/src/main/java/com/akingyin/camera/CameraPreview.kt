@@ -60,6 +60,9 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
         camera_surface.holder.addCallback(this)
         camera_surface.setOnTouchListener { _, event ->
             if(event.action == MotionEvent.ACTION_DOWN && cameraParameBuild.supportManualFocus){
+//                if(x<200 || y<200 || x>(cameraManager.theScreenResolution.x-200) || y>cameraManager.theScreenResolution.y-200){
+//                    return@setOnTouchListener false
+//                }
                 cameraManager.camera?.let {
                     camera_fouce.setTouchFoucusRect(it, Camera.AutoFocusCallback {
                         success, _ ->
@@ -144,6 +147,7 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
                  }
             }
         }
+        println("camera-${cameraManager.theScreenResolution},${cameraManager.cameraBestResolution}")
 
     }
 }
