@@ -30,6 +30,7 @@ import dagger.android.DaggerApplication
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import timber.log.Timber
 
 
 /**
@@ -67,7 +68,7 @@ class MrmseiApp :BaseApp() {
         DbCore.init(this)
         Utils.init(this)
         DbCore.enableQueryBuilderLog()
-
+        Timber.plant(Timber.DebugTree())
         BdMapApp.get().initBaiDuMap(this)
         registerReceiver(BdMapApp.get().receiver,BdMapApp.get().getiFilter())
         spSetString("ApiUrl","http://test.zlcdgroup.cn:38085/MRMSEIYCSW/")

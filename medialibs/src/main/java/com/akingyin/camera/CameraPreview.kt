@@ -20,6 +20,7 @@ import com.akingyin.base.dialog.ToastUtil
 import com.akingyin.base.ext.gone
 import com.akingyin.base.ext.visiable
 import com.akingyin.base.utils.FileUtils
+import com.akingyin.camera.widget.CameraSurfaceView
 import com.akingyin.media.R
 
 /**
@@ -33,7 +34,7 @@ import com.akingyin.media.R
 class CameraPreview @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) :
         RelativeLayout(context, attrs, defStyleAttr, defStyleRes),SurfaceHolder.Callback {
 
-    var  camera_surface : SurfaceView
+    var  camera_surface : CameraSurfaceView
     var  camera_fouce:FouceView
     var  camera_img : ImageView
 
@@ -56,28 +57,25 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
     fun   bindSurfaceView(cameraManager: CameraManager,cameraParameBuild: CameraParameBuild){
         this.cameraManager = cameraManager
         this.cameraParameBuild = cameraParameBuild
-
+        camera_fouce.screenPoint = cameraManager.theScreenResolution
         camera_surface.holder.addCallback(this)
-        camera_surface.setOnTouchListener { _, event ->
-            if(event.action == MotionEvent.ACTION_DOWN && cameraParameBuild.supportManualFocus){
-//                if(x<200 || y<200 || x>(cameraManager.theScreenResolution.x-200) || y>cameraManager.theScreenResolution.y-200){
-//                    return@setOnTouchListener false
-//                }
-                cameraManager.camera?.let {
-                    camera_fouce.setTouchFoucusRect(it, Camera.AutoFocusCallback {
-                        success, _ ->
-                        camera_fouce.disDrawTouchFocusRect(success)
-                        if(success){
-                            //手动对焦成功
-                            authTakePhoto()
-                        }
-                    },event.x,event.y)
-                }
-
+        camera_surface.onSurfaceViewListion = object :CameraSurfaceView.OnSurfaceViewListion{
+            override fun onFouceClick(x: Float, y: Float) {
+               if(cameraParameBuild.supportManualFocus){
+                   cameraManager.camera?.let {
+                       camera_fouce.setTouchFoucusRect(it, Camera.AutoFocusCallback {
+                           success, _ ->
+                           camera_fouce.disDrawTouchFocusRect(success)
+                           if(success){
+                               //手动对焦成功
+                               authTakePhoto()
+                           }
+                       },x,y)
+                   }
+               }
             }
-
-            return@setOnTouchListener false
         }
+
     }
 
     /**

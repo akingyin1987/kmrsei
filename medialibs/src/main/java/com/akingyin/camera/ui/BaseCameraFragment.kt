@@ -138,11 +138,15 @@ class BaseCameraFragment : SimpleFragment() {
                 if (cameraRotation == 360) {
                     cameraRotation = 180
                 }
-                println("uiRotation=>$uiRotation")
+                println("uiRotation=>$uiRotation,$cameraRotation,${cameraManager.cameraAngle}")
                 if(cameraManager.cameraAngle != cameraRotation){
                     cameraManager.cameraAngle = cameraRotation
+
+                }
+                if(cameraManager.cameraUiAngle != cameraRotation){
+                    cameraManager.cameraUiAngle = cameraRotation
                     CameraManager.startCameraViewRoteAnimator((uiRotation+90).toFloat(),bindView.buttonShutter,bindView.buttonSetting,bindView.buttonFlash,
-                    bindView.buttonGrid,bindView.btnConfig,bindView.btnCancel,bindView.textCountDown)
+                            bindView.buttonGrid,bindView.btnConfig,bindView.btnCancel,bindView.textCountDown)
                 }
             }
         }

@@ -14,7 +14,7 @@
     tools:viewBindingIgnore="true"
     android:layout_height="match_parent">
 
-      <SurfaceView
+      <com.akingyin.camera.widget.CameraSurfaceView
           android:layout_width="match_parent"
           android:id="@+id/camera_surface"
           android:layout_centerInParent="true"

@@ -179,7 +179,7 @@ object CameraBitmapUtil {
             println("data-保存照片->>>$arrowTxt")
             file = File(fileDir, fileName)
             fos = FileOutputStream(file)
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, quality, fos)
+            srcBitmap.compress(Bitmap.CompressFormat.JPEG, quality, fos)
             return true
         } catch (e: Exception) {
             e.printStackTrace()

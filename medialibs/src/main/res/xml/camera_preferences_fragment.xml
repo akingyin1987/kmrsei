@@ -50,10 +50,11 @@
         android:entries="@array/camera_flash_view"
         android:entryValues="@array/camera_flash_value"
         android:key="key_camera_flash"
-        android:defaultValue="@integer/camera_flash_def_value"
+        android:defaultValue="0"
         android:icon="@drawable/ic_flash_on"
         app:allowDividerAbove="true"
         app:allowDividerBelow="true"
+        android:dialogTitle="选择闪光灯模式"
         android:summary="拍照闪光灯"
         android:title="闪光灯" />
     <SwitchPreferenceCompat

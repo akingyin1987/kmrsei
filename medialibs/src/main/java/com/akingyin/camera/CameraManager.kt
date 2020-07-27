@@ -63,7 +63,7 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
     var  cameraAngle = 90
 
     /** UI 显示旋转角度 */
-    var  cameraUiAngle = 90
+    var  cameraUiAngle = 0
 
     var requestedCameraId = -1
 
@@ -79,7 +79,7 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
 
     //相机设置的分辨率
     var  cameraBestResolution: Point = Point()
-    var BEST_SCALE = 16.0 / 9.0
+    var BEST_SCALE = SCALE_16_9
     //自动定义分辨率
     var  customResolution: Point = Point()
 
@@ -94,7 +94,13 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
         val windowManager: WindowManager = content.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         windowManager.defaultDisplay.getRealSize(theScreenResolution)
         BEST_SCALE = max(theScreenResolution.x,theScreenResolution.y).toDouble()/ min(theScreenResolution.x,theScreenResolution.y).toDouble()
-
+        BEST_SCALE =  arrayListOf<Double>().apply {
+            add(abs(BEST_SCALE- SCALE_16_9))
+            add(abs(BEST_SCALE - SCALE_4_3))
+            add(abs(BEST_SCALE - SCALE_1_1))
+        }.asSequence().sortedBy {
+            it
+        }.first()
         cameraAutoFouceSensorController = CameraAutoFouceSensorController(content){
             autoStartFuoce { result, _ ->
                 if(result){
@@ -548,6 +554,12 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
         const val MIN_PREVIEW_PIXELS = 540 * 540 // normal screen
 
         const val MAX_ASPECT_DISTORTION = 0.15
+
+        const val SCALE_16_9 = 16.0/9.0
+
+        const val SCALE_4_3 = 4.0/3.0
+
+        const val SCALE_1_1 = 1.0
 
         /**
          * 点击开始拍照动画
