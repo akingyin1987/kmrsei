@@ -36,6 +36,9 @@ class CameraParameBuild :Serializable {
     /** 手动区域对焦 */
     var  supportManualFocus = true
 
+    /** 支持定位 */
+    var  supportLocation = true
+
     /** 是否支持对焦成功后自动拍照 */
     var  supportFocesedAutoPhoto = true
 

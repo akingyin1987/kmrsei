@@ -12,6 +12,8 @@ package com.akingyin.camera
 import android.graphics.*
 import android.text.TextPaint
 import com.akingyin.base.utils.DateUtil
+import okio.buffer
+import okio.sink
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -34,7 +36,60 @@ object CameraBitmapUtil {
     // 保存图片的质量
     const val quality = 90
 
+    const val  MAX_BITMAP = 2 * 1024 *1024
 
+    fun   dataToJpgFile(data: ByteArray, dir: String, fileName: String, rotat: Int):Bitmap?{
+         val  file = File(dir,fileName)
+          file.parentFile?.mkdirs()
+
+        if(data.size > MAX_BITMAP){
+            file.sink().use {
+                it.buffer().use {
+                    bufferedSink ->
+                    bufferedSink.write(data)
+                }
+            }
+           val options =  BitmapFactory.Options()
+            // 先将inJustDecodeBounds设置为true不会申请内存去创建Bitmap，返回的是一个空的Bitmap，但是可以获取
+            //图片的一些属性，例如图片宽高，图片类型等等
+            options.inJustDecodeBounds = true
+            // 计算inSampleSize
+            options.inSampleSize = calculateInSampleSize(options, 960, 960)
+
+            // 加载压缩版图片
+            options.inJustDecodeBounds = false
+            // 根据具体情况选择具体的解码方法
+            var srcBitmap = BitmapFactory.decodeFile(file.absolutePath, options)
+            if (rotat != 0) {
+                val m = Matrix()
+                m.setRotate(rotat.toFloat())
+                srcBitmap = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.width, srcBitmap.height, m, true)
+            }
+            FileOutputStream(file).use {
+                srcBitmap.compress(Bitmap.CompressFormat.JPEG, quality, it)
+            }
+            return  srcBitmap
+        }else{
+            return dataToBaseBitmap(data,dir,fileName,rotat)
+        }
+    }
+    fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+        // 原图片的宽高
+        val height = options.outHeight
+        val width = options.outWidth
+        var inSampleSize = 1
+        if (height > reqHeight || width > reqWidth) {
+            val halfHeight = height / 2
+            val halfWidth = width / 2
+
+            // 计算inSampleSize值
+            while (halfHeight / inSampleSize >= reqHeight
+                    && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2
+            }
+        }
+        return inSampleSize
+    }
     /**
      *
      * @param data
@@ -149,9 +204,11 @@ object CameraBitmapUtil {
             p.color = Color.WHITE
             p.style = Paint.Style.FILL
             p.isAntiAlias = true
+            p.isDither = true
 
             val paint = TextPaint()
             paint.textSize = 20f
+            paint.isDither = true
             paint.color = Color.RED
             paint.isAntiAlias = true
             paint.isFakeBoldText = true

@@ -94,11 +94,11 @@ object PreferencesUtil {
         return get(defaultName, key, defValue)
     }
 
-    operator fun get(name: String, key: String, defValue: Boolean): Boolean {
+     fun get(name: String, key: String, defValue: Boolean): Boolean {
         return getPreferences(name).getBoolean(key, defValue)
     }
 
-    operator fun get(name: String, key: String, defValue: Int): Int {
+     fun get(name: String, key: String, defValue: Int): Int {
         return getPreferences(name).getInt(key, defValue)
     }
 
@@ -110,8 +110,8 @@ object PreferencesUtil {
         return getPreferences(name).getLong(key, defValue)
     }
 
-    operator fun get(name: String, key: String, defValue: String): String? {
-        return getPreferences(name).getString(key, defValue)
+     fun get(name: String, key: String, defValue: String): String {
+        return getPreferences(name).getString(key, defValue)?:defValue
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)

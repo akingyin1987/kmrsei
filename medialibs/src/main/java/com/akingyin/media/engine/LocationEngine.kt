@@ -7,20 +7,25 @@
  * akingyin@163.com
  */
 
-package com.akingyin.base.ext
+package com.akingyin.media.engine
+
+
 
 /**
  * @ Description:
  * @author king
- * @ Date 2020/7/23 12:16
+ * @ Date 2020/7/29 10:18
  * @version V1.0
  */
-typealias action<T> = suspend () -> T
+interface LocationEngine {
 
+    /**
+     * 获取当前最新位置
+     */
+    fun   getNewLocation(locType:String,call:(lat:Double,lng:Double)->Unit)
 
-
-typealias mapper<T,R> = (T) -> R
-
-typealias zipper<T1, T2, R> = (T1, T2) -> R
-
-typealias coroutineErrorListener = (throwable: Throwable) -> Unit
+    /**
+     * 通过位置获取定位图片
+     */
+    fun   getLocationImageUrl(lat: Double,lng: Double,locType: String):String
+}

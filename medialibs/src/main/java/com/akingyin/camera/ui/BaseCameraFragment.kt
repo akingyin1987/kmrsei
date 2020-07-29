@@ -10,6 +10,9 @@
 package com.akingyin.camera.ui
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.graphics.Point
 import android.hardware.Camera
 import android.hardware.Camera.CAMERA_ERROR_SERVER_DIED
 import android.hardware.Camera.CAMERA_ERROR_UNKNOWN
@@ -30,6 +33,8 @@ import com.akingyin.camera.widget.CaptureButton
 import com.akingyin.media.MediaConfig
 import com.akingyin.media.R
 import com.akingyin.media.databinding.FragmentCameraBinding
+import com.akingyin.media.engine.LocationEngine
+import com.akingyin.media.engine.LocationManagerEngine
 import permissions.dispatcher.ktx.withPermissionsCheck
 import kotlin.properties.Delegates
 
@@ -46,12 +51,12 @@ class BaseCameraFragment : SimpleFragment() {
     lateinit var bindView: FragmentCameraBinding
     lateinit var sharedPreferencesName: String
     lateinit var cameraSensorController: CameraSensorController
+    private  var locationEngine :LocationEngine?=null
     var cameraParameBuild :CameraParameBuild  by Delegates.notNull()
 
     var cameraLiveData: SingleLiveEvent<CameraData> = SingleLiveEvent()
 
-    //点击设置改变
-    var cameraSetting : MutableLiveData<Boolean> = MutableLiveData()
+
 
     @CameraManager.CameraNetGrid
     private var netGrid: Int by Delegates.observable(CameraManager.CameraNetGrid.CAMERA_NET_GRID_NONE) { _, _, newValue ->
@@ -74,7 +79,7 @@ class BaseCameraFragment : SimpleFragment() {
 
     @CameraManager.CameraFlashModel
     private var flashMode: Int by Delegates.observable(CameraManager.CameraFlashModel.CAMERA_FLASH_NONE) { _, _, newValue ->
-        PreferencesUtil.put(sharedPreferencesName, KEY_CAMERA_FLASH, newValue)
+        PreferencesUtil.put(sharedPreferencesName, KEY_CAMERA_FLASH, newValue.toString())
         bindView.buttonFlash.setImageResource(when (newValue) {
             CameraManager.CameraFlashModel.CAMERA_FLASH_ON -> {
                 R.drawable.ic_flash_on
@@ -89,7 +94,7 @@ class BaseCameraFragment : SimpleFragment() {
     }
 
     @CameraManager.CameraShutterSound
-    private var shutterSound: Int by Delegates.observable(CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE) { property, oldValue, newValue ->
+    private var shutterSound: Int by Delegates.observable(CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE) { _, _, newValue ->
         bindView.buttonShutter.setImageResource(when (newValue) {
             CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON -> {
                 PreferencesUtil.put(sharedPreferencesName, KEY_CAMERA_SHUTTER_SOUND, true)
@@ -122,11 +127,45 @@ class BaseCameraFragment : SimpleFragment() {
         cameraParameBuild = arguments?.let {
             it.getSerializable("data") as CameraParameBuild
         }?: CameraParameBuild()
+        initCameraParame(cameraParameBuild)
+    }
+
+    open   fun   initCameraParame(cameraParame: CameraParameBuild = cameraParameBuild,changeCameraParme:Boolean = false){
+        cameraParame.apply {
+            this.flashModel = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_FLASH, "0").toInt()
+            this.shutterSound = if(PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_SHUTTER_SOUND,true)) CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON else CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_OFF
+            this.horizontalPicture = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_PHTOT_HORIZONTAL,false)
+            this.netGrid = if(PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_GRID,false)) CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE else CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN
+            this.cameraResolution ?:Point().apply {
+                x = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_RESOLUTION_X,0)
+                y = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_RESOLUTION_Y,0)
+            }
+            this.autoSavePhotoDelayTime = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_AUTO_SAVE_DELAYTIME,0)
+            this.focesedAutoPhotoDelayTime = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_AUTO_TAKEPHOTO_DELAYTIME,0)
+            this.supportAutoSavePhoto = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_AUTOSAVE_TAKEPHOTO,false)
+            this.supportFocesedAutoPhoto = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_FOCUS_TAKEPHOTO,false)
+            this.supportManualFocus = PreferencesUtil.get(sharedPreferencesName,KEY_CAMERA_MANUAL_AUTO_FOCUS,false)
+            this.supportLocation = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_LOCATION,false)
+        }
+        netGrid = cameraParame.netGrid
+        flashMode = cameraParame.flashModel
+        shutterSound = cameraParame.shutterSound
+        if(changeCameraParme){
+            cameraManager.camera?.let {
+                cameraManager.setCameraParametersValues(it,cameraParame){
+                    result, error ->
+                    if(!result){
+                        showError(error)
+                    }
+                }
+            }
+
+        }
     }
 
     lateinit var cameraManager: CameraManager
 
-    var cameraRotation = 0
+
     override fun initView() {
         cameraSensorController = CameraSensorController(mContext)
         cameraSensorController.mOrientationChangeListener = object : CameraSensorController.OrientationChangeListener {
@@ -208,9 +247,7 @@ class BaseCameraFragment : SimpleFragment() {
             closeFlashAndSelect(CameraManager.CameraFlashModel.CAMERA_FLASH_OFF)
         }
         bindView.buttonSetting.click {
-            cameraSetting.value = cameraSetting.value?.let {
-                !it
-            }?:true
+           startCameraSettingActivity()
         }
         withPermissionsCheck(Manifest.permission.CAMERA) {
             bindView.viewFinder.bindSurfaceView(cameraManager, CameraParameBuild())
@@ -229,6 +266,10 @@ class BaseCameraFragment : SimpleFragment() {
             }
         }
 
+    }
+
+    open  fun    startCameraSettingActivity(){
+        activity?.startActivityFromFragment(this, Intent(mContext,CameraSettingActivity::class.java), CAMERA_SETTING_REQUEST_CODE)
     }
 
     private  fun  toggleShutter(){
@@ -266,18 +307,19 @@ class BaseCameraFragment : SimpleFragment() {
     }
 
     companion object {
+        const val CAMERA_SETTING_REQUEST_CODE = 1001
         const val KEY_CAMERA_FLASH = "key_camera_flash"
         const val KEY_CAMERA_GRID = "key_camera_netgrid"
         const val KEY_CAMERA_SHUTTER_SOUND = "key_camera_shutter_sound"
 
         /** camera 相机分辨率 */
-        const val KEY_CAMERA_RESOLUTION = "camera_resolution"
-
+        const val KEY_CAMERA_RESOLUTION_X = "camera_resolution_x"
+        const val KEY_CAMERA_RESOLUTION_Y = "camera_resolution_y"
         const val KEY_CAMERA_PHTOT_HORIZONTAL = "key_camera_phtot_horizontal"
 
         const val KEY_CAMERA_LOCATION = "key_camera_location"
 
-        const val KEY_CAMERA_AUTO_FOCUS = "key_camera_auto_focus"
+        const val KEY_CAMERA_MANUAL_AUTO_FOCUS = "key_camera_manual_auto_focus"
 
         const val KEY_CAMERA_FOCUS_TAKEPHOTO = "key_camera_focus_takephoto"
 
@@ -289,11 +331,12 @@ class BaseCameraFragment : SimpleFragment() {
 
         /** camerax 相机分辨率 */
         const val KEY_CAMERAX_RESOLUTION = "camerax_resolution"
-        fun newInstance(cameraParameBuild: CameraParameBuild, sharedPreferencesName: String = "app_setting"): BaseCameraFragment {
+        fun newInstance(cameraParameBuild: CameraParameBuild, sharedPreferencesName: String = "app_setting",locationManagerEngine: LocationManagerEngine?=null): BaseCameraFragment {
             return BaseCameraFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable("data", cameraParameBuild)
                     putString("sharedPreferencesName", sharedPreferencesName)
+                    locationEngine = locationManagerEngine?.createEngine()
                 }
             }
         }
@@ -307,5 +350,15 @@ class BaseCameraFragment : SimpleFragment() {
     override fun onPause() {
         super.onPause()
         cameraSensorController.onPause()
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == CAMERA_SETTING_REQUEST_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                initCameraParame(changeCameraParme = true)
+            }
+        }
     }
 }

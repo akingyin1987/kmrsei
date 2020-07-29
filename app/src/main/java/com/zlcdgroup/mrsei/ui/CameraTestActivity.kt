@@ -56,9 +56,7 @@ class CameraTestActivity : SimpleActivity() {
         fragment.cameraLiveData.observe(this, Observer {
             println("data->$it")
         })
-        fragment.cameraSetting.observe(this, Observer {
-            startActivityForResult<CameraSettingActivity>(requestCode = 100)
-        })
+
         supportFragmentManager.beginTransaction().add(R.id.container,fragment,"camera")
                 .commit()
 

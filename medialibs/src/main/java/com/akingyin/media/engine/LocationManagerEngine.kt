@@ -7,20 +7,15 @@
  * akingyin@163.com
  */
 
-package com.akingyin.base.ext
+package com.akingyin.media.engine
 
 /**
  * @ Description:
  * @author king
- * @ Date 2020/7/23 12:16
+ * @ Date 2020/7/29 10:27
  * @version V1.0
  */
-typealias action<T> = suspend () -> T
+interface LocationManagerEngine {
 
-
-
-typealias mapper<T,R> = (T) -> R
-
-typealias zipper<T1, T2, R> = (T1, T2) -> R
-
-typealias coroutineErrorListener = (throwable: Throwable) -> Unit
+    fun createEngine(): LocationEngine
+}
