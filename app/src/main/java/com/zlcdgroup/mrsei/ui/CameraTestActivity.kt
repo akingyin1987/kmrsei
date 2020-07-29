@@ -57,8 +57,9 @@ class CameraTestActivity : SimpleActivity() {
             println("data->$it")
         })
 
-        supportFragmentManager.beginTransaction().add(R.id.container,fragment,"camera")
-                .commit()
+        supportFragmentManager.beginTransaction().replace(R.id.container,BaseCameraFragment.newInstance(CameraParameBuild()))
+                .addToBackStack("camera")
+                .commitAllowingStateLoss()
 
     }
 

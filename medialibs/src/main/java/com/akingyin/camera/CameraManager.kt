@@ -41,6 +41,7 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -55,55 +56,56 @@ import kotlin.math.min
  */
 
 @Suppress("DEPRECATION")
-class CameraManager  (content:Context, autoFouceCall:()->Unit) {
+class CameraManager(content: Context, autoFouceCall: () -> Unit) {
 
-    private  val  TAG = "camera-manager"
+    private val TAG = "camera-manager"
 
     /** 拍照时相机旋转角度 */
-    var  cameraAngle = 90
+    var cameraAngle = 90
 
     /** UI 显示旋转角度 */
-    var  cameraUiAngle = 0
+    var cameraUiAngle = 0
 
     var requestedCameraId = -1
 
     @CameraShutterSound
-    var  cameraShutterSound = CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE
+    var cameraShutterSound = CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE
 
-     var camera: Camera? = null
+    var camera: Camera? = null
 
     /** 是否在预览中 */
     private var previewing = false
+
     //当前手机分辨率
     var theScreenResolution = Point()
 
     //相机设置的分辨率
-    var  cameraBestResolution: Point = Point()
+    var cameraBestResolution: Point = Point()
     var BEST_SCALE = SCALE_16_9
-    //自动定义分辨率
-    var  customResolution: Point = Point()
 
+    //自动定义分辨率
+    var customResolution: Point = Point()
 
 
     // 打开相机后默认使用的分辨率()
-    var  defaultPreviewSize = Point()
+    var defaultPreviewSize = Point()
 
-    var  cameraAutoFouceSensorController:CameraAutoFouceSensorController
+    var cameraAutoFouceSensorController: CameraAutoFouceSensorController
 
     init {
         val windowManager: WindowManager = content.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         windowManager.defaultDisplay.getRealSize(theScreenResolution)
-        BEST_SCALE = max(theScreenResolution.x,theScreenResolution.y).toDouble()/ min(theScreenResolution.x,theScreenResolution.y).toDouble()
-        BEST_SCALE =  arrayListOf<Double>().apply {
-            add(abs(BEST_SCALE- SCALE_16_9))
+        BEST_SCALE = max(theScreenResolution.x, theScreenResolution.y).toDouble() / min(theScreenResolution.x, theScreenResolution.y).toDouble()
+        BEST_SCALE = arrayListOf<Double>().apply {
+            add(abs(BEST_SCALE - SCALE_16_9))
             add(abs(BEST_SCALE - SCALE_4_3))
             add(abs(BEST_SCALE - SCALE_1_1))
         }.asSequence().sortedBy {
             it
         }.first()
-        cameraAutoFouceSensorController = CameraAutoFouceSensorController(content){
+        cameraAutoFouceSensorController = CameraAutoFouceSensorController(content) {
             autoStartFuoce { result, _ ->
-                if(result){
+                if (result) {
                     autoFouceCall.invoke()
                 }
             }
@@ -115,7 +117,7 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
     // 初始花相机及预览
     @Synchronized
     @Throws(IOException::class)
-    fun openCamera(holder: SurfaceHolder,errorCallback:Camera.ErrorCallback?) {
+    fun openCamera(holder: SurfaceHolder, errorCallback: Camera.ErrorCallback?) {
         var theCamera = camera
         if (theCamera == null) {
             // 获取手机后置的摄像头
@@ -131,12 +133,13 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
             }
             camera = theCamera
             camera?.let {
-                val  parameters = it.parameters
+                val parameters = it.parameters
                 parameters.previewSize.run {
                     defaultPreviewSize.x = width
                     defaultPreviewSize.y = height
                 }
-                cameraBestResolution = findBestPreviewSizeValue(parameters,theScreenResolution)?:defaultPreviewSize
+                cameraBestResolution = findBestPreviewSizeValue(parameters, theScreenResolution)
+                    ?: defaultPreviewSize
 
             }
         }
@@ -145,98 +148,110 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
         theCamera.setPreviewDisplay(holder)
     }
 
-    private  var   cameraParameBuild:CameraParameBuild ?= null
+    private var cameraParameBuild: CameraParameBuild? = null
 
     /**
      * 设置相机参数
      */
-    fun  setCameraParametersValues(camera:Camera,cameraParameBuild: CameraParameBuild,callBack:(result:Boolean,error:String?)->Unit){
-           try {
-               cameraShutterSound = cameraParameBuild.shutterSound
-               if(cameraShutterSound != CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE){
-                   camera.enableShutterSound(cameraShutterSound == CameraShutterSound.CAMERA_SHUTTER_SOUND_ON)
-               }
+    fun setCameraParametersValues(camera: Camera, cameraParameBuild: CameraParameBuild, callBack: (result: Boolean, error: String?) -> Unit) {
+        try {
+            cameraShutterSound = cameraParameBuild.shutterSound
+            if (cameraShutterSound != CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE) {
+                camera.enableShutterSound(cameraShutterSound == CameraShutterSound.CAMERA_SHUTTER_SOUND_ON)
+            }
 
-               camera.parameters = camera.parameters.apply {
-                   pictureFormat = ImageFormat.JPEG
-                   val  point = cameraParameBuild.cameraResolution?:cameraBestResolution
-                   setPreviewSize(point.x, point.y)
-                   setPictureSize(point.x, point.y)
-                   jpegQuality = 100
-                   when(cameraParameBuild.flashModel){
-                       CameraFlashModel.CAMERA_FLASH_NONE ->{}
-                       CameraFlashModel.CAMERA_FLASH_AUTO ->{ flashMode = Camera.Parameters.FLASH_MODE_AUTO }
-                       CameraFlashModel.CAMERA_FLASH_OFF ->{ flashMode = Camera.Parameters.FLASH_MODE_OFF}
-                       CameraFlashModel.CAMERA_FLASH_ON ->{ flashMode = Camera.Parameters.FLASH_MODE_TORCH}
-                   }
-               }
+            camera.parameters = camera.parameters.apply {
+                pictureFormat = ImageFormat.JPEG
+                val point = cameraParameBuild.cameraResolution ?: cameraBestResolution
+                setPreviewSize(point.x, point.y)
+                setPictureSize(point.x, point.y)
+                jpegQuality = 100
+                when (cameraParameBuild.flashModel) {
+                    CameraFlashModel.CAMERA_FLASH_NONE -> {
+                    }
+                    CameraFlashModel.CAMERA_FLASH_AUTO -> {
+                        flashMode = Camera.Parameters.FLASH_MODE_AUTO
+                    }
+                    CameraFlashModel.CAMERA_FLASH_OFF -> {
+                        flashMode = Camera.Parameters.FLASH_MODE_OFF
+                    }
+                    CameraFlashModel.CAMERA_FLASH_ON -> {
+                        flashMode = Camera.Parameters.FLASH_MODE_TORCH
+                    }
+                }
+            }
 
-               callBack(true,null)
-           }catch (e : Exception){
-               e.printStackTrace()
-               callBack(false,e.message)
-           }
+            callBack(true, null)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            callBack(false, e.message)
+        }
 
     }
-
-
 
 
     /**
      * 设置闪光灯模式
      */
-    fun  setCameraFlashModel(camera:Camera,@CameraFlashModel flashModel: Int,callBack: (result: Boolean, error: String?) -> Unit){
+    fun setCameraFlashModel(camera: Camera, @CameraFlashModel flashModel: Int, callBack: (result: Boolean, error: String?) -> Unit) {
         try {
             camera.parameters = camera.parameters.apply {
-                when(flashModel){
-                    CameraFlashModel.CAMERA_FLASH_NONE ->{}
-                    CameraFlashModel.CAMERA_FLASH_AUTO ->{ flashMode = Camera.Parameters.FLASH_MODE_AUTO }
-                    CameraFlashModel.CAMERA_FLASH_OFF ->{ flashMode = Camera.Parameters.FLASH_MODE_OFF}
-                    CameraFlashModel.CAMERA_FLASH_ON ->{ flashMode = Camera.Parameters.FLASH_MODE_TORCH}
+                when (flashModel) {
+                    CameraFlashModel.CAMERA_FLASH_NONE -> {
+                    }
+                    CameraFlashModel.CAMERA_FLASH_AUTO -> {
+                        flashMode = Camera.Parameters.FLASH_MODE_AUTO
+                    }
+                    CameraFlashModel.CAMERA_FLASH_OFF -> {
+                        flashMode = Camera.Parameters.FLASH_MODE_OFF
+                    }
+                    CameraFlashModel.CAMERA_FLASH_ON -> {
+                        flashMode = Camera.Parameters.FLASH_MODE_TORCH
+                    }
                 }
             }
             cameraParameBuild?.flashModel = flashModel
-            callBack(true,null)
-        }catch (e : Exception){
+            callBack(true, null)
+        } catch (e: Exception) {
             e.printStackTrace()
-            callBack(false,e.message)
+            callBack(false, e.message)
         }
     }
 
-    private   var  focusing = false
+    private var focusing = false
 
 
     /**
      * 这是自动对焦
      */
-    private fun  autoStartFuoce(callBack: (result: Boolean, error: String?) -> Unit){
-        if(focusing || previewing){
+    private fun autoStartFuoce(callBack: (result: Boolean, error: String?) -> Unit) {
+        if (focusing || previewing) {
             return
         }
         focusing = true
         try {
             GlobalScope.launch(Main) {
                 delay(1000)
-                withContext(IO){
+                withContext(IO) {
 
                     camera?.let {
                         it.cancelAutoFocus()
                         it.autoFocus { success, _ ->
                             focusing = false
-                            callBack(success,null)
+                            callBack(success, null)
                         }
                     }
                 }
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             focusing = false
             try {
-               camera?.cancelAutoFocus()
-            }catch (e:Exception){
+                camera?.cancelAutoFocus()
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
-            callBack(false,e.message)
+            callBack(false, e.message)
         }
 
     }
@@ -273,33 +288,35 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
 
     /**
      * 拍照
-      */
-    fun  takePictrue(cameraParameBuild: CameraParameBuild,callBack: (result: Boolean, error: String?) -> Unit){
-        if(cameraShutterSound != CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE){
+     */
+    fun takePictrue(cameraParameBuild: CameraParameBuild, callBack: (result: Boolean, error: String?) -> Unit) {
+        if (cameraShutterSound != CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE) {
             camera?.enableShutterSound(cameraShutterSound == CameraShutterSound.CAMERA_SHUTTER_SOUND_ON)
         }
-        camera?.takePicture(if(cameraParameBuild.shutterSound == CameraShutterSound.CAMERA_SHUTTER_SOUND_ON){
+        camera?.takePicture(if (cameraParameBuild.shutterSound == CameraShutterSound.CAMERA_SHUTTER_SOUND_ON) {
             Camera.ShutterCallback {
                 println("ShutterCallback")
             }
-        }else{null},null,Camera.PictureCallback { data, _ ->
+        } else {
+            null
+        }, null, Camera.PictureCallback { data, _ ->
             GlobalScope.launch(Main) {
                 try {
-                    withContext(IO){
-                        CameraBitmapUtil.dataToBaseBitmap(data,FileUtils.getFolderName(cameraParameBuild.localPath),
-                                "base_"+FileUtils.getFileName(cameraParameBuild.localPath),90)
+                    withContext(IO) {
+                        CameraBitmapUtil.dataToBaseBitmap(data, FileUtils.getFolderName(cameraParameBuild.localPath),
+                                "base_" + FileUtils.getFileName(cameraParameBuild.localPath), 90)
                     }?.let {
-                        withContext(IO){
-                            CameraBitmapUtil.zipImageTo960x540(it,cameraParameBuild.cameraAngle,fileDir = FileUtils.getFolderName(cameraParameBuild.localPath),fileName = FileUtils.getFileName(cameraParameBuild.localPath))
+                        withContext(IO) {
+                            CameraBitmapUtil.zipImageTo960x540(it, cameraParameBuild.cameraAngle, fileDir = FileUtils.getFolderName(cameraParameBuild.localPath), fileName = FileUtils.getFileName(cameraParameBuild.localPath))
                         }.yes {
-                            callBack(true,null)
+                            callBack(true, null)
                         }.no {
-                            callBack(false,"图片转换失败")
+                            callBack(false, "图片转换失败")
                         }
-                    }?:callBack(true,"图片转换失败")
-                }catch (e : Exception){
+                    } ?: callBack(true, "图片转换失败")
+                } catch (e: Exception) {
                     e.printStackTrace()
-                    callBack(false,e.message)
+                    callBack(false, e.message)
                 }
 
             }
@@ -320,7 +337,7 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
         }
     }
 
-    fun open( cameraOpenId: Int): Camera? {
+    fun open(cameraOpenId: Int): Camera? {
 
         //手机上camera的数量 =0 则当前手机无摄像头
         var cameraId = cameraOpenId
@@ -348,22 +365,19 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
         }
         val camera: Camera?
         camera = if (cameraId < numCameras) {
-            Timber.tag(TAG).i( "Opening camera #$cameraId")
+            Timber.tag(TAG).i("Opening camera #$cameraId")
             Camera.open(cameraId)
         } else {
             if (explicitRequest) {
                 Timber.tag(TAG).w("Requested camera does not exist: $cameraId")
                 null
             } else {
-                Timber.tag(TAG).i( "No camera facing back; returning camera #0")
+                Timber.tag(TAG).i("No camera facing back; returning camera #0")
                 Camera.open()
             }
         }
         return camera
     }
-
-
-
 
 
     /**
@@ -390,7 +404,7 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
 
         //自定义排序规则
         Collections.sort(supportedPreviewSizes, object : Comparator<Camera.Size> {
-           override fun compare(a: Camera.Size, b: Camera.Size): Int {
+            override fun compare(a: Camera.Size, b: Camera.Size): Int {
                 val aPixels = a.height * a.width
                 val bPixels = b.height * b.width
                 if (bPixels < aPixels) {
@@ -426,7 +440,7 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
             }
             if (maybeFlippedWidth == screenResolution.x && maybeFlippedHeight == screenResolution.y) {
                 val exactPoint = Point(realWidth, realHeight)
-                Timber.tag(TAG).i( "Found preview size exactly matching screen size: $exactPoint")
+                Timber.tag(TAG).i("Found preview size exactly matching screen size: $exactPoint")
                 return exactPoint
             }
         }
@@ -453,26 +467,25 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
         val defaultPreview = parameters.previewSize
             ?: throw IllegalStateException("Parameters contained no preview size!")
         val defaultSize = Point(defaultPreview.width, defaultPreview.height)
-        Timber.tag(TAG).i( "No suitable preview sizes, using default: $defaultSize")
+        Timber.tag(TAG).i("No suitable preview sizes, using default: $defaultSize")
         return defaultSize
     }
 
 
-    private  var disposable:Disposable?=null
+    private var disposable: Disposable? = null
+
     /**
      * 延迟多少秒后自动拍照
      */
-    fun   autoTakePhoto(delayTime:Int = 0,cameraParameBuild: CameraParameBuild,callBack: (result: Boolean, error: String?) -> Unit){
-      disposable?.dispose()
-      disposable =  Observable.timer(delayTime.toLong(),TimeUnit.SECONDS).compose(RxUtil.IO_Main()).autoDispose(Completable.complete())
+    fun autoTakePhoto(delayTime: Int = 0, cameraParameBuild: CameraParameBuild, callBack: (result: Boolean, error: String?) -> Unit) {
+        disposable?.dispose()
+        disposable = Observable.timer(delayTime.toLong(), TimeUnit.SECONDS).compose(RxUtil.IO_Main()).autoDispose(Completable.complete())
                 .subscribe({
-                    takePictrue(cameraParameBuild,callBack)
-                },{
-                    callBack(false,"出错了,${it.message}")
+                    takePictrue(cameraParameBuild, callBack)
+                }, {
+                    callBack(false, "出错了,${it.message}")
                 })
     }
-
-
 
 
     /**
@@ -503,21 +516,19 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
     }
 
 
-
-
-
     @IntDef(value = [CameraFlashModel.CAMERA_FLASH_AUTO, CameraFlashModel.CAMERA_FLASH_OFF,
-        CameraFlashModel.CAMERA_FLASH_ON,CameraFlashModel.CAMERA_FLASH_NONE])
+        CameraFlashModel.CAMERA_FLASH_ON, CameraFlashModel.CAMERA_FLASH_NONE])
     @Retention(AnnotationRetention.SOURCE)
-    annotation class CameraFlashModel{
-        companion object{
+    annotation class CameraFlashModel {
+        companion object {
             /** 自动 */
-            const val  CAMERA_FLASH_AUTO = 0
+            const val CAMERA_FLASH_AUTO = 0
+
             /** 开 */
-            const val  CAMERA_FLASH_ON = 1
+            const val CAMERA_FLASH_ON = 1
 
             /**关 */
-            const val  CAMERA_FLASH_OFF = 2
+            const val CAMERA_FLASH_OFF = 2
 
             /** 不使用*/
             const val CAMERA_FLASH_NONE = -1
@@ -525,10 +536,10 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
     }
 
 
-    @IntDef(value = [CameraShutterSound.CAMERA_SHUTTER_SOUND_ON,CameraShutterSound.CAMERA_SHUTTER_SOUND_OFF,CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE])
+    @IntDef(value = [CameraShutterSound.CAMERA_SHUTTER_SOUND_ON, CameraShutterSound.CAMERA_SHUTTER_SOUND_OFF, CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE])
     @Retention(AnnotationRetention.SOURCE)
-    annotation class CameraShutterSound{
-        companion object{
+    annotation class CameraShutterSound {
+        companion object {
             /** 打开快门声音 */
             const val CAMERA_SHUTTER_SOUND_ON = 0
             const val CAMERA_SHUTTER_SOUND_OFF = 1
@@ -536,10 +547,10 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
         }
     }
 
-    @IntDef(value = [CameraNetGrid.CAMERA_NET_GRID_CLOSE,CameraNetGrid.CAMERA_NET_GRID_OPEN,CameraNetGrid.CAMERA_NET_GRID_NONE])
+    @IntDef(value = [CameraNetGrid.CAMERA_NET_GRID_CLOSE, CameraNetGrid.CAMERA_NET_GRID_OPEN, CameraNetGrid.CAMERA_NET_GRID_NONE])
     @Retention(AnnotationRetention.SOURCE)
-    annotation class CameraNetGrid{
-        companion object{
+    annotation class CameraNetGrid {
+        companion object {
             /** 相机网格线 */
             const val CAMERA_NET_GRID_CLOSE = 0
             const val CAMERA_NET_GRID_OPEN = 1
@@ -548,16 +559,15 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
     }
 
 
-
-    companion object{
+    companion object {
         //480 * 320
         const val MIN_PREVIEW_PIXELS = 540 * 540 // normal screen
 
         const val MAX_ASPECT_DISTORTION = 0.15
 
-        const val SCALE_16_9 = 16.0/9.0
+        const val SCALE_16_9 = 16.0 / 9.0
 
-        const val SCALE_4_3 = 4.0/3.0
+        const val SCALE_4_3 = 4.0 / 3.0
 
         const val SCALE_1_1 = 1.0
 
@@ -565,7 +575,7 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
          * 点击开始拍照动画
          */
         @JvmStatic
-        fun  startTypeCaptureAnimator(captureButton:View,configBtn:View,cancelBtn:View){
+        fun startTypeCaptureAnimator(captureButton: View, configBtn: View, cancelBtn: View) {
             captureButton.visibility = View.INVISIBLE
             configBtn.visiable()
             cancelBtn.visiable()
@@ -573,7 +583,7 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
             AnimatorSet().apply {
                 playTogether(ObjectAnimator.ofFloat(cancelBtn, "translationX", cancelBtn.width / 4F, 0F),
                         ObjectAnimator.ofFloat(configBtn, "translationX", configBtn.width / -4f, 0F))
-                addListener(object :AnimatorListenerAdapter(){
+                addListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
                         super.onAnimationEnd(animation)
                         cancelBtn.isClickable = true
@@ -586,22 +596,112 @@ class CameraManager  (content:Context, autoFouceCall:()->Unit) {
         }
 
         @JvmStatic
-        fun  startCameraViewRoteAnimator(rotation:Float,vararg views:View){
-           AnimatorSet().apply {
-               playTogether(views.map {
-                   view ->
-                   ObjectAnimator.ofFloat(view,"rotation",rotation)
-               })
-               duration = 200
-           }.start()
+        fun startCameraViewRoteAnimator(rotation: Float, vararg views: View) {
+            AnimatorSet().apply {
+                playTogether(views.map { view ->
+                    ObjectAnimator.ofFloat(view, "rotation", rotation)
+                })
+                duration = 200
+            }.start()
         }
 
         @JvmStatic
-        fun   recoveryCaptureAnimator(captureButton:View,configBtn:View,cancelBtn:View){
+        fun recoveryCaptureAnimator(captureButton: View, configBtn: View, cancelBtn: View) {
             captureButton.visiable()
             captureButton.isEnabled = true
             configBtn.gone()
             cancelBtn.gone()
         }
+
+        @JvmStatic
+        fun getCameraResolutionScale(point: Point): String {
+
+            val result = GCD(point.x, point.y)
+            return "[" + max(point.x, point.y) / result + ":" + min(point.x, point.y) / result + "]"
+        }
+
+
+        /**
+         * 获取最大公约数
+         * @param m
+         * @param n
+         * @return
+         */
+        private fun GCD(m: Int, n: Int): Int {
+
+            var m = m
+            var n = n
+            var result = 0
+            while (n != 0) {
+                result = m % n
+                m = n
+                n = result
+            }
+            return m
+        }
+
+        /**
+         * 获取支持的分辨率
+         * @param parameters
+         *
+         * @return
+         */
+        fun findSuportCameraSizeValue(parameters: Camera.Parameters): ArrayList<Point>? {
+            val list: ArrayList<Point> = ArrayList()
+            //找到所有支持的Size
+            val rawSupportedSizes = parameters.supportedPreviewSizes
+
+            if (rawSupportedSizes == null) {
+
+                val defaultSize = parameters.previewSize ?: return null
+                val point = Point(defaultSize.width, defaultSize.height)
+                list.add(point)
+                return list
+            }
+            // Sort by size, descending
+            val supportedPreviewSizes: MutableList<Camera.Size> = ArrayList(rawSupportedSizes)
+
+            //自定义排序规则
+            Collections.sort(supportedPreviewSizes, object : Comparator<Camera.Size> {
+                override fun compare(a: Camera.Size, b: Camera.Size): Int {
+                    val aPixels = a.height * a.width
+                    val bPixels = b.height * b.width
+                    if (bPixels < aPixels) {
+                        return -1
+                    }
+                    return if (bPixels > aPixels) {
+                        1
+                    } else 0
+                }
+            })
+            val it = supportedPreviewSizes.iterator()
+            while (it.hasNext()) {
+                val supportedPreviewSize = it.next()
+                val realWidth = supportedPreviewSize.width
+                val realHeight = supportedPreviewSize.height
+                if (realWidth * realHeight < MIN_PREVIEW_PIXELS) {
+                    it.remove()
+                    continue
+                }
+                list.add(Point(supportedPreviewSize.width, supportedPreviewSize.height))
+            }
+            if (list.size > 1) {
+                removeDuplicate(list)
+            }
+            return list
+        }
+
+        fun <T> removeDuplicate(list: ArrayList<T>): List<T> {
+            for (i in 0 until list.size - 1) {
+                for (j in list.size - 1 downTo i + 1) {
+                    if (list[j] == list[i]) {
+                        list.removeAt(j)
+                    }
+                }
+            }
+            return list
+        }
     }
+
+
 }

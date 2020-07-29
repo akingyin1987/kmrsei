@@ -70,10 +70,10 @@
         <item>关闭</item>
     </string-array>
 
-    <integer-array name="camera_flash_value">
+    <string-array name="camera_flash_value">
         <item>0</item>
         <item>1</item>
         <item>2</item>
-    </integer-array>
-    <integer name="camera_flash_def_value">1</integer>
+    </string-array>
+    <string name="camera_flash_def_value">1</string>
 </resources>

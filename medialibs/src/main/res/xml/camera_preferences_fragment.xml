@@ -50,7 +50,7 @@
         android:entries="@array/camera_flash_view"
         android:entryValues="@array/camera_flash_value"
         android:key="key_camera_flash"
-        android:defaultValue="0"
+        android:defaultValue="@string/camera_flash_def_value"
         android:icon="@drawable/ic_flash_on"
         app:allowDividerAbove="true"
         app:allowDividerBelow="true"

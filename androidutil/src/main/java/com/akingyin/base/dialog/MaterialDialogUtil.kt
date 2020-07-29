@@ -92,7 +92,7 @@ object MaterialDialogUtil {
     /**
      * 单选对话框
      */
-    fun <T> showSingleSelectItemDialog(context:Context, title:String,selectIndex:Int = 0,datas:List<T>,callback: (T,selectIndex:Int) -> Unit) {
+    fun <T> showSingleSelectItemDialog(context:Context, title:String,selectIndex:Int = 0,datas:List<T>,callback: (data:T,selectIndex:Int) -> Unit) {
         MaterialDialog(context).title(text = title)
                 .listItemsSingleChoice(items=datas.map {
                     it.toString()

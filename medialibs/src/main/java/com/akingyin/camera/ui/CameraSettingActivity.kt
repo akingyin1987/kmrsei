@@ -10,8 +10,10 @@
 package com.akingyin.camera.ui
 
 import android.app.Activity
+import android.graphics.Point
 import android.os.Bundle
 import com.akingyin.base.SimpleActivity
+import com.akingyin.camera.CameraManager
 import com.akingyin.media.R
 
 
@@ -22,6 +24,11 @@ import com.akingyin.media.R
  * @version V1.0
  */
 class CameraSettingActivity :SimpleActivity(){
+
+    private  var  cameraSizes:List<Point> = mutableListOf()
+    private  var  cameraX = false
+    private  var  cameraOld = false
+    private  var  sharedPreferencesName="app_camera_setting"
 
     override fun initInjection() {
 
@@ -39,9 +46,15 @@ class CameraSettingActivity :SimpleActivity(){
 
 
     override fun initView() {
+        intent.run {
+            sharedPreferencesName = getStringExtra("sharedPreferencesName")?:sharedPreferencesName
+            cameraOld = getBooleanExtra("cameraOld",false)
+            cameraX = getBooleanExtra("cameraX",false)
+            cameraSizes = getParcelableArrayListExtra("cameraSizes")?: arrayListOf()
+        }
         setToolBar(findViewById(R.id.toolbar),"相机设置")
         setResult(Activity.RESULT_OK)
-        supportFragmentManager.beginTransaction().add(R.id.root_container,CameraSettingFragment.newInstance("app_camera_setting"))
+        supportFragmentManager.beginTransaction().add(R.id.root_container,CameraSettingFragment.newInstance(sharedPreferencesName,cameraOld,cameraX,cameraSizes))
                 .commit()
     }
 

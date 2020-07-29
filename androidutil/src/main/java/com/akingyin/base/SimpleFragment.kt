@@ -1,12 +1,15 @@
 package com.akingyin.base
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import com.akingyin.base.ext.no
 import com.akingyin.base.ext.yes
 import com.classic.common.MultipleStatusView
@@ -22,7 +25,7 @@ import es.dmoral.toasty.Toasty
  */
 abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
 
-    private var mView: View? = null
+    lateinit var mView: View
     private lateinit var mActivity: Activity
     lateinit var mContext: Context
     private var isInited = false
@@ -36,18 +39,33 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
         mContext = context
     }
 
+    private val cameraPermissions = arrayOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+    private val videoPermissions = arrayOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         mView = if(useDataBindView()){
-            initDataBindView(inflater,container)
+            initDataBindView(inflater,container)?:throw Exception("root view  must not be null")
         }else{
             if(useViewBind()){
-                initViewBind(inflater,container)
+                initViewBind(inflater,container)?:throw Exception("root view  must not be null")
             }else{
                 inflater.inflate(getLayoutId(), null)
             }
         }
-
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                onBackPressed()
+            }
+        })
         return mView
     }
 
@@ -55,8 +73,10 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
     abstract fun getLayoutId(): Int
 
     abstract fun initEventAndData()
+    // an abstract function which will be called on the Back button press
+    open fun onBackPressed(){
 
-
+    }
     open    fun    useDataBindView()= false
 
     open    fun    useViewBind() = false
@@ -222,4 +242,6 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
         super.onResume()
         lazyLoadDataIfPrepared()
     }
+
+
 }

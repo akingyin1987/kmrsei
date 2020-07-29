@@ -20,7 +20,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import com.akingyin.base.SimpleFragment
 import com.akingyin.base.ext.*
 import com.akingyin.base.mvvm.SingleLiveEvent
@@ -35,6 +35,10 @@ import com.akingyin.media.R
 import com.akingyin.media.databinding.FragmentCameraBinding
 import com.akingyin.media.engine.LocationEngine
 import com.akingyin.media.engine.LocationManagerEngine
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import permissions.dispatcher.ktx.withPermissionsCheck
 import kotlin.properties.Delegates
 
@@ -46,7 +50,7 @@ import kotlin.properties.Delegates
  */
 
 @Suppress("DEPRECATION", "ClickableViewAccessibility")
-class BaseCameraFragment : SimpleFragment() {
+open class BaseCameraFragment : SimpleFragment() {
 
     lateinit var bindView: FragmentCameraBinding
     lateinit var sharedPreferencesName: String
@@ -130,7 +134,7 @@ class BaseCameraFragment : SimpleFragment() {
         initCameraParame(cameraParameBuild)
     }
 
-    open   fun   initCameraParame(cameraParame: CameraParameBuild = cameraParameBuild,changeCameraParme:Boolean = false){
+    open    fun   initCameraParame(cameraParame: CameraParameBuild = cameraParameBuild, changeCameraParme:Boolean = false){
         cameraParame.apply {
             this.flashModel = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_FLASH, "0").toInt()
             this.shutterSound = if(PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_SHUTTER_SOUND,true)) CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON else CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_OFF
@@ -191,19 +195,15 @@ class BaseCameraFragment : SimpleFragment() {
         }
         cameraManager = CameraManager(mContext) {
             showSucces("运动对焦成功！")
+            if(cameraParameBuild.supportFocesedAutoPhoto){
+                captureImage()
+            }
         }
 
         bindView.fabTakePicture.captureLisenter = object : CaptureButton.onClickTakePicturesListener() {
             override fun takePictures() {
                 bindView.fabTakePicture.isEnabled = false
-                bindView.viewFinder.takePhoto { result, error ->
-                    if (result) {
-                        CameraManager.startTypeCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel)
-
-                    } else {
-                        showError(error)
-                    }
-                }
+                captureImage()
             }
         }
         bindView.btnCancel.click {
@@ -249,11 +249,44 @@ class BaseCameraFragment : SimpleFragment() {
         bindView.buttonSetting.click {
            startCameraSettingActivity()
         }
-        withPermissionsCheck(Manifest.permission.CAMERA) {
-            bindView.viewFinder.bindSurfaceView(cameraManager, CameraParameBuild())
+        bindView.textCountDown.click {
+            countDownJob?.cancel()
+            showSucces("倒计时已取消")
+        }
+        withPermissionsCheck(Manifest.permission.CAMERA,locationEngine?.let {
+            Manifest.permission.ACCESS_FINE_LOCATION
+        }?:Manifest.permission.WRITE_EXTERNAL_STORAGE) {
+            bindView.viewFinder.bindSurfaceView(cameraManager, cameraParameBuild)
         }
 
 
+    }
+
+    /** 拍照*/
+    private  fun  captureImage(){
+        bindView.viewFinder.takePhoto { result, error ->
+            if (result) {
+                CameraManager.startTypeCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel)
+                if(cameraParameBuild.supportAutoSavePhoto){
+                    if(cameraParameBuild.autoSavePhotoDelayTime>0){
+                        countDownStart(cameraParameBuild.autoSavePhotoDelayTime,"拍照自动保存倒计时"){
+                            cameraLiveData.value = CameraData().apply {
+                                mediaType = MediaConfig.TYPE_IMAGE
+                                localPath = cameraParameBuild.localPath
+                            }
+                        }
+                    }else{
+                        cameraLiveData.value = CameraData().apply {
+                            mediaType = MediaConfig.TYPE_IMAGE
+                            localPath = cameraParameBuild.localPath
+                        }
+
+                    }
+                }
+            } else {
+                showError(error)
+            }
+        }
     }
 
     private fun closeFlashAndSelect(@CameraManager.CameraFlashModel flash: Int) = bindView.layoutFlashOptions.circularClose(bindView.buttonFlash) {
@@ -269,7 +302,12 @@ class BaseCameraFragment : SimpleFragment() {
     }
 
     open  fun    startCameraSettingActivity(){
-        activity?.startActivityFromFragment(this, Intent(mContext,CameraSettingActivity::class.java), CAMERA_SETTING_REQUEST_CODE)
+        activity?.startActivityFromFragment(this, Intent(mContext,CameraSettingActivity::class.java).apply {
+            cameraManager.camera?.let {
+                putExtra("cameraSizes",CameraManager.findSuportCameraSizeValue(it.parameters))
+            }
+            putExtra("cameraOld",true)
+        }, CAMERA_SETTING_REQUEST_CODE)
     }
 
     private  fun  toggleShutter(){
@@ -295,6 +333,23 @@ class BaseCameraFragment : SimpleFragment() {
         }
     }
 
+
+    private   var  countDownJob:Job?= null
+    /**
+     * 开始倒计时
+     */
+    fun  countDownStart(count:Int,tip:String,call:()->Unit){
+        bindView.textCountDownTip.text = tip
+       countDownJob = lifecycleScope.launch(Main){
+            for (i in count downTo 1){
+                bindView.textCountDown.text = i.toString()
+                delay(1000)
+            }
+        }
+        bindView.textCountDown.text=""
+        bindView.textCountDownTip.text = ""
+        call.invoke()
+    }
 
     override fun lazyLoad() {
 
@@ -330,7 +385,8 @@ class BaseCameraFragment : SimpleFragment() {
         const val KEY_CAMERA_AUTO_SAVE_DELAYTIME = "key_camera_auto_save_delaytime"
 
         /** camerax 相机分辨率 */
-        const val KEY_CAMERAX_RESOLUTION = "camerax_resolution"
+        const val KEY_CAMERAX_RESOLUTION_X = "camerax_resolution_x"
+        const val KEY_CAMERAX_RESOLUTION_Y = "camerax_resolution_y"
         fun newInstance(cameraParameBuild: CameraParameBuild, sharedPreferencesName: String = "app_setting",locationManagerEngine: LocationManagerEngine?=null): BaseCameraFragment {
             return BaseCameraFragment().apply {
                 arguments = Bundle().apply {

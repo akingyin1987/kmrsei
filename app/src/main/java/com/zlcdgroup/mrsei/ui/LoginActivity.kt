@@ -249,7 +249,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == 100 && resultCode == Activity.RESULT_OK){
-            val  imagePath = data?.getStringExtra("imgLocalPath")
+            val  imagePath = data?.getStringExtra("imgLocalPath")?:""
             val  name = FileUtils.getFileName(imagePath)
             val  dir = FileUtils.getFolderName(imagePath)
              startActivity<TuyaTestActivity>(bundle = arrayOf(BaseTuYaActivity.KEY_PIC_NAME to name,BaseTuYaActivity.KEY_PIC_DIRECTORYPATH to dir))
