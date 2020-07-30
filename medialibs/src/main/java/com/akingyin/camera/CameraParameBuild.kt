@@ -33,8 +33,11 @@ class CameraParameBuild :Serializable {
     @CameraNetGrid
     var netGrid: Int = CameraNetGrid.CAMERA_NET_GRID_NONE
 
-    /** 手动区域对焦 */
+    /** true = 手动区域对焦  fase = 点击自动对焦*/
     var  supportManualFocus = true
+
+    /** 是否技能运动对焦 */
+    var  supportMoveFocus = false
 
     /** 支持定位 */
     var  supportLocation = true
@@ -133,6 +136,10 @@ class CameraParameBuild :Serializable {
                 cameraAngle = this@Builder.cameraAngle
             }
         }
+    }
+
+    override fun toString(): String {
+        return "CameraParameBuild(flashModel=$flashModel, shutterSound=$shutterSound, netGrid=$netGrid, supportManualFocus=$supportManualFocus, supportLocation=$supportLocation, supportFocesedAutoPhoto=$supportFocesedAutoPhoto, focesedAutoPhotoDelayTime=$focesedAutoPhotoDelayTime, supportAutoSavePhoto=$supportAutoSavePhoto, autoSavePhotoDelayTime=$autoSavePhotoDelayTime, cameraResolution=$cameraResolution, localPath='$localPath', horizontalPicture=$horizontalPicture, cameraAngle=$cameraAngle)"
     }
 
 

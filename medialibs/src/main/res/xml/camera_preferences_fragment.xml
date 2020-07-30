@@ -76,11 +76,20 @@
     <SwitchPreferenceCompat
         android:defaultValue="false"
         android:icon="@drawable/ic_action_focus"
-        android:key="key_camera_auto_focus"
+        android:key="key_move_camera_auto_focus"
         app:allowDividerAbove="true"
         app:allowDividerBelow="true"
         android:summary="当相机停止运动后，自动开启对焦"
         android:title="运动对焦" />
+
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:icon="@drawable/ic_action_focus"
+        android:key="key_camera_manual_auto_focus"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        android:summary="自动对焦及手动区域对焦"
+        android:title="对焦方式"/>
 
     <SwitchPreferenceCompat
         android:defaultValue="false"

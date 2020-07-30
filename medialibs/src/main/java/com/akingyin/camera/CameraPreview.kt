@@ -30,50 +30,87 @@ import com.akingyin.media.R
  * @ Date 2020/7/16 15:01
  * @version V1.0
  */
-@Suppress("ClickableViewAccessibility")
+@Suppress("ClickableViewAccessibility", "DEPRECATION")
 class CameraPreview @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) :
-        RelativeLayout(context, attrs, defStyleAttr, defStyleRes),SurfaceHolder.Callback {
+        RelativeLayout(context, attrs, defStyleAttr, defStyleRes), SurfaceHolder.Callback {
 
-    var  camera_surface : CameraSurfaceView
-    var  camera_fouce:FouceView
-    var  camera_img : ImageView
+    var camera_surface: CameraSurfaceView
+    var camera_fouce: FouceView
+    var camera_img: ImageView
 
-    lateinit var  cameraManager:CameraManager
+    lateinit var cameraManager: CameraManager
 
-    var  errorCallback : Camera.ErrorCallback?=null
+    var errorCallback: Camera.ErrorCallback? = null
 
 
     init {
-       View.inflate(context,R.layout.camera_view,this).run {
-           camera_fouce = findViewById(R.id.camera_fouce)
-           camera_surface = findViewById(R.id.camera_surface)
-           camera_img = findViewById(R.id.camera_img)
-       }
+        View.inflate(context, R.layout.camera_view, this).run {
+            camera_fouce = findViewById(R.id.camera_fouce)
+            camera_surface = findViewById(R.id.camera_surface)
+            camera_img = findViewById(R.id.camera_img)
+        }
 
 
     }
 
-    lateinit  var  cameraParameBuild:CameraParameBuild
-    fun   bindSurfaceView(cameraManager: CameraManager,cameraParameBuild: CameraParameBuild){
+    lateinit var cameraParameBuild: CameraParameBuild
+
+    fun bindSurfaceView(cameraManager: CameraManager, cameraParameBuild: CameraParameBuild,autoTakePhotoCall:(result:Boolean,error:String?)->Unit ) {
         this.cameraManager = cameraManager
         this.cameraParameBuild = cameraParameBuild
         camera_fouce.screenPoint = cameraManager.theScreenResolution
         camera_surface.holder.addCallback(this)
-        camera_surface.onSurfaceViewListion = object :CameraSurfaceView.OnSurfaceViewListion{
+        camera_surface.onSurfaceViewListion = object : CameraSurfaceView.OnSurfaceViewListion {
             override fun onFouceClick(x: Float, y: Float) {
-               if(cameraParameBuild.supportManualFocus){
-                   cameraManager.camera?.let {
-                       camera_fouce.setTouchFoucusRect(it, Camera.AutoFocusCallback {
-                           success, _ ->
-                           camera_fouce.disDrawTouchFocusRect(success)
-                           if(success){
-                               //手动对焦成功
-                               authTakePhoto()
-                           }
-                       },x,y)
-                   }
-               }
+                println("点击事件--->")
+                cameraManager.camera?.let {
+                    if (cameraParameBuild.supportManualFocus) {
+                        //区域对焦
+                        camera_fouce.setTouchFoucusRect(it, Camera.AutoFocusCallback { success, _ ->
+                            camera_fouce.disDrawTouchFocusRect(success)
+                            if (success) {
+                                //手动对焦成功
+                                autoTakePhotoCall.invoke(true,null)
+                            }
+                        }, x, y)
+                    }else{
+                        cameraManager.autoStartFuoce { result, _ ->
+                            if (result) {
+                                //自动对焦成功
+                                autoTakePhotoCall.invoke(true,null)
+                            }
+                        }
+                    }
+
+                }
+
             }
+        }
+        camera_surface.pinchToZoomGestureDetector =  PinchToZoomGestureDetector(context, MyScaleGestureDetector(), object : PinchToZoomGestureDetector.OnCamerZoomListion {
+            override fun getZoomRatio() = cameraManager.getZoomRatio().toFloat()
+
+            override fun getMaxZoomRatio() = cameraManager.getCameraMaxZoom().toFloat()
+
+            override fun getMinZoomRatio() = 0F
+
+            override fun setZoomRatio(zoom: Float) {
+                cameraManager.setCameraZoom(zoom)
+            }
+
+            override fun isZoomSupported() = true
+
+            override fun isPinchToZoomEnabled() = true
+        })
+
+    }
+
+    fun unBindSurfaceView() {
+        camera_surface.holder.removeCallback(this)
+        try {
+            cameraManager.camera?.setPreviewDisplay(null)
+            cameraManager.closeDriver()
+        }catch (e:Exception){
+            e.printStackTrace()
         }
 
     }
@@ -81,13 +118,17 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
     /**
      * 自动拍照
      */
-    fun   authTakePhoto(){
-        if(cameraParameBuild.supportFocesedAutoPhoto){
-            cameraManager.autoTakePhoto(cameraParameBuild.focesedAutoPhotoDelayTime,cameraParameBuild){
-                result, error ->
-               if(!result){
-                  ToastUtil.showError(context,"出错了,$error")
-               }
+    fun autoTakePhoto(autoTakePhotoCall:(result:Boolean,error:String?)->Unit) {
+        if (cameraParameBuild.supportFocesedAutoPhoto) {
+            cameraManager.autoTakePhoto(cameraParameBuild.focesedAutoPhotoDelayTime, cameraParameBuild) { result, error ->
+                if (!result) {
+                    ToastUtil.showError(context, "出错了,$error")
+                }else{
+                    cameraManager.stopPreview()
+                    camera_img.visiable()
+                    camera_img.setImageURI(Uri.parse(cameraParameBuild.localPath))
+                }
+                autoTakePhotoCall.invoke(result,error)
             }
         }
 
@@ -96,33 +137,31 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
         cameraParameBuild.cameraResolution?.let {
-             cameraManager.findBestViewSize(cameraManager.theScreenResolution,it)?.let {
-                 best ->
+            cameraManager.findBestViewSize(cameraManager.theScreenResolution, it)?.let { best ->
                 camera_surface.layoutParams.apply {
-                     if (best.x == 0 && layoutParams.height != best.y) {
-                         this.height = best.y
+                    if (best.x == 0 && layoutParams.height != best.y) {
+                        this.height = best.y
 
-                     } else if (best.y == 0 && layoutParams.width != best.x) {
-                         this.width = best.x
-                     }
-                 }
-             }
+                    } else if (best.y == 0 && layoutParams.width != best.x) {
+                        this.width = best.x
+                    }
+                }
+            }
         }
         cameraManager.startPreview()
 
     }
 
-    fun   takePhoto(cameraParame: CameraParameBuild = cameraParameBuild,callBack: (result: Boolean, error: String?) -> Unit){
-        cameraManager.takePictrue(cameraParame){
-            result, error ->
+    fun takePhoto(cameraParame: CameraParameBuild = cameraParameBuild, callBack: (result: Boolean, error: String?) -> Unit) {
+        cameraManager.takePictrue(cameraParame) { result, error ->
             cameraManager.stopPreview()
             camera_img.visiable()
             camera_img.setImageURI(Uri.parse(cameraParame.localPath))
-            callBack.invoke(result,error)
+            callBack.invoke(result, error)
         }
     }
 
-    fun   onStartCameraView(){
+    fun onStartCameraView() {
         camera_img.setImageURI(null)
         camera_img.gone()
         cameraManager.startPreview()
@@ -131,21 +170,21 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
-       cameraManager.stopPreview()
-       cameraManager.closeDriver()
+        cameraManager.stopPreview()
+        cameraManager.closeDriver()
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
-        cameraManager.openCamera(holder,errorCallback)
+        cameraManager.openCamera(holder, errorCallback)
         cameraManager.camera?.let {
-            cameraManager.setCameraParametersValues(it,cameraParameBuild){
-                result, error ->
-                 if(!result){
-                     ToastUtil.showError(context,"设置参数出错了,$error")
-                 }
+            cameraManager.setCameraParametersValues(it, cameraParameBuild) { result, error ->
+                if (!result) {
+                    ToastUtil.showError(context, "设置参数出错了,$error")
+                }
             }
         }
         println("camera-${cameraManager.theScreenResolution},${cameraManager.cameraBestResolution}")
 
     }
+
 }

@@ -15,6 +15,7 @@ import android.text.InputType
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 import com.akingyin.base.dialog.MaterialDialogUtil
 import com.akingyin.camera.CameraSize
 import com.akingyin.media.R
@@ -38,6 +39,38 @@ class CameraSettingFragment : PreferenceFragmentCompat() {
             cameraOld = it.getBoolean("cameraOld",false)
         }
         setPreferencesFromResource(R.xml.camera_preferences_fragment, rootKey)
+        findPreference<Preference>("camerax_resolution")?.let {
+            val x = preferenceManager.sharedPreferences.getInt(BaseCameraFragment.KEY_CAMERAX_RESOLUTION_X,0)
+            val y  = preferenceManager.sharedPreferences.getInt(BaseCameraFragment.KEY_CAMERAX_RESOLUTION_Y,0)
+            if(x ==0 || y == 0){
+                it.title = "未知"
+            }else{
+                it.title = CameraSize(x,y).toString()
+            }
+            if(cameraX){
+                it.setOnPreferenceClickListener {
+                    selectCameraResolution(x,y){
+                        width, hight ->
+                        it.title = CameraSize(width,hight).toString()
+                        preferenceManager.sharedPreferences.edit().run {
+                            putInt(BaseCameraFragment.KEY_CAMERAX_RESOLUTION_X,width)
+                                    .putInt(BaseCameraFragment.KEY_CAMERAX_RESOLUTION_Y,hight)
+                        }.apply()
+                    }
+                    return@setOnPreferenceClickListener true
+                }
+            }else{
+                it.isVisible = false
+            }
+        }
+
+        findPreference<SwitchPreferenceCompat>("key_camera_manual_auto_focus")?.let {
+            it.summary = if(it.isChecked)"点击界面进行区域对焦" else "点击界面进行自动对焦"
+            it.setOnPreferenceChangeListener { _, _ ->
+                it.summary = if(it.isChecked)"点击界面进行区域对焦" else "点击界面进行自动对焦"
+                return@setOnPreferenceChangeListener true
+            }
+        }
         findPreference<Preference>("camera_resolution")?.let {
             val x = preferenceManager.sharedPreferences.getInt(BaseCameraFragment.KEY_CAMERA_RESOLUTION_X,0)
             val y  = preferenceManager.sharedPreferences.getInt(BaseCameraFragment.KEY_CAMERA_RESOLUTION_Y,0)
@@ -61,7 +94,6 @@ class CameraSettingFragment : PreferenceFragmentCompat() {
             }else{
                 it.isVisible = false
             }
-
         }
 
         findPreference<EditTextPreference>("key_camera_auto_takephoto_delaytime")?.let {
@@ -70,6 +102,10 @@ class CameraSettingFragment : PreferenceFragmentCompat() {
                 editText ->
                 editText.inputType = InputType.TYPE_CLASS_NUMBER
             }
+            it.setOnPreferenceChangeListener { _, newValue ->
+                it.summary = "对焦成功后自动拍照延时${newValue}(秒)"
+                true
+            }
         }
 
         findPreference<EditTextPreference>("key_camera_auto_save_delaytime")?.let {
@@ -77,6 +113,10 @@ class CameraSettingFragment : PreferenceFragmentCompat() {
             it.setOnBindEditTextListener {
                 editText ->
                 editText.inputType = InputType.TYPE_CLASS_NUMBER
+            }
+            it.setOnPreferenceChangeListener { _, newValue ->
+                it.summary ="拍照成功后自动保存延时${newValue}(秒)"
+                true
             }
         }
     }

@@ -9,9 +9,10 @@
 
 package com.akingyin.camera.ui
 
-import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Point
 import android.hardware.Camera
 import android.hardware.Camera.CAMERA_ERROR_SERVER_DIED
@@ -20,6 +21,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.akingyin.base.SimpleFragment
 import com.akingyin.base.ext.*
@@ -35,11 +39,12 @@ import com.akingyin.media.R
 import com.akingyin.media.databinding.FragmentCameraBinding
 import com.akingyin.media.engine.LocationEngine
 import com.akingyin.media.engine.LocationManagerEngine
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import permissions.dispatcher.ktx.withPermissionsCheck
+import java.util.concurrent.CancellationException
 import kotlin.properties.Delegates
 
 /**
@@ -111,6 +116,16 @@ open class BaseCameraFragment : SimpleFragment() {
         })
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        cameraManager = CameraManager(context) {
+            showSucces("运动对焦成功！")
+            if(cameraParameBuild.supportFocesedAutoPhoto){
+                focusSucessCaptureImage()
+            }
+        }
+    }
+
     override fun injection() {
 
     }
@@ -120,6 +135,13 @@ open class BaseCameraFragment : SimpleFragment() {
 
     override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View? {
         bindView = FragmentCameraBinding.inflate(inflater, container, false)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,object :OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+               countDownJob?.cancel(cause = CancellationException("返回取消"))
+                cameraManager.closeDriver()
+               requireActivity().finish()
+            }
+        })
         return bindView.root
     }
 
@@ -140,17 +162,21 @@ open class BaseCameraFragment : SimpleFragment() {
             this.shutterSound = if(PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_SHUTTER_SOUND,true)) CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON else CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_OFF
             this.horizontalPicture = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_PHTOT_HORIZONTAL,false)
             this.netGrid = if(PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_GRID,false)) CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE else CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN
-            this.cameraResolution ?:Point().apply {
+            this.cameraResolution ?:Point()
+            this.cameraResolution?.run {
                 x = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_RESOLUTION_X,0)
                 y = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_RESOLUTION_Y,0)
+
             }
-            this.autoSavePhotoDelayTime = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_AUTO_SAVE_DELAYTIME,0)
-            this.focesedAutoPhotoDelayTime = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_AUTO_TAKEPHOTO_DELAYTIME,0)
+            this.supportMoveFocus = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_MOVE_AUTO_FOCUS,false)
+            this.autoSavePhotoDelayTime = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_AUTO_SAVE_DELAYTIME,"0").toInt()
+            this.focesedAutoPhotoDelayTime = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_AUTO_TAKEPHOTO_DELAYTIME,"0").toInt()
             this.supportAutoSavePhoto = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_AUTOSAVE_TAKEPHOTO,false)
             this.supportFocesedAutoPhoto = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_FOCUS_TAKEPHOTO,false)
             this.supportManualFocus = PreferencesUtil.get(sharedPreferencesName,KEY_CAMERA_MANUAL_AUTO_FOCUS,false)
             this.supportLocation = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_LOCATION,false)
         }
+        println("相机参数：$cameraParame")
         netGrid = cameraParame.netGrid
         flashMode = cameraParame.flashModel
         shutterSound = cameraParame.shutterSound
@@ -193,12 +219,7 @@ open class BaseCameraFragment : SimpleFragment() {
                 }
             }
         }
-        cameraManager = CameraManager(mContext) {
-            showSucces("运动对焦成功！")
-            if(cameraParameBuild.supportFocesedAutoPhoto){
-                captureImage()
-            }
-        }
+
 
         bindView.fabTakePicture.captureLisenter = object : CaptureButton.onClickTakePicturesListener() {
             override fun takePictures() {
@@ -207,6 +228,7 @@ open class BaseCameraFragment : SimpleFragment() {
             }
         }
         bindView.btnCancel.click {
+            countDownJob?.cancel()
             CameraManager.recoveryCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel)
             bindView.fabTakePicture.resetRecordAnim()
             bindView.fabTakePicture.isEnabled = true
@@ -223,10 +245,12 @@ open class BaseCameraFragment : SimpleFragment() {
             }
         }
         bindView.btnConfig.click {
-            cameraLiveData.value = CameraData().apply {
+            println("放送消息")
+            countDownJob?.cancel()
+            cameraLiveData.postValue(CameraData().apply {
                 mediaType = MediaConfig.TYPE_IMAGE
                 localPath = bindView.viewFinder.cameraParameBuild.localPath
-            }
+            })
         }
         bindView.buttonGrid.click {
             toggleGrid()
@@ -253,13 +277,20 @@ open class BaseCameraFragment : SimpleFragment() {
             countDownJob?.cancel()
             showSucces("倒计时已取消")
         }
-        withPermissionsCheck(Manifest.permission.CAMERA,locationEngine?.let {
-            Manifest.permission.ACCESS_FINE_LOCATION
-        }?:Manifest.permission.WRITE_EXTERNAL_STORAGE) {
-            bindView.viewFinder.bindSurfaceView(cameraManager, cameraParameBuild)
+
+    }
+
+    /**
+     * 对焦成功，自动拍照
+     */
+    private  fun   focusSucessCaptureImage(){
+        if(cameraParameBuild.focesedAutoPhotoDelayTime>0){
+             countDownStart(cameraParameBuild.focesedAutoPhotoDelayTime,"自动拍照"){
+                 captureImage()
+             }
+        }else{
+            captureImage()
         }
-
-
     }
 
     /** 拍照*/
@@ -306,7 +337,9 @@ open class BaseCameraFragment : SimpleFragment() {
             cameraManager.camera?.let {
                 putExtra("cameraSizes",CameraManager.findSuportCameraSizeValue(it.parameters))
             }
+            putExtra("sharedPreferencesName",sharedPreferencesName)
             putExtra("cameraOld",true)
+            putExtra("cameraX",false)
         }, CAMERA_SETTING_REQUEST_CODE)
     }
 
@@ -316,7 +349,7 @@ open class BaseCameraFragment : SimpleFragment() {
         R.drawable.ic_action_volume_off,
         R.drawable.ic_action_volume_on){
             flag ->
-            shutterSound = if (flag) CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_OFF else CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON
+            shutterSound = if (flag) CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON else CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_OFF
 
         }
     }
@@ -328,7 +361,7 @@ open class BaseCameraFragment : SimpleFragment() {
                 R.drawable.ic_grid_off,
                 R.drawable.ic_grid_on
         ) { flag ->
-            netGrid = if (flag) CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE else CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN
+            netGrid = if (flag) CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN else CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE
 
         }
     }
@@ -338,17 +371,18 @@ open class BaseCameraFragment : SimpleFragment() {
     /**
      * 开始倒计时
      */
-    fun  countDownStart(count:Int,tip:String,call:()->Unit){
+    private fun  countDownStart(count:Int,tip:String,call:()->Unit){
         bindView.textCountDownTip.text = tip
        countDownJob = lifecycleScope.launch(Main){
             for (i in count downTo 1){
                 bindView.textCountDown.text = i.toString()
                 delay(1000)
             }
+           bindView.textCountDown.text=""
+           bindView.textCountDownTip.text = ""
+           call.invoke()
         }
-        bindView.textCountDown.text=""
-        bindView.textCountDownTip.text = ""
-        call.invoke()
+
     }
 
     override fun lazyLoad() {
@@ -362,6 +396,7 @@ open class BaseCameraFragment : SimpleFragment() {
     }
 
     companion object {
+        private const val REQUEST_CODE_PERMISSIONS = 10
         const val CAMERA_SETTING_REQUEST_CODE = 1001
         const val KEY_CAMERA_FLASH = "key_camera_flash"
         const val KEY_CAMERA_GRID = "key_camera_netgrid"
@@ -374,6 +409,10 @@ open class BaseCameraFragment : SimpleFragment() {
 
         const val KEY_CAMERA_LOCATION = "key_camera_location"
 
+        /** 运动自动对焦 */
+        const val KEY_CAMERA_MOVE_AUTO_FOCUS ="key_camera_move_auto_focus"
+
+        /** 对焦模式 fase = 自动  true=手动 */
         const val KEY_CAMERA_MANUAL_AUTO_FOCUS = "key_camera_manual_auto_focus"
 
         const val KEY_CAMERA_FOCUS_TAKEPHOTO = "key_camera_focus_takephoto"
@@ -398,16 +437,58 @@ open class BaseCameraFragment : SimpleFragment() {
         }
     }
 
+    private  var bindCameraInit = false
     override fun onResume() {
         super.onResume()
+        if(allPermissionsGranted()){
+            onPermissionGranted()
+        }else{
+            bindView.viewFinder.unBindSurfaceView()
+            bindCameraInit = false
+            ActivityCompat.requestPermissions(requireActivity(), cameraPermissions, REQUEST_CODE_PERMISSIONS)
+        }
         cameraSensorController.onResume()
+    }
+
+    private fun onPermissionGranted() {
+        if(!bindCameraInit){
+            bindView.viewFinder.bindSurfaceView(cameraManager, cameraParameBuild){
+                result, error ->
+                if(result){
+                    focusSucessCaptureImage()
+                }else{
+                    showError(error)
+                }
+            }
+        }
+        bindCameraInit = true
+
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode == REQUEST_CODE_PERMISSIONS){
+            if(allPermissionsGranted()){
+                onPermissionGranted()
+            }else{
+                mView.let { v ->
+                    Snackbar.make(v, "拍照没有这些权限将无法运行！", Snackbar.LENGTH_INDEFINITE)
+                            .setAction("退出") { ActivityCompat.finishAffinity(requireActivity()) }
+                            .show()
+                }
+            }
+        }
     }
 
     override fun onPause() {
         super.onPause()
+
         cameraSensorController.onPause()
     }
-
+    // Check for the permissions
+    private fun allPermissionsGranted() = cameraPermissions.all {
+        ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -417,4 +498,6 @@ open class BaseCameraFragment : SimpleFragment() {
             }
         }
     }
+
+
 }

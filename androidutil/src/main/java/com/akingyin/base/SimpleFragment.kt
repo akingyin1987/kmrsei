@@ -39,12 +39,12 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
         mContext = context
     }
 
-    private val cameraPermissions = arrayOf(
+    open val cameraPermissions = arrayOf(
             Manifest.permission.CAMERA,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
-    private val videoPermissions = arrayOf(
+    open val videoPermissions = arrayOf(
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -61,11 +61,11 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
                 inflater.inflate(getLayoutId(), null)
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                onBackPressed()
-            }
-        })
+//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                onBackPressed()
+//            }
+//        })
         return mView
     }
 

@@ -57,6 +57,7 @@ class CameraAutoFouceSensorController (var content:Context, var callBack:()->Uni
     }
 
     override fun onSensorChanged(event: SensorEvent) {
+        println("run->onSensorChanged")
         if (event.sensor == null) {
             return
         }
@@ -90,6 +91,7 @@ class CameraAutoFouceSensorController (var content:Context, var callBack:()->Uni
                             if (!isFocusing) {
                                 canFocusIn = false
                                 //                                onCameraFocus();
+                                println("开始自动对焦---->>>>")
                                 callBack.invoke()
                             }
                         }

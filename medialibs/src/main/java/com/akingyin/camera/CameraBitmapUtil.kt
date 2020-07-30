@@ -204,11 +204,10 @@ object CameraBitmapUtil {
             p.color = Color.WHITE
             p.style = Paint.Style.FILL
             p.isAntiAlias = true
-            p.isDither = true
+
 
             val paint = TextPaint()
             paint.textSize = 20f
-            paint.isDither = true
             paint.color = Color.RED
             paint.isAntiAlias = true
             paint.isFakeBoldText = true

@@ -83,10 +83,6 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
     var cameraBestResolution: Point = Point()
     var BEST_SCALE = SCALE_16_9
 
-    //自动定义分辨率
-    var customResolution: Point = Point()
-
-
     // 打开相机后默认使用的分辨率()
     var defaultPreviewSize = Point()
 
@@ -104,7 +100,8 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
             it
         }.first()
         cameraAutoFouceSensorController = CameraAutoFouceSensorController(content) {
-            autoStartFuoce { result, _ ->
+            autoStartFuoce { result, msg ->
+                println("运动对焦$result,$msg")
                 if (result) {
                     autoFouceCall.invoke()
                 }
@@ -158,6 +155,11 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
             cameraShutterSound = cameraParameBuild.shutterSound
             if (cameraShutterSound != CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE) {
                 camera.enableShutterSound(cameraShutterSound == CameraShutterSound.CAMERA_SHUTTER_SOUND_ON)
+            }
+            if(cameraParameBuild.supportMoveFocus){
+                cameraAutoFouceSensorController.unRegisterSensor()
+            }else{
+                cameraAutoFouceSensorController.onRegisterSensor()
             }
 
             camera.parameters = camera.parameters.apply {
@@ -218,13 +220,15 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
         }
     }
 
+
+
     private var focusing = false
 
 
     /**
      * 这是自动对焦
      */
-    private fun autoStartFuoce(callBack: (result: Boolean, error: String?) -> Unit) {
+     fun autoStartFuoce(callBack: (result: Boolean, error: String?) -> Unit) {
         if (focusing || previewing) {
             return
         }
@@ -256,6 +260,31 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
 
     }
 
+
+    /**
+     * 获取相机可支持的最大值
+     */
+    fun  getCameraMaxZoom() = camera?.parameters?.maxZoom?:0
+
+    fun  getZoomRatio() = camera?.parameters?.zoom?:0
+
+    /**
+     * 设置相机的放大倍率
+     */
+    fun   setCameraZoom(zoom:Float){
+        camera?.parameters?.let {
+            parameters ->
+            if(parameters.isZoomSupported){
+                if(zoom<= parameters.maxZoom ){
+                    camera?.parameters = parameters.also {
+                        it.zoom = zoom.toInt()
+                    }
+                }
+            }
+        }
+    }
+
+
     /**
      * 开启预览
      */
@@ -267,7 +296,14 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
             theCamera.startPreview()
             previewing = true
         }
-        cameraAutoFouceSensorController.onRegisterSensor()
+        cameraParameBuild?.let {
+            if(it.supportMoveFocus){
+                cameraAutoFouceSensorController.onRegisterSensor()
+            }else{
+                cameraAutoFouceSensorController.unRegisterSensor()
+            }
+        }
+
     }
 
 
@@ -485,6 +521,13 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                 }, {
                     callBack(false, "出错了,${it.message}")
                 })
+    }
+
+    /**
+     * 取消自动拍照
+     */
+    fun  cancelAutoTakePhoto(){
+        disposable?.dispose()
     }
 
 

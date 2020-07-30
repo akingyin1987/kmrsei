@@ -50,16 +50,15 @@ class CameraTestActivity : SimpleActivity() {
     }
 
     override fun initView() {
-        val  fragment = supportFragmentManager.findFragmentByTag("camera")?.let {
-            it as BaseCameraFragment
-        }?: BaseCameraFragment.newInstance(CameraParameBuild())
+        val  fragment = BaseCameraFragment.newInstance(CameraParameBuild(),sharedPreferencesName = "app_camera_setting")
         fragment.cameraLiveData.observe(this, Observer {
             println("data->$it")
+            showSucces("拍照成功->$it")
+            finish()
         })
 
-        supportFragmentManager.beginTransaction().replace(R.id.container,BaseCameraFragment.newInstance(CameraParameBuild()))
-                .addToBackStack("camera")
-                .commitAllowingStateLoss()
+        supportFragmentManager.beginTransaction().add(R.id.container,fragment,"camera")
+                .commit()
 
     }
 
