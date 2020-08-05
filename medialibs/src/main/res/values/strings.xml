@@ -76,4 +76,10 @@
         <item>2</item>
     </string-array>
     <string name="camera_flash_def_value">1</string>
+
+    <string-array name="camera_volume_key_control">
+        <item>无</item>
+        <item>拍照</item>
+        <item>预览缩放</item>
+    </string-array>
 </resources>

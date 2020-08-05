@@ -89,6 +89,7 @@
     <activity android:name=".ui.CoroutinesDemo" />
     <activity android:name=".ui.FragmentTestActivity" />
     <activity android:name=".ui.CameraTestActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
 
 

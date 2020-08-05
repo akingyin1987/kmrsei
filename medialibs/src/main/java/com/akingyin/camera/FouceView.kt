@@ -45,7 +45,7 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     override fun onDraw(canvas: Canvas?) {
         canvas?.let {
-            println("正常画")
+            println("正常画${mPaint.color}")
             drawTouchFocusRect(it)
         }
         super.onDraw(canvas)
@@ -55,7 +55,7 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     /**
      * 确保所选区域在合理范围内,不会超过边界值
      */
-    fun clamp(touchCoordinateInCameraReper: Int, focusAreaSize: Int): Int {
+    private fun clamp(touchCoordinateInCameraReper: Int, focusAreaSize: Int): Int {
         return if (abs(touchCoordinateInCameraReper) + focusAreaSize > 1000) {
             if (touchCoordinateInCameraReper > 0) {
                 1000 - focusAreaSize
@@ -68,15 +68,15 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     var  screenPoint:Point?= null
+    val FOCUS_AREA_SIZE = 300
+    private fun calculateTapArea(x: Float, y: Float, coefficient: Float):Rect? {
 
-    fun calculateTapArea(x: Float, y: Float, coefficient: Float):Rect? {
-        val FOCUS_AREA_SIZE = 300
        return screenPoint?.let {
             val areaSize = FOCUS_AREA_SIZE * (coefficient.toInt())
             val left =clamp((y/it.y*2000-1000).toInt(),areaSize)
             val top = clamp(((it.x-x)/it.x*2000-1000).toInt(),areaSize)
             return@let Rect(left,top,left+areaSize,top+areaSize)
-        }?:null
+        }
 
 
     }
@@ -124,7 +124,7 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     fun disDrawTouchFocusRect(result: Boolean = true) {
         mPaint.color = if (result) Color.GREEN else Color.RED
         println("改变画笔颜色")
-        postInvalidate()
+        invalidate()
 
         AnimationUtils.loadAnimation(context, R.anim.camera_fouce_rotate).run {
             setAnimationListener(object : Animation.AnimationListener {
@@ -133,7 +133,7 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     touchFocusRect = null
                     mPaint.color = Color.WHITE
                     println("清除画笔颜色")
-                    postInvalidate()
+                   postInvalidate()
                 }
 
                 override fun onAnimationRepeat(animation: Animation) {}
@@ -143,11 +143,13 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         }
 
 
+
     }
 
     private fun drawTouchFocusRect(canvas: Canvas) {
         touchFocusRect?.run {
             canvas.run {
+                println("画笔颜色=${mPaint.color}")
                 //左下角
                 drawRect((left - 2).toFloat(), bottom.toFloat(), (left + 20).toFloat(), (bottom + 2).toFloat(), mPaint)
                 drawRect((left - 2).toFloat(), (bottom - 20).toFloat(), left.toFloat(), bottom.toFloat(), mPaint)

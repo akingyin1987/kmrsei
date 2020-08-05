@@ -20,7 +20,7 @@ import android.view.ScaleGestureDetector.OnScaleGestureListener
  * @ Date 2020/7/30 13:49
  * @version V1.0
  */
-class PinchToZoomGestureDetector(context: Context,myScaleGestureDetector: MyScaleGestureDetector,var listion:OnCamerZoomListion) : ScaleGestureDetector(context,myScaleGestureDetector), OnScaleGestureListener{
+class PinchToZoomGestureDetector(context: Context, myScaleGestureDetector: MyScaleGestureDetector, var listion: OnCamerZoomListion) : ScaleGestureDetector(context, myScaleGestureDetector), OnScaleGestureListener {
 
     init {
         myScaleGestureDetector.listener = this
@@ -45,27 +45,32 @@ class PinchToZoomGestureDetector(context: Context,myScaleGestureDetector: MyScal
         } else {
             1.0f - (1.0f - scale) * 2
         }
+        println("scale=$scale")
+        var newRatio: Float = if(listion.getZoomRatio()==0F) scale else listion.getZoomRatio()*scale
+        println("onScale=$newRatio,${listion.getMaxZoomRatio()},${listion.getZoomRatio()}")
 
-        var newRatio: Float = listion.getZoomRatio() * scale
         newRatio = rangeLimit(newRatio, listion.getMaxZoomRatio(), listion.getMinZoomRatio())
         listion.setZoomRatio(newRatio)
+
         return true
 
     }
+
     private fun rangeLimit(`val`: Float, max: Float, min: Float): Float {
         return `val`.coerceAtLeast(min).coerceAtMost(max)
     }
-    interface  OnCamerZoomListion{
-        fun   getZoomRatio():Float
 
-        fun  getMaxZoomRatio():Float
+    interface OnCamerZoomListion {
+        fun getZoomRatio(): Float
 
-        fun  getMinZoomRatio():Float
+        fun getMaxZoomRatio(): Float
 
-        fun  setZoomRatio(zoom:Float)
+        fun getMinZoomRatio(): Float
 
-        fun  isZoomSupported():Boolean
+        fun setZoomRatio(zoom: Float)
 
-        fun  isPinchToZoomEnabled():Boolean
+        fun isZoomSupported(): Boolean
+
+        fun isPinchToZoomEnabled(): Boolean
     }
 }

@@ -13,8 +13,10 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.ext.app
 import com.akingyin.base.ext.startActivityForResult
@@ -95,5 +97,18 @@ class CameraTestActivity : SimpleActivity() {
                 showSucces("收到数据")
             }
         }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if(keyCode== KeyEvent.KEYCODE_VOLUME_UP ||
+                keyCode == KeyEvent.KEYCODE_VOLUME_DOWN||
+                keyCode== KeyEvent.KEYCODE_CAMERA){
+            LocalBroadcastManager.getInstance(this).sendBroadcast(Intent().apply {
+                action = BaseCameraFragment.KEYDOWN_VOLUME_KEY_ACTION
+                putExtra("keyCode",keyCode)
+
+            })
+        }
+        return super.onKeyDown(keyCode, event)
     }
 }

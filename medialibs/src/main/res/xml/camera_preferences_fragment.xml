@@ -127,6 +127,16 @@
         app:allowDividerBelow="true" />
   </PreferenceCategory>
 
-
+  <ListPreference
+      android:entries="@array/camera_volume_key_control"
+      android:entryValues="@array/camera_flash_value"
+      android:key="key_camera_volume_key_control"
+      android:defaultValue="@string/camera_flash_def_value"
+      android:icon="@drawable/ic_action_volume_on"
+      app:allowDividerAbove="true"
+      app:allowDividerBelow="true"
+      android:dialogTitle="选择音量键控制"
+      android:summary="通过音量键控制拍照或预览缩放"
+      android:title="音量键控制" />
 
 </PreferenceScreen>

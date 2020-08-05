@@ -12,12 +12,13 @@
     android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:viewBindingIgnore="true"
+
     android:layout_height="match_parent">
 
       <com.akingyin.camera.widget.CameraSurfaceView
           android:layout_width="match_parent"
           android:id="@+id/camera_surface"
-          android:layout_centerInParent="true"
+          android:visibility="visible"
           android:layout_height="match_parent"/>
 
   <com.akingyin.camera.FouceView

@@ -57,6 +57,7 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
 
     fun bindSurfaceView(cameraManager: CameraManager, cameraParameBuild: CameraParameBuild,autoTakePhotoCall:(result:Boolean,error:String?)->Unit ) {
         this.cameraManager = cameraManager
+
         this.cameraParameBuild = cameraParameBuild
         camera_fouce.screenPoint = cameraManager.theScreenResolution
         camera_surface.holder.addCallback(this)
@@ -89,11 +90,12 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
         camera_surface.pinchToZoomGestureDetector =  PinchToZoomGestureDetector(context, MyScaleGestureDetector(), object : PinchToZoomGestureDetector.OnCamerZoomListion {
             override fun getZoomRatio() = cameraManager.getZoomRatio().toFloat()
 
-            override fun getMaxZoomRatio() = cameraManager.getCameraMaxZoom().toFloat()
+            override fun getMaxZoomRatio() = cameraManager.cameraMaxZoom.toFloat()
 
-            override fun getMinZoomRatio() = 0F
+            override fun getMinZoomRatio() = cameraManager.cameraMinZoom.toFloat()
 
             override fun setZoomRatio(zoom: Float) {
+                println("setZoomRatio->$zoom")
                 cameraManager.setCameraZoom(zoom)
             }
 
@@ -136,9 +138,13 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
 
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+        println("surfaceChanged->$width,$height,cameraParameBuild=$cameraParameBuild")
         cameraParameBuild.cameraResolution?.let {
+            println("cameraResolution=$it")
             cameraManager.findBestViewSize(cameraManager.theScreenResolution, it)?.let { best ->
-                camera_surface.layoutParams.apply {
+                println("best->$best")
+
+                camera_surface.layoutParams = camera_surface.layoutParams.apply {
                     if (best.x == 0 && layoutParams.height != best.y) {
                         this.height = best.y
 
@@ -152,7 +158,11 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
 
     }
 
+
+
     fun takePhoto(cameraParame: CameraParameBuild = cameraParameBuild, callBack: (result: Boolean, error: String?) -> Unit) {
+        cameraParameBuild.cameraAngle = cameraManager.cameraAngle
+        println("拍照参数->$cameraParame")
         cameraManager.takePictrue(cameraParame) { result, error ->
             cameraManager.stopPreview()
             camera_img.visiable()
@@ -175,6 +185,7 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
+
         cameraManager.openCamera(holder, errorCallback)
         cameraManager.camera?.let {
             cameraManager.setCameraParametersValues(it, cameraParameBuild) { result, error ->

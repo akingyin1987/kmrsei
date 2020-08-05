@@ -17,16 +17,15 @@ import android.content.Context
 import android.graphics.ImageFormat
 import android.graphics.Point
 import android.hardware.Camera
+import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowManager
 import androidx.annotation.IntDef
 import autodispose2.autoDispose
-import com.akingyin.base.ext.gone
-import com.akingyin.base.ext.no
-import com.akingyin.base.ext.visiable
-import com.akingyin.base.ext.yes
+import com.akingyin.base.ext.*
 import com.akingyin.base.rx.RxUtil
+import com.akingyin.base.utils.CalculationUtil
 import com.akingyin.base.utils.FileUtils
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
@@ -63,6 +62,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
     /** 拍照时相机旋转角度 */
     var cameraAngle = 90
 
+    var windowRotation = 90
     /** UI 显示旋转角度 */
     var cameraUiAngle = 0
 
@@ -81,7 +81,18 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
 
     //相机设置的分辨率
     var cameraBestResolution: Point = Point()
-    var BEST_SCALE = SCALE_16_9
+    /** 自定义 相机分辨率*/
+    var cameraCustomResolution:Point = Point()
+
+    /** 相机当前的最小zoom */
+    var  cameraMinZoom = 0
+    /**
+     * 获取相机可支持的最大值
+     */
+    var  cameraMaxZoom :Int= 99
+    var  cameraCurrentZoom = 1F
+    private var SCALE = SCALE_16_9
+
 
     // 打开相机后默认使用的分辨率()
     var defaultPreviewSize = Point()
@@ -91,11 +102,19 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
     init {
         val windowManager: WindowManager = content.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         windowManager.defaultDisplay.getRealSize(theScreenResolution)
-        BEST_SCALE = max(theScreenResolution.x, theScreenResolution.y).toDouble() / min(theScreenResolution.x, theScreenResolution.y).toDouble()
-        BEST_SCALE = arrayListOf<Double>().apply {
-            add(abs(BEST_SCALE - SCALE_16_9))
-            add(abs(BEST_SCALE - SCALE_4_3))
-            add(abs(BEST_SCALE - SCALE_1_1))
+        windowRotation = try {
+            CameraDisplayOrientation(windowManager.defaultDisplay.rotation)
+
+        }catch (e : Exception){
+            e.printStackTrace()
+            90
+        }
+
+        SCALE = max(theScreenResolution.x, theScreenResolution.y).toDouble() / min(theScreenResolution.x, theScreenResolution.y).toDouble()
+        SCALE = arrayListOf<Double>().apply {
+            add(abs(SCALE - SCALE_16_9))
+            add(abs(SCALE - SCALE_4_3))
+            add(abs(SCALE - SCALE_1_1))
         }.asSequence().sortedBy {
             it
         }.first()
@@ -124,17 +143,20 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
             }
             try {
                 // 设置摄像头的角度，一般来说90度
-                theCamera.setDisplayOrientation(90)
+                theCamera.setDisplayOrientation(windowRotation)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
             camera = theCamera
+
             camera?.let {
                 val parameters = it.parameters
                 parameters.previewSize.run {
                     defaultPreviewSize.x = width
                     defaultPreviewSize.y = height
                 }
+                cameraMaxZoom = parameters.maxZoom
+                cameraCurrentZoom = parameters.zoom.toFloat()
                 cameraBestResolution = findBestPreviewSizeValue(parameters, theScreenResolution)
                     ?: defaultPreviewSize
 
@@ -152,6 +174,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
      */
     fun setCameraParametersValues(camera: Camera, cameraParameBuild: CameraParameBuild, callBack: (result: Boolean, error: String?) -> Unit) {
         try {
+            println("设置相机参数->$cameraParameBuild")
             cameraShutterSound = cameraParameBuild.shutterSound
             if (cameraShutterSound != CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE) {
                 camera.enableShutterSound(cameraShutterSound == CameraShutterSound.CAMERA_SHUTTER_SOUND_ON)
@@ -164,7 +187,10 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
 
             camera.parameters = camera.parameters.apply {
                 pictureFormat = ImageFormat.JPEG
-                val point = cameraParameBuild.cameraResolution ?: cameraBestResolution
+                var point = cameraParameBuild.cameraResolution ?: cameraBestResolution
+                if(point.x == 0 || point.y == 0){
+                    point = cameraBestResolution
+                }
                 setPreviewSize(point.x, point.y)
                 setPictureSize(point.x, point.y)
                 jpegQuality = 100
@@ -229,6 +255,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
      * 这是自动对焦
      */
      fun autoStartFuoce(callBack: (result: Boolean, error: String?) -> Unit) {
+        println("autoStartFuoce=$focusing,$previewing")
         if (focusing || previewing) {
             return
         }
@@ -261,17 +288,16 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
     }
 
 
-    /**
-     * 获取相机可支持的最大值
-     */
-    fun  getCameraMaxZoom() = camera?.parameters?.maxZoom?:0
 
-    fun  getZoomRatio() = camera?.parameters?.zoom?:0
+
+
+    fun  getZoomRatio() = cameraCurrentZoom
 
     /**
      * 设置相机的放大倍率
      */
     fun   setCameraZoom(zoom:Float){
+
         camera?.parameters?.let {
             parameters ->
             if(parameters.isZoomSupported){
@@ -279,6 +305,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                     camera?.parameters = parameters.also {
                         it.zoom = zoom.toInt()
                     }
+                    cameraCurrentZoom = zoom
                 }
             }
         }
@@ -322,41 +349,59 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
         cameraAutoFouceSensorController.unRegisterSensor()
     }
 
+
+    /** 是否正在拍照 */
+    private  var   takePhotoing = false
     /**
      * 拍照
      */
+    @Synchronized
     fun takePictrue(cameraParameBuild: CameraParameBuild, callBack: (result: Boolean, error: String?) -> Unit) {
-        if (cameraShutterSound != CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE) {
-            camera?.enableShutterSound(cameraShutterSound == CameraShutterSound.CAMERA_SHUTTER_SOUND_ON)
-        }
-        camera?.takePicture(if (cameraParameBuild.shutterSound == CameraShutterSound.CAMERA_SHUTTER_SOUND_ON) {
-            Camera.ShutterCallback {
-                println("ShutterCallback")
+        try {
+            println("当前角度=$cameraAngle")
+            if(takePhotoing){
+                callBack(false,"正在拍照中")
+                return
             }
-        } else {
-            null
-        }, null, Camera.PictureCallback { data, _ ->
-            GlobalScope.launch(Main) {
-                try {
-                    withContext(IO) {
-                        CameraBitmapUtil.dataToBaseBitmap(data, FileUtils.getFolderName(cameraParameBuild.localPath),
-                                "base_" + FileUtils.getFileName(cameraParameBuild.localPath), 90)
-                    }?.let {
-                        withContext(IO) {
-                            CameraBitmapUtil.zipImageTo960x540(it, cameraParameBuild.cameraAngle, fileDir = FileUtils.getFolderName(cameraParameBuild.localPath), fileName = FileUtils.getFileName(cameraParameBuild.localPath))
-                        }.yes {
-                            callBack(true, null)
-                        }.no {
-                            callBack(false, "图片转换失败")
-                        }
-                    } ?: callBack(true, "图片转换失败")
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    callBack(false, e.message)
+            takePhotoing = true
+            if (cameraShutterSound != CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE) {
+                camera?.enableShutterSound(cameraShutterSound == CameraShutterSound.CAMERA_SHUTTER_SOUND_ON)
+            }
+            camera?.takePicture(if (cameraParameBuild.shutterSound == CameraShutterSound.CAMERA_SHUTTER_SOUND_ON) {
+                Camera.ShutterCallback {
+                    println("ShutterCallback")
                 }
+            } else {
+                null
+            }, null, Camera.PictureCallback { data, _ ->
+                GlobalScope.launch(Main) {
+                    try {
+                        withIO {
+                            CameraBitmapUtil.dataToBaseBitmap(data, FileUtils.getFolderName(cameraParameBuild.localPath),
+                                    "base_" + FileUtils.getFileName(cameraParameBuild.localPath), 90)
+                        }?.let {
+                            withIO {
+                                CameraBitmapUtil.zipImageTo960x540(it, cameraParameBuild.cameraAngle,landscape = cameraParameBuild.horizontalPicture, fileDir = FileUtils.getFolderName(cameraParameBuild.localPath), fileName = FileUtils.getFileName(cameraParameBuild.localPath))
+                            }.yes {
+                                callBack(true, null)
+                            }.no {
+                                callBack(false, "图片转换失败")
+                            }
+                        } ?: callBack(true, "图片转换失败")
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        callBack(false, e.message)
+                    }
 
-            }
-        })
+                }
+            })
+        }catch (e : Exception){
+            e.printStackTrace()
+            callBack(false,"出错了,${e.message}")
+        }finally {
+            takePhotoing = false
+        }
+
 
     }
 
@@ -402,14 +447,18 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
         val camera: Camera?
         camera = if (cameraId < numCameras) {
             Timber.tag(TAG).i("Opening camera #$cameraId")
+
             Camera.open(cameraId)
+
         } else {
             if (explicitRequest) {
                 Timber.tag(TAG).w("Requested camera does not exist: $cameraId")
                 null
             } else {
+                windowRotation = 90
                 Timber.tag(TAG).i("No camera facing back; returning camera #0")
                 Camera.open()
+
             }
         }
         return camera
@@ -489,7 +538,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
             var largestPreview = supportedPreviewSizes[0]
             for (supportedPreviewSize in supportedPreviewSizes) {
                 val scale = supportedPreviewSize.width.coerceAtLeast(supportedPreviewSize.height) / (supportedPreviewSize.width.coerceAtMost(supportedPreviewSize.height) * 1.0)
-                if (abs(BEST_SCALE - scale) <= 0.01 && supportedPreviewSize.width.coerceAtLeast(supportedPreviewSize.height) > 960) {
+                if (abs(SCALE - scale) <= 0.01 && supportedPreviewSize.width.coerceAtLeast(supportedPreviewSize.height) > 960) {
                     largestPreview = supportedPreviewSize
                     break
                 }
@@ -521,13 +570,6 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                 }, {
                     callBack(false, "出错了,${it.message}")
                 })
-    }
-
-    /**
-     * 取消自动拍照
-     */
-    fun  cancelAutoTakePhoto(){
-        disposable?.dispose()
     }
 
 
@@ -618,10 +660,11 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
          * 点击开始拍照动画
          */
         @JvmStatic
-        fun startTypeCaptureAnimator(captureButton: View, configBtn: View, cancelBtn: View) {
+        fun startTypeCaptureAnimator(captureButton: View, configBtn: View, cancelBtn: View,rotationView: View) {
             captureButton.visibility = View.INVISIBLE
             configBtn.visiable()
             cancelBtn.visiable()
+            rotationView.visiable()
             println("with=${configBtn.width},${cancelBtn.width}")
             AnimatorSet().apply {
                 playTogether(ObjectAnimator.ofFloat(cancelBtn, "translationX", cancelBtn.width / 4F, 0F),
@@ -649,39 +692,23 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
         }
 
         @JvmStatic
-        fun recoveryCaptureAnimator(captureButton: View, configBtn: View, cancelBtn: View) {
+        fun recoveryCaptureAnimator(captureButton: View, configBtn: View, cancelBtn: View,rotationView: View) {
             captureButton.visiable()
             captureButton.isEnabled = true
             configBtn.gone()
+            rotationView.gone()
             cancelBtn.gone()
         }
 
         @JvmStatic
         fun getCameraResolutionScale(point: Point): String {
 
-            val result = GCD(point.x, point.y)
+            val result = CalculationUtil.maxCommonDivisor2(point.x, point.y)
             return "[" + max(point.x, point.y) / result + ":" + min(point.x, point.y) / result + "]"
         }
 
 
-        /**
-         * 获取最大公约数
-         * @param m
-         * @param n
-         * @return
-         */
-        private fun GCD(m: Int, n: Int): Int {
 
-            var m = m
-            var n = n
-            var result = 0
-            while (n != 0) {
-                result = m % n
-                m = n
-                n = result
-            }
-            return m
-        }
 
         /**
          * 获取支持的分辨率
@@ -747,4 +774,50 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
     }
 
 
+    @Throws(Exception::class)
+    fun CameraDisplayOrientation(rotation: Int): Int {
+        val info = Camera.CameraInfo()
+        val cameraId: Int = CameraId()
+        if (cameraId == -1) {
+            throw java.lang.Exception("没有摄像头！")
+        }
+        Camera.getCameraInfo(cameraId, info)
+        var degrees = 0
+
+        when (rotation) {
+            Surface.ROTATION_0 -> degrees = 0
+            Surface.ROTATION_90 -> degrees = 90
+            Surface.ROTATION_180 -> degrees = 180
+            Surface.ROTATION_270 -> degrees = 270
+            else -> {
+            }
+        }
+
+        return if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            (info.orientation + degrees) % 360
+
+        } else { // back-facing
+            (info.orientation - degrees + 360) % 360
+        }
+    }
+
+
+    //获取到当前后置摄像头的ID
+    private fun CameraId(): Int {
+        val numCameras = Camera.getNumberOfCameras()
+        if (numCameras == 0) {
+
+            return -1
+        }
+        var index = 0
+        while (index < numCameras) {
+            val cameraInfo = Camera.CameraInfo()
+            Camera.getCameraInfo(index, cameraInfo)
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                break
+            }
+            index++
+        }
+        return index
+    }
 }

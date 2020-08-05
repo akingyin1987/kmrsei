@@ -9,11 +9,13 @@
 package com.akingyin.camera
 
 import android.graphics.Point
+import android.os.Parcel
+import android.os.Parcelable
 import com.akingyin.base.config.AppFileConfig
 import com.akingyin.base.utils.StringUtils
 import com.akingyin.camera.CameraManager.*
 import java.io.File
-import java.io.Serializable
+
 
 /**
  * @author king
@@ -23,7 +25,7 @@ import java.io.Serializable
  */
 
 
-class CameraParameBuild :Serializable {
+class CameraParameBuild() : Parcelable {
     @CameraFlashModel
     var flashModel: Int = CameraFlashModel.CAMERA_FLASH_NONE
 
@@ -54,6 +56,9 @@ class CameraParameBuild :Serializable {
     /** 拍照后自动保存时间*/
     var  autoSavePhotoDelayTime = 2
 
+    /** 音量键控制 0= 无 1=拍照 2=预览缩放 */
+    var  volumeKeyControl = 0
+
     /**
      * 设置相机分辨率
      */
@@ -73,6 +78,24 @@ class CameraParameBuild :Serializable {
      * 相机的角度
      */
     var  cameraAngle = 90
+
+    constructor(parcel: Parcel) : this() {
+        flashModel = parcel.readInt()
+        shutterSound = parcel.readInt()
+        netGrid = parcel.readInt()
+        supportManualFocus = parcel.readByte() != 0.toByte()
+        supportMoveFocus = parcel.readByte() != 0.toByte()
+        supportLocation = parcel.readByte() != 0.toByte()
+        supportFocesedAutoPhoto = parcel.readByte() != 0.toByte()
+        focesedAutoPhotoDelayTime = parcel.readInt()
+        supportAutoSavePhoto = parcel.readByte() != 0.toByte()
+        autoSavePhotoDelayTime = parcel.readInt()
+        volumeKeyControl = parcel.readInt()
+        cameraResolution = parcel.readParcelable(Point::class.java.classLoader)
+        localPath = parcel.readString()?:""
+        horizontalPicture = parcel.readByte() != 0.toByte()
+        cameraAngle = parcel.readInt()
+    }
 
     class Builder {
         @CameraFlashModel
@@ -140,6 +163,38 @@ class CameraParameBuild :Serializable {
 
     override fun toString(): String {
         return "CameraParameBuild(flashModel=$flashModel, shutterSound=$shutterSound, netGrid=$netGrid, supportManualFocus=$supportManualFocus, supportLocation=$supportLocation, supportFocesedAutoPhoto=$supportFocesedAutoPhoto, focesedAutoPhotoDelayTime=$focesedAutoPhotoDelayTime, supportAutoSavePhoto=$supportAutoSavePhoto, autoSavePhotoDelayTime=$autoSavePhotoDelayTime, cameraResolution=$cameraResolution, localPath='$localPath', horizontalPicture=$horizontalPicture, cameraAngle=$cameraAngle)"
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(flashModel)
+        parcel.writeInt(shutterSound)
+        parcel.writeInt(netGrid)
+        parcel.writeByte(if (supportManualFocus) 1 else 0)
+        parcel.writeByte(if (supportMoveFocus) 1 else 0)
+        parcel.writeByte(if (supportLocation) 1 else 0)
+        parcel.writeByte(if (supportFocesedAutoPhoto) 1 else 0)
+        parcel.writeInt(focesedAutoPhotoDelayTime)
+        parcel.writeByte(if (supportAutoSavePhoto) 1 else 0)
+        parcel.writeInt(autoSavePhotoDelayTime)
+        parcel.writeInt(volumeKeyControl)
+        parcel.writeParcelable(cameraResolution, flags)
+        parcel.writeString(localPath)
+        parcel.writeByte(if (horizontalPicture) 1 else 0)
+        parcel.writeInt(cameraAngle)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<CameraParameBuild> {
+        override fun createFromParcel(parcel: Parcel): CameraParameBuild {
+            return CameraParameBuild(parcel)
+        }
+
+        override fun newArray(size: Int): Array<CameraParameBuild?> {
+            return arrayOfNulls(size)
+        }
     }
 
 

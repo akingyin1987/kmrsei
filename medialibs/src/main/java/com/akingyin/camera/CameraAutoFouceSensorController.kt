@@ -57,7 +57,7 @@ class CameraAutoFouceSensorController (var content:Context, var callBack:()->Uni
     }
 
     override fun onSensorChanged(event: SensorEvent) {
-        println("run->onSensorChanged")
+
         if (event.sensor == null) {
             return
         }

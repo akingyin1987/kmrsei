@@ -29,7 +29,8 @@
     <string name="empty_no_data">当前没有数据或未查到数据</string>
     <string name="version">V 1.0</string>
     <string name="date">February del 2013</string>
-    <string name="app_contact_info">Email: paulofghabana@gmail.com</string>
+    <string name="app_contact_info">Email: akingyin@163..com</string>
+    <string name="app_contentDescription">这是一个多媒体文件</string>
 
     <string name="loadingIcon">播放中</string>
     <string name="playIcon">播放</string>

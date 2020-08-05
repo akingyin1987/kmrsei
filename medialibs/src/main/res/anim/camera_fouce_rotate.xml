@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2020. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
   ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
@@ -8,13 +7,11 @@
   ~ akingyin@163.com
   -->
 
-<scale
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="300"
-    android:fromXScale="0.0"
-    android:toXScale="1.4"
+<scale xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="700"
+    android:fromXScale="0.1"
+    android:fromYScale="0.1"
     android:pivotX="50%"
     android:pivotY="50%"
-    android:fillAfter="false"
-    android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-    />
+    android:toXScale="1.1"
+    android:toYScale="1.1" />

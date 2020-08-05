@@ -296,7 +296,7 @@ class CaptureButton @JvmOverloads constructor(
 
     //重制状态
      fun resetRecordAnim() {
-        state = STATE_BAN
+        state = STATE_IDLE
         progress = 0f //重制进度
         invalidate()
         //还原按钮初始状态动画

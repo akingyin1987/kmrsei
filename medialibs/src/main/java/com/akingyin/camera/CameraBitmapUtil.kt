@@ -10,13 +10,17 @@
 package com.akingyin.camera
 
 import android.graphics.*
+import android.media.ExifInterface
 import android.text.TextPaint
+import android.text.TextUtils
 import com.akingyin.base.utils.DateUtil
 import okio.buffer
 import okio.sink
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
@@ -153,7 +157,7 @@ object CameraBitmapUtil {
      */
     @JvmOverloads
     @Throws(Exception::class, Error::class)
-    fun zipImageTo960x540(mBitmap: Bitmap, rotat: Int, time: Long = System.currentTimeMillis(), landscape: Boolean = false, fileDir: String, fileName: String):Boolean {
+    fun zipImageTo960x540(mBitmap: Bitmap, rotat: Int, time: Long = System.currentTimeMillis(), landscape: Boolean = false, fileDir: String, fileName: String,vararg exifInterface:Pair<String,String>):Boolean {
         var srcBitmap: Bitmap = mBitmap
         var fos: FileOutputStream? = null
 
@@ -200,18 +204,18 @@ object CameraBitmapUtil {
                 srcBitmap = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.width, srcBitmap.height, m, true)
             }
             val canvas = Canvas(srcBitmap)
-            val p = Paint()
-            p.color = Color.WHITE
-            p.style = Paint.Style.FILL
-            p.isAntiAlias = true
+            val p = Paint().apply {
+                color = Color.WHITE
+                style = Paint.Style.FILL
+                isAntiAlias = true
+            }
 
+            val paint = TextPaint().apply {
+               textSize = 20f
+                color = Color.RED
+               isAntiAlias = true
+            }
 
-            val paint = TextPaint()
-            paint.textSize = 20f
-            paint.color = Color.RED
-            paint.isAntiAlias = true
-            paint.isFakeBoldText = true
-            paint.setShadowLayer(1.6f, 1.5f, 1.3f, Color.BLACK)
 
             val arrowTxt: String = if (time == 0L) {
                 DateUtil.getNowTimeString()
@@ -223,8 +227,8 @@ object CameraBitmapUtil {
             val w = rect.width()
             val h = rect.height()
             val desPath = Path()
-            val txtX = mBitmap.width - 210.toFloat()
-            val txtY = mBitmap.height - 10.toFloat()
+            val txtX = srcBitmap.width - 210.toFloat()
+            val txtY = srcBitmap.height - 10.toFloat()
             desPath.moveTo(txtX - 5, txtY - h - 5)
             desPath.lineTo(txtX - 5, txtY + 8)
             desPath.lineTo(txtX + w + 5, txtY + 8)
@@ -236,6 +240,10 @@ object CameraBitmapUtil {
             file = File(fileDir, fileName)
             fos = FileOutputStream(file)
             srcBitmap.compress(Bitmap.CompressFormat.JPEG, quality, fos)
+            if(exifInterface.isNotEmpty()){
+                saveExifinterAttr(file.absolutePath,exifInterface.toMap())
+            }
+
             return true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -262,5 +270,92 @@ object CameraBitmapUtil {
 
     }
 
+    /**
+     * 将bitmap 转成图片文件
+     */
+    fun saveBitmapToPath(bitmap: Bitmap, filePath: String): Boolean {
 
+        var result = false //默认结果
+        val file = File(filePath)
+        try {
+             result = FileOutputStream(file).use {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, it)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+
+            bitmap.recycle()
+        }
+        return result
+    }
+
+    /**
+     * 旋转图片文件
+     */
+    fun rotateBitmap(degree: Int, localPath: String, time: Long) :Boolean{
+        var bitmap: Bitmap? = null
+        try {
+            bitmap = BitmapFactory.decodeFile(localPath)
+            val matrix = Matrix()
+            matrix.postRotate(degree.toFloat())
+            val resizeBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+            val savebmp = saveBitmapToPath(resizeBitmap, localPath)
+            if (savebmp) {
+                imgSdf.get()?.let {
+                    saveExifinterAttr(localPath, ExifInterface.TAG_DATETIME, it.format(Date(time)))
+                }
+
+            }
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } catch (e: Error) {
+            e.printStackTrace()
+        } finally {
+            bitmap?.recycle()
+        }
+        return false
+    }
+    const val TAG_DATETIME = "yyyy:MM:dd HH:mm:ss"
+    val imgSdf: ThreadLocal<SimpleDateFormat> = object : ThreadLocal<SimpleDateFormat>() {
+        override fun initialValue(): SimpleDateFormat {
+            return SimpleDateFormat(TAG_DATETIME, Locale.CHINA)
+        }
+    }
+    fun getExifinterAttr(localPath: String, key: String): String {
+        if (TextUtils.isEmpty(localPath)) {
+            return ""
+        }
+        try {
+            val exifInterface = ExifInterface(localPath)
+            return exifInterface.getAttribute(key)?:""
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+        return ""
+    }
+
+    fun saveExifinterAttr(localpath: String, key: String, value: String) {
+        try {
+            println("保存图片属性=$key$value")
+            val exifInterface = ExifInterface(localpath)
+            exifInterface.setAttribute(key, value)
+            exifInterface.saveAttributes()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun saveExifinterAttr(localpath: String, data: Map<String, String>) {
+        try {
+            val exifInterface = ExifInterface(localpath)
+            for (key in data.keys) {
+                exifInterface.setAttribute(key, data[key])
+            }
+            exifInterface.saveAttributes()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }

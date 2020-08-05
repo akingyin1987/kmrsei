@@ -17,8 +17,13 @@ package com.akingyin.base.utils;
  */
 public class CalculationUtil {
 
-  // 最大公约数：递归法
-  public static int MaxCommonDivisor(int m, int n) {
+  /**
+   * 最大公约数：递归法
+   * @param m
+   * @param n
+   * @return
+   */
+  public static int maxCommonDivisor(int m, int n) {
     if (m < n) {
       int temp = m;
       m = n;
@@ -27,11 +32,16 @@ public class CalculationUtil {
     if (m % n == 0) {
       return n;
     }
-    return MaxCommonDivisor(n, m % n);
+    return maxCommonDivisor(n, m % n);
   }
 
-  // 最大公约数：循环法求
-  public static int MaxCommonDivisor2(int m, int n) {
+  /**
+   * 最大公约数：循环法求
+   * @param m
+   * @param n
+   * @return
+   */
+  public static int maxCommonDivisor2(int m, int n) {
     if (m < n) {
       int temp = m;
       m = n;
@@ -45,9 +55,14 @@ public class CalculationUtil {
     return n;
   }
 
-  // 最小公倍数
-  public static int MinCommonMultiple(int m, int n) {
-    return m * n / MaxCommonDivisor(m, n);
+  /**
+   * 最小公倍数
+   * @param m
+   * @param n
+   * @return
+   */
+  public static int minCommonMultiple(int m, int n) {
+    return m * n / maxCommonDivisor(m, n);
   }
 
   public static int gcd(int a, int b) {

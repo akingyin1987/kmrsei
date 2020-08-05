@@ -12,6 +12,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/black"
+    android:keepScreenOn="true"
     android:layout_height="match_parent">
   <com.akingyin.camera.CameraPreview
       android:id="@+id/viewFinder"
@@ -352,8 +353,91 @@
       app:layout_constraintTop_toBottomOf="@+id/textCountDown"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-
       tools:text="0" />
+  <TextView
+      android:layout_width="200dp"
+      app:layout_constraintLeft_toLeftOf="parent"
+
+      app:layout_constraintBottom_toTopOf="@+id/rl_turn"
+      android:layout_marginBottom="30dp"
+      android:id="@+id/tv_location"
+      android:textColor="@android:color/white"
+      android:textSize="18sp"
+      android:text="这是地址看一下能显示几个字"
+      android:drawablePadding="5dp"
+      android:drawableStart="@drawable/ic_camera_location"
+      android:layout_height="wrap_content"/>
+  <com.lsp.RulerView
+      android:id="@+id/rulerView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="10dp"
+
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintBottom_toTopOf="@+id/tv_location"
+      android:layout_marginBottom="30dp"
+      app:bgColor="#fcfffc"
+      app:isBgRoundRect="true"
+      app:largeScaleColor="#50b586"
+      app:minScale="0"
+      app:maxScale="100"
+      app:midScaleColor="#999999"
+      app:midScaleStroke="3dp"
+      app:resultNumColor="#50b586"
+      app:resultNumTextSize="20sp"
+      app:rulerHeight="30dp"
+      app:scaleCount="10"
+      app:scaleGap="10dp"
+      app:scaleNumColor="#666666"
+      app:scaleNumTextSize="16sp"
+      app:smallScaleColor="#aaaaaa"
+      app:smallScaleStroke="2dp"
+      app:unit=""
+      app:unitColor="#50b586"
+      app:unitTextSize="10sp" />
+
+
+  <RelativeLayout android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintBottom_toTopOf="@+id/fabTakePicture"
+
+      android:layout_marginBottom="30dp"
+      android:id="@+id/rl_turn">
+
+    <ImageView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/iv_turnleft"
+
+        android:src="@drawable/icon_turn_left"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:contentDescription="@string/contentdescription" />
+    <ImageView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/iv_turncenter"
+        android:contentDescription="@string/contentdescription"
+        android:src="@drawable/icon_turn_180"
+
+        android:layout_marginTop="30dp"/>
+    <ImageView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/iv_turnright"
+        android:contentDescription="@string/contentdescription"
+        android:src="@drawable/icon_turn_right"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"/>
+  </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
