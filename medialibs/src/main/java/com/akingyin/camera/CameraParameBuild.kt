@@ -79,6 +79,15 @@ class CameraParameBuild() : Parcelable {
      */
     var  cameraAngle = 90
 
+    /**
+     * 经纬度及坐标类型
+     */
+    var  lat = 0.0
+    var  lng = 0.0
+
+    @LocalType
+    var  locType=LocalType.CORR_TYPE_BD09
+
     constructor(parcel: Parcel) : this() {
         flashModel = parcel.readInt()
         shutterSound = parcel.readInt()
@@ -95,6 +104,9 @@ class CameraParameBuild() : Parcelable {
         localPath = parcel.readString()?:""
         horizontalPicture = parcel.readByte() != 0.toByte()
         cameraAngle = parcel.readInt()
+        lat = parcel.readDouble()
+        lng = parcel.readDouble()
+        locType = parcel.readString()?:LocalType.CORR_TYPE_BD09
     }
 
     class Builder {
@@ -181,6 +193,9 @@ class CameraParameBuild() : Parcelable {
         parcel.writeString(localPath)
         parcel.writeByte(if (horizontalPicture) 1 else 0)
         parcel.writeInt(cameraAngle)
+        parcel.writeDouble(lat)
+        parcel.writeDouble(lng)
+        parcel.writeString(locType)
     }
 
     override fun describeContents(): Int {

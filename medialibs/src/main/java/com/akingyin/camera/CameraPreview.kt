@@ -55,7 +55,7 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
 
     lateinit var cameraParameBuild: CameraParameBuild
 
-    fun bindSurfaceView(cameraManager: CameraManager, cameraParameBuild: CameraParameBuild,autoTakePhotoCall:(result:Boolean,error:String?)->Unit ) {
+    fun bindSurfaceView(cameraManager: CameraManager, cameraParameBuild: CameraParameBuild,autoTakePhotoCall:(result:Boolean,error:String?)->Unit ,zoomGestureCall:((zoom:Float)->Unit)?=null) {
         this.cameraManager = cameraManager
 
         this.cameraParameBuild = cameraParameBuild
@@ -95,7 +95,7 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
             override fun getMinZoomRatio() = cameraManager.cameraMinZoom.toFloat()
 
             override fun setZoomRatio(zoom: Float) {
-                println("setZoomRatio->$zoom")
+                zoomGestureCall?.invoke(zoom)
                 cameraManager.setCameraZoom(zoom)
             }
 

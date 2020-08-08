@@ -40,7 +40,7 @@ object MyGlideExtension {
         return options
                 .fitCenter()
                 .placeholder(ICON_DEFAULT_PLACEHOLDER)
-                .error(R.drawable.ic_image_loading_error)
+                .error(R.drawable.ic_img_loading_error)
                 .format(DecodeFormat.PREFER_RGB_565)
 
     }

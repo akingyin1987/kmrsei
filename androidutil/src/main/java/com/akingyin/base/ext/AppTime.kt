@@ -36,8 +36,6 @@ class AppTime  private constructor(){
              if(Instance.serverTime == 0L || Instance.elapsedRealtime == 0L){
                  return  System.currentTimeMillis()
              }
-
-
              return  Instance.serverTime + (SystemClock.elapsedRealtime() - Instance.elapsedRealtime)
          }
 

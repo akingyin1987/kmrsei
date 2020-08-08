@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  ~ akingyin@163.com
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    android:background="@color/md_black_1000"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools">
+
+  <TextView
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      android:layout_width="match_parent"
+      android:id="@+id/tv_datetime"
+      android:textColor="@color/white"
+      tool:text="拍摄日期："
+      android:layout_height="wrap_content"/>
+
+  <TextView
+    app:layout_constraintTop_toBottomOf="@+id/tv_datetime"
+    app:layout_constraintLeft_toLeftOf="parent"
+    android:layout_width="match_parent"
+    android:id="@+id/tv_filename"
+      android:textColor="@color/white"
+    android:layout_marginTop="10dp"
+    tool:text="文件名："
+    android:layout_height="wrap_content"/>
+
+  <TextView
+      app:layout_constraintTop_toBottomOf="@+id/tv_filename"
+      app:layout_constraintLeft_toLeftOf="parent"
+      android:layout_width="match_parent"
+      android:id="@+id/tv_filesize"
+      android:layout_marginTop="10dp"
+      android:textColor="@color/white"
+      tool:text="文件大小：22k  1005*2005"
+      android:layout_height="wrap_content"/>
+
+  <TextView
+      app:layout_constraintTop_toBottomOf="@+id/tv_filesize"
+      app:layout_constraintLeft_toLeftOf="parent"
+      android:layout_width="match_parent"
+      android:id="@+id/tv_localpath"
+      android:textColor="@color/white"
+      android:layout_marginTop="10dp"
+      tool:text="本地路径：22k  1005*2005"
+      android:layout_height="wrap_content"/>
+
+  <LinearLayout
+      android:layout_marginTop="10dp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/tv_localpath"
+      android:layout_width="wrap_content"
+      android:id="@+id/ll_location"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
+    <TextView
+        android:id="@+id/tv_fileloc"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+
+        android:drawableStart="@drawable/ic_camera_location"
+        android:textColor="@color/white"
+        android:gravity="left|center"
+        tool:text="位置信息444" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/contentdescription"
+        android:src="@drawable/ic_media_add"
+        android:layout_margin="10dp"
+        android:id="@+id/iv_add_loc"
+        android:visibility="gone"
+
+
+        />
+
+    <ImageView
+        android:id="@+id/iv_remove_loc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:contentDescription="@string/contentdescription"
+        android:src="@drawable/ic_media_clean"
+        />
+
+  </LinearLayout>
+
+  <ImageView
+      android:layout_width="wrap_content"
+      app:layout_constraintTop_toBottomOf="@+id/ll_location"
+      android:id="@+id/iv_locimg"
+      android:layout_marginTop="8dp"
+      android:contentDescription="@string/contentdescription"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      android:layout_height="wrap_content"/>
+
+  <TextView
+      app:layout_constraintTop_toBottomOf="@+id/iv_locimg"
+      app:layout_constraintLeft_toLeftOf="parent"
+      android:layout_width="wrap_content"
+      android:id="@+id/tv_tag"
+      android:textColor="@color/white"
+      android:layout_marginTop="10dp"
+      tool:text="标签："
+      android:layout_height="wrap_content"/>
+  <me.gujun.android.taggroup.TagGroup
+      android:id="@+id/tag_group"
+      app:layout_constraintTop_toBottomOf="@+id/ll_location"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/tv_tag"
+      app:layout_constraintBottom_toBottomOf="@+id/tv_tag"
+      app:layout_constraintLeft_toRightOf="@+id/tv_tag"
+      style="@style/TagGroup" />
+  <me.gujun.android.taggroup.TagGroup
+      android:id="@+id/tag_group_edit"
+      app:atg_isAppendMode="true"
+      app:layout_constraintTop_toBottomOf="@+id/ll_location"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/tv_tag"
+      app:layout_constraintBottom_toBottomOf="@+id/tv_tag"
+      app:layout_constraintLeft_toRightOf="@+id/tv_tag"
+      style="@style/TagGroup" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

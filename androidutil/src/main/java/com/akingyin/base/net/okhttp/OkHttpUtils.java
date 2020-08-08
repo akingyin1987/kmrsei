@@ -8,11 +8,10 @@
 
 package com.akingyin.base.net.okhttp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
-import com.akingyin.base.net.okhttp.Interceptor.LoginStatusInterceptor;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -404,7 +403,7 @@ public class OkHttpUtils {
 
                     OkHttpClient.Builder builder = new OkHttpClient.Builder()
                         .addInterceptor(httpLoggingInterceptor)
-                      .addInterceptor(new LoginStatusInterceptor())
+                     // .addInterceptor(new LoginStatusInterceptor())
                        // .cookieJar(new SimpleCookieJar())
                       //  .cache(new Cache(cacheDir, Config.RESPONSE_CACHE_SIZE))
                         .connectTimeout(Config.HTTP_CONNECT_TIMEOUT, TimeUnit.SECONDS)

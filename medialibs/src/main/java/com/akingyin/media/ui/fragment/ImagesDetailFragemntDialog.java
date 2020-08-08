@@ -47,7 +47,7 @@ public class ImagesDetailFragemntDialog  extends DialogFragment {
   private   String   url;
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Light_NoActionBar_Fullscreen);
+    setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
 
     url = getArguments().getString(ImagesDetailActivity.INTENT_IMAGE_URL_TAG);
   }

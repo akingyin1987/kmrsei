@@ -223,8 +223,7 @@ class SelectLocationBaiduActivity :SimpleActivity() {
                   putExtra("name",it.name)
                   putExtra("uid",it.uid)
               })
-              startActivity<PanoramaBaiduMapActivity>(bundle = arrayOf(PanoramaBaiduMapActivity.LAT_KEY to it.location.latitude,
-               PanoramaBaiduMapActivity.LNG_KEY to it.location.longitude,PanoramaBaiduMapActivity.ADDR_KEY to it.address))
+
               finish()
           }?:showError("请选择要发送的地址！")
         }

@@ -29,7 +29,7 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
     private lateinit var mActivity: Activity
     lateinit var mContext: Context
     private var isInited = false
-
+    var  TAG :String  = this.javaClass.simpleName
 
     override fun onAttach(context: Context) {
         injection()

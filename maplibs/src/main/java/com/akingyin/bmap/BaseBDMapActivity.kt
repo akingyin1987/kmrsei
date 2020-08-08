@@ -40,6 +40,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
         bdMapManager = BDMapManager(mapView.map,mapView,this,autoLocation())
         bdMapManager.onCreate(savedInstanceState)
         bdMapManager.initMapConfig()
+
         bdMapManager.onMapLoad {
             onMapLoadComplete()
         }

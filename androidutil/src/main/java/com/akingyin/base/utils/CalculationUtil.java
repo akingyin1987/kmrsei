@@ -74,6 +74,9 @@ public class CalculationUtil {
     return a;
   }
 
+
+
+
   public static void main(String[] args) {
     int  value =  CalculationUtil.gcd(128,52);
     System.out.println("value="+value);

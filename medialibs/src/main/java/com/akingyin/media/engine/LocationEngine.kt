@@ -22,10 +22,15 @@ interface LocationEngine {
     /**
      * 获取当前最新位置
      */
-    fun   getNewLocation(locType:String,call:(lat:Double,lng:Double)->Unit)
+    fun   getNewLocation(locType:String,locLat:Double?=null,locLng:Double?=null,call:(lat:Double,lng:Double,addr:String)->Unit)
 
     /**
      * 通过位置获取定位图片
      */
-    fun   getLocationImageUrl(lat: Double,lng: Double,locType: String):String
+    fun   getLocationImageUrl(lat: Double,lng: Double,locType: String,localImagePath:String?=null):String
+
+    /**
+     * 通过位置获取地址
+     */
+    fun   getLocationAddr(lat: Double,lng: Double,locType: String):String
 }

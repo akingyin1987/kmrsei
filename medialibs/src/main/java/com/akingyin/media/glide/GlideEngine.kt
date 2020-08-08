@@ -19,7 +19,6 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.akingyin.media.GlideApp
 import com.akingyin.media.MediaUtils
 import com.akingyin.media.R
-import com.akingyin.media.engine.Func
 import com.akingyin.media.engine.ImageEngine
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -47,7 +46,7 @@ class GlideEngine :ImageEngine{
      * @param url
      * @param imageView
      */
-    override fun loadImage(context: Context, url: String, imageView: ImageView, callBack: Func?) {
+    override fun loadImage(context: Context, url: String, imageView: ImageView, callBack: ((result: Boolean) -> Unit)?) {
         GlideApp.with(context).apply {
             if(null == callBack){
                 load(url).fitCenter()
@@ -172,7 +171,7 @@ class GlideEngine :ImageEngine{
      * @param url
      * @param imageView
      */
-    override fun loadGridImage(context: Context, url: String, imageView: ImageView,callBack: Func?) {
+    override fun loadGridImage(context: Context, url: String, imageView: ImageView,callBack: ((result: Boolean) -> Unit)??) {
         GlideApp.with(context).run {
             if(null == callBack){
                 load(url)

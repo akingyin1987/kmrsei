@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.akingyin.base.ext.no
 import com.akingyin.base.ext.yes
+import com.akingyin.base.utils.EasyActivityResult
 import com.classic.common.MultipleStatusView
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog.Builder.ICON_TYPE_LOADING
@@ -34,7 +35,7 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
     private   var mLaunchManager: MutableList<Job> = mutableListOf()
     private   var multipleStatusView : MultipleStatusView?=null
     // Log tag
-    private var TAG_LOG: String? = null
+    var  TAG :String  = this.javaClass.simpleName
     protected var mContext: Context? = null
 
 
@@ -44,7 +45,7 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
 
         super.onCreate(savedInstanceState)
         AppManager.getInstance()!!.addActivity(this)
-        TAG_LOG = this.localClassName
+
         if(useDataBindView()){
             initDataBindView()
         }else {
@@ -266,6 +267,7 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
     }
     override fun onDestroy() {
         AppManager.getInstance()?.finishActivity(this)
+        EasyActivityResult.onRemoveActivityResult(TAG)
         hideLoadDialog()
         if (!compositeDisposable.isDisposed) {
             compositeDisposable.clear()
@@ -287,7 +289,13 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
         super.onStop()
     }
 
+    override fun onBackPressed() {
+
+        super.onBackPressed()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        EasyActivityResult.dispatch(TAG,requestCode,resultCode,data)
     }
 }

@@ -99,6 +99,9 @@ dependencies {
   // If you to use Camera Extensions
   implementation "androidx.camera:camera-extensions:$camerax_ext_version"
 
+  implementation "androidx.exifinterface:exifinterface:1.3.0-alpha01"
   // 自定义迟子
   implementation 'com.github.superSp:RulerView:v1.5'
+
+  implementation 'me.gujun.android.taggroup:library:1.4@aar'
 }

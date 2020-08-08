@@ -10,9 +10,11 @@
 package com.akingyin.camera
 
 import android.graphics.*
-import android.media.ExifInterface
+
 import android.text.TextPaint
 import android.text.TextUtils
+import androidx.exifinterface.media.ExifInterface
+import com.akingyin.base.ext.appServerTime
 import com.akingyin.base.utils.DateUtil
 import okio.buffer
 import okio.sink
@@ -157,7 +159,7 @@ object CameraBitmapUtil {
      */
     @JvmOverloads
     @Throws(Exception::class, Error::class)
-    fun zipImageTo960x540(mBitmap: Bitmap, rotat: Int, time: Long = System.currentTimeMillis(), landscape: Boolean = false, fileDir: String, fileName: String,vararg exifInterface:Pair<String,String>):Boolean {
+    fun zipImageTo960x540(mBitmap: Bitmap, rotat: Int, time: Long = System.currentTimeMillis(), landscape: Boolean = false, fileDir: String, fileName: String):Boolean {
         var srcBitmap: Bitmap = mBitmap
         var fos: FileOutputStream? = null
 
@@ -218,7 +220,7 @@ object CameraBitmapUtil {
 
 
             val arrowTxt: String = if (time == 0L) {
-                DateUtil.getNowTimeString()
+                DateUtil.millis2String(appServerTime)
             } else {
                 DateUtil.millis2String(time)
             }
@@ -240,9 +242,7 @@ object CameraBitmapUtil {
             file = File(fileDir, fileName)
             fos = FileOutputStream(file)
             srcBitmap.compress(Bitmap.CompressFormat.JPEG, quality, fos)
-            if(exifInterface.isNotEmpty()){
-                saveExifinterAttr(file.absolutePath,exifInterface.toMap())
-            }
+
 
             return true
         } catch (e: Exception) {
@@ -317,7 +317,7 @@ object CameraBitmapUtil {
         }
         return false
     }
-    const val TAG_DATETIME = "yyyy:MM:dd HH:mm:ss"
+    const val TAG_DATETIME = "YYYY:MM:DD HH:MM:SS"
     val imgSdf: ThreadLocal<SimpleDateFormat> = object : ThreadLocal<SimpleDateFormat>() {
         override fun initialValue(): SimpleDateFormat {
             return SimpleDateFormat(TAG_DATETIME, Locale.CHINA)
@@ -336,6 +336,7 @@ object CameraBitmapUtil {
         return ""
     }
 
+
     fun saveExifinterAttr(localpath: String, key: String, value: String) {
         try {
             println("保存图片属性=$key$value")
@@ -349,10 +350,12 @@ object CameraBitmapUtil {
 
     fun saveExifinterAttr(localpath: String, data: Map<String, String>) {
         try {
+
             val exifInterface = ExifInterface(localpath)
             for (key in data.keys) {
                 exifInterface.setAttribute(key, data[key])
             }
+
             exifInterface.saveAttributes()
         } catch (e: Exception) {
             e.printStackTrace()

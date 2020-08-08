@@ -151,6 +151,7 @@
         android:name=".ui.MotionTestActivity"
         android:theme="@style/Theme.MaterialComponents.Light.DarkActionBar" />
     <activity android:name="com.akingyin.camera.ui.CameraSettingActivity"/>
+    <activity android:name=".ui.MedialFeilInfoActivity"/>
   </application>
 
 </manifest>

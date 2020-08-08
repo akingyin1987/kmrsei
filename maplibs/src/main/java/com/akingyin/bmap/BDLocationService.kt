@@ -138,6 +138,7 @@ class BDLocationService  private constructor(){
     fun getDefaultLocationClientOption(): LocationClientOption {
 
         if (mOption == null) {
+
             mOption = LocationClientOption().apply {
                 locationMode = LocationClientOption.LocationMode.Hight_Accuracy // 可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
                 setCoorType("bd09ll") // 可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;

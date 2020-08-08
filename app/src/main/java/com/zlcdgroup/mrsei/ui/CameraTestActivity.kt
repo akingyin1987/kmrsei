@@ -18,14 +18,21 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.akingyin.base.SimpleActivity
-import com.akingyin.base.ext.app
+import com.akingyin.base.ext.startActivity
 import com.akingyin.base.ext.startActivityForResult
+import com.akingyin.base.utils.EasyActivityResult
+import com.akingyin.bmap.BDLocationService
+import com.akingyin.bmap.BDMapManager
+import com.akingyin.bmap.PanoramaBaiduMapActivity
+import com.akingyin.bmap.SelectLocationBaiduActivity
 import com.akingyin.camera.CameraParameBuild
 import com.akingyin.camera.ui.BaseCameraFragment
-import com.akingyin.camera.ui.CameraSettingActivity
+
+import com.akingyin.media.engine.LocationEngine
+import com.baidu.location.BDAbstractLocationListener
+import com.baidu.location.BDLocation
+
 import com.zlcdgroup.mrsei.R
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.startActivityForResult
 
 
 /**
@@ -41,7 +48,7 @@ class CameraTestActivity : SimpleActivity() {
 
     }
 
-    override fun getLayoutId()= R.layout.activity_camera
+    override fun getLayoutId() = R.layout.activity_camera
 
     override fun initializationData(savedInstanceState: Bundle?) {
 
@@ -52,14 +59,52 @@ class CameraTestActivity : SimpleActivity() {
     }
 
     override fun initView() {
-        val  fragment = BaseCameraFragment.newInstance(CameraParameBuild(),sharedPreferencesName = "app_camera_setting")
+        val fragment = BaseCameraFragment.newInstance(CameraParameBuild(), sharedPreferencesName = "app_camera_setting")
         fragment.cameraLiveData.observe(this, Observer {
             println("data->$it")
             showSucces("拍照成功->$it")
+            startActivity<MedialFeilInfoActivity>(bundle = arrayOf("filePath" to it.localPath))
             finish()
         })
+        fragment.locationEngine = object : LocationEngine {
 
-        supportFragmentManager.beginTransaction().add(R.id.container,fragment,"camera")
+            override fun getNewLocation(locType: String, locLat: Double?, locLng: Double?, call: (lat: Double, lng: Double, addr: String) -> Unit) {
+                if (null == locLat || locLat <= 0) {
+                    val bdLocationService = BDLocationService.getLocationServer(this@CameraTestActivity)
+                    bdLocationService.registerListener(object : BDAbstractLocationListener() {
+                        override fun onReceiveLocation(location: BDLocation?) {
+                            location?.let {
+                                bdLocationService.stop()
+                                call(it.latitude, it.longitude, it.addrStr)
+                            }
+
+
+                        }
+                    })
+                    bdLocationService.start()
+                } else {
+                    val requestCode = EasyActivityResult.getRandomRequestCode()
+                    startActivityForResult<SelectLocationBaiduActivity>(requestCode = requestCode)
+                    EasyActivityResult.onActivityResultCall(TAG, requestCode) { _, data ->
+                        data?.run {
+                            call(getDoubleExtra(PanoramaBaiduMapActivity.LAT_KEY, 0.0), getDoubleExtra(PanoramaBaiduMapActivity.LNG_KEY, 0.0), getStringExtra(PanoramaBaiduMapActivity.ADDR_KEY)
+                                ?: "")
+                        }
+                    }
+
+                }
+            }
+
+
+            override fun getLocationImageUrl(lat: Double, lng: Double, locType: String, localImagePath: String?): String {
+                return BDMapManager.getBdMapStaticImageUrl(lat,lng,locType)
+            }
+
+            override fun getLocationAddr(lat: Double, lng: Double, locType: String): String {
+              return BDMapManager.getBdMapGeocoderAddr(lat,lng,locType)
+            }
+        }
+        supportFragmentManager.beginTransaction().add(R.id.container, fragment, "camera")
                 .commit()
 
     }
@@ -92,23 +137,29 @@ class CameraTestActivity : SimpleActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == 100){
-            if(resultCode == Activity.RESULT_OK){
+        if (requestCode == 100) {
+            if (resultCode == Activity.RESULT_OK) {
                 showSucces("收到数据")
+
+
             }
         }
     }
 
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if(keyCode== KeyEvent.KEYCODE_VOLUME_UP ||
-                keyCode == KeyEvent.KEYCODE_VOLUME_DOWN||
-                keyCode== KeyEvent.KEYCODE_CAMERA){
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP ||
+                keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
+                keyCode == KeyEvent.KEYCODE_CAMERA) {
             LocalBroadcastManager.getInstance(this).sendBroadcast(Intent().apply {
                 action = BaseCameraFragment.KEYDOWN_VOLUME_KEY_ACTION
-                putExtra("keyCode",keyCode)
+                putExtra("keyCode", keyCode)
 
             })
+            return true
         }
         return super.onKeyDown(keyCode, event)
     }
+
+
 }

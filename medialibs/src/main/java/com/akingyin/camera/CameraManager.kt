@@ -13,6 +13,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.ImageFormat
 import android.graphics.Point
@@ -22,11 +23,15 @@ import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowManager
 import androidx.annotation.IntDef
+import androidx.annotation.StringDef
+import androidx.exifinterface.media.ExifInterface
 import autodispose2.autoDispose
 import com.akingyin.base.ext.*
 import com.akingyin.base.rx.RxUtil
 import com.akingyin.base.utils.CalculationUtil
+import com.akingyin.base.utils.DateUtil
 import com.akingyin.base.utils.FileUtils
+import com.akingyin.base.utils.LatLonRational2FloatConverter
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
@@ -355,6 +360,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
     /**
      * 拍照
      */
+    @SuppressLint("RestrictedApi")
     @Synchronized
     fun takePictrue(cameraParameBuild: CameraParameBuild, callBack: (result: Boolean, error: String?) -> Unit) {
         try {
@@ -382,7 +388,22 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                         }?.let {
                             withIO {
                                 CameraBitmapUtil.zipImageTo960x540(it, cameraParameBuild.cameraAngle,landscape = cameraParameBuild.horizontalPicture, fileDir = FileUtils.getFolderName(cameraParameBuild.localPath), fileName = FileUtils.getFileName(cameraParameBuild.localPath))
+
                             }.yes {
+                                try {
+                                    val exifInterface = ExifInterface(cameraParameBuild.localPath)
+                                    exifInterface.dateTime = appServerTime
+                                    if(cameraParameBuild.lat>0 && cameraParameBuild.lng>0){
+                                        exifInterface.setLatLong(cameraParameBuild.lat,cameraParameBuild.lng)
+                                        exifInterface.setAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD,cameraParameBuild.locType)
+                                    }
+
+                                    exifInterface.saveAttributes()
+                                }catch (e : Exception){
+                                    e.printStackTrace()
+                                }
+
+
                                 callBack(true, null)
                             }.no {
                                 callBack(false, "图片转换失败")
@@ -640,6 +661,17 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
             const val CAMERA_NET_GRID_CLOSE = 0
             const val CAMERA_NET_GRID_OPEN = 1
             const val CAMERA_NET_GRID_NONE = -1
+        }
+    }
+
+    @StringDef(value = [LocalType.CORR_TYPE_BD09,LocalType.CORR_TYPE_GCJ02,LocalType.CORR_TYPE_WGS84])
+    @Retention(AnnotationRetention.SOURCE)
+    annotation class LocalType{
+        companion object{
+            //坐标类型
+            const val  CORR_TYPE_BD09="bd09ll"
+            const val CORR_TYPE_GCJ02 ="gcj02"
+            const val CORR_TYPE_WGS84 ="wgs84"
         }
     }
 

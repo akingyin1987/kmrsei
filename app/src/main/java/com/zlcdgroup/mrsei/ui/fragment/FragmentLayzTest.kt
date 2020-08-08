@@ -36,9 +36,7 @@ class FragmentLayzTest : SimpleFragment() {
         tv_info.text = TAG
         println("initEventAndData->${arguments?.getString("data")}")
     }
-    private  val   TAG  by  lazy {
-        arguments?.getString("data")
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
