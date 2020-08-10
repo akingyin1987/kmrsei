@@ -30,6 +30,7 @@
   <color name="picture_color_80">#80000000</color>
   <color name="picture_color_half_white">#99FFFFFF</color>
   <color name="picture_color_20">#20000000</color>
-
+  <color name="doodle_btn_pressed_color">#ffffd943</color>
+  <color name="doodle_btn_border">#88cccccc</color>
   <color name="colorButtonGreyBg">#444444</color>
 </resources>

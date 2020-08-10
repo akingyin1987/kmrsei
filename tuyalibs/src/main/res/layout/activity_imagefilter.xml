@@ -62,6 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
+
             android:background="@drawable/image_filter_title_text_btn_bg"
             android:text="保存"
             android:textColor="#ffffff"

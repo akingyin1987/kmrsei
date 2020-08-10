@@ -167,7 +167,6 @@ public class TuyaView extends View {
 		try {
 			sw = src.getWidth();
 			sh = src.getHeight();
-
 			dis = Bitmap.createBitmap(sw, sh, Bitmap.Config.ARGB_8888);
 			bufferCanvas = new Canvas(dis);
 

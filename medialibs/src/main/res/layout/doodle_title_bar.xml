@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2020. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  ~ akingyin@163.com
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="#181818"
+    android:fitsSystemWindows="true"
+    android:orientation="horizontal">
+
+  <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/doodle_btn_back"
+      android:layout_width="50dp"
+      android:layout_height="match_parent"
+      android:scaleType="centerInside"
+      android:src="@drawable/doodle_btn_back"
+      android:visibility="visible"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+      android:id="@+id/doodle_txt_title"
+      android:layout_width="0dp"
+
+      android:layout_height="match_parent"
+      android:layout_marginStart="12dp"
+      android:layout_weight="1"
+      android:ellipsize="end"
+      android:gravity="center_vertical"
+      android:maxLines="1"
+      android:singleLine="true"
+      android:text="涂鸦"
+      android:textColor="#ffffff"
+      android:textSize="18sp" />
+
+  <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/doodle_btn_rotate"
+      android:layout_width="50dp"
+      android:layout_height="match_parent"
+
+      android:padding="5dp"
+      android:scaleType="fitXY"
+      android:src="@drawable/doodle_rotate"
+      />
+
+  <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/doodle_btn_hide_panel"
+      android:layout_width="50dp"
+      android:layout_height="match_parent"
+
+      android:padding="13dp"
+      android:scaleType="fitCenter"
+      android:src="@drawable/doodle_btn_effect_panel"
+      android:visibility="visible"
+      />
+  <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/doodle_btn_setting"
+      android:layout_width="50dp"
+      android:layout_height="match_parent"
+
+      android:padding="13dp"
+      android:scaleType="fitCenter"
+      android:src="@drawable/ic_action_setting"
+      android:visibility="visible"
+      />
+</LinearLayout>
