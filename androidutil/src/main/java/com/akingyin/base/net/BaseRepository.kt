@@ -4,7 +4,13 @@ import android.util.Log
 import com.akingyin.base.net.exception.ApiException
 import com.akingyin.base.net.mode.ApiCode
 import com.akingyin.base.net.mode.ApiResult
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
+import timber.log.Timber
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * @ Description:
@@ -25,7 +31,7 @@ open class BaseRepository {
                 is Result.Success ->
                     data = result.data
                 is Result.Error -> {
-                    Log.d("1.DataRepository", "$errorMessage & Exception - ${result.exception}")
+                    Timber.tag("DataRepository").d( "$errorMessage & Exception - ${result.exception}")
                 }
             }
 
@@ -55,5 +61,19 @@ open class BaseRepository {
     }
 
 
+    private suspend fun <T> Call<T>.await(): T {
+        return suspendCoroutine { continuation ->
+            enqueue(object : Callback<T> {
+                override fun onFailure(call: Call<T>, t: Throwable) {
+                    continuation.resumeWithException(t)
+                }
 
+                override fun onResponse(call: Call<T>, response: Response<T>) {
+                    val body = response.body()
+                    if (body != null) continuation.resume(body)
+                    else continuation.resumeWithException(RuntimeException("response body is null"))
+                }
+            })
+        }
+    }
 }

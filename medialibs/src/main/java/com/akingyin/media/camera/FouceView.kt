@@ -7,7 +7,7 @@
  * akingyin@163.com
  */
 
-package com.akingyin.camera
+package com.akingyin.media.camera
 
 import android.content.Context
 import android.graphics.*

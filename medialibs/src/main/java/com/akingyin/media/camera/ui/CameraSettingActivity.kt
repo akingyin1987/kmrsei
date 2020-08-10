@@ -7,13 +7,12 @@
  * akingyin@163.com
  */
 
-package com.akingyin.camera.ui
+package com.akingyin.media.camera.ui
 
 import android.app.Activity
 import android.graphics.Point
 import android.os.Bundle
 import com.akingyin.base.SimpleActivity
-import com.akingyin.camera.CameraManager
 import com.akingyin.media.R
 
 

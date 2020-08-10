@@ -58,7 +58,7 @@
             android:visibility="gone"
             android:layout_height="100dp"/>
 
-        <com.akingyin.audio.AudioPlayView
+        <com.akingyin.media.audio.AudioPlayView
             android:layout_width="match_parent"
             android:id="@+id/audio_player"
             android:layout_margin="5dp"

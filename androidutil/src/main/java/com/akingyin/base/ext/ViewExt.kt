@@ -17,6 +17,7 @@ import android.text.method.PasswordTransformationMethod
 import android.text.method.ReplacementTransformationMethod
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AlphaAnimation
 import android.view.animation.Interpolator
 import android.widget.EditText
 import android.widget.ImageButton
@@ -166,7 +167,18 @@ fun View.visiable() {
         visibility = View.VISIBLE
     }
 }
-
+/**
+ * 显示view，带有渐显动画效果。
+ *
+ * @param duration 毫秒，动画持续时长，默认500毫秒。
+ */
+fun View?.visibleAlphaAnimation(duration: Long = 500L) {
+    this?.visibility = View.VISIBLE
+    this?.startAnimation(AlphaAnimation(0f, 1f).apply {
+        this.duration = duration
+        fillAfter = true
+    })
+}
 inline fun View.visiableIf(block: () -> Boolean) {
     if (visibility != View.VISIBLE && block()) {
         visibility = View.VISIBLE
@@ -178,7 +190,18 @@ fun View.invisiable() {
         visibility = View.INVISIBLE
     }
 }
-
+/**
+ * 占位隐藏view，带有渐隐动画效果。
+ *
+ * @param duration 毫秒，动画持续时长，默认500毫秒。
+ */
+fun View?.invisibleAlphaAnimation(duration: Long = 500L) {
+    this?.visibility = View.INVISIBLE
+    this?.startAnimation(AlphaAnimation(1f, 0f).apply {
+        this.duration = duration
+        fillAfter = true
+    })
+}
 inline fun View.invisiableIf(block: () -> Boolean) {
     if (visibility != View.INVISIBLE && block()) {
         visibility = View.INVISIBLE
@@ -190,7 +213,18 @@ fun View.gone() {
         visibility = View.GONE
     }
 }
-
+/**
+ * 隐藏view，带有渐隐动画效果。
+ *
+ * @param duration 毫秒，动画持续时长，默认500毫秒。
+ */
+fun View?.goneAlphaAnimation(duration: Long = 500L) {
+    this?.visibility = View.GONE
+    this?.startAnimation(AlphaAnimation(1f, 0f).apply {
+        this.duration = duration
+        fillAfter = true
+    })
+}
 inline fun View.goneIf(block: () -> Boolean) {
     if (visibility != View.GONE && block()) {
         visibility = View.GONE

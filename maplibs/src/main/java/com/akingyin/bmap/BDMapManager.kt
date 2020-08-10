@@ -2,15 +2,13 @@ package com.akingyin.bmap
 
 import android.app.Activity
 import android.os.Bundle
-import com.akingyin.base.ext.messageFormat
-import com.akingyin.base.ext.toJson
 import com.akingyin.base.net.exception.ApiException
 import com.akingyin.base.net.okhttp.OkHttpUtils
 import com.akingyin.base.utils.ConvertUtils
-import com.akingyin.base.utils.StringUtils
 import com.akingyin.map.IMapManager
 import com.akingyin.map.IMarker
 import com.akingyin.map.base.Weak
+
 import com.alibaba.fastjson.JSON
 import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
@@ -22,13 +20,10 @@ import com.baidu.mapapi.search.core.SearchResult
 import com.baidu.mapapi.search.geocode.*
 import com.baidu.mapapi.search.poi.*
 import okhttp3.Request
-import okhttp3.Response
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import kotlin.experimental.and
-import kotlin.experimental.or
 import kotlin.math.abs
 
 
@@ -500,67 +495,92 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: A
     companion object{
         const val  BAIDU_MARKER_UUID="baidu_marker_uuid"
         const val  BAIDU_MARKER_DATA="baidu_marker_data"
-        const val BAIDU_STATIC_BASE_URL="http://api.map.baidu.com/staticimage/v2"
+        const val BAIDU_STATIC_BASE_URL="http://api.map.baidu.com/"
         const val BAIDU_AK="0ppzKkGXRpDcG9zt6ASrhtbKm2PGG9b6"
         const val BAIDU_SK="nrS5YfWW6n9PA540uhNG9dTLFU645qRa"
 
+        fun   testSn(){
+            val paramsMap= LinkedHashMap<String, String>()
+            paramsMap["address"] = "百度大厦"
+            paramsMap["output"] = "json"
+            paramsMap["ak"] = "yourak"
+            val paramsStr: String = toQueryString(paramsMap)
+            println("paramsStr=$paramsStr")
+
+            val wholeStr = "/geocoder/v2/?" + paramsStr + "yoursk"
+            // 对上面wholeStr再作utf8编码
+
+            // 对上面wholeStr再作utf8编码
+            val tempStr = URLEncoder.encode(wholeStr, "UTF-8")
+            println("testSn=${ConvertUtils.MD5(tempStr)}")
+        }
 
         @JvmStatic
         fun  getBdMapGeocoderAddr(lat: Double,lng: Double,localType: String):String{
+            testSn()
             val  sn  = LinkedHashMap<String,String>().apply {
 
                 put("output","json")
                 put("location","$lat,$lng")
                 put("coordtype",localType)
                 put("ak", BAIDU_AK)
-                put("sk", BAIDU_SK)
+
             }.run {
-                ConvertUtils.MD5(toQueryString(this))
+                val wholeStr ="/reverse_geocoding/v3/?" + toQueryString(this) + BAIDU_SK
+                ConvertUtils.MD5(URLEncoder.encode(wholeStr, "UTF-8"))
             }?:""
-            val  url ="http://api.map.baidu.com/geocoder?output=json&location=$lat,$lng&coordtype=$localType&key=$BAIDU_AK&sn=$sn"
+            println("sn=$sn")
+            val  url =BAIDU_STATIC_BASE_URL+"reverse_geocoding/v3/?output=json&location=$lat,$lng&coordtype=$localType&ak=$BAIDU_AK&sn=$sn"
+            println("url--->$url")
             val  request = Request.Builder().url(url).build()
-             val  response = OkHttpUtils.getInstance().newCall(request).execute()
-            if(response.isSuccessful){
-               val result  = response.body?.string()?:"{}"
-               return JSON.parseObject(result).let {
-                   if(it.getString("status") == "OK"){
-                      it.getJSONObject("result").getString("formatted_address")
-                   }else{
-                       ""
-                   }
-               }
+            try {
+                val  response = OkHttpUtils.getInstance().newCall(request).execute()
+                if(response.isSuccessful){
+                    val result  = response.body?.string()?:"{}"
+                    return JSON.parseObject(result).let {
+                        if(it.getIntValue("status") == 0){
+                            it.getJSONObject("result").getString("formatted_address")
+                        }else{
+                            "未知"
+                        }
+                    }
+                }
+            }catch (e : Exception){
+                e.printStackTrace()
             }
-            return ""
+
+            return "未知"
         }
 
         @JvmStatic
         fun  getBdMapStaticImageUrl(lat: Double,lng: Double,localType:String):String{
             val  sn  = LinkedHashMap<String,String>().apply {
-                put("ak", BAIDU_AK)
-                put("width","300")
-                put("height","150")
-                put("markers","$lat,$lng")
+                put("width","512")
+                put("height","384")
+                put("markers","$lng,$lat")
                 put("zoom","18")
                 put("dpiType","ph")
                 put("coordtype",localType)
                 put("markerStyles","l,A,0xff0000")
-                put("mcode","android")
-                put("sk", BAIDU_SK)
+                put("ak", BAIDU_AK)
             }.run {
-                ConvertUtils.MD5(toQueryString(this))
+
+                val wholeStr ="/staticimage/v2/?" + toQueryString(this) + BAIDU_SK
+                println("wholeStr=${wholeStr}")
+                ConvertUtils.MD5(URLEncoder.encode(wholeStr, "UTF-8"))
             }?:""
 
-          return  BAIDU_STATIC_BASE_URL+"?ak=$BAIDU_AK&width=300&height=150&markers=$lat,$lng&zoom=18&dpiType=ph&" +
-                  "coordtype=$localType&markerStyles=l,A,0xff0000&mcode=android&sn=$sn"
+          return  BAIDU_STATIC_BASE_URL+"staticimage/v2/?width=512&height=384&markers=$lng,$lat&zoom=18&dpiType=ph&" +
+                  "coordtype=$localType&markerStyles=l,A,0xff0000&ak=$BAIDU_AK&sn=$sn"
         }
 
         // 对Map内所有value作utf8编码，拼接返回结果
         @Throws(UnsupportedEncodingException::class)
-        fun toQueryString(data: Map<*, *>): String {
+        fun toQueryString(data: Map<String, String>): String {
             val queryString = StringBuffer()
             for ((key, value) in data) {
-                queryString.append(key.toString() + "=")
-                queryString.append(URLEncoder.encode(value as String , "UTF-8").toString() + "&")
+                queryString.append("$key=")
+                queryString.append(URLEncoder.encode(value ,"UTF-8").toString() + "&")
             }
             if (queryString.isNotEmpty()) {
                 queryString.deleteCharAt(queryString.length - 1)

@@ -11,6 +11,8 @@ package com.akingyin.media.engine
 
 import android.content.Context
 import android.widget.ImageView
+import androidx.annotation.DrawableRes
+import com.akingyin.media.R
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 
 /**
@@ -31,7 +33,11 @@ interface ImageEngine {
     fun loadImage(context: Context, url: String, imageView: ImageView ,callBack:((result:Boolean)->Unit)?=null)
 
 
-    fun customLoadImage(context: Context, url: String, imageView: ImageView ,callBack:((result:Boolean)->Unit)?=null)
+    /**
+     * 自定义加载
+     */
+    fun customLoadImage(context: Context, url: String, imageView: ImageView, @DrawableRes placeholder:Int= R.drawable.ic_image_loading_layer
+                        ,@DrawableRes errorResourceId:Int =R.drawable.ic_img_loading_error,overrideWidth:Int=0,overrideHight:Int=0, callBack:((result:Boolean)->Unit)?=null)
 
 
     /**

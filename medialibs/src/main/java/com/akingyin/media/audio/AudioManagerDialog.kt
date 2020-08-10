@@ -1,4 +1,4 @@
-package com.akingyin.audio
+package com.akingyin.media.audio
 
 import android.app.Dialog
 import android.os.Bundle

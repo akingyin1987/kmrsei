@@ -7,7 +7,7 @@
  * akingyin@163.com
  */
 
-package com.akingyin.camera.widget
+package com.akingyin.media.camera.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,7 +15,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.SurfaceView
 import android.view.ViewConfiguration
-import com.akingyin.camera.PinchToZoomGestureDetector
+import com.akingyin.media.camera.PinchToZoomGestureDetector
 
 /**
  * @ Description:

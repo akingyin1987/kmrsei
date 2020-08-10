@@ -72,6 +72,38 @@ class GlideEngine :ImageEngine{
 
     }
 
+    override fun customLoadImage(context: Context, url: String, imageView: ImageView, placeholder: Int, errorResourceId: Int, overrideWidth: Int, overrideHight: Int, callBack: ((result: Boolean) -> Unit)?) {
+        GlideApp.with(context).apply {
+            if(null == callBack){
+                load(url).apply{
+                    if(overrideHight >0 && overrideWidth>0){
+                        override(overrideWidth,overrideHight)
+                    }
+                }.apply(RequestOptions().placeholder(placeholder).error(errorResourceId))
+                        .into(imageView)
+
+            }else{
+                asBitmap().load(url).apply {
+                    if(overrideHight >0 && overrideWidth>0){
+                        override(overrideWidth,overrideHight)
+                    }
+                }
+                        .apply(RequestOptions().placeholder(placeholder).error(errorResourceId))
+                        .listener(object : RequestListener<Bitmap>{
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                callBack.invoke(false)
+                                return false
+                            }
+
+                            override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                callBack.invoke(true)
+                                return false
+                            }
+                        }).into(imageView)
+            }
+        }
+    }
+
     /**
      * Loading image
      *加载网络图片适配长图方案
@@ -171,7 +203,7 @@ class GlideEngine :ImageEngine{
      * @param url
      * @param imageView
      */
-    override fun loadGridImage(context: Context, url: String, imageView: ImageView,callBack: ((result: Boolean) -> Unit)??) {
+    override fun loadGridImage(context: Context, url: String, imageView: ImageView,callBack: ((result: Boolean) -> Unit)?) {
         GlideApp.with(context).run {
             if(null == callBack){
                 load(url)

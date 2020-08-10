@@ -7,7 +7,7 @@
  * akingyin@163.com
  */
 
-package com.akingyin.camera
+package com.akingyin.media.camera
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -29,9 +29,7 @@ import autodispose2.autoDispose
 import com.akingyin.base.ext.*
 import com.akingyin.base.rx.RxUtil
 import com.akingyin.base.utils.CalculationUtil
-import com.akingyin.base.utils.DateUtil
 import com.akingyin.base.utils.FileUtils
-import com.akingyin.base.utils.LatLonRational2FloatConverter
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable

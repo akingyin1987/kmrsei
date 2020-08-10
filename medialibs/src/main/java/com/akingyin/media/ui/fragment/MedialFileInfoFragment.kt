@@ -10,6 +10,7 @@
 package com.akingyin.media.ui.fragment
 
 import android.annotation.SuppressLint
+import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ import com.akingyin.media.databinding.FragmentMedialFileInfoBinding
 import com.akingyin.media.engine.ImageEngine
 import com.akingyin.media.engine.LocationEngine
 import com.akingyin.util.MediaFileUtil
+import me.gujun.android.taggroup.TagGroup
 
 import kotlin.properties.Delegates
 
@@ -84,23 +86,61 @@ open class MedialFileInfoFragment :SimpleFragment(){
                             bindView.ivAddLoc.gone()
                             bindView.ivRemoveLoc.visiable()
                             val locType = exifInterface.getAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD)?:"bd09ll"
-                            bindView.tvFileloc.text= withIO {
-                                locationEngine?.getLocationAddr(it[0],it[1],locType)?:"未知"
-                            }
 
-                            imageEngine?.loadImage(requireContext(), withIO {
+                            bindView.tvFileloc.text= asyncInBackground {
+                                locationEngine?.getLocationAddr(it[0],it[1],locType)?:"未知"
+                            }.await()
+
+                            imageEngine?.customLoadImage(requireContext(), asyncInBackground {
                                 locationEngine?.getLocationImageUrl(it[0],it[1],locType,filePath)?:""
-                            },bindView.ivLocimg)
+                            }.await(),bindView.ivLocimg)
                         }
                         if(null == exifInterface.latLong){
                             bindView.ivAddLoc.visiable()
+                            bindView.tvFileloc.text="无位置信息"
                             if(authEditLocation){
                                 bindView.tvFileloc.visiable()
+                                bindView.ivLocimg.setImageURI(null)
                             }else{
+                                bindView.ivLocimg.gone()
                                 bindView.tvFileloc.gone()
                             }
                             bindView.ivRemoveLoc.gone()
                         }
+
+                        if(authEditLocation){
+                            bindView.ivLocimg.click {
+                                exifInterface.latLong?.let {
+                                    locationEngine?.getNewLocation("bd09ll",it[0],it[1]){
+                                        lat, lng, _ ->
+                                        exifInterface.setLatLong(lat,lng)
+                                        exifInterface.setAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD,"bd09ll")
+                                        exifInterface.saveAttributes()
+                                        initView()
+                                    }
+                                }
+                            }
+                            bindView.ivRemoveLoc.click {
+                                exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE,"")
+                                exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF,"")
+                                exifInterface.setAttribute(ExifInterface.TAG_GPS_LONGITUDE,"")
+                                exifInterface.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF,"")
+                                exifInterface.setAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD,"")
+                                exifInterface.saveAttributes()
+                                initView()
+                            }
+                            bindView.ivAddLoc.click {
+                                locationEngine?.getNewLocation("bd09ll"){
+                                    lat, lng, _ ->
+                                    println("获取到最新的位置$lat,$lng")
+                                    exifInterface.setLatLong(lat,lng)
+                                    exifInterface.setAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD,"bd09ll")
+                                    exifInterface.saveAttributes()
+                                    initView()
+                                }
+                            }
+                        }
+
                         if(!authEditLocation){
                             bindView.ivAddLoc.gone()
                             bindView.ivRemoveLoc.gone()
@@ -109,14 +149,31 @@ open class MedialFileInfoFragment :SimpleFragment(){
                         if(authEditTag){
                             bindView.tagGroup.gone()
                             bindView.tagGroupEdit.visiable()
-                            bindView.tagGroupEdit.setTags(tags.split("@"))
-                            bindView.tagGroupEdit.setOnTagClickListener {
-                                val newTags =  bindView.tagGroupEdit.tags.joinToString("@")
-                                exifInterface.setAttribute(ExifInterface.TAG_USER_COMMENT,newTags)
-                                exifInterface.saveAttributes()
-                            }
+                            bindView.tagGroupEdit.setTags(tags.split("@").filter {
+                                it.isNotEmpty()
+                            })
+
+                            bindView.tagGroupEdit.setOnTagChangeListener(object :TagGroup.OnTagChangeListener{
+                                override fun onDelete(tagGroup: TagGroup?, tag: String?) {
+                                    val newTags =  bindView.tagGroupEdit.tags.joinToString("@"){
+                                        it.trim()
+                                    }
+                                    exifInterface.setAttribute(ExifInterface.TAG_USER_COMMENT,newTags)
+                                    exifInterface.saveAttributes()
+                                }
+
+                                override fun onAppend(tagGroup: TagGroup?, tag: String?) {
+                                    val newTags = bindView.tagGroupEdit.tags.joinToString("@") {
+                                        it.trim()
+                                    }
+                                    exifInterface.setAttribute(ExifInterface.TAG_USER_COMMENT,newTags)
+                                    exifInterface.saveAttributes()
+                                }
+                            })
                         }else{
-                            bindView.tagGroup.setTags(tags.split("@"))
+                            bindView.tagGroup.setTags(tags.split("@").filter {
+                                it.isNotEmpty()
+                            })
                             bindView.tagGroup.visiable()
                             bindView.tagGroupEdit.gone()
                         }
@@ -124,7 +181,10 @@ open class MedialFileInfoFragment :SimpleFragment(){
 
                     }
                     MediaFileUtil.isAudioFileType(filePath)->{
-
+                        MediaMetadataRetriever().use {
+                            it.setDataSource(filePath)
+                           
+                        }
                     }
                     MediaFileUtil.isVideoFileType(filePath)->{
 

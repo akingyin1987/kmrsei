@@ -7,7 +7,7 @@
  * akingyin@163.com
  */
 
-package com.akingyin.camera.ui
+package com.akingyin.media.camera.ui
 
 import android.graphics.Point
 import android.os.Bundle
@@ -17,7 +17,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.akingyin.base.dialog.MaterialDialogUtil
-import com.akingyin.camera.CameraSize
+import com.akingyin.media.camera.CameraSize
 import com.akingyin.media.R
 
 /**

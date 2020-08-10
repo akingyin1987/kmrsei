@@ -21,9 +21,9 @@ import android.widget.TextView
 import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentManager
 import cn.jzvd.JzvdStd
-import com.akingyin.audio.AudioPlayDialog.Companion.getInstance
-import com.akingyin.audio.AudioPlayView
-import com.akingyin.audio.AudioUtil.getMediaDuration
+import com.akingyin.media.audio.AudioPlayDialog.Companion.getInstance
+import com.akingyin.media.audio.AudioPlayView
+import com.akingyin.media.audio.AudioUtil.getMediaDuration
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.base.utils.HtmlUtils
 import com.akingyin.media.ImageLoadUtil

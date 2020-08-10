@@ -25,8 +25,8 @@ import com.akingyin.bmap.BDLocationService
 import com.akingyin.bmap.BDMapManager
 import com.akingyin.bmap.PanoramaBaiduMapActivity
 import com.akingyin.bmap.SelectLocationBaiduActivity
-import com.akingyin.camera.CameraParameBuild
-import com.akingyin.camera.ui.BaseCameraFragment
+import com.akingyin.media.camera.CameraParameBuild
+import com.akingyin.media.camera.ui.BaseCameraFragment
 
 import com.akingyin.media.engine.LocationEngine
 import com.baidu.location.BDAbstractLocationListener

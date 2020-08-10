@@ -7,20 +7,21 @@
  * akingyin@163.com
  */
 
-package com.akingyin.camera
+package com.akingyin.media.camera
 
-import android.view.ScaleGestureDetector
+import android.graphics.Point
+import kotlin.math.max
+import kotlin.math.min
 
 
 /**
  * @ Description:
  * @author king
- * @ Date 2020/7/30 13:46
+ * @ Date 2020/7/29 16:16
  * @version V1.0
  */
-class MyScaleGestureDetector :ScaleGestureDetector.SimpleOnScaleGestureListener(){
-    var listener: ScaleGestureDetector.OnScaleGestureListener?=null
-    override fun onScale(detector: ScaleGestureDetector?): Boolean {
-        return listener?.onScale(detector)?:super.onScale(detector)
+data class CameraSize (var width:Int,var hight:Int,var defaultSize :Boolean= false,var checked:Boolean = false){
+    override fun toString(): String {
+        return CameraManager.getCameraResolutionScale(Point(width, hight)) + max(width, hight) + "x" + min(width, hight) + (if (defaultSize) "[默认]" else "") + if (checked) "[当前]" else ""
     }
 }

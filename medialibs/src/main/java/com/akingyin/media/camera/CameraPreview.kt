@@ -7,7 +7,7 @@
  * akingyin@163.com
  */
 
-package com.akingyin.camera
+package com.akingyin.media.camera
 
 import android.content.Context
 import android.hardware.Camera
@@ -20,7 +20,7 @@ import com.akingyin.base.dialog.ToastUtil
 import com.akingyin.base.ext.gone
 import com.akingyin.base.ext.visiable
 import com.akingyin.base.utils.FileUtils
-import com.akingyin.camera.widget.CameraSurfaceView
+import com.akingyin.media.camera.widget.CameraSurfaceView
 import com.akingyin.media.R
 
 /**

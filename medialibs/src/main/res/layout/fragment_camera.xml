@@ -14,7 +14,7 @@
     android:background="@android:color/black"
     android:keepScreenOn="true"
     android:layout_height="match_parent">
-  <com.akingyin.camera.CameraPreview
+  <com.akingyin.media.camera.CameraPreview
       android:id="@+id/viewFinder"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -35,7 +35,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="@id/fabTakePicture" />
-  <com.akingyin.camera.widget.CaptureButton
+  <com.akingyin.media.camera.widget.CaptureButton
       android:id="@+id/fabTakePicture"
       android:layout_width="40dp"
       android:layout_height="40dp"
@@ -47,7 +47,7 @@
       app:layout_constraintStart_toStartOf="parent"
       tools:ignore="ContentDescription" />
 
-  <com.akingyin.camera.widget.TypeButton
+  <com.akingyin.media.camera.widget.TypeButton
       android:layout_width="40dp"
       android:layout_height="40dp"
       android:id="@+id/btn_cancel"
@@ -58,7 +58,7 @@
       app:btnConfigCancel="cancel"
       app:layout_constraintTop_toTopOf="@id/fabTakePicture"/>
 
-  <com.akingyin.camera.widget.TypeButton
+  <com.akingyin.media.camera.widget.TypeButton
       android:layout_width="40dp"
       android:layout_height="40dp"
       app:btnConfigCancel="config"

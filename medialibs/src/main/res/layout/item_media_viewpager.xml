@@ -47,7 +47,7 @@
       app:layout_constraintBottom_toBottomOf="parent"
       android:layout_height="match_parent"/>
 
-  <com.akingyin.audio.AudioPlayView
+  <com.akingyin.media.audio.AudioPlayView
       android:layout_width="match_parent"
       android:id="@+id/audio_player"
       android:layout_margin="3dp"

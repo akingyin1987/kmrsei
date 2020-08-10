@@ -1,4 +1,5 @@
-package com.akingyin.audio
+
+package com.akingyin.media.audio
 
 import android.app.Dialog
 import android.content.Context
@@ -14,23 +15,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.SeekBar
+
 import com.akingyin.media.R
+
 import kotlinx.android.synthetic.main.dialog_audio_play_layout.*
 import java.lang.ref.WeakReference
 
-/**
- * @ Description:
- * @author king
- * @ Date 2019/7/26 11:45
- * @version V1.0
- */
-class PlayAudioDialog : AudioManagerDialog(), SeekBar.OnSeekBarChangeListener, Runnable  {
+ class AudioPlayDialog : AudioManagerDialog(), SeekBar.OnSeekBarChangeListener, Runnable {
 
     companion object {
 
-        fun getInstance(filePath: String) = PlayAudioDialog().apply {
+        fun getInstance(filePath: String) = AudioPlayDialog().apply {
             arguments = Bundle().apply { putString("filePath", filePath) }
         }
+
 
 
     }
@@ -82,16 +80,16 @@ class PlayAudioDialog : AudioManagerDialog(), SeekBar.OnSeekBarChangeListener, R
             }
         }
         dialog_audio_bar.setOnSeekBarChangeListener(this)
-        dialog_audio_name.text = arguments!!.getString("filePath")?.let({
+        dialog_audio_name.text = arguments?.getString("filePath")?.let {
             it.substring(it.lastIndexOf("/") + 1, it.length)
-        })
+        }
     }
 
     override fun onStart() {
         super.onStart()
         setNeedWH()
     }
-    fun setNeedWH() {
+   private fun setNeedWH() {
         val width = getDisplay()[0] * 0.88f
         dialog?.window?.setLayout(width.toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
     }
@@ -99,7 +97,7 @@ class PlayAudioDialog : AudioManagerDialog(), SeekBar.OnSeekBarChangeListener, R
     /**
      * 获取屏幕的宽，高
      */
-    fun getDisplay() :IntArray{
+   private fun getDisplay() :IntArray{
 
         val manager = context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
@@ -113,7 +111,7 @@ class PlayAudioDialog : AudioManagerDialog(), SeekBar.OnSeekBarChangeListener, R
 
     private fun initPlayer() {
         mediaPlayer = MediaPlayer()
-        mediaPlayer?.setDataSource(arguments!!.getString("filePath"))
+        mediaPlayer?.setDataSource(arguments?.getString("filePath"))
         mediaPlayer?.prepareAsync()
         mediaPlayer?.setOnPreparedListener { play ->
             dialog_audio_bar.max = play.duration
@@ -192,9 +190,9 @@ class PlayAudioDialog : AudioManagerDialog(), SeekBar.OnSeekBarChangeListener, R
         }
     }
 
-    class AudioHandler(dialog: PlayAudioDialog) : Handler() {
-        private val week: WeakReference<PlayAudioDialog> by lazy {
-            WeakReference(dialog)
+    class AudioHandler(dialog: AudioPlayDialog) : Handler() {
+        private val week: WeakReference<AudioPlayDialog> by lazy {
+            WeakReference<AudioPlayDialog>(dialog)
         }
 
         override fun handleMessage(msg: Message?) {
@@ -202,7 +200,7 @@ class PlayAudioDialog : AudioManagerDialog(), SeekBar.OnSeekBarChangeListener, R
         }
     }
     /** int类型转时分秒格式 */
-    fun secToTime(time: Int): String {
+   private fun secToTime(time: Int): String {
         val timeStr: String?
         val hour: Int
         var minute: Int

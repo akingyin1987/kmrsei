@@ -11,7 +11,7 @@ package com.akingyin.media.adapter
 
 import android.widget.ImageView
 import android.widget.TextView
-import com.akingyin.audio.AudioPlayView
+import com.akingyin.media.audio.AudioPlayView
 import com.akingyin.base.ext.click
 import com.akingyin.base.ext.gone
 import com.akingyin.base.ext.visiable

@@ -11,10 +11,17 @@ package com.zlcdgroup.mrsei.ui
 
 import android.os.Bundle
 import com.akingyin.base.SimpleActivity
+import com.akingyin.base.ext.startActivityForResult
+import com.akingyin.base.utils.EasyActivityResult
+import com.akingyin.bmap.BDLocationService
 import com.akingyin.bmap.BDMapManager
+import com.akingyin.bmap.PanoramaBaiduMapActivity
+import com.akingyin.bmap.SelectLocationBaiduActivity
 import com.akingyin.media.engine.LocationEngine
 import com.akingyin.media.glide.GlideEngine
 import com.akingyin.media.ui.fragment.MedialFileInfoFragment
+import com.baidu.location.BDAbstractLocationListener
+import com.baidu.location.BDLocation
 import com.zlcdgroup.mrsei.R
 
 /**
@@ -43,10 +50,33 @@ class MedialFeilInfoActivity:SimpleActivity() {
        val filePath =  intent.getStringExtra("filePath")?:""
 
         val fragmnet = MedialFileInfoFragment.newInstance(filePath,true,true)
-        fragmnet.imageEngine = GlideEngine()
+        fragmnet.imageEngine = GlideEngine.getGlideEngineInstance()
         fragmnet.locationEngine = object :LocationEngine{
             override fun getNewLocation(locType: String, locLat: Double?, locLng: Double?, call: (lat: Double, lng: Double, addr: String) -> Unit) {
+                if (null == locLat || locLat <= 0) {
+                    val bdLocationService = BDLocationService.getLocationServer(this@MedialFeilInfoActivity)
+                    bdLocationService.registerListener(object : BDAbstractLocationListener() {
+                        override fun onReceiveLocation(location: BDLocation?) {
+                            location?.let {
+                                bdLocationService.stop()
+                                call(it.latitude, it.longitude, it.addrStr)
+                            }
 
+
+                        }
+                    })
+                    bdLocationService.start()
+                } else {
+                    val requestCode = EasyActivityResult.getRandomRequestCode()
+                    startActivityForResult<SelectLocationBaiduActivity>(requestCode = requestCode)
+                    EasyActivityResult.onActivityResultCall(TAG, requestCode) { _, data ->
+                        data?.run {
+                            call(getDoubleExtra(PanoramaBaiduMapActivity.LAT_KEY, 0.0), getDoubleExtra(PanoramaBaiduMapActivity.LNG_KEY, 0.0), getStringExtra(PanoramaBaiduMapActivity.ADDR_KEY)
+                                ?: "")
+                        }
+                    }
+
+                }
             }
 
             override fun getLocationImageUrl(lat: Double, lng: Double, locType: String, localImagePath: String?): String {

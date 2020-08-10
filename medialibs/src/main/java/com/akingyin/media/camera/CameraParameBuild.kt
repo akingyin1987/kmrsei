@@ -6,14 +6,14 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  * akingyin@163.com
  */
-package com.akingyin.camera
+package com.akingyin.media.camera
 
 import android.graphics.Point
 import android.os.Parcel
 import android.os.Parcelable
 import com.akingyin.base.config.AppFileConfig
 import com.akingyin.base.utils.StringUtils
-import com.akingyin.camera.CameraManager.*
+import com.akingyin.media.camera.CameraManager.*
 import java.io.File
 
 

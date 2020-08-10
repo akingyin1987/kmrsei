@@ -1,6 +1,6 @@
 package com.akingyin.base.ext
 
-import android.annotation.SuppressLint
+
 import android.widget.Toast
 
 /**
@@ -11,15 +11,24 @@ import android.widget.Toast
  */
 private var toast: Toast? = null
 
-@SuppressLint("ShowToast")
+
 fun toast(msg: Any?, isShort: Boolean = true) {
     msg?.let {
-        if (toast == null) {
-            toast = Toast.makeText(app, msg.toString(), Toast.LENGTH_SHORT)
-        } else {
-            toast!!.setText(msg.toString())
-        }
-        toast!!.duration = if (isShort) Toast.LENGTH_SHORT else Toast.LENGTH_LONG
-        toast!!.show()
+       toast = toast?.apply {
+           setText(it.toString())
+       }?:Toast.makeText(app, it.toString(), Toast.LENGTH_SHORT)
+       toast?.run {
+           duration = if (isShort) Toast.LENGTH_SHORT else Toast.LENGTH_LONG
+           show()
+       }
     }
+}
+
+/**
+ * 弹出Toast提示。
+ *
+ * @param duration 显示消息的时间  Either {@link #LENGTH_SHORT} or {@link #LENGTH_LONG}
+ */
+fun CharSequence.showToast(duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(app, this, duration).show()
 }

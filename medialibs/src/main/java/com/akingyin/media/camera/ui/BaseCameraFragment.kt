@@ -7,7 +7,7 @@
  * akingyin@163.com
  */
 
-package com.akingyin.camera.ui
+package com.akingyin.media.camera.ui
 
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -34,8 +34,8 @@ import com.akingyin.base.SimpleFragment
 import com.akingyin.base.ext.*
 import com.akingyin.base.mvvm.SingleLiveEvent
 import com.akingyin.base.utils.PreferencesUtil
-import com.akingyin.camera.*
-import com.akingyin.camera.widget.CaptureButton
+import com.akingyin.media.camera.*
+import com.akingyin.media.camera.widget.CaptureButton
 import com.akingyin.media.MediaConfig
 import com.akingyin.media.R
 import com.akingyin.media.databinding.FragmentCameraBinding
