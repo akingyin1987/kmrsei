@@ -40,4 +40,11 @@ data class Pt(var x:Int,var y:Int) {
     }
 
 
+    fun   postOffset(offsetX:Float,offsetY:Float){
+        x = (x +offsetX).toInt()
+        y = (y+offsetY).toInt()
+    }
+
+    fun   isEmpty():Boolean = x ==0 && y ==0
+
 }

@@ -169,7 +169,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
               .subscribe {
                   println("it1=${it}")
               }
-      d3 =  Observable.just("2").autoDispose(AndroidLifecycleScopeProvider.from(this))
+      d3 =  Observable.just("2").autoDispose(AndroidLifecycleScopeProvider.from(lifecycle))
                 .subscribe {
                     println("it=${it}")
                 }
