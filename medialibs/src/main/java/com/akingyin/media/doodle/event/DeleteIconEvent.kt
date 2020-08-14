@@ -7,14 +7,27 @@
  * akingyin@163.com
  */
 
-package com.akingyin.media.doodle.core
+package com.akingyin.media.doodle.event
+
+import android.view.MotionEvent
+import com.akingyin.media.doodle.core.IDoodle
 
 /**
  * @ Description:
  * @author king
- * @ Date 2020/8/12 17:54
+ * @ Date 2020/8/11 15:17
  * @version V1.0
  */
-class FlipBothDirectionsEvent : AbstractFlipEvent() {
-    override fun getFlipDirection()= IDoodle.Flip.FLIP_VERTICALLY or IDoodle.Flip.FLIP_HORIZONTALLY
+class DeleteIconEvent : StickerIconEvent {
+    override fun onActionDown(stickerView: IDoodle, event: MotionEvent) {
+
+    }
+
+    override fun onActionMove(stickerView: IDoodle, event: MotionEvent) {
+
+    }
+
+    override fun onActionUp(stickerView: IDoodle, event: MotionEvent) {
+       stickerView.removeCurrentDoodeShape()
+    }
 }

@@ -27,6 +27,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.use
 import com.akingyin.media.R
 
 /**
@@ -132,7 +133,10 @@ class CaptureButton @JvmOverloads constructor(
         state = STATE_IDLE //初始化为空闲状态
         buttonState =  attrs?.let {
 
-            context.theme.obtainStyledAttributes(it, R.styleable.CaptureButton,defStyleAttr,0).getInteger(R.styleable.CaptureButton_capture_photo_video,BUTTON_STATE_ONLY_CAPTURE)
+            context.theme.obtainStyledAttributes(it, R.styleable.CaptureButton,defStyleAttr,0).use {
+                 typedarray->
+                typedarray.getInteger(R.styleable.CaptureButton_capture_photo_video,BUTTON_STATE_ONLY_CAPTURE)
+            }
 
         }?:BUTTON_STATE_ONLY_CAPTURE
 

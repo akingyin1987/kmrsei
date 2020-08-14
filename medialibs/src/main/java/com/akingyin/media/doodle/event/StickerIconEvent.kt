@@ -7,14 +7,21 @@
  * akingyin@163.com
  */
 
-package com.akingyin.media.doodle.core
+package com.akingyin.media.doodle.event
+
+import android.view.MotionEvent
+import com.akingyin.media.doodle.core.IDoodle
 
 /**
  * @ Description:
  * @author king
- * @ Date 2020/8/12 17:52
+ * @ Date 2020/8/11 15:15
  * @version V1.0
  */
-class FlipHorizontallyEvent : AbstractFlipEvent() {
-    override fun getFlipDirection()= IDoodle.Flip.FLIP_HORIZONTALLY
+interface StickerIconEvent {
+    fun onActionDown(stickerView: IDoodle, event: MotionEvent)
+
+    fun onActionMove(stickerView: IDoodle, event: MotionEvent)
+
+    fun onActionUp(stickerView: IDoodle, event: MotionEvent)
 }

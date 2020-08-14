@@ -7,28 +7,30 @@
  * akingyin@163.com
  */
 
-package com.akingyin.media.doodle.core
+package com.akingyin.media.doodle.event
 
 import android.view.MotionEvent
+import com.akingyin.media.doodle.core.IDoodle
 
 /**
  * @ Description:
  * @author king
- * @ Date 2020/8/12 17:21
+ * @ Date 2020/8/12 17:07
  * @version V1.0
  */
-class FlipVerticallyEvent :AbstractFlipEvent() {
-    override fun getFlipDirection() = IDoodle.Flip.FLIP_VERTICALLY
+abstract class AbstractFlipEvent : StickerIconEvent {
+    override fun onActionDown(stickerView: IDoodle, event: MotionEvent) {
 
-    override fun onActionDown(stickerView: IDoodleShape, event: MotionEvent) {
-        TODO("Not yet implemented")
     }
 
-    override fun onActionMove(stickerView: IDoodleShape, event: MotionEvent) {
-        TODO("Not yet implemented")
+    override fun onActionMove(stickerView: IDoodle, event: MotionEvent) {
+
     }
 
-    override fun onActionUp(stickerView: IDoodleShape, event: MotionEvent) {
-        TODO("Not yet implemented")
+    override fun onActionUp(stickerView: IDoodle, event: MotionEvent) {
+        stickerView.flipCurrentSticker(getFlipDirection())
     }
+
+    @IDoodle.Flip
+     abstract fun getFlipDirection(): Int
 }

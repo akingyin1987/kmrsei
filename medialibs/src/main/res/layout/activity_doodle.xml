@@ -8,26 +8,35 @@
   ~ akingyin@163.com
   -->
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:keepScreenOn="true"
+    android:fitsSystemWindows="true"
     android:background="#232323"
     android:orientation="vertical"
     android:layout_height="match_parent">
+
+  <com.akingyin.media.doodle.DoodleView
+      android:layout_width="match_parent"
+      android:id="@+id/doodleView"
+      app:showBorder="true"
+      app:showIcons="true"
+      android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="match_parent"
+        android:id="@+id/doodle_image"
+        android:layout_height="match_parent"/>
+  </com.akingyin.media.doodle.DoodleView>
   <include layout="@layout/doodle_title_bar"
+      android:id="@+id/title_bar"
       android:layout_height="wrap_content"
       android:layout_width="match_parent"
       android:layout_alignParentTop="true"/>
-  <FrameLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_centerInParent="true"
-      android:id="@+id/container"
-      />
-
   <include layout="@layout/doodle_bottom_bar"
-      android:layout_height="46dp"
+      android:layout_height="?attr/actionBarSize"
+      android:id="@+id/bootom_bar"
       android:layout_width="match_parent"
       android:layout_alignParentBottom="true"/>
 </RelativeLayout>

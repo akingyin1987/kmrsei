@@ -232,7 +232,8 @@ open class BaseCameraFragment : SimpleFragment() {
 
 
     override fun initView() {
-        cameraSensorController = CameraSensorController(mContext)
+
+        cameraSensorController = CameraSensorController(requireContext(), requireActivity().windowManager.defaultDisplay.rotation)
         cameraSensorController.mOrientationChangeListener = object : CameraSensorController.OrientationChangeListener {
             override fun onChange(relativeRotation: Int, uiRotation: Int) {
                 var cameraRotation = uiRotation + 90
@@ -249,7 +250,7 @@ open class BaseCameraFragment : SimpleFragment() {
                 }
                 if(cameraManager.cameraUiAngle != cameraRotation){
                     cameraManager.cameraUiAngle = cameraRotation
-                    CameraManager.startCameraViewRoteAnimator((uiRotation+90).toFloat(),bindView.buttonShutter,bindView.buttonSetting,bindView.buttonFlash,
+                    CameraManager.startCameraViewRoteAnimator((uiRotation).toFloat(),bindView.buttonShutter,bindView.buttonSetting,bindView.buttonFlash,
                             bindView.buttonGrid,bindView.btnConfig,bindView.btnCancel,bindView.textCountDown)
                 }
             }
@@ -370,6 +371,7 @@ open class BaseCameraFragment : SimpleFragment() {
 
     /** 拍照*/
     private  fun  captureImage(){
+        println("cameraAngle=${cameraManager.cameraAngle}")
         cameraParameBuild.cameraAngle =cameraManager.cameraAngle
         bindView.viewFinder.takePhoto { result, error ->
             if (result) {

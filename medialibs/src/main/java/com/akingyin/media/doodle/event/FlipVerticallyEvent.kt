@@ -7,27 +7,20 @@
  * akingyin@163.com
  */
 
-package com.akingyin.media.doodle.core
+package com.akingyin.media.doodle.event
 
-import android.view.MotionEvent
+import com.akingyin.media.doodle.core.IDoodle
+
 
 /**
  * @ Description:
  * @author king
- * @ Date 2020/8/11 15:19
+ * @ Date 2020/8/12 17:21
  * @version V1.0
  */
-class ZoomIconEvent :StickerIconEvent {
+class FlipVerticallyEvent : AbstractFlipEvent() {
 
-    override fun onActionDown(stickerView: IDoodle, event: MotionEvent) {
+    override fun getFlipDirection() = IDoodle.Flip.FLIP_VERTICALLY
 
-    }
 
-    override fun onActionMove(stickerView: IDoodle, event: MotionEvent) {
-       stickerView.zoomAndRotateCurrentSticker(event)
-    }
-
-    override fun onActionUp(stickerView: IDoodle, event: MotionEvent) {
-
-    }
 }

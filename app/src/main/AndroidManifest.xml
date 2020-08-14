@@ -152,6 +152,10 @@
         android:theme="@style/Theme.MaterialComponents.Light.DarkActionBar" />
     <activity android:name="com.akingyin.media.camera.ui.CameraSettingActivity"/>
     <activity android:name=".ui.MedialFeilInfoActivity"/>
+    <activity android:name="com.akingyin.media.doodle.DoodleActivity"
+          android:theme="@style/Theme.TranslucentNavigationBar"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+        android:launchMode="singleTop"/>
   </application>
 
 </manifest>

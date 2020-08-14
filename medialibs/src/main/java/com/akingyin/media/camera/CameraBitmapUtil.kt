@@ -13,6 +13,7 @@ import android.graphics.*
 
 import android.text.TextPaint
 import android.text.TextUtils
+import android.util.DisplayMetrics
 import androidx.exifinterface.media.ExifInterface
 import com.akingyin.base.ext.appServerTime
 import com.akingyin.base.utils.DateUtil
@@ -361,4 +362,42 @@ object CameraBitmapUtil {
             e.printStackTrace()
         }
     }
+
+    /**
+     * 获取缩小的比例(主要用于涂鸦显示)
+     *
+     * @param bitmap
+     * @param dm
+     * @return
+     */
+    var minScale = 7 / 8f
+    fun getBitmapScale(bitmap: Bitmap, dm: DisplayMetrics): Float {
+
+        var width = bitmap.width
+        var heigth = bitmap.height
+        if (width > heigth) {
+            width = heigth
+            heigth = bitmap.width
+        }
+        val screenWidth = dm.widthPixels.coerceAtMost(dm.heightPixels)
+        val screenHight = dm.widthPixels.coerceAtLeast(dm.heightPixels)
+        // 当前图片比屏幕大
+        if (width > screenWidth || heigth > screenHight) {
+            val x: Float = (screenWidth - MaxpOffset) / width.toFloat()
+            val y: Float = (screenHight - MaxpOffset) / heigth.toFloat()
+            return if (x <= y) {
+                x
+            } else y
+        }
+
+        // 　图片至少应占屏幕的4/5
+        if (width * (1 / minScale) < screenWidth || heigth * (1 / minScale) < screenHight) {
+            val x = screenWidth.toFloat() * minScale / width
+            val y = screenHight.toFloat() * minScale / heigth
+            println("x=$x:y=$y")
+            return x.coerceAtMost(y)
+        }
+        return 0f
+    }
+
 }

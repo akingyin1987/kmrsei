@@ -7,20 +7,28 @@
  * akingyin@163.com
  */
 
-package com.akingyin.media.doodle.core
+package com.akingyin.media.doodle.event
 
 import android.view.MotionEvent
+import com.akingyin.media.doodle.core.IDoodle
 
 /**
  * @ Description:
  * @author king
- * @ Date 2020/8/11 15:15
+ * @ Date 2020/8/11 15:19
  * @version V1.0
  */
-interface StickerIconEvent {
-    fun onActionDown(stickerView: IDoodle, event: MotionEvent)
+class ZoomIconEvent : StickerIconEvent {
 
-    fun onActionMove(stickerView: IDoodle, event: MotionEvent)
+    override fun onActionDown(stickerView: IDoodle, event: MotionEvent) {
 
-    fun onActionUp(stickerView: IDoodle, event: MotionEvent)
+    }
+
+    override fun onActionMove(stickerView: IDoodle, event: MotionEvent) {
+       stickerView.zoomAndRotateCurrentSticker(event)
+    }
+
+    override fun onActionUp(stickerView: IDoodle, event: MotionEvent) {
+
+    }
 }

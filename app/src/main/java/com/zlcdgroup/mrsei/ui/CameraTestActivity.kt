@@ -27,6 +27,7 @@ import com.akingyin.bmap.PanoramaBaiduMapActivity
 import com.akingyin.bmap.SelectLocationBaiduActivity
 import com.akingyin.media.camera.CameraParameBuild
 import com.akingyin.media.camera.ui.BaseCameraFragment
+import com.akingyin.media.doodle.DoodleActivity
 
 import com.akingyin.media.engine.LocationEngine
 import com.baidu.location.BDAbstractLocationListener
@@ -63,7 +64,7 @@ class CameraTestActivity : SimpleActivity() {
         fragment.cameraLiveData.observe(this, Observer {
             println("data->$it")
             showSucces("拍照成功->$it")
-            startActivity<MedialFeilInfoActivity>(bundle = arrayOf("filePath" to it.localPath))
+            startActivity<DoodleActivity>(bundle = arrayOf(DoodleActivity.FILE_PATH to it.localPath))
             finish()
         })
         fragment.locationEngine = object : LocationEngine {

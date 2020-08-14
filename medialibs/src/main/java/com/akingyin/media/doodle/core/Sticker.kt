@@ -46,7 +46,10 @@ abstract class Sticker {
     private val boundPoints = FloatArray(8)
     private val mappedBounds = FloatArray(8)
     private val trappedRect = RectF()
-    val matrix = Matrix()
+    var matrix = Matrix()
+    set(value) {
+        field.set(value)
+    }
     private var isFlippedHorizontally = false
     private var isFlippedVertically = false
 
@@ -87,10 +90,10 @@ abstract class Sticker {
     abstract fun setDrawable( drawable: Drawable): Sticker
 
 
-    abstract fun getDrawable(): Drawable
+    abstract fun getDrawable(): Drawable?
 
 
-    abstract fun setAlpha(@androidx.annotation.IntRange(from = 0, to = 255) alpha: Int): Sticker
+    abstract fun setAlpha(@IntRange(from = 0, to = 255) alpha: Int): Sticker
 
     open fun getBoundPoints(): FloatArray {
         val points = FloatArray(8)

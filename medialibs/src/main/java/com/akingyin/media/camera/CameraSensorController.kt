@@ -8,9 +8,9 @@
  */
 
 package com.akingyin.media.camera
+import android.app.Activity
 import android.content.Context
 import android.view.OrientationEventListener
-import java.lang.ref.WeakReference
 import kotlin.math.abs
 
 /**
@@ -19,9 +19,9 @@ import kotlin.math.abs
  * @ Date 2020/7/20 12:18
  * @version V1.0
  */
-class CameraSensorController constructor(context: Context) {
+class CameraSensorController constructor(context:Context,rotation:Int = 90) {
 
-    private var mContextWeakReference: WeakReference<Context> = WeakReference(context)
+
 
     private var mLastOrientation = 0
 
@@ -33,8 +33,7 @@ class CameraSensorController constructor(context: Context) {
     var orientationEventListener: OrientationEventListener
 
     init {
-
-
+       this.rotation = rotation
         orientationEventListener = object : OrientationEventListener(context) {
             override fun onOrientationChanged(orientation: Int) {
                 if (orientation == ORIENTATION_UNKNOWN) {
@@ -50,9 +49,9 @@ class CameraSensorController constructor(context: Context) {
                     if (orientation2 != mLastOrientation) {
                         mLastOrientation = orientation2
                         if (null != mOrientationChangeListener) {
-                            val relative_orientation = (mLastOrientation + rotation) % 360
-                            val ui_rotation = (360 - relative_orientation) % 360
-                            mOrientationChangeListener?.onChange(relative_orientation, ui_rotation)
+                            val relativeOrientation = (mLastOrientation + rotation) % 360
+                            val uiRotation = (360 - relativeOrientation) % 360
+                            mOrientationChangeListener?.onChange(relativeOrientation, uiRotation)
                         }
                     }
                 }
