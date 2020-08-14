@@ -12,6 +12,8 @@ package com.akingyin.media.doodle
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.os.SystemClock
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -24,20 +26,22 @@ import androidx.core.view.ViewCompat
 import com.akingyin.base.ext.no
 import com.akingyin.base.ext.tryCatch
 import com.akingyin.base.ext.yes
+import com.akingyin.base.utils.CalculationUtil
 import com.akingyin.base.utils.CameraBitmapUtil
 import com.akingyin.media.R
-import com.akingyin.media.doodle.core.*
+import com.akingyin.media.doodle.core.BitmapStickerIcon
+import com.akingyin.media.doodle.core.IDoodle
+import com.akingyin.media.doodle.core.IDoodleShape
+import com.akingyin.media.doodle.core.Sticker
 import com.akingyin.media.doodle.event.DeleteIconEvent
 import com.akingyin.media.doodle.event.FlipHorizontallyEvent
 import com.akingyin.media.doodle.event.ZoomIconEvent
+import com.blankj.utilcode.util.SizeUtils
 import timber.log.Timber
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.abs
-import kotlin.math.atan2
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 
 /**
@@ -58,6 +62,15 @@ class DoodleView @JvmOverloads constructor(
     /** 是不显示在最外层 */
     private var bringToFrontCurrentSticker = false
 
+    /** 放大镜参数 */
+    private var mPointPaint: Paint
+    private var mPointFillPaint: Paint
+    private var mMagnifierDrawable: ShapeDrawable? = null
+    private var mDraggingPoint: Point = Point()
+    private var mMagnifierCrossPaint: Paint
+    private var mMagnifierPaint: Paint
+    private val mScaleX = 1.5f
+    private val mScaleY = 1.5f
     @IntDef(value = [ActionMode.NONE, ActionMode.DRAG, ActionMode.ZOOM_WITH_TWO_FINGER, ActionMode.ICON, ActionMode.CLICK])
     @Retention(AnnotationRetention.SOURCE)
      annotation class ActionMode {
@@ -127,6 +140,26 @@ class DoodleView @JvmOverloads constructor(
 
     init {
         touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+        mPointPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        mPointPaint.color = -0xff0001
+        mPointPaint.strokeWidth = 1f
+        mPointPaint.style = Paint.Style.STROKE
+
+        mPointFillPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        mPointFillPaint.color = Color.WHITE
+        mPointFillPaint.style = Paint.Style.FILL
+        mPointFillPaint.alpha = 175
+        mMagnifierPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+
+        mMagnifierPaint.color = Color.WHITE
+        mMagnifierPaint.style = Paint.Style.FILL
+
+        mMagnifierCrossPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        mMagnifierCrossPaint.color = Color.BLUE
+        mMagnifierCrossPaint.style = Paint.Style.FILL
+        mMagnifierCrossPaint.strokeWidth = SizeUtils.dp2px(MAGNIFIER_CROSS_LINE_WIDTH).toFloat()
+
         attrs?.run {
            context.theme.obtainStyledAttributes(this,R.styleable.StickerView,defStyleAttr,0).use {
                showIcons = it.getBoolean(R.styleable.StickerView_showIcons, false)
@@ -140,9 +173,96 @@ class DoodleView @JvmOverloads constructor(
 
            }
         }
+        if(null == attrs){
+            borderPaint.isAntiAlias = true
+            borderPaint.strokeWidth =5f
+            borderPaint.color = Color.BLACK
+            borderPaint.alpha = 128
+        }
         configDefaultIcons()
     }
 
+
+    /**
+     * 设置放大镜参数
+     */
+    fun  setMagnifierBitmap(dis: Bitmap){
+         val magnifierShader = BitmapShader(dis, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+         mMagnifierDrawable = ShapeDrawable(OvalShape()).apply {
+             paint.shader = magnifierShader
+         }
+
+         val origW: Int = dis.width
+         val origH: Int = dis.height
+         mActWidth = (origW * mScaleX).roundToInt()
+         mActHeight = (origH * mScaleY).roundToInt()
+         mActLeft = (width - mActWidth) / 2
+         mActTop = (height - mActHeight) / 2
+     }
+
+    /**
+     * //实际显示图片的位置
+     */
+    private var mActWidth = 0
+    /**
+     * //实际显示图片的位置
+     */
+    private  var mActHeight:Int = 0
+    /**
+     * //实际显示图片的位置
+     */
+    private  var mActLeft:Int = 0
+    /**
+     * //实际显示图片的位置
+     */
+    private  var mActTop:Int = 0
+
+
+
+
+    private val mMagnifierMatrix = Matrix()
+     fun onDrawMagnifier(canvas: Canvas) {
+         mMagnifierDrawable?.let {
+             val draggingX: Float = getViewPointX(mDraggingPoint)
+             val draggingY: Float = getViewPointY(mDraggingPoint)
+             val radius = (width / 8).coerceAtMost(height / 8).toFloat()
+             var cx = radius
+             val lineOffset = SizeUtils.dp2px(MAGNIFIER_BORDER_WIDTH)
+             it.setBounds(lineOffset, lineOffset, radius.toInt() * 2 - lineOffset, radius.toInt() * 2 - lineOffset)
+             val pointsDistance: Double = CalculationUtil.getPointsDistance(draggingX, draggingY, 0f, 0f)
+             if (pointsDistance < radius * 2.5) {
+                 it.setBounds((mActWidth/mScaleX).roundToInt() - radius.toInt() * 2 + lineOffset, lineOffset, (mActHeight/mScaleY).roundToInt() - lineOffset, radius.toInt() * 2 - lineOffset)
+                 cx = (mActWidth/mScaleX).roundToInt()  - radius
+             }
+             canvas.drawCircle(cx, radius, radius, mMagnifierPaint)
+             mMagnifierMatrix.setTranslate(radius - draggingX, radius - draggingY)
+             it.paint.shader.setLocalMatrix(mMagnifierMatrix)
+             it.draw(canvas)
+
+             //画放大镜十字线
+             val crossLength: Float = SizeUtils.dp2px(MAGNIFIER_CROSS_LINE_LENGTH).toFloat()
+             canvas.drawLine(cx, radius - crossLength, cx, radius + crossLength, mMagnifierCrossPaint!!)
+             canvas.drawLine(cx - crossLength, radius, cx + crossLength, radius, mMagnifierCrossPaint!!)
+         }
+
+    }
+    private fun getViewPointX(point: Point): Float {
+        return getViewPointX(point.x.toFloat())
+    }
+
+    private fun getViewPointX(x: Float): Float {
+        //return x * mScaleX + mActLeft;
+        return x * mScaleX
+    }
+
+    private fun getViewPointY(point: Point): Float {
+        return getViewPointY(point.y.toFloat())
+    }
+
+    private fun getViewPointY(y: Float): Float {
+        //	return y * mScaleY + mActTop;
+        return y * mScaleY
+    }
     fun isLocked(): Boolean {
         return locked
     }
@@ -215,7 +335,9 @@ class DoodleView @JvmOverloads constructor(
     }
     override fun dispatchDraw(canvas: Canvas?) {
         super.dispatchDraw(canvas)
+
         canvas?.let {
+            onDrawMagnifier(it)
             drawStickers(it)
         }
 
@@ -570,7 +692,7 @@ class DoodleView @JvmOverloads constructor(
     /**
      *获取贴图坐标
      */
-    fun getStickerPoints( sticker: Sticker?, dst: FloatArray) {
+    private fun getStickerPoints( sticker: Sticker?, dst: FloatArray) {
         sticker?.let {
             it.getBoundPoints(bounds)
             it.getMappedPoints(dst, bounds)
@@ -623,9 +745,7 @@ class DoodleView @JvmOverloads constructor(
         return sqrt(x * x + y * y).toFloat()
     }
 
-    fun isConstrained(): Boolean {
-        return constrained
-    }
+
 
 
     fun setConstrained(constrained: Boolean): DoodleView{
@@ -828,6 +948,14 @@ class DoodleView @JvmOverloads constructor(
 
         const val FLIP_HORIZONTALLY = 1
         const val FLIP_VERTICALLY = 1 shl 1
+        const val POINT_RADIUS = 10f
+
+         const val MAGNIFIER_CROSS_LINE_WIDTH = 0.8f //dp，放大镜十字宽度
+
+         const val MAGNIFIER_CROSS_LINE_LENGTH = 3f //dp， 放大镜十字长度
+
+         const val MAGNIFIER_BORDER_WIDTH = 1f //dp，放大镜边框宽度
+
     }
     interface OnStickerOperationListener {
         fun onStickerAdded( sticker: IDoodleShape)

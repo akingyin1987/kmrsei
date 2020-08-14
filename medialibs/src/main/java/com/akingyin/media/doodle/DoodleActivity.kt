@@ -94,6 +94,7 @@ class DoodleActivity:SimpleActivity() {
                       ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                   }
                   bindView.doodleImage.setImageBitmap(it)
+                  bindView.doodleView.setMagnifierBitmap(it)
               }
 
           }
@@ -113,6 +114,7 @@ class DoodleActivity:SimpleActivity() {
           }
           bindView.doodleView.apply {
               //default icon layout
+
              setBackgroundColor(Color.WHITE)
              setLocked(false)
              setConstrained(true)
