@@ -10,11 +10,13 @@
 package com.akingyin.media.doodle.core
 
 import android.graphics.*
-import androidx.annotation.IntDef
+import android.graphics.drawable.Drawable
+import androidx.annotation.ColorInt
+
 import com.akingyin.media.doodle.Pt
 import java.util.*
 import kotlin.math.atan2
-import kotlin.math.sqrt
+
 
 /**
  * @ Description:
@@ -22,14 +24,12 @@ import kotlin.math.sqrt
  * @ Date 2020/8/11 11:40
  * @version V1.0
  */
-abstract class IDoodleShape :Sticker() {
+abstract class IDoodleShape : Sticker() {
 
     /** 边框4个按钮坐标 */
     private val bitmapPoints = FloatArray(8)
     private val bounds = FloatArray(8)
 
-    /** 当前画笔颜色 */
-    var doodleColor: Int = Color.GREEN
 
     /** 画笔起始位置 */
     var startPt: Pt = Pt(0, 0)
@@ -40,13 +40,20 @@ abstract class IDoodleShape :Sticker() {
         startPt.y = y.toInt()
     }
 
+    /**
+     * 设置移动过程的坐标信息
+     */
+    fun  setMoveLocation(x: Float, y: Float){
+        setEndLocation(x,y)
+    }
+
     /** 设置终点位置 */
     fun setEndLocation(x: Float, y: Float) {
         endPt.x = x.toInt()
         endPt.y = y.toInt()
         centerPt.x = (startPt.x + endPt.x) / 2
         centerPt.y = (startPt.y + endPt.y) / 2
-        calculation()
+
     }
 
     /** 画笔终点位置 */
@@ -57,8 +64,10 @@ abstract class IDoodleShape :Sticker() {
     var centerPt = Pt(0, 0)
 
 
-    private val mPath = Path() // 画笔的路径
+    var mPath = Path() // 画笔的路径
 
+    //画笔
+    var mPaint: Paint = Paint()
 
     /** 是否被选中 */
     var isSelected = false
@@ -79,8 +88,6 @@ abstract class IDoodleShape :Sticker() {
      * @param doodle
      */
     abstract fun drawHelpers(canvas: Canvas, doodle: IDoodle)
-
-
 
 
     /**
@@ -105,7 +112,7 @@ abstract class IDoodleShape :Sticker() {
             style = Paint.Style.FILL
             strokeWidth = 1F
         }
-        canvas.drawRect(mRectTemp,paint)
+        canvas.drawRect(mRectTemp, paint)
         getStickerPoints()
         val x1 = bitmapPoints[0]
         val y1 = bitmapPoints[1]
@@ -136,32 +143,49 @@ abstract class IDoodleShape :Sticker() {
     /**
      * 获取4个点坐标
      */
-    open fun getStickerPoints(){
-        if(mRect.isEmpty){
-            Arrays.fill(bitmapPoints,0F)
-        }else{
-           getBoundPoints(bounds)
-           matrix.mapPoints(bitmapPoints,bounds)
+    open fun getStickerPoints() {
+        if (mRect.isEmpty) {
+            Arrays.fill(bitmapPoints, 0F)
+        } else {
+            getBoundPoints(bounds)
+            matrix.mapPoints(bitmapPoints, bounds)
         }
     }
 
 
-
-
-
-
-    protected open fun calculateRotation(x1: Float, y1: Float, x2: Float, y2: Float): Float {
+    open fun calculateRotation(x1: Float, y1: Float, x2: Float, y2: Float): Float {
         val x = x1 - x2.toDouble()
         val y = y1 - y2.toDouble()
         val radians = atan2(y, x)
         return Math.toDegrees(radians).toFloat()
     }
 
-    protected open fun calculateDistance(x1: Float, y1: Float, x2: Float, y2: Float): Float {
-        val x = x1 - x2.toDouble()
-        val y = y1 - y2.toDouble()
-        return sqrt(x * x + y * y).toFloat()
+
+    /**
+     * 设置画笔颜色
+     */
+    fun setDoodlePenColor(@ColorInt color: Int): IDoodleShape {
+        mPaint.color = color
+        return this
     }
 
+    /**
+     * 重新生成 drawable
+     */
+    open fun resetDrawable() {
+
+    }
+
+
+    /**
+     * 涂鸦是否画完
+     */
+    open fun  isDrawShapeComplete()= true
+
+
+    /**
+     * 获取平移量
+     */
+    open fun  getTranslateOffset():PointF? = null
 
 }

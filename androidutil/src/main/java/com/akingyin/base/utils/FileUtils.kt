@@ -21,7 +21,7 @@ import java.util.*
  * @ Version V1.0
  */
 object FileUtils {
-    const val FILE_EXTENSION_SEPARATOR = "."
+    private const val FILE_EXTENSION_SEPARATOR = "."
 
     /**
      * read file
@@ -40,7 +40,7 @@ object FileUtils {
         return try {
             val `is` = InputStreamReader(FileInputStream(file), charsetName)
             reader = BufferedReader(`is`)
-            var line: String? = null
+            var line: String
             while (reader.readLine().also { line = it } != null) {
                 if ("" != fileContent.toString()) {
                     fileContent.append("\r\n")
@@ -139,7 +139,9 @@ object FileUtils {
      */
     @JvmOverloads
     fun writeFile(filePath: String?, stream: InputStream, append: Boolean = false): Boolean {
-        return writeFile(filePath?.let { File(it) }, stream, append)
+        return filePath?.let {
+            writeFile( File(it) , stream, append)
+        }?:false
     }
     /**
      * write file
@@ -157,13 +159,13 @@ object FileUtils {
      * @see {@link .writeFile
      */
     @JvmOverloads
-    fun writeFile(file: File?, stream: InputStream, append: Boolean = false): Boolean {
+    fun writeFile(file: File, stream: InputStream, append: Boolean = false): Boolean {
         var o: OutputStream? = null
         return try {
-            makeDirs(file!!.absolutePath)
+            makeDirs(file.absolutePath)
             o = FileOutputStream(file, append)
             val data = ByteArray(1024)
-            var length = -1
+            var length: Int
             while (stream.read(data).also { length = it } != -1) {
                 o.write(data, 0, length)
             }
@@ -186,7 +188,12 @@ object FileUtils {
         if (TextUtils.isEmpty(sourceFilePath) || TextUtils.isEmpty(destFilePath)) {
             throw RuntimeException("Both sourceFilePath and destFilePath cannot be null.")
         }
-        moveFile(File(sourceFilePath), File(destFilePath))
+        sourceFilePath?.let {
+            destFilePath?.run {
+                moveFile(File(it), File(this))
+            }
+        }
+
     }
 
     /**
@@ -207,13 +214,18 @@ object FileUtils {
      */
     @JvmStatic
     fun copyFile(sourceFilePath: String?, destFilePath: String?): Boolean {
-        var inputStream: InputStream? = null
-        inputStream = try {
-            FileInputStream(sourceFilePath)
-        } catch (e: FileNotFoundException) {
-            throw RuntimeException("FileNotFoundException occurred. ", e)
+        val inputStream: InputStream? = sourceFilePath?.let {
+            try {
+
+                FileInputStream(sourceFilePath)
+            } catch (e: FileNotFoundException) {
+                throw RuntimeException("FileNotFoundException occurred. ", e)
+            }
         }
-        return writeFile(destFilePath, inputStream)
+
+        return inputStream?.let {
+            writeFile(destFilePath, inputStream)
+        }?:false
     }
 
     /**
@@ -223,17 +235,18 @@ object FileUtils {
      * @return if file not exist, return null, else return content of file
      * @throws RuntimeException if an error occurs while operator BufferedReader
      */
-    fun readFileToList(filePath: String?, charsetName: String?): List<String?>? {
+    fun readFileToList(filePath: String, charsetName: String): List<String>? {
+
         val file = File(filePath)
-        val fileContent: MutableList<String?> = ArrayList()
-        if (file == null || !file.isFile) {
+        val fileContent: MutableList<String> = ArrayList()
+        if ( !file.isFile) {
             return null
         }
         var reader: BufferedReader? = null
         return try {
             val `is` = InputStreamReader(FileInputStream(file), charsetName)
             reader = BufferedReader(`is`)
-            var line: String? = null
+            var line: String
             while (reader.readLine().also { line = it } != null) {
                 fileContent.add(line)
             }
@@ -414,8 +427,13 @@ object FileUtils {
         if (StringUtils.isBlank(filePath)) {
             return false
         }
-        val file = File(filePath)
-        return file.exists() && file.isFile
+
+        return filePath?.let {
+            File(filePath).run {
+                exists() && isFile
+            }
+
+        }?:false
     }
 
     /**
@@ -612,7 +630,7 @@ object FileUtils {
             }
             if (ost != null) {
                 val buffer = ByteArray(4096)
-                var byteCount = 0
+                var byteCount: Int
                 while (ist.read(buffer).also { byteCount = it } != -1) {  // 循环从输入流读取 buffer字节
                     ost.write(buffer, 0, byteCount) // 将读取的输入流写入到输出流
                 }

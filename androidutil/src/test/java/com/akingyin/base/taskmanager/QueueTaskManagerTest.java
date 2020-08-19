@@ -21,8 +21,8 @@ public class QueueTaskManagerTest {
 
 
     @Test
-    public  void   testAddTask(){
-        MultiTaskManager  taskManager = MultiTaskManager.createPool(1);
+    public  void   testAddTask() throws InterruptedException {
+        MultiTaskManager  taskManager = MultiTaskManager.createPool(5);
         taskManager.setThreadTypeEnum(ThreadTypeEnum.CurrentThread);
       final Semaphore semaphore = new Semaphore(1);
 
@@ -50,6 +50,7 @@ public class QueueTaskManagerTest {
           taskManager.addTask(new TestTask(i,null,null));
         }
         taskManager.executeTask();
+        Thread.sleep(50000);
 
     }
 

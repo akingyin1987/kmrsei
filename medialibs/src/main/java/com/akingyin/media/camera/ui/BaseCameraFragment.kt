@@ -394,6 +394,11 @@ open class BaseCameraFragment : SimpleFragment() {
                     }
                 }
             } else {
+                countDownJob?.cancel()
+                CameraManager.recoveryCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel,bindView.rlTurn)
+                bindView.fabTakePicture.resetRecordAnim()
+                bindView.fabTakePicture.isEnabled = true
+                bindView.viewFinder.onStartCameraView()
                 showError(error)
             }
         }

@@ -34,6 +34,7 @@ import com.blankj.utilcode.util.SizeUtils
  * @ Date 2020/8/12 18:00
  * @version V1.0
  */
+@Suppress("DEPRECATION")
 class TextDoodleShape(var context: Context) : IDoodleShape(){
     private var drawable: Drawable?=null
 
@@ -237,7 +238,7 @@ class TextDoodleShape(var context: Context) : IDoodleShape(){
         canvas.save()
         canvas.concat(matrix)
         if (textRect.width() == getWidth()) {
-            val dy = getHeight() / 2 - staticLayout!!.height / 2
+            val dy = getHeight() / 2 - (staticLayout?.height?:0) / 2
             // center vertical
             canvas.translate(0f, dy.toFloat())
         } else {

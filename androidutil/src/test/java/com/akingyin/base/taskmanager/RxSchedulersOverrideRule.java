@@ -1,12 +1,13 @@
 package com.akingyin.base.taskmanager;
 
-import io.reactivex.Scheduler;
-import io.reactivex.android.plugin.RxAndroidPlugins;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
-import io.reactivex.internal.schedulers.ExecutorScheduler;
-import io.reactivex.plugins.RxJavaPlugins;
+import androidx.annotation.NonNull;
+import io.reactivex.rxjava3.android.plugins.RxAndroidPlugins;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.functions.Supplier;
+import io.reactivex.rxjava3.internal.schedulers.ExecutorScheduler;
+import io.reactivex.rxjava3.plugins.RxJavaPlugins;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -22,6 +23,8 @@ import org.junit.runners.model.Statement;
  */
 public class RxSchedulersOverrideRule implements TestRule {
 
+
+
   private Scheduler immediate = new Scheduler() {
 
     @Override
@@ -36,7 +39,7 @@ public class RxSchedulersOverrideRule implements TestRule {
         public void execute(@NonNull Runnable command) {
           command.run();
         }
-      },false);
+      },false,false);
     }
   };
 
@@ -45,33 +48,25 @@ public class RxSchedulersOverrideRule implements TestRule {
     return new Statement() {
       @Override
       public void evaluate() throws Throwable {
-        RxJavaPlugins.setInitIoSchedulerHandler(new Function<Callable<Scheduler>, Scheduler>() {
-          @Override
-          public Scheduler apply(@NonNull Callable<Scheduler> schedulerCallable) throws Exception {
+        RxJavaPlugins.setInitIoSchedulerHandler(new Function<Supplier<Scheduler>, Scheduler>() {
+          @Override public Scheduler apply(Supplier<Scheduler> schedulerSupplier) throws Throwable {
             return immediate;
           }
         });
-        RxJavaPlugins.setInitComputationSchedulerHandler(new Function<Callable<Scheduler>, Scheduler>() {
-          @Override
-          public Scheduler apply(@NonNull Callable<Scheduler> schedulerCallable) throws Exception {
+        RxJavaPlugins.setInitNewThreadSchedulerHandler(new Function<Supplier<Scheduler>, Scheduler>() {
+          @Override public Scheduler apply(Supplier<Scheduler> schedulerSupplier) throws Throwable {
             return immediate;
           }
         });
-        RxJavaPlugins.setInitNewThreadSchedulerHandler(new Function<Callable<Scheduler>, Scheduler>() {
-          @Override
-          public Scheduler apply(@NonNull Callable<Scheduler> schedulerCallable) throws Exception {
+        RxJavaPlugins.setInitSingleSchedulerHandler(new Function<Supplier<Scheduler>, Scheduler>() {
+          @Override public Scheduler apply(Supplier<Scheduler> schedulerSupplier) throws Throwable {
             return immediate;
           }
         });
-        RxJavaPlugins.setInitSingleSchedulerHandler(new Function<Callable<Scheduler>, Scheduler>() {
-          @Override
-          public Scheduler apply(@NonNull Callable<Scheduler> schedulerCallable) throws Exception {
-            return immediate;
-          }
-        });
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler(new Function<Callable<Scheduler>, Scheduler>() {
-          @Override
-          public Scheduler apply(@NonNull Callable<Scheduler> schedulerCallable) throws Exception {
+
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler(new io.reactivex.rxjava3.functions.Function<Callable<io.reactivex.rxjava3.core.Scheduler>, io.reactivex.rxjava3.core.Scheduler>() {
+          @Override public io.reactivex.rxjava3.core.Scheduler apply(
+              Callable<io.reactivex.rxjava3.core.Scheduler> schedulerCallable) throws Throwable {
             return immediate;
           }
         });

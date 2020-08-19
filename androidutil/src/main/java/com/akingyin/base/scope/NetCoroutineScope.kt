@@ -26,11 +26,11 @@ import kotlin.coroutines.EmptyCoroutineContext
  * @ Date 2020/7/23 11:53
  * @version V1.0
  */
-class NetCoroutineScope():AndroidScope() {
-    protected var isReadCache = true
-    protected var onCache: (suspend CoroutineScope.() -> Unit)? = null
+open class NetCoroutineScope():AndroidScope() {
+     var isReadCache = true
+     var onCache: (suspend CoroutineScope.() -> Unit)? = null
 
-    protected var isCacheSucceed = false
+     var isCacheSucceed = false
         get() = if (onCache != null) field else false
 
     protected var error = true

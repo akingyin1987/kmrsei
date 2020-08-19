@@ -16,6 +16,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import com.akingyin.base.config.BaseConfig
 import java.io.Serializable
 
 /**
@@ -32,6 +33,10 @@ inline val currentTimeMillis: Long
 
 inline val  appServerTime:Long
     get() = AppTime.getAppTime()
+
+/** 文件共享的权限 */
+inline val  authority :String
+    get() = BaseConfig.getAuthority()
 
 fun findColor(@ColorRes resId: Int) = ContextCompat.getColor(app, resId)
 

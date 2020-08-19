@@ -18,6 +18,8 @@ import androidx.annotation.IntDef
 import androidx.annotation.IntRange
 import com.akingyin.media.doodle.DrawUtil
 import kotlin.math.atan2
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 /**
  * @ Description:
@@ -228,8 +230,7 @@ abstract class Sticker {
      * This method calculates scale value for given Matrix object.
      */
     open fun getMatrixScale( matrix: Matrix): Float {
-        return Math.sqrt(Math.pow(getMatrixValue(matrix, Matrix.MSCALE_X).toDouble(), 2.0) + Math.pow(
-                getMatrixValue(matrix, Matrix.MSKEW_Y).toDouble(), 2.0)).toFloat()
+        return sqrt(getMatrixValue(matrix, Matrix.MSCALE_X).toDouble().pow(2.0) + getMatrixValue(matrix, Matrix.MSKEW_Y).toDouble().pow(2.0)).toFloat()
     }
 
     /**
@@ -256,13 +257,18 @@ abstract class Sticker {
         return contains(floatArrayOf(x, y))
     }
 
+
+    private val tempMatrix = Matrix()
     open  fun contains( point: FloatArray): Boolean {
-        val tempMatrix = Matrix()
+
+        tempMatrix.reset()
         tempMatrix.setRotate(-getCurrentAngle())
         getBoundPoints(boundPoints)
         getMappedPoints(mappedBounds, boundPoints)
+        //处理坐标旋转后的映射值
         tempMatrix.mapPoints(unrotatedWrapperCorner, mappedBounds)
         tempMatrix.mapPoints(unrotatedPoint, point)
+        println("unrotatedWrapperCorner=$unrotatedWrapperCorner,$mappedBounds")
         DrawUtil.trapToRect(trappedRect, unrotatedWrapperCorner)
         return trappedRect.contains(unrotatedPoint[0], unrotatedPoint[1])
     }

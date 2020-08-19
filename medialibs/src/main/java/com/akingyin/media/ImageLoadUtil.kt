@@ -1,7 +1,6 @@
 package com.akingyin.media
 
 import android.content.Context
-import android.content.Intent
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.widget.ImageView
@@ -45,13 +44,7 @@ object ImageLoadUtil {
                 .error(R.drawable.icon_img_load_error)
                 .priority(Priority.HIGH)
 
-    @JvmStatic
-    fun NotificationGallery(context: Context, uri: Uri?) {
 
-        //通知图库更新
-        val intent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri)
-        context.sendBroadcast(intent)
-    }
     //通知图库更新
 
     fun  scanGallery(context: Context, paths:Array<out String>,vararg mimeTypes:String= arrayOf("image/jpeg"),callBack: (path:String,uri:Uri)->Unit){

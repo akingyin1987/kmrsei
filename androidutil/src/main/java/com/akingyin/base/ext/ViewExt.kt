@@ -385,6 +385,18 @@ fun View.fitSystemWindows() {
             View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 }
 
+fun View.setSelectToggle(selected:Boolean,vararg views:View){
+    this.isSelected = selected
+    views.forEach {
+        it.isSelected = !selected
+    }
+}
+
+fun  View.toggleView(block: (select:Boolean) -> Unit){
+    this.isSelected = !isSelected
+    block.invoke(isSelected)
+}
+
 fun Fragment.share(file: File, title: String = "Share with...") {
     val share = Intent(Intent.ACTION_SEND)
     share.type = "image/*"

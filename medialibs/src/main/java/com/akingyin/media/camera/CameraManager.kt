@@ -385,6 +385,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                                     "base_" + FileUtils.getFileName(cameraParameBuild.localPath), 90)
                         }?.let {
                             withIO {
+                                println("当前width=${it.width},hight=${it.height}")
                                 CameraBitmapUtil.zipImageTo960x540(it, cameraParameBuild.cameraAngle,landscape = cameraParameBuild.horizontalPicture, fileDir = FileUtils.getFolderName(cameraParameBuild.localPath), fileName = FileUtils.getFileName(cameraParameBuild.localPath))
 
                             }.yes {
@@ -409,13 +410,16 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                         } ?: callBack(true, "图片转换失败")
                     } catch (e: Exception) {
                         e.printStackTrace()
+                        println("发现异常1")
                         callBack(false, e.message)
+                        takePhotoing = false
                     }
 
                 }
             })
         }catch (e : Exception){
             e.printStackTrace()
+            println("发现异常2")
             callBack(false,"出错了,${e.message}")
         }finally {
             takePhotoing = false

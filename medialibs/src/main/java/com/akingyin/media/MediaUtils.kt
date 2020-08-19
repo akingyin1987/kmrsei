@@ -7,6 +7,8 @@
  * akingyin@163.com
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.akingyin.media
 
 import android.content.ContentValues

@@ -57,9 +57,11 @@ interface IDoodle {
     fun  replace(iDoodleShape: IDoodleShape,needStayState:Boolean = true):Boolean
 
 
+    fun  onCreateSticketShape()
+
     /**
      * 保存涂鸦图片
      */
-    fun  saveDoodleBitmap(file: File,call:(result:Boolean,error:String?)->Unit)
+    fun  saveDoodleBitmap(file: File,scale:Float = 0f,call:(result:Boolean,error:String?)->Unit)
 
 }

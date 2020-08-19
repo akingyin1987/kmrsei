@@ -164,7 +164,7 @@ public class MultiTaskManager implements  ITaskResultCallBack{
         int   index = 1;
         for(AbsTaskRunner  taskRunner : queueTasks){
           if(index<=MAX_CACHE_SIZE){
-            System.out.println("执行任务"+index);
+
             threadPool.execute(taskRunner);
           }
           index++;
@@ -259,7 +259,7 @@ public class MultiTaskManager implements  ITaskResultCallBack{
     }
     @Override
     public void onCallBack(TaskStatusEnum statusEnum,final String error) {
-
+      System.out.println("onCallBack-->>>");
         if(status.get() == 4 || status.get() == 3 || status.get() ==5 ){
 
             return;

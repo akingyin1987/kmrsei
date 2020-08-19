@@ -21,6 +21,7 @@ import android.widget.TextView
 import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentManager
 import cn.jzvd.JzvdStd
+import com.akingyin.base.ext.authority
 import com.akingyin.media.audio.AudioPlayDialog.Companion.getInstance
 import com.akingyin.media.audio.AudioPlayView
 import com.akingyin.media.audio.AudioUtil.getMediaDuration
@@ -231,12 +232,12 @@ class ImageViwPageAdapter : BasePageAdapter<ImageTextModel> {
         } else {
             val intent = Intent(Intent.ACTION_VIEW)
             val file = File(path)
-            var uri: Uri? = null
-            uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                FileProvider.getUriForFile(context, "com.zlcdgroup.caims.provider", file)
+            val uri= if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                FileProvider.getUriForFile(context, authority, file)
             } else {
                 Uri.fromFile(file)
             }
+
             intent.setDataAndType(uri, "video/*")
             context.startActivity(intent)
         }

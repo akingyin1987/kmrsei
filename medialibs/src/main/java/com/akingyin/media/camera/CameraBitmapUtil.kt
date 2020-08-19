@@ -34,14 +34,14 @@ import java.util.*
  */
 object CameraBitmapUtil {
 
-    const val NormWidth = 540
-    const val NormHigth = 960
+    private const val NormWidth = 540
+    private const val NormHigth = 960
 
     // 最大偏移量
-    const val MaxpOffset = 40
+    private const val MaxpOffset = 40
 
     // 保存图片的质量
-    const val quality = 90
+    private const val quality = 90
 
     const val  MAX_BITMAP = 2 * 1024 *1024
 
@@ -113,7 +113,7 @@ object CameraBitmapUtil {
     @Throws(Exception::class, Error::class)
     fun dataToBaseBitmap(data: ByteArray, path: String, img: String, rotat: Int): Bitmap? {
 
-        var img_src: Bitmap? = null
+        var imgSrc: Bitmap?
         var fos: FileOutputStream? = null
         try {
             val file = File(path)
@@ -121,13 +121,13 @@ object CameraBitmapUtil {
                 file.mkdirs()
             }
             fos = FileOutputStream(File(path, img))
-            img_src = BitmapFactory.decodeByteArray(data, 0, data.size)
+            imgSrc = BitmapFactory.decodeByteArray(data, 0, data.size)
             if (rotat != 0) {
                 val m = Matrix()
                 m.setRotate(rotat.toFloat())
-                img_src = Bitmap.createBitmap(img_src, 0, 0, img_src.width, img_src.height, m, true)
+                imgSrc = Bitmap.createBitmap(imgSrc, 0, 0, imgSrc.width, imgSrc.height, m, true)
             }
-            img_src.compress(Bitmap.CompressFormat.JPEG, quality, fos)
+            imgSrc.compress(Bitmap.CompressFormat.JPEG, quality, fos)
         } catch (e: Exception) {
             e.printStackTrace()
             throw e
@@ -144,7 +144,7 @@ object CameraBitmapUtil {
                 }
             }
         }
-        return img_src
+        return imgSrc
     }
 
 
@@ -166,9 +166,9 @@ object CameraBitmapUtil {
 
         try {
             // 防止拍出的图片分辨率小于　960　*　540
-            if (mBitmap.width < 540 || mBitmap.height < 960) {
-                val magnifywidth = 540.0.toFloat() / mBitmap.width
-                val magnifyheight = 960.toFloat() / mBitmap.height
+            if (mBitmap.width < NormWidth || mBitmap.height < NormHigth) {
+                val magnifywidth = NormWidth.toFloat() / mBitmap.width
+                val magnifyheight = NormHigth.toFloat() / mBitmap.height
                 val magnify = magnifywidth.coerceAtLeast(magnifyheight)
                 val matrix = Matrix()
                 matrix.postScale(magnify, magnify)
@@ -180,13 +180,14 @@ object CameraBitmapUtil {
                 file.mkdirs()
             }
             val m = Matrix()
-            if (srcBitmap.width - NormHigth > MaxpOffset || mBitmap.height - NormHigth > MaxpOffset) {
+            if (srcBitmap.width - NormHigth > MaxpOffset || srcBitmap.height - NormHigth > MaxpOffset) {
 
                 val sx = if (mBitmap.width > mBitmap.height) {
-                    (960.0 / mBitmap.width).toFloat()
+                    (NormHigth.toFloat() / mBitmap.width)
                 } else {
-                    (960.0 / mBitmap.height).toFloat()
+                    (NormHigth.toFloat() / mBitmap.height)
                 }
+                println("sx=$sx")
                 m.postScale(sx, sx)
             }
             if (landscape) {
@@ -201,9 +202,11 @@ object CameraBitmapUtil {
                     srcBitmap = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.width, srcBitmap.height, m, true)
                 }
             } else {
+
                 if (rotat != 90) {
-                    m.preRotate(if (rotat - 90 < 0) 270F else (rotat - 90).toFloat(), srcBitmap.width.toFloat() / 2, srcBitmap.height.toFloat() / 2)
+                    m.preRotate(if (rotat - 90 < 0) 270f else (rotat - 90).toFloat(), srcBitmap.width.toFloat() / 2, srcBitmap.height.toFloat() / 2)
                 }
+                println("当前2222-width=${srcBitmap.width},hight=${srcBitmap.height}")
                 srcBitmap = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.width, srcBitmap.height, m, true)
             }
             val canvas = Canvas(srcBitmap)
@@ -290,6 +293,20 @@ object CameraBitmapUtil {
         }
         return result
     }
+
+    /**
+     * 缩放Bitmap
+     *
+     * @param bitmap
+     * @param scale
+     * @return
+     */
+    fun bitmapScale(bitmap: Bitmap, scale: Float): Bitmap {
+        val matrix = Matrix()
+        matrix.postScale(scale, scale)
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
 
     /**
      * 旋转图片文件

@@ -164,9 +164,14 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
         cameraParameBuild.cameraAngle = cameraManager.cameraAngle
         println("拍照参数->$cameraParame")
         cameraManager.takePictrue(cameraParame) { result, error ->
-            cameraManager.stopPreview()
-            camera_img.visiable()
-            camera_img.setImageURI(Uri.parse(cameraParame.localPath))
+            if(result){
+                cameraManager.stopPreview()
+                camera_img.visiable()
+                camera_img.setImageURI(Uri.parse(cameraParame.localPath))
+            }else{
+                cameraManager.startPreview()
+            }
+
             callBack.invoke(result, error)
         }
     }

@@ -15,19 +15,24 @@
     android:fitsSystemWindows="true"
     android:background="#232323"
     android:orientation="vertical"
+
     android:layout_height="match_parent">
 
+
+
   <com.akingyin.media.doodle.DoodleView
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:id="@+id/doodleView"
       app:showBorder="true"
+      android:layout_centerInParent="true"
       app:showIcons="true"
-      android:layout_height="match_parent">
+      android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:id="@+id/doodle_image"
-        android:layout_height="match_parent"/>
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"/>
   </com.akingyin.media.doodle.DoodleView>
   <include layout="@layout/doodle_title_bar"
       android:id="@+id/title_bar"
