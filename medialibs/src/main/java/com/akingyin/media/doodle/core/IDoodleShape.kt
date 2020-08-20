@@ -182,10 +182,21 @@ abstract class IDoodleShape : Sticker() {
      */
     open fun  isDrawShapeComplete()= true
 
+    /**
+     * 验证图形是否合格
+     */
+    open fun  qualifiedShape() = true
+
 
     /**
      * 获取平移量
      */
     open fun  getTranslateOffset():PointF? = null
+
+
+    /**
+     * 是否支持其它操作
+     */
+    open  fun   supportOtherHandle():Boolean = true
 
 }

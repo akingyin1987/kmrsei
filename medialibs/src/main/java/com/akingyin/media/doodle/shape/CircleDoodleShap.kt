@@ -99,9 +99,13 @@ class CircleDoodleShap (var context: Context) : IDoodleShape(){
 
     override fun getTranslateOffset(): PointF? {
       return PointF().apply {
-          x = centerPt.x.toFloat()
-          y = centerPt.y.toFloat()
+          x = centerPt.x.toFloat()-radius
+          y = centerPt.y.toFloat()-radius
       }
+    }
+
+    override fun qualifiedShape(): Boolean {
+        return radius >15F
     }
 
     override fun resetDrawable() {

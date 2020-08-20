@@ -11,11 +11,13 @@ package com.akingyin.media.doodle
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Layout
 import android.util.DisplayMetrics
+import android.view.MotionEvent
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.akingyin.base.SimpleActivity
@@ -28,6 +30,7 @@ import com.akingyin.media.databinding.ActivityDoodleBinding
 import com.akingyin.media.doodle.core.IDoodleShape
 import com.akingyin.media.doodle.core.Sticker
 import com.akingyin.media.doodle.shape.CircleDoodleShap
+import com.akingyin.media.doodle.shape.MosaicDoodleShap
 import com.akingyin.media.doodle.shape.TextDoodleShape
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
@@ -73,6 +76,7 @@ class DoodleActivity:SimpleActivity() {
      */
     var scale = 0f
     var  doodleView:DoodleView by Delegates.notNull()
+    var  srcBitmap:Bitmap?=null
     @SuppressLint("ClickableViewAccessibility")
     override fun initView() {
           intent.run {
@@ -98,8 +102,10 @@ class DoodleActivity:SimpleActivity() {
                   } else {
                       ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                   }
+                  srcBitmap = it
                   doodleView = bindView.doodleView
                   bindView.doodleImage.setImageBitmap(it)
+
                   doodleView.setMagnifierBitmap(it)
                   doodleView.apply {
 
@@ -122,28 +128,35 @@ class DoodleActivity:SimpleActivity() {
 
                       }
 
-                      override fun onStickerTouchedDown(sticker: IDoodleShape) {
 
-                      }
-
-                      override fun onStickerZoomFinished(sticker: IDoodleShape) {
-
-                      }
 
                       override fun onStickerFlipped(sticker: IDoodleShape) {
 
                       }
 
-                      override fun onStickerDoubleTapped(sticker: IDoodleShape) {
 
+                      override fun onIntercept(event: MotionEvent): Boolean {
+                          return bindView.bootomBar.btnHollCircle.isSelected||
+                                  bindView.bootomBar.btnPenMosaic.isSelected
                       }
 
-                      override fun onTouchDown() {
-                          bindView.bootomBar.root.goneAlphaAnimation()
-                          bindView.titleBar.root.goneAlphaAnimation()
+                      override fun onAddShape() {
                           if(bindView.bootomBar.btnHollCircle.isSelected){
+                              println("添加--->圆")
                               drawCircle()
                           }
+                          if(bindView.bootomBar.btnPenMosaic.isSelected){
+                              println("添加--->马赛克")
+                              drawMosaic(srcBitmap)
+                          }
+                      }
+
+                      override fun onTouchDown(select: Boolean) {
+                          bindView.bootomBar.root.goneAlphaAnimation()
+                          bindView.titleBar.root.goneAlphaAnimation()
+                          println("onTouchDown=$select")
+
+
                       }
 
                       override fun onTouchUp() {
@@ -160,6 +173,7 @@ class DoodleActivity:SimpleActivity() {
 
             addTextSticker()
         }
+
         //画圆
         bindView.bootomBar.btnHollCircle.click {
            it.toggleView{
@@ -168,8 +182,16 @@ class DoodleActivity:SimpleActivity() {
                    drawCircle()
                }
            }
+        }
 
-
+        //马赛克
+        bindView.bootomBar.btnPenMosaic.click {
+            it.toggleView{
+                select ->
+                if(select){
+                    drawMosaic(srcBitmap)
+                }
+            }
         }
         bindView.bootomBar.doodleBtnFinish.click { 
            doodleView.saveDoodleBitmap(File(filePath),scale){
@@ -191,6 +213,17 @@ class DoodleActivity:SimpleActivity() {
         doodleView.dragingDoodle = CircleDoodleShap(this)
     }
 
+    private  fun  drawMosaic(bitmap: Bitmap?){
+        bindView.bootomBar.btnPenMosaic.setSelectToggle(true,bindView.bootomBar.btnHollCircle,
+                bindView.bootomBar.btnArrow,bindView.bootomBar.btnPenBrokenArrow,
+                bindView.bootomBar.btnLine,bindView.bootomBar.btnPenText)
+        doodleView.currentMode = DoodleView.ActionMode.DRAW
+        bitmap?.let {
+            doodleView.dragingDoodle = MosaicDoodleShap(srcBitmap = bitmap)
+        }
+
+    }
+
 
     private  fun   addTextSticker(){
         MaterialDialogUtil.showEditDialog(this,"添加文本",""){
@@ -206,10 +239,15 @@ class DoodleActivity:SimpleActivity() {
         }
     }
 
-
     override fun startRequest() {
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        srcBitmap?.recycle()
+    }
+
     companion object{
         const val FILE_PATH="filePath"
         const val FILE_RENAME="rename"
