@@ -391,7 +391,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                             }.yes {
                                 try {
                                     val exifInterface = ExifInterface(cameraParameBuild.localPath)
-                                    exifInterface.dateTime = appServerTime
+                                    exifInterface.setDateTime(appServerTime)
                                     if(cameraParameBuild.lat>0 && cameraParameBuild.lng>0){
                                         exifInterface.setLatLong(cameraParameBuild.lat,cameraParameBuild.lng)
                                         exifInterface.setAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD,cameraParameBuild.locType)

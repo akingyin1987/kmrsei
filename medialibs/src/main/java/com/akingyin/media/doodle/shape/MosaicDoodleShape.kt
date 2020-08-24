@@ -9,7 +9,6 @@
 
 package com.akingyin.media.doodle.shape
 
-
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import com.akingyin.media.doodle.core.IDoodle
@@ -25,7 +24,7 @@ import kotlin.math.ceil
  * @ Date 2020/8/20 16:30
  * @version V1.0
  */
-class MosaicDoodleShap(var srcBitmap: Bitmap) : IDoodleShape() {
+class MosaicDoodleShape(var srcBitmap: Bitmap) : IDoodleShape() {
     private var mosaicImg: Bitmap? = null
     var targetRect: Rect = Rect()
     var srcMosaic: Rect = Rect()
@@ -43,6 +42,7 @@ class MosaicDoodleShap(var srcBitmap: Bitmap) : IDoodleShape() {
 
     override fun drawHelpers(canvas: Canvas, doodle: IDoodle) {
         if (!startPt.isEmpty() && !endPt.isEmpty()) {
+            calculation()
             if (!targetRect.isEmpty && !srcMosaic.isEmpty) {
                 mosaicImg?.let {
                     canvas.drawBitmap(it, srcMosaic, targetRect, mPaint)

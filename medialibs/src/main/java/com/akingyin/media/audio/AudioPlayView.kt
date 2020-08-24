@@ -82,7 +82,7 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
             WeakReference<AudioPlayView>(dialog)
         }
 
-        override fun handleMessage(msg: Message?) {
+        override fun handleMessage(msg: Message) {
             println("handleMessage->${week.get()?.mediaPlayer?.currentPosition}")
             week.get()?.dialog_audio_bar?.progress = week.get()?.mediaPlayer?.currentPosition ?: 0
         }

@@ -71,8 +71,8 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     private var mDraggingPoint: Point = Point()
     private var mMagnifierCrossPaint: Paint
     private var mMagnifierPaint: Paint
-    private val mScaleX = 1.5f
-    private val mScaleY = 1.5f
+    private val mScaleX = 1f
+    private val mScaleY = 1f
     @IntDef(value = [ActionMode.NONE, ActionMode.DRAG, ActionMode.ZOOM_WITH_TWO_FINGER, ActionMode.ICON, ActionMode.CLICK,ActionMode.DRAW,ActionMode.CIRCLE])
     @Retention(AnnotationRetention.SOURCE)
      annotation class ActionMode {
@@ -134,7 +134,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
      var currentMode = ActionMode.NONE
 
     /** 当前选中操作的图形(拖动、删除、点击等) */
-    private var handlingSticker: IDoodleShape? = null
+     var handlingSticker: IDoodleShape? = null
     /** 当前正在涂鸦的图形 */
      var dragingDoodle:IDoodleShape? = null
 
@@ -146,6 +146,8 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     private var lastClickTime: Long = 0
     private var minClickDelayTime = DEFAULT_MIN_CLICK_DELAY_TIME
 
+    //当前画笔颜色
+    var  mCurrentPenColor = Color.RED
 
     init {
         touchSlop = ViewConfiguration.get(context).scaledTouchSlop

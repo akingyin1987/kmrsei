@@ -49,7 +49,7 @@ import java.lang.ref.WeakReference
 
     override fun getContentView() = R.layout.dialog_audio_play_layout
 
-    override fun createDialog(savedInstanceState: Bundle?) = Dialog(context!!, R.style.Common_Dialog).apply {
+    override fun createDialog(savedInstanceState: Bundle?) = Dialog(requireContext(), R.style.Common_Dialog).apply {
         window?.setGravity(Gravity.CENTER)
     }
 
@@ -195,7 +195,7 @@ import java.lang.ref.WeakReference
             WeakReference<AudioPlayDialog>(dialog)
         }
 
-        override fun handleMessage(msg: Message?) {
+        override fun handleMessage(msg: Message) {
             week.get()?.dialog_audio_bar?.progress = week.get()?.mediaPlayer?.currentPosition ?: 0
         }
     }

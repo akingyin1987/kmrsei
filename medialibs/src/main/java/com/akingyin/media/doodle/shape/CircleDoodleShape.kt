@@ -25,21 +25,21 @@ import kotlin.math.sqrt
  * @ Date 2020/8/17 11:43
  * @version V1.0
  */
-class CircleDoodleShap (var context: Context) : IDoodleShape(){
+class CircleDoodleShape (var context: Context,colorPen:Int = Color.RED) : IDoodleShape(){
     private var drawable = MyShapeDrawable(OvalShape())
     private var realBounds: Rect
     private var radius = 0F
 
     init {
         mPaint .apply {
-            color = Color.RED
+            color = colorPen
             style = Paint.Style.STROKE
             strokeWidth = 5F
             isAntiAlias = true
             isDither = true
         }
         drawable.mStrokePaint.run {
-            color = Color.RED
+            color = colorPen
             style = Paint.Style.STROKE
             strokeWidth = 5F
             isAntiAlias = true
@@ -68,7 +68,10 @@ class CircleDoodleShap (var context: Context) : IDoodleShape(){
         }
         canvas.restore()
     }
-
+    override fun setDoodlePenColor(color: Int) {
+        mPaint.color = color
+        drawable.paint.color = color
+    }
     override fun calculation() {
         super.calculation()
         val xd: Int = endPt.x - startPt.x

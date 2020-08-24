@@ -14,6 +14,7 @@ import android.graphics.Paint
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.Shape
 
+
 /**
  * @ Description:
  * @author king
@@ -28,6 +29,5 @@ class MyShapeDrawable(shape: Shape) : ShapeDrawable(shape) {
     override fun onDraw(shape: Shape?, canvas: Canvas?, paint: Paint?) {
         //绘制填充效果的图形
         shape?.draw(canvas, mStrokePaint)
-
     }
 }

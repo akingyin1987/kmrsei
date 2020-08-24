@@ -8,12 +8,11 @@
  */
 
 package com.akingyin.media.doodle.shape
-
-import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.PathShape
+import com.akingyin.base.utils.CalculationUtil
 import com.akingyin.media.doodle.core.IDoodle
 import com.akingyin.media.doodle.core.IDoodleShape
 import com.akingyin.media.doodle.core.Sticker
@@ -26,15 +25,22 @@ import kotlin.math.*
  * @ Date 2020/8/17 16:28
  * @version V1.0
  */
-class ArrowDoodleShap(context: Context) : IDoodleShape() {
+class ArrowDoodleShape(colorPen:Int = Color.RED) : IDoodleShape() {
 
     private var drawable: ShapeDrawable = ShapeDrawable()
     private var realBounds: Rect
 
     init {
         mPaint.apply {
-            color = Color.RED
+            color = colorPen
             style = Paint.Style.STROKE
+            strokeWidth = 5F
+            isAntiAlias = true
+            isDither = true
+        }
+        drawable.paint.run {
+            color = colorPen
+            style = Paint.Style.FILL_AND_STROKE
             strokeWidth = 5F
             isAntiAlias = true
             isDither = true
@@ -142,8 +148,7 @@ class ArrowDoodleShap(context: Context) : IDoodleShape() {
     }
 
     // 计算
-    private fun rotateVec(px: Float, py: Float, ang: Double, isChLen: Boolean,
-                  newLen: Double): DoubleArray {
+    private fun rotateVec(px: Float, py: Float, ang: Double, isChLen: Boolean, newLen: Double): DoubleArray {
         val mathstr = DoubleArray(2)
         // 矢量旋转函数，参数含义分别是x分量、y分量、旋转角、是否改变长度
         var vx = px * cos(ang) - py * sin(ang)
@@ -159,18 +164,66 @@ class ArrowDoodleShap(context: Context) : IDoodleShape() {
         return mathstr
     }
 
+    override fun getTranslateOffset(): PointF? {
+        return PointF().apply {
+            x = startPt.x.toFloat()
+            y = startPt.y.toFloat()
+        }
+    }
+
+    override fun setDoodlePenColor(color: Int) {
+        mPaint.color = color
+        drawable.paint.color = color
+    }
+
+
+
+    override fun qualifiedShape(): Boolean {
+        println("qual->arraw=${calculateRotation(startPt.x.toFloat(), startPt.y.toFloat(), endPt.x.toFloat(), endPt.y.toFloat())}")
+        return CalculationUtil.getPointsDistance(startPt.x.toFloat(), startPt.y.toFloat(), endPt.x.toFloat(), endPt.y.toFloat())> MIN_HEIGHT
+    }
+
     override fun resetDrawable() {
         super.resetDrawable()
+        drawable.intrinsicWidth = abs(startPt.x-endPt.x).let {
+            if(it < MIN_WIDTH){
+                MIN_WIDTH*2
+            }else{
+                it
+            }
+        }
+        drawable.intrinsicHeight = abs(startPt.y - endPt.y).let {
+            if(it < MIN_HEIGHT){
+                MIN_HEIGHT*2
+            }else{
+                it
+            }
+        }
         drawable.shape = PathShape(mPath.apply {
             reset()
-            moveTo(startPt.x.toFloat(),startPt.y.toFloat())
-            lineTo(endPt.x.toFloat(),endPt.y.toFloat())
-            moveTo(ex,ey)
-            lineTo(x3.toFloat(), y3.toFloat())
-            lineTo(x4.toFloat(), y4.toFloat())
+//            moveTo(startPt.x.toFloat(),startPt.y.toFloat())
+//            lineTo(endPt.x.toFloat(),endPt.y.toFloat())
+//            moveTo(ex,ey)
+//            lineTo(x3.toFloat(), y3.toFloat())
+//            lineTo(x4.toFloat(), y4.toFloat())
+//            close()
+            //坐标由start 平移到 (0,0)
+            moveTo(0f,0f)
+            lineTo((endPt.x - startPt.x).toFloat(), (endPt.y - startPt.y).toFloat())
+            moveTo(ex - startPt.x,ey - startPt.y)
+            lineTo((x3 - startPt.x).toFloat(), (y3 - startPt.y).toFloat())
+            lineTo((x4 - startPt.x).toFloat(), (y4 - startPt.y).toFloat())
             close()
 
-        }, abs(startPt.x-endPt.x).toFloat(), abs(startPt.y - endPt.y).toFloat())
-        realBounds = Rect(0, 0, getWidth(), getHeight())
+        }, getWidth().toFloat(),getHeight().toFloat())
+
+        realBounds = Rect(0, 0, getWidth() , getHeight())
+
+    }
+
+
+    companion object{
+        const val MIN_WIDTH = 15
+        const val MIN_HEIGHT = 15
     }
 }

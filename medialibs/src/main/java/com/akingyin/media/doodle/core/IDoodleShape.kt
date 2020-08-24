@@ -31,6 +31,8 @@ abstract class IDoodleShape : Sticker() {
     private val bounds = FloatArray(8)
 
 
+
+
     /** 画笔起始位置 */
     var startPt: Pt = Pt(0, 0)
 
@@ -164,9 +166,9 @@ abstract class IDoodleShape : Sticker() {
     /**
      * 设置画笔颜色
      */
-    fun setDoodlePenColor(@ColorInt color: Int): IDoodleShape {
+   open fun setDoodlePenColor(@ColorInt color: Int) {
         mPaint.color = color
-        return this
+
     }
 
     /**
@@ -198,5 +200,14 @@ abstract class IDoodleShape : Sticker() {
      * 是否支持其它操作
      */
     open  fun   supportOtherHandle():Boolean = true
+
+
+    /**
+     * 获取画笔颜色
+     */
+    open  fun   getPenColor() = mPaint.color
+
+
+
 
 }

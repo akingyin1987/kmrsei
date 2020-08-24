@@ -118,7 +118,7 @@ object MediaUtils {
         return try {
             MediaMetadataRetriever().use {
                 it.setDataSource(path)
-                return@use it.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toLong()
+                return@use it.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong()?:0
             }
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
@@ -135,7 +135,7 @@ object MediaUtils {
         return try {
              MediaMetadataRetriever().use {
                  it.setDataSource(context,uri)
-                 return@use it.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toLong()
+                 return@use it.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong()?:0
              }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -192,8 +192,8 @@ object MediaUtils {
         try {
             val mmr = MediaMetadataRetriever()
             mmr.setDataSource(url)
-            size[0] =(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)).toInt()
-            size[1] =(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)).toInt()
+            size[0] =(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH))?.toInt()?:0
+            size[1] =(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT))?.toInt()?:0
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
@@ -210,8 +210,8 @@ object MediaUtils {
         try {
             val mmr = MediaMetadataRetriever()
             mmr.setDataSource(context, uri)
-            size[0] = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)).toInt()
-            size[1] = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)).toInt()
+            size[0] = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH))?.toInt()?:0
+            size[1] = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT))?.toInt()?:0
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
@@ -380,7 +380,7 @@ object MediaUtils {
         return try {
             val mmr = MediaMetadataRetriever()
             mmr.setDataSource(path)
-            val rotation: Int = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)).toInt()
+            val rotation: Int = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION))?.toInt()?:0
             when (rotation) {
                 90 -> ExifInterface.ORIENTATION_ROTATE_90
                 270 -> ExifInterface.ORIENTATION_ROTATE_270
@@ -403,7 +403,7 @@ object MediaUtils {
             MediaMetadataRetriever().use {
                 it.setDataSource(context, uri)
 
-              return@use  when (it.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION).toInt()) {
+              return@use  when (it.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)?.toInt()?:0) {
                     90 -> ExifInterface.ORIENTATION_ROTATE_90
                     270 -> ExifInterface.ORIENTATION_ROTATE_270
                     else -> 0

@@ -160,6 +160,7 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
 
 
 
+
     fun takePhoto(cameraParame: CameraParameBuild = cameraParameBuild, callBack: (result: Boolean, error: String?) -> Unit) {
         cameraParameBuild.cameraAngle = cameraManager.cameraAngle
         println("拍照参数->$cameraParame")
@@ -184,7 +185,7 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
 
     }
 
-    override fun surfaceDestroyed(holder: SurfaceHolder?) {
+    override fun surfaceDestroyed(holder: SurfaceHolder) {
         cameraManager.stopPreview()
         cameraManager.closeDriver()
     }

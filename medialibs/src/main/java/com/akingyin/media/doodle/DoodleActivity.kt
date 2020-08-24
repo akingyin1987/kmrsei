@@ -14,12 +14,16 @@ import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Color.*
 import android.os.Bundle
 import android.text.Layout
 import android.util.DisplayMetrics
 import android.view.MotionEvent
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.color.colorChooser
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.dialog.MaterialDialogUtil
 import com.akingyin.base.ext.*
@@ -29,9 +33,7 @@ import com.akingyin.media.camera.CameraBitmapUtil
 import com.akingyin.media.databinding.ActivityDoodleBinding
 import com.akingyin.media.doodle.core.IDoodleShape
 import com.akingyin.media.doodle.core.Sticker
-import com.akingyin.media.doodle.shape.CircleDoodleShap
-import com.akingyin.media.doodle.shape.MosaicDoodleShap
-import com.akingyin.media.doodle.shape.TextDoodleShape
+import com.akingyin.media.doodle.shape.*
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import java.io.File
@@ -108,7 +110,6 @@ class DoodleActivity:SimpleActivity() {
 
                   doodleView.setMagnifierBitmap(it)
                   doodleView.apply {
-
                       setLocked(false)
                       setConstrained(true)
                   }.onStickerOperationListener = object:DoodleView.OnStickerOperationListener{
@@ -137,10 +138,13 @@ class DoodleActivity:SimpleActivity() {
 
                       override fun onIntercept(event: MotionEvent): Boolean {
                           return bindView.bootomBar.btnHollCircle.isSelected||
-                                  bindView.bootomBar.btnPenMosaic.isSelected
+                                  bindView.bootomBar.btnPenMosaic.isSelected||
+                                  bindView.bootomBar.btnArrow.isSelected||
+                                  bindView.bootomBar.btnLine.isSelected
                       }
 
                       override fun onAddShape() {
+                          println("onAddShape")
                           if(bindView.bootomBar.btnHollCircle.isSelected){
                               println("添加--->圆")
                               drawCircle()
@@ -148,6 +152,14 @@ class DoodleActivity:SimpleActivity() {
                           if(bindView.bootomBar.btnPenMosaic.isSelected){
                               println("添加--->马赛克")
                               drawMosaic(srcBitmap)
+                          }
+                          if(bindView.bootomBar.btnArrow.isSelected){
+                              println("添加--->箭头")
+                              drawArrow()
+                          }
+                          if(bindView.bootomBar.btnLine.isSelected){
+                              println("添加--->直线")
+                              drawLine()
                           }
                       }
 
@@ -184,6 +196,23 @@ class DoodleActivity:SimpleActivity() {
            }
         }
 
+        bindView.bootomBar.btnArrow.click {
+            it.toggleView{
+                select ->
+                if(select){
+                    drawArrow()
+                }
+            }
+        }
+
+        bindView.bootomBar.btnLine.click {
+            it.toggleView{
+                select ->
+                if(select){
+                    drawLine()
+                }
+            }
+        }
         //马赛克
         bindView.bootomBar.btnPenMosaic.click {
             it.toggleView{
@@ -193,8 +222,17 @@ class DoodleActivity:SimpleActivity() {
                 }
             }
         }
+        bindView.bootomBar.btnSetColorContainer.click {
+            selectDrawColor(bindView.doodleView.handlingSticker?.getPenColor()?:RED){
+                bindView.bootomBar.btnSetColor.setBackgroundColor(it)
+                doodleView.mCurrentPenColor = it
+                doodleView.handlingSticker?.setDoodlePenColor(it)
+                doodleView.postInvalidate()
+            }
+
+        }
         bindView.bootomBar.doodleBtnFinish.click { 
-           doodleView.saveDoodleBitmap(File(filePath),scale){
+           doodleView.saveDoodleBitmap(File(filePath),1/scale){
                 result, error ->
                if(result){
                    showTips("保存成功")
@@ -205,12 +243,42 @@ class DoodleActivity:SimpleActivity() {
         }
     }
 
+    /**
+     * 选择画笔颜色
+     */
+    private  fun   selectDrawColor(@ColorInt color: Int,call:(color:Int) ->Unit){
+        val colors = intArrayOf(RED, GREEN, BLUE, BLACK)
+        MaterialDialog(this).show {
+            title(text = "选择画笔颜色")
+            colorChooser(colors = colors,initialSelection = color){
+                _, color ->
+                call.invoke(color)
+            }
+        }
+    }
+
     private  fun   drawCircle(){
         bindView.bootomBar.btnHollCircle.setSelectToggle(true,bindView.bootomBar.btnPenMosaic,
                 bindView.bootomBar.btnArrow,bindView.bootomBar.btnPenBrokenArrow,
                 bindView.bootomBar.btnLine,bindView.bootomBar.btnPenText)
         doodleView.currentMode = DoodleView.ActionMode.DRAW
-        doodleView.dragingDoodle = CircleDoodleShap(this)
+        doodleView.dragingDoodle = CircleDoodleShape(this,doodleView.mCurrentPenColor)
+    }
+
+    private  fun   drawLine(){
+        bindView.bootomBar.btnLine.setSelectToggle(true,bindView.bootomBar.btnPenMosaic,
+                bindView.bootomBar.btnHollCircle,bindView.bootomBar.btnPenBrokenArrow,
+                bindView.bootomBar.btnArrow,bindView.bootomBar.btnPenText)
+        doodleView.currentMode = DoodleView.ActionMode.DRAW
+        doodleView.dragingDoodle = LineDoodleShape(doodleView.mCurrentPenColor)
+    }
+
+    private  fun   drawArrow(){
+        bindView.bootomBar.btnArrow.setSelectToggle(true,bindView.bootomBar.btnPenMosaic,
+                bindView.bootomBar.btnHollCircle,bindView.bootomBar.btnPenBrokenArrow,
+                bindView.bootomBar.btnLine,bindView.bootomBar.btnPenText)
+        doodleView.currentMode = DoodleView.ActionMode.DRAW
+        doodleView.dragingDoodle = ArrowDoodleShape(doodleView.mCurrentPenColor)
     }
 
     private  fun  drawMosaic(bitmap: Bitmap?){
@@ -219,7 +287,7 @@ class DoodleActivity:SimpleActivity() {
                 bindView.bootomBar.btnLine,bindView.bootomBar.btnPenText)
         doodleView.currentMode = DoodleView.ActionMode.DRAW
         bitmap?.let {
-            doodleView.dragingDoodle = MosaicDoodleShap(srcBitmap = bitmap)
+            doodleView.dragingDoodle = MosaicDoodleShape(srcBitmap = bitmap)
         }
 
     }
@@ -232,7 +300,7 @@ class DoodleActivity:SimpleActivity() {
                    setDrawable(it)
                }
                setText(it)
-               setTextColor(Color.BLACK)
+               setTextColor(doodleView.mCurrentPenColor)
                setTextAlign(Layout.Alignment.ALIGN_CENTER)
                resizeText()
            },Sticker.Position.CENTER)

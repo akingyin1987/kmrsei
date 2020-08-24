@@ -51,7 +51,7 @@ class PlayAudioDialog : AudioManagerDialog(), SeekBar.OnSeekBarChangeListener, R
 
     override fun getContentView() = R.layout.dialog_audio_play_layout
 
-    override fun createDialog(savedInstanceState: Bundle?) = Dialog(context!!, R.style.Common_Dialog).apply {
+    override fun createDialog(savedInstanceState: Bundle?) = Dialog(requireContext(), R.style.Common_Dialog).apply {
         window?.setGravity(Gravity.CENTER)
     }
 
@@ -82,9 +82,9 @@ class PlayAudioDialog : AudioManagerDialog(), SeekBar.OnSeekBarChangeListener, R
             }
         }
         dialog_audio_bar.setOnSeekBarChangeListener(this)
-        dialog_audio_name.text = arguments!!.getString("filePath")?.let({
+        dialog_audio_name.text = arguments?.getString("filePath")?.let {
             it.substring(it.lastIndexOf("/") + 1, it.length)
-        })
+        }
     }
 
     override fun onStart() {
@@ -101,10 +101,11 @@ class PlayAudioDialog : AudioManagerDialog(), SeekBar.OnSeekBarChangeListener, R
      */
     fun getDisplay() :IntArray{
 
-        val manager = context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val manager = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         val intArray = IntArray(2)
         val displayMetrics = DisplayMetrics()
+
         manager.defaultDisplay.getMetrics(displayMetrics)
         intArray[0] = displayMetrics.widthPixels
         intArray[1] = displayMetrics.heightPixels
@@ -113,7 +114,7 @@ class PlayAudioDialog : AudioManagerDialog(), SeekBar.OnSeekBarChangeListener, R
 
     private fun initPlayer() {
         mediaPlayer = MediaPlayer()
-        mediaPlayer?.setDataSource(arguments!!.getString("filePath"))
+        mediaPlayer?.setDataSource(arguments?.getString("filePath"))
         mediaPlayer?.prepareAsync()
         mediaPlayer?.setOnPreparedListener { play ->
             dialog_audio_bar.max = play.duration
@@ -197,7 +198,7 @@ class PlayAudioDialog : AudioManagerDialog(), SeekBar.OnSeekBarChangeListener, R
             WeakReference(dialog)
         }
 
-        override fun handleMessage(msg: Message?) {
+        override fun handleMessage(msg: Message) {
             week.get()?.dialog_audio_bar?.progress = week.get()?.mediaPlayer?.currentPosition ?: 0
         }
     }
