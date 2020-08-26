@@ -17,6 +17,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.IntDef
 import androidx.annotation.IntRange
 import com.akingyin.media.doodle.DrawUtil
+import java.util.*
 import kotlin.math.atan2
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -162,7 +163,9 @@ abstract class Sticker {
     }
 
     open fun getMappedPoints( dst: FloatArray,  src: FloatArray) {
+
         matrix.mapPoints(dst, src)
+
     }
 
 

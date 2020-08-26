@@ -24,11 +24,8 @@ import androidx.recyclerview.widget.RecyclerView.Recycler
  * @ Date 2020/7/15 18:37
  * @version V1.0
  */
-class FullyGridLayoutManager : GridLayoutManager{
+class FullyGridLayoutManager @JvmOverloads constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int =0, defStyleRes: Int =0) : GridLayoutManager(context, attrs, defStyleAttr, defStyleRes){
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
-    constructor(context: Context, spanCount: Int) : super(context, spanCount)
-    constructor(context: Context, spanCount: Int, orientation: Int, reverseLayout: Boolean) : super(context, spanCount, orientation, reverseLayout)
 
     private val mMeasuredDimension = IntArray(2)
 

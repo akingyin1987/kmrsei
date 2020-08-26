@@ -164,12 +164,8 @@ class ArrowDoodleShape(colorPen:Int = Color.RED) : IDoodleShape() {
         return mathstr
     }
 
-    override fun getTranslateOffset(): PointF? {
-        return PointF().apply {
-            x = startPt.x.toFloat()
-            y = startPt.y.toFloat()
-        }
-    }
+    private   var  offsetPointF = PointF()
+    override fun getTranslateOffset() = offsetPointF
 
     override fun setDoodlePenColor(color: Int) {
         mPaint.color = color
@@ -179,7 +175,7 @@ class ArrowDoodleShape(colorPen:Int = Color.RED) : IDoodleShape() {
 
 
     override fun qualifiedShape(): Boolean {
-        println("qual->arraw=${calculateRotation(startPt.x.toFloat(), startPt.y.toFloat(), endPt.x.toFloat(), endPt.y.toFloat())}")
+
         return CalculationUtil.getPointsDistance(startPt.x.toFloat(), startPt.y.toFloat(), endPt.x.toFloat(), endPt.y.toFloat())> MIN_HEIGHT
     }
 
@@ -199,25 +195,26 @@ class ArrowDoodleShape(colorPen:Int = Color.RED) : IDoodleShape() {
                 it
             }
         }
+
+        //设置平移量
+        offsetPointF.apply {
+            x = min(startPt.x,endPt.x).toFloat()
+            y = min(startPt.y,endPt.y).toFloat()
+        }
         drawable.shape = PathShape(mPath.apply {
             reset()
-//            moveTo(startPt.x.toFloat(),startPt.y.toFloat())
-//            lineTo(endPt.x.toFloat(),endPt.y.toFloat())
-//            moveTo(ex,ey)
-//            lineTo(x3.toFloat(), y3.toFloat())
-//            lineTo(x4.toFloat(), y4.toFloat())
-//            close()
-            //坐标由start 平移到 (0,0)
-            moveTo(0f,0f)
-            lineTo((endPt.x - startPt.x).toFloat(), (endPt.y - startPt.y).toFloat())
-            moveTo(ex - startPt.x,ey - startPt.y)
-            lineTo((x3 - startPt.x).toFloat(), (y3 - startPt.y).toFloat())
-            lineTo((x4 - startPt.x).toFloat(), (y4 - startPt.y).toFloat())
+
+            moveTo(startPt.x.toFloat()-offsetPointF.x,startPt.y.toFloat()-offsetPointF.y)
+            lineTo((endPt.x - offsetPointF.x), (endPt.y - offsetPointF.y))
+            moveTo(ex - offsetPointF.x,ey - offsetPointF.y)
+            lineTo((x3 - offsetPointF.x), (y3 - offsetPointF.y))
+            lineTo((x4 - offsetPointF.x), (y4 - offsetPointF.y))
             close()
 
-        }, getWidth().toFloat(),getHeight().toFloat())
+        }, abs(startPt.x-endPt.x).toFloat(),abs(startPt.y - endPt.y).toFloat())
 
-        realBounds = Rect(0, 0, getWidth() , getHeight())
+        realBounds = Rect((min(startPt.x,endPt.x) -offsetPointF.x).toInt(), (min(startPt.y,endPt.y)-offsetPointF.y).toInt()
+              , ((min(startPt.x,endPt.x) -offsetPointF.x).toInt()+abs(startPt.x-endPt.x)), (min(startPt.y,endPt.y)-offsetPointF.y).toInt()+abs(startPt.y - endPt.y))
 
     }
 

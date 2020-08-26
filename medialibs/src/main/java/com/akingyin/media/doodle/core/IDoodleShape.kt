@@ -37,7 +37,7 @@ abstract class IDoodleShape : Sticker() {
     var startPt: Pt = Pt(0, 0)
 
     /** 设置起始位置*/
-    fun setStartLocation(x: Float, y: Float) {
+   open fun setStartLocation(x: Float, y: Float) {
         startPt.x = x.toInt()
         startPt.y = y.toInt()
     }
@@ -45,12 +45,12 @@ abstract class IDoodleShape : Sticker() {
     /**
      * 设置移动过程的坐标信息
      */
-    fun  setMoveLocation(x: Float, y: Float){
+    open fun  setMoveLocation(x: Float, y: Float){
         setEndLocation(x,y)
     }
 
     /** 设置终点位置 */
-    fun setEndLocation(x: Float, y: Float) {
+   open fun setEndLocation(x: Float, y: Float) {
         endPt.x = x.toInt()
         endPt.y = y.toInt()
         centerPt.x = (startPt.x + endPt.x) / 2
@@ -208,6 +208,10 @@ abstract class IDoodleShape : Sticker() {
     open  fun   getPenColor() = mPaint.color
 
 
+    /**
+     * 是否在画终点
+     */
+    open  fun   isDrawEndPoint() = !endPt.isEmpty()
 
 
 }

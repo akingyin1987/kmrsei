@@ -37,6 +37,7 @@ interface IDoodle {
     annotation class Flip{
         companion object{
             const val FLIP_HORIZONTALLY = 1
+            //左移运算符shl(bits)  相当于 2^n * i , n 移位位数 ， i操作数
             const val FLIP_VERTICALLY = 1 shl 1
         }
     }

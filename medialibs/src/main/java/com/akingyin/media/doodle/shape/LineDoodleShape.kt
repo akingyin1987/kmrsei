@@ -91,13 +91,9 @@ class LineDoodleShape(colorPen:Int = Color.RED) :IDoodleShape() {
         mPaint.alpha = alpha
         return this
     }
+    private   var  offsetPointF = PointF()
+    override fun getTranslateOffset() = offsetPointF
 
-    override fun getTranslateOffset(): PointF? {
-        return PointF().apply {
-            x = startPt.x.toFloat()
-            y = startPt.y.toFloat()
-        }
-    }
 
     override fun qualifiedShape(): Boolean {
         return CalculationUtil.getPointsDistance(startPt.x.toFloat(), startPt.y.toFloat(), endPt.x.toFloat(), endPt.y.toFloat())> MIN_WIDTH
@@ -119,16 +115,22 @@ class LineDoodleShape(colorPen:Int = Color.RED) :IDoodleShape() {
                 it
             }
         }
+
+        offsetPointF.apply {
+            x = min(startPt.x,endPt.x).toFloat()
+            y = min(startPt.y,endPt.y).toFloat()
+        }
         drawable.shape = PathShape(mPath.apply {
             reset()
-            moveTo(0f,0f)
-            lineTo((endPt.x - startPt.x).toFloat(), (endPt.y - startPt.y).toFloat())
+            moveTo(startPt.x - offsetPointF.x,startPt.y-offsetPointF.y)
+            lineTo((endPt.x - offsetPointF.x), (endPt.y - offsetPointF.y))
 
             close()
 
-        }, getWidth().toFloat(),getHeight().toFloat())
+        }, abs(startPt.x-endPt.x).toFloat(),abs(startPt.y - endPt.y).toFloat())
 
-        realBounds = Rect(0, 0, getWidth() , getHeight())
+        realBounds = Rect((min(startPt.x,endPt.x)-offsetPointF.x).toInt(), (min(startPt.y,endPt.y)-offsetPointF.y).toInt(),
+                (min(startPt.x,endPt.x)-offsetPointF.x+ abs(startPt.x-endPt.x)).toInt() , (min(startPt.y,endPt.y)+abs(startPt.y - endPt.y)-offsetPointF.y).toInt())
 
     }
     companion object{

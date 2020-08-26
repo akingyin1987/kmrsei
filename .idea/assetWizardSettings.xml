@@ -24,7 +24,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\zlcd\AppData\Local\Temp\baseline_save_24.xml" />
+                                                <entry key="imagePath" value="C:\Users\zlcd\AppData\Local\Temp\baseline_undo_24.xml" />
                                                 <entry key="opacityPercent" value="80" />
                                               </map>
                                             </option>
@@ -36,7 +36,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/E:/Development/android-studio-stable/plugins/android/lib/android.jar!/images/material/icons/materialicons/save/baseline_save_24.xml" />
+                                                <entry key="url" value="jar:file:/E:/Development/android-studio-stable/plugins/android/lib/android.jar!/images/material/icons/materialicons/undo/baseline_undo_24.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -82,7 +82,7 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_save_white" />
+                                      <entry key="outputName" value="doodle_icon_undo" />
                                       <entry key="theme" value="HOLO_DARK" />
                                       <entry key="themeColor" value="000000" />
                                     </map>

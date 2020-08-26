@@ -39,6 +39,10 @@ data class Pt(var x:Int,var y:Int) {
         return result
     }
 
+    fun    set(x :Float ,y:Float){
+        this.x = x.toInt()
+        this.y = y.toInt()
+    }
 
     fun   postOffset(offsetX:Float,offsetY:Float){
         x = (x +offsetX).toInt()

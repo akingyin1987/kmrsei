@@ -13,7 +13,7 @@ import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
+
 import android.graphics.Color.*
 import android.os.Bundle
 import android.text.Layout
@@ -49,6 +49,9 @@ class DoodleActivity:SimpleActivity() {
 
     private  var  filePath=""
     private  var  reFileName =""
+
+
+
     override fun initInjection() {
 
     }
@@ -140,7 +143,8 @@ class DoodleActivity:SimpleActivity() {
                           return bindView.bootomBar.btnHollCircle.isSelected||
                                   bindView.bootomBar.btnPenMosaic.isSelected||
                                   bindView.bootomBar.btnArrow.isSelected||
-                                  bindView.bootomBar.btnLine.isSelected
+                                  bindView.bootomBar.btnLine.isSelected||
+                                  bindView.bootomBar.btnPenBrokenArrow.isSelected
                       }
 
                       override fun onAddShape() {
@@ -160,6 +164,10 @@ class DoodleActivity:SimpleActivity() {
                           if(bindView.bootomBar.btnLine.isSelected){
                               println("添加--->直线")
                               drawLine()
+                          }
+                          if(bindView.bootomBar.btnPenBrokenArrow.isSelected){
+                              println("添加--->直线and箭头")
+                              drawLineArrow()
                           }
                       }
 
@@ -222,6 +230,15 @@ class DoodleActivity:SimpleActivity() {
                 }
             }
         }
+
+        bindView.bootomBar.btnPenBrokenArrow.click {
+            it.toggleView{
+                select ->
+                if(select){
+                    drawLineArrow()
+                }
+            }
+        }
         bindView.bootomBar.btnSetColorContainer.click {
             selectDrawColor(bindView.doodleView.handlingSticker?.getPenColor()?:RED){
                 bindView.bootomBar.btnSetColor.setBackgroundColor(it)
@@ -230,6 +247,20 @@ class DoodleActivity:SimpleActivity() {
                 doodleView.postInvalidate()
             }
 
+        }
+        bindView.titleBar.doodleBtnBack.click {
+            onBackPressed()
+        }
+
+        bindView.titleBar.doodleBtnUndo.click {
+            doodleView.removeLast()
+        }
+        bindView.titleBar.doodleBtnRotate.click {
+            MaterialDialogUtil.showConfigDialog(this,message = "确定要清除所有涂鸦操作！"){
+                if(it){
+                    doodleView.removeAllDoodeShape()
+                }
+            }
         }
         bindView.bootomBar.doodleBtnFinish.click { 
            doodleView.saveDoodleBitmap(File(filePath),1/scale){
@@ -247,7 +278,7 @@ class DoodleActivity:SimpleActivity() {
      * 选择画笔颜色
      */
     private  fun   selectDrawColor(@ColorInt color: Int,call:(color:Int) ->Unit){
-        val colors = intArrayOf(RED, GREEN, BLUE, BLACK)
+        val colors = intArrayOf(BLACK,DKGRAY,GRAY,LTGRAY,WHITE,RED, GREEN, BLUE,YELLOW,CYAN,MAGENTA)
         MaterialDialog(this).show {
             title(text = "选择画笔颜色")
             colorChooser(colors = colors,initialSelection = color){
@@ -255,6 +286,17 @@ class DoodleActivity:SimpleActivity() {
                 call.invoke(color)
             }
         }
+    }
+
+    /**
+     * 画折线箭头
+     */
+    private  fun   drawLineArrow(){
+        bindView.bootomBar.btnPenBrokenArrow.setSelectToggle(true,bindView.bootomBar.btnPenMosaic,
+                bindView.bootomBar.btnArrow,bindView.bootomBar.btnHollCircle,
+                bindView.bootomBar.btnLine,bindView.bootomBar.btnPenText)
+        doodleView.currentMode = DoodleView.ActionMode.DRAW
+        doodleView.dragingDoodle = LineArrowDoodleShape(doodleView.mCurrentPenColor)
     }
 
     private  fun   drawCircle(){
@@ -309,6 +351,18 @@ class DoodleActivity:SimpleActivity() {
 
     override fun startRequest() {
 
+    }
+
+    override fun onBackPressed() {
+        if(doodleView.isDoodleChange && !doodleView.isDoodleAndSave){
+            MaterialDialogUtil.showConfigDialog(this,message = "当前涂鸦已发生改变是否放弃！"){
+                if(it){
+                    super.onBackPressed()
+                }
+            }
+            return
+        }
+        super.onBackPressed()
     }
 
     override fun onDestroy() {

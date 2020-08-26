@@ -16,9 +16,7 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.os.SystemClock
 import android.util.AttributeSet
-
 import android.view.MotionEvent
-
 import android.view.ViewConfiguration
 import android.widget.FrameLayout
 import androidx.annotation.IntDef
@@ -38,6 +36,7 @@ import com.akingyin.media.doodle.core.IDoodleShape
 import com.akingyin.media.doodle.core.Sticker
 import com.akingyin.media.doodle.event.DeleteIconEvent
 import com.akingyin.media.doodle.event.FlipHorizontallyEvent
+import com.akingyin.media.doodle.event.FlipVerticallyEvent
 import com.akingyin.media.doodle.event.ZoomIconEvent
 import com.blankj.utilcode.util.SizeUtils
 import timber.log.Timber
@@ -55,6 +54,9 @@ import kotlin.math.*
  */
 @SuppressLint("ViewConstructor")
 class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr),IDoodle {
+
+
+
 
     /** 是否显示图标 */
     private var showIcons = false
@@ -94,7 +96,11 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
 
     /** 当前所有的图形 */
     private val stickers: MutableList<IDoodleShape> = ArrayList()
+    /** 是否涂鸦保存过 */
+    var  isDoodleAndSave = false
 
+    /** 涂鸦是否发生过改变 */
+    var  isDoodleChange = stickers.size>0
     /** 贴纸四个角的图标 */
     private val icons: MutableList<BitmapStickerIcon> = ArrayList(4)
 
@@ -176,7 +182,6 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
                showIcons = it.getBoolean(R.styleable.StickerView_showIcons, false)
                showBorder = it.getBoolean(R.styleable.StickerView_showBorder, false)
                bringToFrontCurrentSticker = it.getBoolean(R.styleable.StickerView_bringToFrontCurrentSticker, false)
-
                borderPaint.isAntiAlias = true
                borderPaint.strokeWidth =5f
                borderPaint.color = it.getColor(R.styleable.StickerView_borderColor, Color.BLACK)
@@ -252,14 +257,22 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
              val radius = (width / 8).coerceAtMost(height / 8).toFloat()
              var cx = radius
              val lineOffset = SizeUtils.dp2px(MAGNIFIER_BORDER_WIDTH)
-             it.setBounds(lineOffset, lineOffset, radius.toInt() * 2 - lineOffset, radius.toInt() * 2 - lineOffset)
+
              val pointsDistance: Double = CalculationUtil.getPointsDistance(draggingX, draggingY, 0f, 0f)
              if (pointsDistance < radius * 2.5) {
-                 it.setBounds((mActWidth/mScaleX).roundToInt() - radius.toInt() * 2 + lineOffset, lineOffset, (mActHeight/mScaleY).roundToInt() - lineOffset, radius.toInt() * 2 - lineOffset)
-                 cx = (mActWidth/mScaleX).roundToInt()  - radius
+                 it.setBounds((mActWidth/mScaleX).toInt() - radius.toInt() * 2 + lineOffset, lineOffset, (mActHeight/mScaleY).toInt() - lineOffset, radius.toInt() * 2 - lineOffset)
+                 cx = (mActWidth/mScaleX).toInt()  - radius
+                 //平移到绘制shader的起始位置
+                 println("-----显示在右边---")
+             }else{
+                 it.setBounds(lineOffset, lineOffset, radius.toInt() * 2 - lineOffset, radius.toInt() * 2 - lineOffset)
+                 //平移到绘制shader的起始位置
+
              }
-             canvas.drawCircle(cx, radius, radius, mMagnifierPaint)
              mMagnifierMatrix.setTranslate(radius - draggingX, radius - draggingY)
+             canvas.drawCircle(cx, radius, radius, mMagnifierPaint)
+
+
              it.paint.shader.setLocalMatrix(mMagnifierMatrix)
              it.draw(canvas)
 
@@ -315,10 +328,14 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
 
         ContextCompat.getDrawable(context, R.drawable.sticker_ic_flip_white_18dp)?.let {
             icons.add(BitmapStickerIcon(it,BitmapStickerIcon.Gravity.RIGHT_TOP).apply {
-                iconEvent = FlipHorizontallyEvent()
+                iconEvent =FlipHorizontallyEvent()
             })
         }
-
+        ContextCompat.getDrawable(context, R.drawable.sticker_ic_flip_white_18dp)?.let {
+            icons.add(BitmapStickerIcon(it,BitmapStickerIcon.Gravity.LEFT_BOTTOM).apply {
+                iconEvent = FlipVerticallyEvent()
+            })
+        }
     }
 
 
@@ -639,7 +656,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
             //  onStickerOperationListener?.onStickerTouchedDown(it)
         }
 
-        if(null == currentIcon && null == handlingSticker){
+        if(null == currentIcon && null == handlingSticker && null == dragingDoodle){
             //可以添加图形
             onStickerOperationListener?.onAddShape()
         }
@@ -749,7 +766,6 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
 
             //draw icons
             if (showIcons) {
-                println("icons=${icons.size}")
                 val rotation: Float = calculateRotation(x4, y4, x3, y3)
                 for (i in icons.indices) {
                     val icon = icons[i]
@@ -879,6 +895,13 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
 
     }
 
+    fun   removeLast(){
+        if(stickers.size>0){
+            remove(stickers[stickers.size-1])
+        }
+
+    }
+
     override fun remove(iDoodleShape: IDoodleShape): Boolean {
         return if (stickers.contains(iDoodleShape)) {
             stickers.remove(iDoodleShape)
@@ -915,6 +938,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
 
 
     private fun addShapeImmediately(iDoodleShape: IDoodleShape, @Sticker.Position position: Int) {
+        println("addShapeImmediately")
         setShapePosition(iDoodleShape, position)
         if(null == iDoodleShape.getTranslateOffset()){
             iDoodleShape.getDrawable()?.let {
@@ -925,10 +949,8 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
                 iDoodleShape.matrix.postScale(scaleFactor / 2, scaleFactor / 2, width / 2f, height / 2f)
             }
         }
-
-
-
         stickers.add(iDoodleShape)
+
         if(iDoodleShape.supportOtherHandle()){
             handlingSticker = iDoodleShape
         }
@@ -943,6 +965,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
         if(null != iDoodleShape.getTranslateOffset()){
             iDoodleShape.getTranslateOffset()?.run {
                 if(x>0 && y>0){
+                    println("getTranslateOffset=${toString()}")
                     iDoodleShape.matrix.postTranslate(x,y)
                 }
 
@@ -1029,6 +1052,9 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
             createBitmap(scale)?.let {
 
                 CameraBitmapUtil.saveBitmapToPath(it,file.absolutePath).yes {
+                    if(!isDoodleAndSave){
+                        isDoodleAndSave = stickers.size>0
+                    }
                     call(true,null)
                 }.no {
                     call(false,"保存失败")

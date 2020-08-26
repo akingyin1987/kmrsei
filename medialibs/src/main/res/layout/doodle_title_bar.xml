@@ -52,13 +52,13 @@
       />
 
   <androidx.appcompat.widget.AppCompatImageView
-      android:id="@+id/doodle_btn_hide_panel"
+      android:id="@+id/doodle_btn_undo"
       android:layout_width="50dp"
       android:layout_height="match_parent"
 
       android:padding="13dp"
       android:scaleType="fitCenter"
-      android:src="@drawable/doodle_btn_effect_panel"
+      android:src="@drawable/doodle_icon_undo"
       android:visibility="visible"
       />
   <androidx.appcompat.widget.AppCompatImageView

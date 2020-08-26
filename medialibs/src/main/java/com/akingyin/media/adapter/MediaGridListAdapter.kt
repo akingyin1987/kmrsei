@@ -10,7 +10,6 @@
 package com.akingyin.media.adapter
 
 import android.graphics.PorterDuff
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
