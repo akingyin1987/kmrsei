@@ -56,6 +56,7 @@ public class BdMapApp {
 
 
   public   void   initBaiDuMap(Context  context){
+
     SDKInitializer.initialize(context.getApplicationContext());
 
     iFilter = new IntentFilter();
