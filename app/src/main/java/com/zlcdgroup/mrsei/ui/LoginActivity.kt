@@ -8,7 +8,8 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Base64
 import android.view.inputmethod.EditorInfo
-import androidx.lifecycle.ViewModelProvider
+import androidx.activity.viewModels
+
 import autodispose2.ScopeProvider
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider
 import autodispose2.autoDispose
@@ -25,18 +26,20 @@ import com.baidu.mapapi.utils.AreaUtil
 
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import com.zlcdgroup.mrsei.R
+import com.zlcdgroup.mrsei.data.db.dao.UserEntityDao
+import com.zlcdgroup.mrsei.di.module.ViewModelModule
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
 import com.zlcdgroup.mrsei.ui.mvvm.LoginViewModel
 import com.zlcdgroup.mrsei.utils.ThemeHelper
 import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Flowable.just
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
 
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.delay
-import permissions.dispatcher.ktx.withPermissionsCheck
+import permissions.dispatcher.ktx.constructPermissionsRequest
+import permissions.dispatcher.ktx.constructWriteSettingsPermissionRequest
 import java.io.File
 import java.nio.charset.Charset
 import java.util.*
@@ -55,7 +58,21 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
     @Inject
     lateinit var userLoginPersenterImpl: UserLoginPersenterImpl
 
+    //注释模式
+    @Inject
     lateinit var  viewModel :LoginViewModel
+
+    @Inject
+    lateinit var  userEntityDao: UserEntityDao
+
+     // 默认创建工厂为无参构造函数
+    //ViewModelProvider.Factory getDefaultViewModelProviderFactory()
+     val  viewModel2 :LoginViewModel by  viewModels()
+
+    //自定义 工厂模式
+     val viewModel3 : LoginViewModel by viewModels {
+         ViewModelModule.LoginViewModelFactory(userEntityDao)
+     }
 
 
     override fun getLayoutId(): Int = R.layout.activity_login
@@ -69,8 +86,9 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
     }
 
     override fun initView() {
-          viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(app).create(LoginViewModel::class.java)
+
           viewModel.Login("123","456")
+
         val person = userLoginPersenterImpl.getLastPerson()
         person?.let {
 
@@ -196,7 +214,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
         }
     }
 
-   private fun    testCameraAuth()=withPermissionsCheck(Manifest.permission.CAMERA,
+   private fun    testCameraAuth()=constructPermissionsRequest(Manifest.permission.CAMERA,
     onShowRationale = {
         it.proceed()
         println("onShowRationale")
@@ -208,24 +226,27 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
         println("权限认证通过")
     }
     private fun onCameraNeverAskAgain() {
+
        showTips("不再询问")
     }
-    override fun goToMainActivity() =withPermissionsCheck(Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION){
+    override fun goToMainActivity() {
+        constructPermissionsRequest(Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION){
 
 //        ARouter.getInstance().build("/user/list").withString("name","nametest")
 //                .withInt("age",2).navigation()
-        //  goActivity<UserListActivity>()
-        //   goActivity<CoroutinesDemo>()
-        // goActivity<CameraXActivity>()
-        var  localPath = mContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.apply {
-            println("abs$absolutePath")
-        }?.absolutePath+File.separator+StringUtils.getUUID()+".jpg"
-        // startActivityForResult<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"),requestCode = 100)
-        // startActivity<TestMarkerMapActivity>()
-        //  startActivity<TestTuwenActivity>()
-         println("message={0}".messageFormat("test"))
-        startActivity<TestFunActivity>()
+            //  goActivity<UserListActivity>()
+            //   goActivity<CoroutinesDemo>()
+            // goActivity<CameraXActivity>()
+            var  localPath = mContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.apply {
+                println("abs$absolutePath")
+            }?.absolutePath+File.separator+StringUtils.getUUID()+".jpg"
+            // startActivityForResult<SimpleCameraActivity>(bundle = arrayOf("imgLocalPath" to localPath,"cameraViewInfo" to "cameraViewInfo","cameraViewType" to "cameraViewType"),requestCode = 100)
+            // startActivity<TestMarkerMapActivity>()
+            //  startActivity<TestTuwenActivity>()
+            println("message={0}".messageFormat("test"))
+            startActivity<TestFunActivity>()
+        }
     }
 
     override fun setAppTheme(theme: String) {

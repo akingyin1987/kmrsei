@@ -32,35 +32,30 @@ abstract class DataModule {
     @Module(includes = arrayOf(DataModule ::class))
     object DataProvidesModule {
 
-        @JvmStatic
         @Singleton
         @Provides
         fun  getDaoSession(): DaoSession {
             return   DbCore.getDaoSession()
         }
 
-        @JvmStatic
         @Singleton
         @Provides
         fun  getAppDataBaseHelp( @ApplicationContext context: Context): AppDataBaseHelper {
             return  AppDataBaseHelper.getInstance(context)
         }
 
-        @JvmStatic
         @Singleton
         @Provides
         fun   getNoticeDao(appDataBaseHelper: AppDataBaseHelper): NoticeDao {
             return  appDataBaseHelper.appDataBase.getNoticeDao()
         }
 
-        @JvmStatic
         @Singleton
         @Provides
         fun  getUserDao(daoSession: DaoSession): UserEntityDao {
             return daoSession.userEntityDao
         }
 
-        @JvmStatic
         @Singleton
         @Provides
         fun getPersonDao(daoSession: DaoSession):PersonEntityDao{

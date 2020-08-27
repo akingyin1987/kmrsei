@@ -8,14 +8,17 @@
  */
 
 package com.akingyin.media
-
+import android.Manifest
 import android.os.Bundle
-import androidx.lifecycle.lifecycleScope
 import com.akingyin.base.SimpleActivity
-import com.akingyin.base.ext.withIO
-import com.akingyin.media.adapter.MediaGridListAdapter
+import com.akingyin.base.config.AppFileConfig
+import com.akingyin.base.dialog.MaterialDialogUtil
+import com.akingyin.base.utils.FileUtils
+import com.akingyin.base.utils.StringUtils
 import com.akingyin.media.engine.ImageEngine
 import com.akingyin.media.model.LocalMediaData
+import permissions.dispatcher.ktx.constructPermissionsRequest
+
 
 
 /**
@@ -26,14 +29,6 @@ import com.akingyin.media.model.LocalMediaData
  */
 abstract class BaseMultimediaActivity<T : LocalMediaData> : SimpleActivity() {
 
-     lateinit var  mediaGridListAdapter : MediaGridListAdapter<T>
-
-    private  var  title = "图文制作"
-
-    /**
-     * 基础数据
-     */
-    private  var  datas: MutableList<T>  = mutableListOf()
 
 
 
@@ -42,19 +37,8 @@ abstract class BaseMultimediaActivity<T : LocalMediaData> : SimpleActivity() {
     }
 
 
-
     override fun initializationData(savedInstanceState: Bundle?) {
-        mediaGridListAdapter = MediaGridListAdapter(getImageEngine(),supportGridAdapterDelMedia(),supportGridAdapterCheck(),supportGridAdapterCamera())
-        lifecycleScope.launchWhenCreated {
-            showLoading()
-           withIO {
-               onLoadMediaData()
-           }.let {
-               datas.addAll(it)
 
-               hideLoadDialog()
-           }
-        }
     }
 
     override fun onSaveInstanceData(outState: Bundle?) {
@@ -62,36 +46,180 @@ abstract class BaseMultimediaActivity<T : LocalMediaData> : SimpleActivity() {
     }
 
 
-
-
     override fun startRequest() {
 
     }
 
-    /**
-     * 加载基础数据
-     */
-    abstract suspend fun  onLoadMediaData():MutableList<T>
+
 
     /**
      * 获取图片加载引擎
      */
-    abstract fun getImageEngine():ImageEngine
+    abstract fun getImageEngine(): ImageEngine
+
+
+
+    /**
+     * 创建数据
+     */
+    abstract fun onCreateMediaData(): T
 
 
     /**
-     * 适配器是否支持删除
+     * 保存数据
      */
-    open  fun  supportGridAdapterDelMedia() = false
+    abstract fun saveMediaData(mediaData: T)
+
 
     /**
-     * 适配器是否支持拍照
+     * 图片目录
      */
-    open fun  supportGridAdapterCamera() = false
+    open fun getImageDirPath() = AppFileConfig.APP_FILE_ROOT
+
 
     /**
-     * 适配器是否支持选中
+     * 视频目录
      */
-    open fun  supportGridAdapterCheck() = false
+    open fun getVideoDirPath() = AppFileConfig.APP_FILE_ROOT
+
+    /**
+     * 音频目录
+     */
+    open fun getAudioDirPath() = AppFileConfig.APP_FILE_ROOT
+
+
+    /**
+     * 获取多媒体文件名
+     */
+    open fun getMediaFileName(@MediaMimeType.MediaType mediaType: Int): String {
+        return when (mediaType) {
+            MediaMimeType.ofImage() -> StringUtils.getUUID() + ".jpg"
+            MediaMimeType.ofAudio() -> StringUtils.getUUID() + ".mp3"
+            MediaMimeType.ofVideo() -> StringUtils.getUUID() + ".mp4"
+            else -> StringUtils.getUUID()
+        }
+    }
+
+    /**
+     * 添加文本
+     */
+    open fun onAddOrModifyText(mediaData: T?, postion: Int = -1,callBack: (addMedia: Boolean, data:T,postion:Int) -> Unit) {
+
+        MaterialDialogUtil.showEditDialog(this, "添加文本", mediaData?.mediaText ?: "") {
+            mediaData?.let { mediaData ->
+                mediaData.mediaText = it
+                saveMediaData(mediaData)
+                callBack(false,mediaData,postion)
+
+            } ?: onCreateMediaData().apply {
+                mediaType = MediaMimeType.ofText()
+                mediaText = it
+                saveMediaData(this)
+                callBack(true,this,postion)
+            }
+        }
+    }
+
+    /**
+     * 添加或修改多媒体数据
+     */
+    open  fun  onAddOrModifyMediaData(mediaData: T?, postion: Int = -1,@MediaMimeType.MediaType mediaType: Int = MediaMimeType.ofImage(),callBack: (addMedia: Boolean, data:T,postion:Int) -> Unit){
+
+        fun   callBack (result: Boolean, localFilePath: String){
+            if (result) {
+                mediaData?.let {
+                    it.mediaLocalPath = localFilePath
+                    it.mediaOriginalPath = localFilePath
+                    it.mediaServerPath = ""
+                    saveMediaData(it)
+                    callBack(false,it,postion)
+                } ?: onCreateMediaData().apply {
+                    this.mediaType = mediaType
+
+                    mediaLocalPath = localFilePath
+                    mediaOriginalPath = localFilePath
+                    saveMediaData(this)
+                    callBack(true,this,postion)
+                }
+            }
+        }
+        when(mediaType){
+            MediaMimeType.ofImage() ->{
+                openCameraTakePicture { result, localFilePath ->
+                    callBack(result,localFilePath)
+                }
+            }
+            MediaMimeType.ofVideo() ->{
+                openCameraRecordVideo { result, localFilePath ->
+                    callBack(result,localFilePath)
+                }
+            }
+            MediaMimeType.ofAudio() ->{
+                openRecordAudio { result, localFilePath ->
+                    callBack(result,localFilePath)
+                }
+            }
+        }
+    }
+
+
+
+    /**
+     * 打开相机拍照
+     */
+    open fun openCameraTakePicture(imageName: String = getMediaFileName(MediaMimeType.ofImage()), imageDirPath: String = getImageDirPath(), callBack: (result: Boolean, localFilePath: String) -> Unit) = constructPermissionsRequest(Manifest.permission.CAMERA) {
+        startMediaActivityForResult(imageName, imageDirPath,"", REQUEST_CAMERA_TAKE_PIC_CODE,callBack)
+    }
+
+    /**
+     * 涂鸦
+     */
+    open fun  openImageTuya(mediaData: T, postion: Int = -1, callBack: (result: Boolean, localFilePath: String) -> Unit){
+        if(mediaData.mediaType == MediaMimeType.ofImage()&& FileUtils.isFileExist(mediaData.mediaLocalPath)){
+            startMediaActivityForResult(FileUtils.getFileName(mediaData.mediaLocalPath), FileUtils.getFolderName(mediaData.mediaLocalPath), getMediaFileName(MediaMimeType.ofImage()),REQUEST_CAMERA_TAKE_PIC_CODE,callBack)
+        }else{
+            showError("文件类型不正确或要地文件不存在，无法涂鸦！")
+        }
+
+    }
+    /**
+     * 打开相机录视频
+     */
+    open fun openCameraRecordVideo(videoName: String = getMediaFileName(MediaMimeType.ofVideo()), videoDirPath: String = getVideoDirPath(), callBack: (result: Boolean, localFilePath: String) -> Unit) = constructPermissionsRequest(Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO) {
+        startMediaActivityForResult(videoName, videoDirPath,"", REQUEST_RECORD_VIDEO_CODE,callBack)
+    }
+
+    /**
+     * 打开录音机录视频
+     */
+    open fun openRecordAudio(audioName: String = getMediaFileName(MediaMimeType.ofAudio()), audioDirPath: String = getAudioDirPath(), callBack: (result: Boolean, localFilePath: String) -> Unit) = constructPermissionsRequest(
+            Manifest.permission.RECORD_AUDIO) {
+         startMediaActivityForResult(audioName, audioDirPath,"", REQUEST_RECORD_AUDIO_CODE,callBack)
+
+    }
+
+
+
+    /**
+     * 启动多媒体界面
+     *采用 registerForActivityResult() 代替 startActivityForResult（），简化了数据回调的写法
+     *  registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+
+    }.launch(Intent())
+     */
+    abstract fun startMediaActivityForResult(fileName: String, fileDirPath: String,tuyaReFileName:String="", request: Int,call:(result:Boolean,localPath:String)->Unit)
+
+
+    companion object {
+        /** 拍照  */
+        const val REQUEST_CAMERA_TAKE_PIC_CODE = 1000
+
+        /** 视频 */
+        const val REQUEST_RECORD_VIDEO_CODE = 1001
+
+        /**录音 */
+        const val REQUEST_RECORD_AUDIO_CODE = 1002
+    }
 
 }

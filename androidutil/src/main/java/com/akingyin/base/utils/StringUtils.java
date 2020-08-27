@@ -217,9 +217,7 @@ public class StringUtils {
   public static boolean inputJudge(String editText) {
     String speChat = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
     Pattern pattern = Pattern.compile(speChat);
-    Timber.d("pattern: %s", pattern);
     Matcher matcher = pattern.matcher(editText);
-    Timber.d("matcher: %s", matcher);
     return matcher.find();
   }
 

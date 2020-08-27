@@ -1,6 +1,5 @@
 package com.akingyin.base.net
 
-import android.util.Log
 import com.akingyin.base.net.exception.ApiException
 import com.akingyin.base.net.mode.ApiCode
 import com.akingyin.base.net.mode.ApiResult
