@@ -12,6 +12,9 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.activity.ComponentActivity
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -114,6 +117,19 @@ inline fun <reified T> Activity.startActivityForResult(flag: Int = -1, bundle: A
         }
         if (bundle != null) putExtras(bundle.toBundle())
     }
+
     startActivityForResult(intent, requestCode)
+}
+
+inline fun <reified T> ComponentActivity.startRegisterForActivityResult(flag: Int = -1, bundle: Array<out Pair<String, Any?>>? = null, crossinline callback:((result:ActivityResult)->Unit)={}){
+    val intent = Intent(this, T::class.java).apply {
+        if (flag != -1) {
+            this.addFlags(flag)
+        }
+        if (bundle != null) putExtras(bundle.toBundle())
+    }
+    registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+         callback.invoke(it)
+    }.launch(intent)
 }
 

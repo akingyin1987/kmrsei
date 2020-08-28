@@ -10,7 +10,7 @@
 package com.akingyin.media
 import android.Manifest
 import android.os.Bundle
-import com.akingyin.base.SimpleActivity
+import com.akingyin.base.BaseNfcTagActivity
 import com.akingyin.base.config.AppFileConfig
 import com.akingyin.base.dialog.MaterialDialogUtil
 import com.akingyin.base.utils.FileUtils
@@ -27,7 +27,7 @@ import permissions.dispatcher.ktx.constructPermissionsRequest
  * @ Date 2020/8/26 17:30
  * @version V1.0
  */
-abstract class BaseMultimediaActivity<T : LocalMediaData> : SimpleActivity() {
+abstract class BaseMultimediaActivity<T : LocalMediaData> : BaseNfcTagActivity() {
 
 
 

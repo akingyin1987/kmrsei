@@ -369,36 +369,20 @@
 
       android:drawableStart="@drawable/ic_camera_location"
       android:layout_height="wrap_content"/>
-  <com.lsp.RulerView
-      android:id="@+id/rulerView"
+
+  <com.google.android.material.slider.Slider
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
       android:layout_margin="10dp"
-      android:visibility="gone"
+      android:id="@+id/rulerView"
+      android:valueFrom="0.0"
+      android:valueTo="100.0"
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toRightOf="parent"
       app:layout_constraintBottom_toTopOf="@+id/tv_location"
       android:layout_marginBottom="30dp"
-      app:bgColor="#fcfffc"
-      app:isBgRoundRect="true"
-      app:largeScaleColor="#50b586"
-      app:minScale="0"
-      app:maxScale="100"
-      app:midScaleColor="#999999"
-      app:midScaleStroke="3dp"
-      app:resultNumColor="#50b586"
-      app:resultNumTextSize="20sp"
-      app:rulerHeight="25dp"
-      app:scaleCount="10"
-      app:scaleGap="10dp"
-      app:scaleNumColor="#666666"
-      app:scaleNumTextSize="16sp"
-      app:smallScaleColor="#aaaaaa"
-      app:smallScaleStroke="2dp"
-      app:unit=""
-      app:showScaleResult="false"
-      app:unitColor="#50b586"
-      app:unitTextSize="10sp" />
+
+      android:layout_height="wrap_content"/>
+
 
 
   <RelativeLayout android:layout_width="match_parent"

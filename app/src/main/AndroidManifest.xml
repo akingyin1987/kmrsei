@@ -90,7 +90,7 @@
     <activity android:name=".ui.FragmentTestActivity" />
     <activity android:name=".ui.CameraTestActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/Theme.MaterialComponents.NoActionBar"/>
 
 
     <activity

@@ -42,7 +42,7 @@ import com.akingyin.media.databinding.FragmentCameraBinding
 import com.akingyin.media.engine.LocationEngine
 import com.akingyin.media.engine.LocationManagerEngine
 import com.google.android.material.snackbar.Snackbar
-import com.lsp.RulerView
+
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -257,8 +257,9 @@ open class BaseCameraFragment : SimpleFragment() {
         }
 
 
-        bindView.rulerView.setMaxScale(cameraManager.cameraMaxZoom)
-        bindView.rulerView.setMinScale(cameraManager.cameraMinZoom)
+        bindView.rulerView.valueFrom = cameraManager.cameraMinZoom.toFloat()
+        bindView.rulerView.valueTo = cameraManager.cameraMaxZoom.toFloat()
+        bindView.rulerView.value = cameraManager.cameraCurrentZoom
         bindView.tvLocation.click {
             getLocationInfo()
         }
@@ -327,15 +328,11 @@ open class BaseCameraFragment : SimpleFragment() {
             countDownJob?.cancel()
             showSucces("倒计时已取消")
         }
-        bindView.rulerView.setOnChooseResulterListener(object :RulerView.OnChooseResulterListener{
-            override fun onScrollResult(result: String?) {
-
+        bindView.rulerView.addOnChangeListener { _, value, fromUser ->
+            if(fromUser){
+                cameraManager.setCameraZoom(value)
             }
-
-            override fun onEndResult(result: String?) {
-               println("onEndResult$result")
-            }
-        })
+        }
 
     }
 
@@ -521,7 +518,7 @@ open class BaseCameraFragment : SimpleFragment() {
         zoomBarJob = lifecycleScope.launch(Main) {
             cameraManager.setCameraZoom(zoom)
             bindView.rulerView.visiable()
-            bindView.rulerView.currentScale = zoom
+            bindView.rulerView.value = zoom
             delay(5000)
             bindView.rulerView.gone()
         }

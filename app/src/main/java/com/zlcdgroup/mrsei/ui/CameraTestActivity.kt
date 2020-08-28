@@ -19,8 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.ext.startActivity
-import com.akingyin.base.ext.startActivityForResult
-import com.akingyin.base.utils.EasyActivityResult
+import com.akingyin.base.ext.startRegisterForActivityResult
 import com.akingyin.bmap.BDLocationService
 import com.akingyin.bmap.BDMapManager
 import com.akingyin.bmap.PanoramaBaiduMapActivity
@@ -28,7 +27,6 @@ import com.akingyin.bmap.SelectLocationBaiduActivity
 import com.akingyin.media.camera.CameraParameBuild
 import com.akingyin.media.camera.ui.BaseCameraFragment
 import com.akingyin.media.doodle.DoodleActivity
-
 import com.akingyin.media.engine.LocationEngine
 import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
@@ -84,14 +82,13 @@ class CameraTestActivity : SimpleActivity() {
                     })
                     bdLocationService.start()
                 } else {
-                    val requestCode = EasyActivityResult.getRandomRequestCode()
-                    startActivityForResult<SelectLocationBaiduActivity>(requestCode = requestCode)
-                    EasyActivityResult.onActivityResultCall(TAG, requestCode) { _, data ->
-                        data?.run {
+                    startRegisterForActivityResult<SelectLocationBaiduActivity> {
+                        it.data?.run {
                             call(getDoubleExtra(PanoramaBaiduMapActivity.LAT_KEY, 0.0), getDoubleExtra(PanoramaBaiduMapActivity.LNG_KEY, 0.0), getStringExtra(PanoramaBaiduMapActivity.ADDR_KEY)
                                 ?: "")
                         }
                     }
+
 
                 }
             }
