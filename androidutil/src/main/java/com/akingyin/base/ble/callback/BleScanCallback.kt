@@ -19,7 +19,7 @@ import com.akingyin.base.ble.BleDevice
  */
 abstract class BleScanCallback :BleScanPresenterImp {
 
-    abstract fun onScanFinished(scanResultList: List<BleDevice>?)
+    abstract fun onScanFinished(scanResultList: MutableList<BleDevice>?)
 
     open fun onLeScan(bleDevice: BleDevice) {}
 }

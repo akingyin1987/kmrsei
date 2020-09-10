@@ -205,29 +205,28 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
 
 
    private var loadingDialog: QMUITipDialog? = null
-    override fun showLoadDialog(msg: String?) {
+
+    override fun showLoadDialog(msg: String?, cancelBack: (() -> Unit)?) {
         loadingDialog?.let {
             it.isShowing.yes {
                 it.dismiss()
             }.no {  }
         }
 
-         loadingDialog = QMUITipDialog.Builder(this)
-                 .setIconType(ICON_TYPE_LOADING).create(true,R.style.MyDialogStyle)
+        loadingDialog = QMUITipDialog.Builder(this)
+                .setIconType(ICON_TYPE_LOADING).create(true,R.style.MyDialogStyle)
 
-         loadingDialog?.let {  dialog ->
+        loadingDialog?.let {  dialog ->
 
-              dialog.setOnCancelListener {
-                  onCancelLoading()
-              }
-              dialog.setOnDismissListener {
-                  dismissLoading()
-              }
-              dialog.show()
-         }
-
-
-
+            dialog.setOnCancelListener {
+                cancelBack?.invoke()
+                onCancelLoading()
+            }
+            dialog.setOnDismissListener {
+                dismissLoading()
+            }
+            dialog.show()
+        }
     }
 
     override fun hideLoadDialog() {

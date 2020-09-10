@@ -656,7 +656,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
     }
 
     @IntDef(value = [CameraNetGrid.CAMERA_NET_GRID_CLOSE, CameraNetGrid.CAMERA_NET_GRID_OPEN, CameraNetGrid.CAMERA_NET_GRID_NONE])
-    @Retention(AnnotationRetention.SOURCE)
+    @Target(AnnotationTarget.PROPERTY)
     annotation class CameraNetGrid {
         companion object {
             /** 相机网格线 */

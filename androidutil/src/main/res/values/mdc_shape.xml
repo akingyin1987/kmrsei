@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  ~ akingyin@163.com
+  -->
+
+<resources>
+  <!--Shape-->
+
+  <!--Material allows theming of a component’s shape through the customization of corner -->
+  <!--style and radius size. To systematically apply shape throughout your app, it helps to -->
+  <!--understand that components are categorized by size, grouped into categories of small, -->
+  <!--medium and large. Each component size group can be themed by overriding the Material -->
+  <!--Components attributes ?shapeAppearanceSmallComponent, ?shapeAppearanceMediumComponent -->
+  <!--and ?shapeAppearanceLargeComponent in your app's theme. Those attributes are already -->
+  <!--defined as default styles overridden for you in themes.xml and point to the styles in -->
+  <!--this file.-->
+
+  <!--Experiment with ShapeAppearance properties such as cornerFamily (either ‘cut’ or -->
+  <!--‘rounded’) and corner size. Alternatively, customize each ShapeAppearance on a -->
+  <!--per-corner basis with cornerFamilyTopLeft, cornerFamilyTopRight, cornerFamilyBottomLeft, -->
+  <!--cornerFamilyBottomRight and cornerSizeTopRight, cornerSizeTopLeft, cornerSizeBottomLeft -->
+  <!--and cornerSizeBottomRight.-->
+  <!--用于小零件，例如按钮和芯片-->
+  <!--Shape Appearance for small components like chips, buttons, text fields and FABs-->
+  <style name="ShapeAppearance.MyTheme.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+    <!--Your custom shape here-->
+  </style>
+
+  <!--适用于中等组件，例如卡-->
+  <!--Shape Appearance for medium components like cards, alert dialogs-->
+  <style name="ShapeAppearance.MyTheme.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+    <!--Your custom shape here-->
+    <item name="cornerFamily">cut</item>
+    <item name="cornerSize">8dp</item>
+  </style>
+  <!--适用于大型组件，例如底板-->
+  <!--Shape Appearance for large components like side and bottom navigation drawers-->
+  <style name="ShapeAppearance.MyTheme.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+    <!--Your custom shape here-->
+    <item name="cornerFamily">cut</item>
+    <item name="cornerSize">8dp</item>
+  </style>
+  <style name="ShapeAppearance.Sunflower.Card" parent="ShapeAppearance.MaterialComponents">
+    <item name="cornerFamily">rounded</item>
+    <item name="cornerSizeTopLeft">@dimen/card_corner_radius</item>
+    <item name="cornerSizeTopRight">@dimen/card_corner_radius</item>
+    <item name="cornerSizeBottomRight">@dimen/card_corner_radius</item>
+    <item name="cornerSizeBottomLeft">@dimen/card_corner_radius</item>
+  </style>
+
+  <style name="ShapeAppearance.Sunflower.Button.Add" parent="ShapeAppearance.MaterialComponents">
+    <item name="cornerFamily">rounded</item>
+
+    <item name="cornerSizeTopLeft">0dp</item>
+    <item name="cornerSizeTopRight">@dimen/button_corner_radius</item>
+    <item name="cornerSizeBottomRight">0dp</item>
+    <item name="cornerSizeBottomLeft">@dimen/button_corner_radius</item>
+  </style>
+
+  <style
+      name="ShapeAppearance.Sunflower.FAB"
+      parent="ShapeAppearance.MaterialComponents.SmallComponent" />
+
+  <!-- Add plant button -->
+  <dimen name="button_corner_radius">12dp</dimen>
+</resources>

@@ -64,5 +64,7 @@ class BleDevice(var mDevice: BluetoothDevice?) : Parcelable {
         return getName()+getMac()
     }
 
-
+    override fun toString(): String {
+        return getName()+getMac()+getKey()
+    }
 }

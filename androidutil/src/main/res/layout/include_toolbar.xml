@@ -11,7 +11,8 @@
         style="@style/Widget.App.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/theme_color_primary"
+        app:title="222"
+
         app:elevation="4dp" />
 
     <!--<com.bilibili.magicasakura.widgets.TintToolbar-->

@@ -11,7 +11,7 @@ package com.akingyin.base.ble
 
 import android.bluetooth.BluetoothDevice
 import android.os.Build
-import retrofit2.http.GET
+
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -138,16 +138,14 @@ class MultipleBluetoothController {
     }
 
     fun refreshConnectedDevice() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            val bluetoothList = getBleBluetoothList()
-            var i = 0
-            while ( i < bluetoothList.size) {
-                val bleBluetooth = bluetoothList[i]
-                if (!BleManager.getInstance().isConnected(bleBluetooth.bleDevice)) {
-                    removeBleBluetooth(bleBluetooth)
-                }
-                i++
+        val bluetoothList = getBleBluetoothList()
+        var i = 0
+        while ( i < bluetoothList.size) {
+            val bleBluetooth = bluetoothList[i]
+            if (!BleManager.getInstance().isConnected(bleBluetooth.bleDevice)) {
+                removeBleBluetooth(bleBluetooth)
             }
+            i++
         }
     }
 

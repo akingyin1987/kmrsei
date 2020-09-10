@@ -24,7 +24,13 @@
 
 
 
-
+    <dimen name="margin_normal">16dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_extra_small">4dp</dimen>
+    <dimen name="card_side_margin">12dp</dimen>
+    <dimen name="card_bottom_margin">26dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
+    <dimen name="card_corner_radius">12dp</dimen>
     <!--电池控件 高度-->
     <dimen name="power_consumption_rankings_dimen_main_battery_view_height">48dp</dimen>
     <!--电池控件 宽度-->

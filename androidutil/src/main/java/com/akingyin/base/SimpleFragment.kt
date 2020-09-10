@@ -188,7 +188,8 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
     }
 
     private var loadingDialog: QMUITipDialog? = null
-    override fun showLoadDialog(msg: String?) {
+
+    override fun showLoadDialog(msg: String?, cancelBack: (() -> Unit)?) {
         loadingDialog?.let {
             it.isShowing.yes {
                 it.dismiss()
@@ -201,6 +202,7 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
         loadingDialog?.let { dialog ->
 
             dialog.setOnCancelListener {
+                cancelBack?.invoke()
                 onCancelLoading()
             }
             dialog.setOnDismissListener {
@@ -208,7 +210,6 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
             }
             dialog.show()
         }
-
 
     }
 

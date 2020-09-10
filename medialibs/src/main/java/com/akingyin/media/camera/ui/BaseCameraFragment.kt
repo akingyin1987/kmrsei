@@ -92,7 +92,7 @@ open class BaseCameraFragment : SimpleFragment() {
         }
     }
 
-    @CameraManager.CameraNetGrid
+
     private var netGrid: Int by Delegates.observable(CameraManager.CameraNetGrid.CAMERA_NET_GRID_NONE) { _, _, newValue ->
 
         bindView.buttonGrid.setImageResource(when (newValue) {
@@ -111,7 +111,7 @@ open class BaseCameraFragment : SimpleFragment() {
 
     }
 
-    @CameraManager.CameraFlashModel
+
     private var flashMode: Int by Delegates.observable(CameraManager.CameraFlashModel.CAMERA_FLASH_NONE) { _, _, newValue ->
         PreferencesUtil.put(sharedPreferencesName, KEY_CAMERA_FLASH, newValue.toString())
         bindView.buttonFlash.setImageResource(when (newValue) {
@@ -127,7 +127,7 @@ open class BaseCameraFragment : SimpleFragment() {
         })
     }
 
-    @CameraManager.CameraShutterSound
+
     private var shutterSound: Int by Delegates.observable(CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE) { _, _, newValue ->
         bindView.buttonShutter.setImageResource(when (newValue) {
             CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON -> {

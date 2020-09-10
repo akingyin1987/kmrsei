@@ -59,7 +59,7 @@ class BleScanner  private constructor(){
             this.getBleScanPresenterImp()?.onScanStarted(success)
         }
 
-        override fun onScanFinished(bleDeviceList: List<BleDevice>) {
+        override fun onScanFinished(bleDeviceList: MutableList<BleDevice>) {
            getBleScanPresenterImp()?.let {
                if(this.ismNeedConnect()){
                    if(this.getBleScanPresenterImp() is BleScanAndConnectCallback ){

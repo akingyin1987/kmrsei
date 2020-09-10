@@ -67,7 +67,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
 
      // 默认创建工厂为无参构造函数
     //ViewModelProvider.Factory getDefaultViewModelProviderFactory()
-     val  viewModel2 :LoginViewModel by  viewModels()
+   //  val  viewModel2 :LoginViewModel by  viewModels()
 
     //自定义 工厂模式
      val viewModel3 : LoginViewModel by viewModels {
@@ -230,9 +230,10 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
        showTips("不再询问")
     }
     override fun goToMainActivity() {
+        println("goToMainActivity")
         constructPermissionsRequest(Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION){
-
+            println("goToMainActivity2")
 //        ARouter.getInstance().build("/user/list").withString("name","nametest")
 //                .withInt("age",2).navigation()
             //  goActivity<UserListActivity>()
@@ -246,7 +247,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
             //  startActivity<TestTuwenActivity>()
             println("message={0}".messageFormat("test"))
             startActivity<TestFunActivity>()
-        }
+        }.launch()
     }
 
     override fun setAppTheme(theme: String) {

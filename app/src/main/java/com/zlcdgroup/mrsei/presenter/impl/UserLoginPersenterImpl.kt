@@ -76,11 +76,11 @@ class UserLoginPersenterImpl @Inject constructor(var personRepository: PersonRep
             mRootView!!.showError("密码不可为空！")
             return
         }
-        mRootView!!.showLoadDialog("登录中..")
+        mRootView?.showLoadDialog("登录中..")
 
        personRepository.login(name,pass, object : ApiCallBack<LoginResultModel> {
            override fun call(resultModel: LoginResultModel) {
-               mRootView!!.hideLoadDialog()
+               mRootView?.hideLoadDialog()
                mRootView?.goToMainActivity()
            }
 

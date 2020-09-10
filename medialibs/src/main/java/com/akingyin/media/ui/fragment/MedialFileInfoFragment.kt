@@ -22,6 +22,8 @@ import com.akingyin.base.ext.*
 import com.akingyin.base.utils.DateUtil
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.base.utils.HtmlUtils
+import com.akingyin.base.utils.StringUtils
+import com.akingyin.media.MediaUtils
 
 import com.akingyin.media.R
 import com.akingyin.media.databinding.FragmentMedialFileInfoBinding
@@ -181,13 +183,20 @@ open class MedialFileInfoFragment :SimpleFragment(){
 
                     }
                     MediaFileUtil.isAudioFileType(filePath)->{
-                        MediaMetadataRetriever().use {
-                            it.setDataSource(filePath)
-                           
+                        MediaUtils.extractDuration(requireContext(),filePath).run {
+                            bindView.tvDatetime.text = "时长：{0}".messageFormat(DateUtil.formatDurationTime(this))
                         }
+                        bindView.tvFilename.text = "文件名：{0}".messageFormat(FileUtils.getFileName(filePath))
+                        bindView.tvFilesize.text = "文件大小：{0}".messageFormat(StringUtils.FormetFileSize(FileUtils.getFileSize(filePath)))
+                        bindView.tvLocalpath.text="本地路径：{0}".messageFormat(filePath)
                     }
                     MediaFileUtil.isVideoFileType(filePath)->{
-
+                        MediaUtils.extractDuration(requireContext(),filePath).run {
+                            bindView.tvDatetime.text = "时长：{0}".messageFormat(DateUtil.formatDurationTime(this))
+                        }
+                        bindView.tvFilename.text = "文件名：{0}".messageFormat(FileUtils.getFileName(filePath))
+                        bindView.tvFilesize.text = "文件大小：{0}".messageFormat(StringUtils.FormetFileSize(FileUtils.getFileSize(filePath)))
+                        bindView.tvLocalpath.text="本地路径：{0}".messageFormat(filePath)
                     }
                 }
             })

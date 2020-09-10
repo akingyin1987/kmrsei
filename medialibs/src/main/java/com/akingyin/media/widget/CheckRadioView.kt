@@ -66,6 +66,7 @@ class CheckRadioView : AppCompatImageView {
 
 
     fun setColor(color: Int) {
+        mSelectedColor = color
         if (mDrawable == null) {
             mDrawable = drawable
         }

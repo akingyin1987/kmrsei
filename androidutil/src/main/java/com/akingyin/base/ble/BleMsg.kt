@@ -64,6 +64,7 @@ object BleMsg {
     const val KEY_READ_RSSI_BUNDLE_VALUE = "rssi_value"
 
     // Mtu
+    //最大传输单元，是指一种通信协议的某一层上面所能通过的最大数据报大小（以字节为单位）。而在Android BLE开发中，则指每包数据能携带的最大字节上限。
     const val MSG_SET_MTU_START = 0x61
     const val MSG_SET_MTU_RESULT = 0x62
     const val KEY_SET_MTU_BUNDLE_STATUS = "mtu_status"

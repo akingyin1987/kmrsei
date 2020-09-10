@@ -81,8 +81,11 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
                     showError("类型不正确")
                     return@positiveButton
                 }
+
                 val userEntity  = UserEntity()
-                userEntity.age = age.text.toString().trim().toInt()
+                userEntity.age =0
+                userEntity.age = (age.text as CharSequence).toString().toInt()
+
                 userEntity.name = name.text.toString().trim()
                 userListFragmentPresenterImpl.addUser(userEntity)
                 it.dismiss()

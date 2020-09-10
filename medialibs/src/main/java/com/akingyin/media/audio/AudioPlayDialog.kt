@@ -1,23 +1,15 @@
 
 package com.akingyin.media.audio
-
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.media.MediaPlayer
-import android.os.Bundle
-import android.os.Handler
-import android.os.Message
-import android.os.SystemClock
+import android.os.*
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.SeekBar
-
 import com.akingyin.media.R
-
 import kotlinx.android.synthetic.main.dialog_audio_play_layout.*
 import java.lang.ref.WeakReference
 
@@ -99,11 +91,10 @@ import java.lang.ref.WeakReference
      */
    private fun getDisplay() :IntArray{
 
-        val manager = context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
         val intArray = IntArray(2)
         val displayMetrics = DisplayMetrics()
-        manager.defaultDisplay.getMetrics(displayMetrics)
+        context?.display?.getRealMetrics(displayMetrics)
+
         intArray[0] = displayMetrics.widthPixels
         intArray[1] = displayMetrics.heightPixels
         return  intArray
@@ -190,7 +181,7 @@ import java.lang.ref.WeakReference
         }
     }
 
-    class AudioHandler(dialog: AudioPlayDialog) : Handler() {
+    class AudioHandler(dialog: AudioPlayDialog) : Handler(Looper.getMainLooper()) {
         private val week: WeakReference<AudioPlayDialog> by lazy {
             WeakReference<AudioPlayDialog>(dialog)
         }

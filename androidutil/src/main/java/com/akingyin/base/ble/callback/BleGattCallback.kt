@@ -12,6 +12,7 @@ package com.akingyin.base.ble.callback
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import com.akingyin.base.ble.BleDevice
+import com.akingyin.base.ble.exception.BleException
 
 /**
  * @ Description:
@@ -22,7 +23,7 @@ import com.akingyin.base.ble.BleDevice
 abstract class BleGattCallback : BluetoothGattCallback(){
     abstract fun onStartConnect()
 
-    abstract fun onConnectFail(bleDevice: BleDevice?, exception: Exception?)
+    abstract fun onConnectFail(bleDevice: BleDevice?, exception: BleException?)
 
     abstract fun onConnectSuccess(bleDevice: BleDevice?, gatt: BluetoothGatt?, status: Int)
 

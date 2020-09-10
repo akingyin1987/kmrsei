@@ -12,6 +12,7 @@ package com.akingyin.base.ble.scan
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanResult
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
@@ -52,6 +53,21 @@ abstract class BleScanPresenter :ScanCallback(),BluetoothAdapter.LeScanCallback 
     }
     abstract fun onLeScan(bleDevice: BleDevice)
 
+    //采用新的API
+    override fun onScanResult(callbackType: Int, result: ScanResult?) {
+        super.onScanResult(callbackType, result)
+        result?.let {
+            onLeScan(it.device,it.rssi,it.scanRecord?.bytes)
+        }
+    }
+
+    override fun onBatchScanResults(results: MutableList<ScanResult>?) {
+        super.onBatchScanResults(results)
+    }
+
+    override fun onScanFailed(errorCode: Int) {
+        super.onScanFailed(errorCode)
+    }
 
     override fun onLeScan(device: BluetoothDevice?, rssi: Int, scanRecord: ByteArray?) {
        if(mHandling){
@@ -143,7 +159,7 @@ abstract class BleScanPresenter :ScanCallback(),BluetoothAdapter.LeScanCallback 
         return mBleScanPresenterImp
     }
 
-    private class ScanHandler internal constructor(looper: Looper, bleScanPresenter: BleScanPresenter) : Handler(looper) {
+    private class ScanHandler(looper: Looper, bleScanPresenter: BleScanPresenter) : Handler(looper) {
         private val mBleScanPresenter: WeakReference<BleScanPresenter> = WeakReference(bleScanPresenter)
         override fun handleMessage(msg: Message) {
             val bleScanPresenter = mBleScanPresenter.get()
@@ -177,9 +193,11 @@ abstract class BleScanPresenter :ScanCallback(),BluetoothAdapter.LeScanCallback 
         mMainHandler.removeCallbacksAndMessages(null)
         mHandler?.removeCallbacksAndMessages(null)
     }
+
+
     abstract fun onScanning(bleDevice: BleDevice)
 
     abstract fun onScanStarted(success: Boolean)
 
-    abstract fun onScanFinished(bleDeviceList: List<BleDevice>)
+    abstract fun onScanFinished(bleDeviceList: MutableList<BleDevice>)
 }

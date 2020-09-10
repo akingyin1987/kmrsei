@@ -48,9 +48,9 @@ class RadiusTransformation(var content:Context,var r: Int) : BitmapTransformatio
         return bitmap
     }
 
-    override fun equals(obj: Any?): Boolean {
-        if (obj is RadiusTransformation) {
-            return radius == obj.radius
+    override fun equals(other: Any?): Boolean {
+        if (other is RadiusTransformation) {
+            return radius == other.radius
         }
         return false
     }

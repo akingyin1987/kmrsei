@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  ~ akingyin@163.com
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools">
+
+  <com.google.android.material.appbar.AppBarLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:id="@+id/appbar"
+
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+
+
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        style="@style/Widget.App.Toolbar"
+        android:layout_width="match_parent"
+
+        android:layout_height="?attr/actionBarSize"
+        app:title="229222"
+        app:elevation="4dp">
+      <ProgressBar
+          android:id="@+id/progressWheel"
+          style="?android:attr/progressBarStyleLarge"
+          android:layout_width="wrap_content"
+          android:visibility="gone"
+          android:layout_height="wrap_content"
+          android:layout_gravity="end"
+          android:indeterminate="true"
+          android:layout_margin="5dp"
+          />
+    </com.google.android.material.appbar.MaterialToolbar>
+  </com.google.android.material.appbar.AppBarLayout>
+  <RelativeLayout
+      android:id="@+id/layout_ser_ble"
+      android:layout_width="150dp"
+      android:layout_height="150dp"
+      android:visibility="gone"
+      app:layout_constraintTop_toBottomOf="@+id/appbar"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+
+      android:background="@drawable/bg_ble_progress">
+    <ProgressBar
+        android:id="@+id/progress_ser_bluetooth"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:indeterminateDrawable="@drawable/rotate_progressbar"
+        android:visibility="invisible" />
+  </RelativeLayout>
+
+  <com.google.android.material.imageview.ShapeableImageView
+      android:layout_width="wrap_content"
+      app:layout_constraintTop_toBottomOf="@+id/layout_ser_ble"
+      android:layout_marginTop="5dp"
+      android:id="@+id/iv_ser_ble_status"
+      android:visibility="gone"
+      app:layout_constraintLeft_toLeftOf="@+id/layout_ser_ble"
+      app:layout_constraintRight_toRightOf="@+id/layout_ser_ble"
+      app:srcCompat="@drawable/icon_ble_on"
+
+      android:layout_height="wrap_content"/>
+
+  <androidx.appcompat.widget.AppCompatTextView
+      android:layout_width="wrap_content"
+      android:id="@+id/tv_ser_ble_status"
+      app:layout_constraintTop_toBottomOf="@+id/layout_ser_ble"
+      android:layout_marginTop="5dp"
+
+      app:layout_constraintLeft_toLeftOf="@+id/layout_ser_ble"
+      app:layout_constraintRight_toRightOf="@+id/layout_ser_ble"
+      android:textColor="#2884F5"
+      android:text="在正搜索"
+
+      android:visibility="gone"
+      android:layout_height="wrap_content"/>
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:layout_width="match_parent"
+      android:id="@+id/recycler_view"
+      app:layout_constraintTop_toBottomOf="@+id/iv_ser_ble_status"
+      tool:listitem="@layout/item_ble_device"
+      tool:itemCount="8"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      android:layout_height="0dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

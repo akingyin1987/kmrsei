@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:dist="http://schemas.android.com/apk/distribution"
+
     xmlns:tools="http://schemas.android.com/tools"
     package="com.zlcdgroup.mrsei">
 
-  <dist:module dist:instant="true" />
 
   <uses-permission android:name="android.permission.READ_PHONE_STATE" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -25,8 +24,9 @@
       android:networkSecurityConfig="@xml/network_security_config"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:supportsRtl="true"
-      android:theme="@style/DarkThemeApp"
-      tools:ignore="AllowBackup">
+      android:theme="@style/Theme.MyApp"
+      android:autoRevokePermissions="allowed"
+      >
     <uses-library
         android:name="org.apache.http.legacy"
         android:required="false" />
@@ -92,16 +92,15 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.NoActionBar"/>
 
-
+    <activity android:name="com.akingyin.base.ble.ui.SearchDeviceListActivity"
+         android:theme="@style/Theme.MyApp"/>
     <activity
         android:name=".ui.TestBaiduMapActivity"
         android:theme="@style/Base.Theme.Sunflower" />
     <activity android:name="com.akingyin.map.ui.MapSettingActivity" />
 
     <activity android:name="com.akingyin.bmap.PanoramaBaiduMapActivity" />
-    <activity
-        android:name=".ui.CameraXActivity"
-        android:theme="@style/FullscreenTheme" />
+
 
     <activity
         android:name="com.tencent.tauth.AuthActivity"

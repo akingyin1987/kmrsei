@@ -71,7 +71,7 @@ open class UserListFragmentPresenterImpl @Inject constructor(var userRepository:
     override fun delectUser(userEntity: UserEntity, postion: Int): Boolean {
         var   result :Boolean = userRepository.delectUser(userEntity);
         if(result){
-            mRootView?.getAdapter()?.remove(postion)
+            mRootView?.getAdapter()?.removeAt(postion)
         }else{
             mRootView?.showError("删除数据失败")
         }

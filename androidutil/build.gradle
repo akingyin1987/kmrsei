@@ -151,9 +151,9 @@ dependencies {
 
 
   //api 'com.github.tbruyelle:rxpermissions:0.10.2'
-  api "org.permissionsdispatcher:permissionsdispatcher-ktx:1.0.0-beta1"
-  api "org.permissionsdispatcher:permissionsdispatcher:4.7.0"
-  kapt "org.permissionsdispatcher:permissionsdispatcher-processor:4.7.0"
+  api "org.permissionsdispatcher:permissionsdispatcher-ktx:1.0.0"
+  api "org.permissionsdispatcher:permissionsdispatcher:4.8.0"
+  kapt "org.permissionsdispatcher:permissionsdispatcher-processor:4.8.0"
   api files('libs/rfidapi.jar')
   api 'com.github.GrenderG:Toasty:1.5.0'
   api 'com.afollestad.material-dialogs:core:3.3.0'

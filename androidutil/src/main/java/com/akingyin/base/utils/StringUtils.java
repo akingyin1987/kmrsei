@@ -537,7 +537,10 @@ public class StringUtils {
   }
 
 
-  public static String FormetFileSize(long fileS) {
+  public static String FormetFileSize(Long fileS) {
+    if(null == fileS || fileS <=0){
+      return  DEFAULT_EMPTY;
+    }
     DecimalFormat df = new DecimalFormat("#.00");
     String fileSizeString = "";
     if (fileS < 1024) {

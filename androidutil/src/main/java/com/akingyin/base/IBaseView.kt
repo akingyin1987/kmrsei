@@ -37,7 +37,7 @@ interface IBaseView  {
      * 显示等待对话框
      * @param msg
      */
-    fun showLoadDialog(msg: String?)
+    fun showLoadDialog(msg: String?,cancelBack:(()->Unit )?={})
 
     /**
      * 隐藏对话框

@@ -90,7 +90,8 @@ class DoodleActivity:SimpleActivity() {
           }
           lifecycleScope.launch(Main){
               val dm = DisplayMetrics()
-              windowManager.defaultDisplay.getMetrics(dm)
+              display?.getRealMetrics(dm)
+
               withIO {
                   BitmapFactory.decodeFile(filePath).let {
                       scale = CameraBitmapUtil.getBitmapScale(it, dm)
