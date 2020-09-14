@@ -18,7 +18,7 @@ import com.akingyin.base.ble.exception.BleException
  * @ Date 2020/9/3 14:18
  * @version V1.0
  */
-abstract class BleWriteCallback(key: String, handler: Handler)  : BleBaseCallback(key, handler){
+abstract class BleWriteCallback : BleBaseCallback(){
 
 
     abstract fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray)

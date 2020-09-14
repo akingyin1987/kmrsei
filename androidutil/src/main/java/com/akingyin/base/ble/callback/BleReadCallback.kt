@@ -18,7 +18,7 @@ import com.akingyin.base.ble.exception.BleException
  * @ Date 2020/9/3 14:19
  * @version V1.0
  */
-abstract class BleReadCallback(key: String, handler: Handler)  : BleBaseCallback(key, handler){
+abstract class BleReadCallback : BleBaseCallback(){
 
     abstract fun onReadSuccess(data: ByteArray)
 

@@ -163,7 +163,7 @@ class BleConnector constructor(var bleBluetooth: BleBluetooth) {
      */
     private fun withUUID(serviceUUID: UUID, characteristicUUID: UUID): BleConnector {
         mBluetoothGatt?.let {
-            mGattService = it.getService(serviceUUID).also { server ->
+            mGattService = it.getService(serviceUUID)?.also { server ->
                mCharacteristic =  server.getCharacteristic(characteristicUUID)
             }
         }

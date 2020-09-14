@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import com.akingyin.base.R;
 
 /**
@@ -156,13 +157,14 @@ public class PowerConsumptionRankingsBatteryView extends View {
    * 初始化自定义属性
    */
   private void initTypeArray(Context context, @Nullable AttributeSet attrs) {
+
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PowerConsumptionRankingsBatteryView);
     lowerPowerColor = typedArray.getColor(R.styleable.PowerConsumptionRankingsBatteryView_batteryLowerPowerColor,
-        getResources().getColor(R.color.lowerPowerColor));
+        ContextCompat.getColor(context,R.color.lowerPowerColor));
     onlineColor = typedArray.getColor(R.styleable.PowerConsumptionRankingsBatteryView_batteryOnlineColor,
-        getResources().getColor(R.color.onlineColor));
+        ContextCompat.getColor(context,R.color.onlineColor));
     offlineColor = typedArray.getColor(R.styleable.PowerConsumptionRankingsBatteryView_batteryOfflineColor,
-        getResources().getColor(R.color.offlineColor));
+        ContextCompat.getColor(context,R.color.offlineColor));
     //外壳的相关信息
     shellCornerRadius = typedArray.getDimensionPixelOffset(R.styleable.PowerConsumptionRankingsBatteryView_batteryShellCornerRadius,
         getResources().getDimensionPixelOffset(R.dimen.power_consumption_rankings_dimen_main_battery_view_shell_corner));
@@ -212,11 +214,11 @@ public class PowerConsumptionRankingsBatteryView extends View {
     // 电池头 矩形的坐标
 
     //坐标 left：控件整体宽度的一半 减去 电池头宽度的一半
-    shellHeadRect.left = width / 2 - shellHeadWidth / 2;
+    shellHeadRect.left = (width >> 1) - (shellHeadWidth >> 1);
     //坐标 top： 0
     shellHeadRect.top = 0;
     //坐标 right：控件整体宽度的一半 加上 电池头宽度的一半
-    shellHeadRect.right = width / 2 + shellHeadWidth / 2;
+    shellHeadRect.right = (width >> 1) + (shellHeadWidth >> 1);
     //坐标 bottom：电池头的高度
     shellHeadRect.bottom = shellHeadHeight;
 

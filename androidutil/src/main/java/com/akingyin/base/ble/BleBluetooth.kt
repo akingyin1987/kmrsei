@@ -75,28 +75,32 @@ class BleBluetooth(var bleDevice: BleDevice){
             mainHandler.removeMessages(BleMsg.MSG_CONNECT_OVER_TIME)
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 "ble连接成功,通知gatt discoverServices，让onServicesDiscovered 显示所有services".logDebug(BleManager.TAG)
-                val message = mainHandler.obtainMessage()
-                message.what = BleMsg.MSG_DISCOVER_SERVICES
-                mainHandler.sendMessageDelayed(message, 500)
-
+                mainHandler.run {
+                    sendMessageDelayed(obtainMessage().apply {
+                        what = BleMsg.MSG_DISCOVER_SERVICES
+                    },500)
+                }
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 "Ble连接被断开".logDebug(BleManager.TAG)
                 if (lastState == LastState.CONNECT_CONNECTING) {
-                    val message = mainHandler.obtainMessage()
-                    message.what = BleMsg.MSG_CONNECT_FAIL
-                    message.obj =  BleConnectStateParameter().apply {
-                        this.status = status
+                    mainHandler.run {
+                        sendMessage(obtainMessage().apply {
+                            what = BleMsg.MSG_CONNECT_FAIL
+                            obj =  BleConnectStateParameter().apply {
+                                this.status = status
+                            }
+                        })
                     }
-                    mainHandler.sendMessage(message)
                 } else if (lastState == LastState.CONNECT_CONNECTED) {
-                    val message = mainHandler.obtainMessage()
-                    message.what = BleMsg.MSG_DISCONNECTED
-                    val para = BleConnectStateParameter().apply {
-                        this.status = status
-                        isActive = isActiveDisconnect
+                    mainHandler.run {
+                        sendMessage(obtainMessage().apply {
+                            what = BleMsg.MSG_DISCONNECTED
+                            obj = BleConnectStateParameter().apply {
+                                this.status = status
+                                isActive = isActiveDisconnect
+                            }
+                        })
                     }
-                    message.obj = para
-                    mainHandler.sendMessage(message)
                 }
             }
         }
@@ -105,42 +109,65 @@ class BleBluetooth(var bleDevice: BleDevice){
             super.onServicesDiscovered(gatt, status)
             bluetoothGatt = gatt
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                val message = mainHandler.obtainMessage()
-                message.what = BleMsg.MSG_DISCOVER_SUCCESS
-                message.obj =  BleConnectStateParameter().apply {
-                    this.status = status
+                "ble 服务连接成功".logDebug(BleManager.TAG)
+
+                mainHandler.run {
+                    sendMessage(obtainMessage().apply {
+                        what = BleMsg.MSG_DISCOVER_SUCCESS
+                        obj =  BleConnectStateParameter().apply {
+                            this.status = status
+                        }
+                    })
                 }
-                mainHandler.sendMessage(message)
+
             } else {
-                val message = mainHandler.obtainMessage()
-                message.what = BleMsg.MSG_DISCOVER_FAIL
-                mainHandler.sendMessage(message)
+                "ble 服务连接失败".logDebug(BleManager.TAG)
+                mainHandler.run {
+                    sendMessage(obtainMessage().apply {
+                        what = BleMsg.MSG_DISCOVER_FAIL
+                    })
+                }
             }
         }
 
         override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
             super.onCharacteristicChanged(gatt, characteristic)
+            //Indicate是有ACK的 能保证数据不丢失
+            // BLE是可以基于link layer层保证空中数据不丢失的，notification和indication都是基于GATT的，
+            // 取决于你在应用层如何对这些数据处理，
+            // 如果你对notification的数据处理不及时，是会被后续数据冲击丢失的。
+            "发现服务，在蓝牙连接的时候会调用".logDebug(BleManager.TAG)
             bleNotifyCallbackHashMap.forEach{
                 if(characteristic.uuid.toString() == it.value.key){
-                    it.value.handler.sendMessage(it.value.handler.obtainMessage().apply {
-                        what = BleMsg.MSG_CHA_NOTIFY_DATA_CHANGE
-                        obj = it.value
-                        data = Bundle().apply {
-                            putByteArray(BleMsg.KEY_NOTIFY_BUNDLE_VALUE, characteristic.value)
-                        }
-                    })
+                    "获取到指定特征服务通知数据,uuid=${it.value.key}".logDebug(BleManager.TAG)
+                    it.value.handler?.let {
+                        handler ->
+                        handler.sendMessage(handler.obtainMessage().apply {
+                            what = BleMsg.MSG_CHA_NOTIFY_DATA_CHANGE
+                            obj = it.value
+                            data = Bundle().apply {
+                                putByteArray(BleMsg.KEY_NOTIFY_BUNDLE_VALUE, characteristic.value)
+                            }
+                        })
+
+                    }
+
                 }
             }
 
             bleIndicateCallbackHashMap.forEach {
                 if(characteristic.uuid.toString() == it.value.key){
-                    it.value.handler.sendMessage(it.value.handler.obtainMessage().apply {
-                        what = BleMsg.MSG_CHA_INDICATE_DATA_CHANGE
-                        obj = it.value
-                        data = Bundle().apply {
-                            putByteArray(BleMsg.KEY_INDICATE_BUNDLE_VALUE, characteristic.value)
-                        }
-                    })
+                    it.value.handler?.let {
+                        handler ->
+                        handler.sendMessage(handler.obtainMessage().apply {
+                            what = BleMsg.MSG_CHA_INDICATE_DATA_CHANGE
+                            obj = it.value
+                            data = Bundle().apply {
+                                putByteArray(BleMsg.KEY_INDICATE_BUNDLE_VALUE, characteristic.value)
+                            }
+                        })
+                    }
+
                 }
             }
 
@@ -150,29 +177,35 @@ class BleBluetooth(var bleDevice: BleDevice){
         override fun onDescriptorWrite(gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor, status: Int) {
             super.onDescriptorWrite(gatt, descriptor, status)
 
-
-
             bleNotifyCallbackHashMap.forEach{
                 if(descriptor.characteristic.uuid.toString() == it.value.key){
-                    it.value.handler.sendMessage(it.value.handler.obtainMessage().apply {
-                        what = BleMsg.MSG_CHA_NOTIFY_RESULT
-                        obj = it.value
-                        data = Bundle().apply {
-                            putByteArray(BleMsg.KEY_NOTIFY_BUNDLE_STATUS, descriptor.characteristic.value)
-                        }
-                    })
+                    it.value.handler?.let {
+                        handler ->
+                        handler.sendMessage(handler.obtainMessage().apply {
+                            what = BleMsg.MSG_CHA_NOTIFY_RESULT
+                            obj = it.value
+                            data = Bundle().apply {
+                                putByteArray(BleMsg.KEY_NOTIFY_BUNDLE_STATUS, descriptor.characteristic.value)
+                            }
+                        })
+                    }
+
                 }
             }
 
             bleIndicateCallbackHashMap.forEach {
                 if(descriptor.characteristic.uuid.toString() == it.value.key){
-                    it.value.handler.sendMessage(it.value.handler.obtainMessage().apply {
-                        what = BleMsg.MSG_CHA_INDICATE_RESULT
-                        obj = it.value
-                        data = Bundle().apply {
-                            putByteArray(BleMsg.KEY_INDICATE_BUNDLE_STATUS, descriptor.characteristic.value)
-                        }
-                    })
+                    it.value.handler?.let {
+                        handler ->
+                        handler.sendMessage(handler.obtainMessage().apply {
+                            what = BleMsg.MSG_CHA_INDICATE_RESULT
+                            obj = it.value
+                            data = Bundle().apply {
+                                putByteArray(BleMsg.KEY_INDICATE_BUNDLE_STATUS, descriptor.characteristic.value)
+                            }
+                        })
+                    }
+
                 }
             }
 
@@ -182,14 +215,18 @@ class BleBluetooth(var bleDevice: BleDevice){
             super.onCharacteristicWrite(gatt, characteristic, status)
             bleWriteCallbackHashMap.forEach {
                 if(characteristic.uuid.toString() == it.key){
-                    it.value.handler.sendMessage(it.value.handler.obtainMessage().apply {
-                        what = BleMsg.MSG_CHA_WRITE_RESULT
-                        obj = it.value
-                        data = Bundle().apply {
-                            putInt(BleMsg.KEY_WRITE_BUNDLE_STATUS, status)
-                            putByteArray(BleMsg.KEY_WRITE_BUNDLE_VALUE, characteristic.value)
-                        }
-                    })
+                    it.value.handler?.let {
+                        handler ->
+                        handler.sendMessage(handler.obtainMessage().apply {
+                            what = BleMsg.MSG_CHA_WRITE_RESULT
+                            obj = it.value
+                            data = Bundle().apply {
+                                putInt(BleMsg.KEY_WRITE_BUNDLE_STATUS, status)
+                                putByteArray(BleMsg.KEY_WRITE_BUNDLE_VALUE, characteristic.value)
+                            }
+                        })
+                    }
+
                 }
             }
 
@@ -199,14 +236,18 @@ class BleBluetooth(var bleDevice: BleDevice){
             super.onCharacteristicRead(gatt, characteristic, status)
             bleReadCallbackHashMap.forEach {
                 if(it.key == characteristic.uuid.toString() ){
-                    it.value.handler.sendMessage(it.value.handler.obtainMessage().apply {
-                        what = BleMsg.MSG_CHA_READ_RESULT
-                        obj = it.value
-                        data = Bundle().apply {
-                            putInt(BleMsg.KEY_READ_BUNDLE_STATUS, status)
-                            putByteArray(BleMsg.KEY_READ_BUNDLE_VALUE, characteristic.value)
-                        }
-                    })
+                    it.value.handler?.let {
+                        handler ->
+                        handler.sendMessage(handler.obtainMessage().apply {
+                            what = BleMsg.MSG_CHA_READ_RESULT
+                            obj = it.value
+                            data = Bundle().apply {
+                                putInt(BleMsg.KEY_READ_BUNDLE_STATUS, status)
+                                putByteArray(BleMsg.KEY_READ_BUNDLE_VALUE, characteristic.value)
+                            }
+                        })
+                    }
+
                 }
             }
 
@@ -215,22 +256,25 @@ class BleBluetooth(var bleDevice: BleDevice){
         override fun onReadRemoteRssi(gatt: BluetoothGatt, rssi: Int, status: Int) {
             super.onReadRemoteRssi(gatt, rssi, status)
             bleRssiCallback?.run {
-                handler.sendMessage(handler.obtainMessage().apply {
-                    what = BleMsg.MSG_READ_RSSI_RESULT
-                    obj = bleRssiCallback
-                    data = Bundle().apply {
-                        putInt(BleMsg.KEY_READ_RSSI_BUNDLE_STATUS, status)
-                        putInt(BleMsg.KEY_READ_RSSI_BUNDLE_VALUE, rssi)
-                    }
-                })
+                handler?.let {
+                    it.sendMessage(it.obtainMessage().apply {
+                        what = BleMsg.MSG_READ_RSSI_RESULT
+                        obj = bleRssiCallback
+                        data = Bundle().apply {
+                            putInt(BleMsg.KEY_READ_RSSI_BUNDLE_STATUS, status)
+                            putInt(BleMsg.KEY_READ_RSSI_BUNDLE_VALUE, rssi)
+                        }
+                    })
+                }
+
             }
 
         }
 
         override fun onMtuChanged(gatt: BluetoothGatt, mtu: Int, status: Int) {
             super.onMtuChanged(gatt, mtu, status)
-            bleMtuChangedCallback?.run {
-                handler.sendMessage(handler.obtainMessage().apply {
+            bleMtuChangedCallback?.handler?.run {
+               sendMessage(obtainMessage().apply {
                     what = BleMsg.MSG_SET_MTU_RESULT
                     obj = bleMtuChangedCallback
                     data = Bundle().apply {
@@ -339,11 +383,11 @@ class BleBluetooth(var bleDevice: BleDevice){
                     refreshDeviceCache()
                     closeBluetoothGatt()
                     if (connectRetryCount < BleManager.getInstance().reConnectCount) {
-
                         val message: Message = mainHandler.obtainMessage()
                         message.what = BleMsg.MSG_RECONNECT
                         mainHandler.sendMessageDelayed(message, BleManager.getInstance().reConnectInterval)
                     } else {
+                        "连接失败发送回调信息".logDebug(BleManager.TAG)
                         lastState = LastState.CONNECT_FAILURE
                         BleManager.getInstance().multipleBluetoothController?.removeConnectingBle(this@BleBluetooth)
                         val para: BleConnectStateParameter = msg.obj as BleConnectStateParameter

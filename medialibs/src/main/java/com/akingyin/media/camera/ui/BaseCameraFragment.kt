@@ -26,6 +26,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -414,14 +415,20 @@ open class BaseCameraFragment : SimpleFragment() {
     }
 
     open  fun    startCameraSettingActivity(){
-        activity?.startActivityFromFragment(this, Intent(mContext,CameraSettingActivity::class.java).apply {
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+
+            if( it.resultCode == Activity.RESULT_OK){
+                initCameraParame(changeCameraParme = true)
+            }
+        }.launch(Intent(requireContext(),CameraSettingActivity::class.java).apply {
             cameraManager.camera?.let {
                 putExtra("cameraSizes",CameraManager.findSuportCameraSizeValue(it.parameters))
             }
             putExtra("sharedPreferencesName",sharedPreferencesName)
             putExtra("cameraOld",true)
             putExtra("cameraX",false)
-        }, CAMERA_SETTING_REQUEST_CODE)
+        })
+
     }
 
     private  fun  toggleShutter(){
@@ -536,8 +543,8 @@ open class BaseCameraFragment : SimpleFragment() {
     }
 
     companion object {
-        private const val REQUEST_CODE_PERMISSIONS = 10
-        const val CAMERA_SETTING_REQUEST_CODE = 1001
+         const val REQUEST_CODE_PERMISSIONS = 10
+
         const val KEY_CAMERA_FLASH = "key_camera_flash"
         const val KEY_CAMERA_GRID = "key_camera_netgrid"
         const val KEY_CAMERA_SHUTTER_SOUND = "key_camera_shutter_sound"
@@ -642,14 +649,7 @@ open class BaseCameraFragment : SimpleFragment() {
         ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == CAMERA_SETTING_REQUEST_CODE){
-            if(resultCode == Activity.RESULT_OK){
-                initCameraParame(changeCameraParme = true)
-            }
-        }
-    }
+
 
 
 }

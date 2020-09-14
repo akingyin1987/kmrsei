@@ -47,13 +47,7 @@ class MediaViewAndSelector  private constructor(activity:Activity?, fragment: Fr
         }
     }
 
-    fun   openExternalPagerPreview(postion: Int = 0,data:ImageTextList){
 
-    }
-
-    fun   openExternalPagerTypePreview(postion:Int = 0,data : ImageTextTypeList){
-
-    }
 
     class  BuildConfig{
         /** 是否支持下载 */

@@ -19,7 +19,7 @@ import com.akingyin.base.ble.exception.BleException
  * @ Date 2020/9/3 13:48
  * @version V1.0
  */
-abstract class BleRssiCallback(key: String, handler: Handler)  : BleBaseCallback(key, handler){
+abstract class BleRssiCallback  : BleBaseCallback(){
     abstract fun onRssiFailure(exception: BleException)
 
     abstract fun onRssiSuccess(rssi: Int)

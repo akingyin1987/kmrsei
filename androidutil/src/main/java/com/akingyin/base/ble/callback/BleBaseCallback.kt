@@ -17,5 +17,8 @@ import android.os.Handler
  * @ Date 2020/9/3 13:55
  * @version V1.0
  */
-abstract class BleBaseCallback (var key :String,var handler:Handler) {
+abstract class BleBaseCallback  {
+    var handler:Handler?= null
+
+    var key :String = ""
 }

@@ -56,10 +56,7 @@ object ImageLoadUtil {
 
 
 
-    /**
-     * 图片加载框架初始化
-     */
-    fun loadImageConfig(context: Context, basePath: String, size: Int) {}
+
 
     /**
      * 清除SD图片加载缓存

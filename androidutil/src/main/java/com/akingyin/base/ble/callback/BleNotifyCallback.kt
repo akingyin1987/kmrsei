@@ -9,7 +9,7 @@
 
 package com.akingyin.base.ble.callback
 
-import android.os.Handler
+
 import com.akingyin.base.ble.exception.BleException
 
 /**
@@ -18,7 +18,7 @@ import com.akingyin.base.ble.exception.BleException
  * @ Date 2020/9/3 14:14
  * @version V1.0
  */
-abstract class BleNotifyCallback(key: String, handler: Handler)  : BleBaseCallback(key, handler){
+abstract class BleNotifyCallback  : BleBaseCallback(){
     abstract fun onNotifySuccess()
 
     abstract fun onNotifyFailure(exception: BleException)

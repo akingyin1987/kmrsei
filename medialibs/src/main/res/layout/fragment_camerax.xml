@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  ~ akingyin@163.com
+  -->
+
+  <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:background="@android:color/black"
+      android:keepScreenOn="true"
+      android:layout_height="match_parent"
+      tools:ignore="MissingDefaultResource">
+    <com.akingyin.media.camera.CameraPreview
+        android:id="@+id/viewFinder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:focusable="true"
+        android:layout_height="match_parent">
+
+
+
+      <View
+          android:layout_width="0dp"
+          android:layout_height="0dp"
+          android:alpha="0.4"
+          android:background="@android:color/black"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="@id/fabTakePicture" />
+      <com.akingyin.media.camera.widget.CaptureButton
+          android:id="@+id/fabTakePicture"
+          android:layout_width="40dp"
+          android:layout_height="40dp"
+          app:capture_photo_video="Photo"
+
+          android:layout_marginBottom="20dp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          tools:ignore="ContentDescription" />
+
+      <com.akingyin.media.camera.widget.TypeButton
+          android:layout_width="40dp"
+          android:layout_height="40dp"
+          android:id="@+id/btn_cancel"
+          android:visibility="gone"
+          app:layout_constraintBottom_toBottomOf="@id/fabTakePicture"
+          app:layout_constraintEnd_toStartOf="@id/fabTakePicture"
+          app:layout_constraintStart_toStartOf="parent"
+          app:btnConfigCancel="cancel"
+          app:layout_constraintTop_toTopOf="@id/fabTakePicture"/>
+
+      <com.akingyin.media.camera.widget.TypeButton
+          android:layout_width="40dp"
+          android:layout_height="40dp"
+          app:btnConfigCancel="config"
+          android:id="@+id/btn_config"
+          android:visibility="gone"
+          app:layout_constraintBottom_toBottomOf="@id/fabTakePicture"
+          app:layout_constraintStart_toEndOf="@id/fabTakePicture"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="@id/fabTakePicture"/>
+      <!--<ImageButton-->
+      <!--    android:id="@+id/fabTakePicture"-->
+      <!--    android:layout_width="wrap_content"-->
+      <!--    android:layout_height="wrap_content"-->
+      <!--    android:background="@android:color/transparent"-->
+
+      <!--    android:padding="@dimen/double_margin"-->
+      <!--    android:src="@drawable/ic_take_picture"-->
+      <!--    app:layout_constraintBottom_toBottomOf="parent"-->
+      <!--    app:layout_constraintEnd_toEndOf="parent"-->
+      <!--    app:layout_constraintStart_toStartOf="parent"-->
+      <!--    tools:ignore="ContentDescription" />-->
+
+      <!--<ImageButton-->
+      <!--    android:id="@+id/buttonGallery"-->
+      <!--    android:layout_width="@dimen/button_size_small"-->
+      <!--    android:layout_height="@dimen/button_size_small"-->
+      <!--    android:background="@android:color/transparent"-->
+
+      <!--    android:scaleType="centerCrop"-->
+      <!--    android:src="@drawable/ic_no_picture"-->
+      <!--    app:layout_constraintBottom_toBottomOf="@id/fabTakePicture"-->
+      <!--    app:layout_constraintEnd_toEndOf="parent"-->
+      <!--    app:layout_constraintStart_toEndOf="@id/fabTakePicture"-->
+      <!--    app:layout_constraintTop_toTopOf="@id/fabTakePicture"-->
+      <!--    tools:ignore="ContentDescription" />-->
+
+      <!--<ImageButton-->
+      <!--    android:id="@+id/buttonSwitchCamera"-->
+      <!--    android:layout_width="@dimen/button_size_small"-->
+      <!--    android:layout_height="@dimen/button_size_small"-->
+      <!--    android:background="@drawable/bg_button_round"-->
+
+      <!--    android:padding="@dimen/half_margin"-->
+      <!--    android:scaleType="centerInside"-->
+      <!--    android:src="@drawable/ic_outline_camera_front"-->
+      <!--    app:layout_constraintBottom_toBottomOf="@id/fabTakePicture"-->
+      <!--    app:layout_constraintEnd_toStartOf="@id/fabTakePicture"-->
+      <!--    app:layout_constraintStart_toStartOf="parent"-->
+      <!--    app:layout_constraintTop_toTopOf="@id/fabTakePicture"-->
+      <!--    tools:ignore="ContentDescription" />-->
+
+      <View
+          android:id="@+id/viewBg2"
+          android:layout_width="0dp"
+          android:layout_height="0dp"
+          android:alpha="0.4"
+          android:background="@android:color/black"
+          android:elevation="1dp"
+          app:layout_constraintBottom_toBottomOf="@id/buttonFlash"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+      <ImageButton
+          android:id="@+id/buttonShutter"
+          android:layout_width="@dimen/button_size_small"
+          android:layout_height="@dimen/button_size_small"
+          android:background="@android:color/transparent"
+          android:elevation="1dp"
+
+          android:padding="@dimen/half_margin"
+          android:scaleType="centerInside"
+          android:src="@drawable/ic_action_volume_on"
+          app:layout_constraintEnd_toStartOf="@+id/buttonGrid"
+          app:layout_constraintHorizontal_bias="0.5"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          tools:ignore="ContentDescription" />
+
+      <ImageButton
+          android:id="@+id/buttonGrid"
+          android:layout_width="@dimen/button_size_small"
+          android:layout_height="@dimen/button_size_small"
+          android:background="@android:color/transparent"
+          android:elevation="1dp"
+
+          android:padding="@dimen/half_margin"
+          android:scaleType="centerInside"
+          android:src="@drawable/ic_grid_off"
+          app:layout_constraintEnd_toStartOf="@+id/buttonFlash"
+          app:layout_constraintHorizontal_bias="0.5"
+          app:layout_constraintStart_toEndOf="@+id/buttonShutter"
+          app:layout_constraintTop_toTopOf="@id/buttonShutter"
+          tools:ignore="ContentDescription" />
+
+      <ImageButton
+          android:id="@+id/buttonFlash"
+          android:layout_width="@dimen/button_size_small"
+          android:layout_height="@dimen/button_size_small"
+          android:background="@android:color/transparent"
+          android:elevation="1dp"
+
+          android:padding="@dimen/half_margin"
+          android:scaleType="centerInside"
+          android:src="@drawable/ic_flash_off"
+          app:layout_constraintEnd_toStartOf="@+id/buttonSetting"
+          app:layout_constraintHorizontal_bias="0.5"
+          app:layout_constraintStart_toEndOf="@+id/buttonGrid"
+          app:layout_constraintTop_toTopOf="@id/buttonGrid"
+          tools:ignore="ContentDescription" />
+
+      <ImageButton
+          android:id="@+id/buttonSetting"
+          android:layout_width="@dimen/button_size_small"
+          android:layout_height="@dimen/button_size_small"
+          android:background="@android:color/transparent"
+          android:elevation="1dp"
+          android:padding="@dimen/half_margin"
+          android:scaleType="centerInside"
+          android:src="@drawable/ic_action_setting"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.5"
+          app:layout_constraintStart_toEndOf="@+id/buttonFlash"
+          app:layout_constraintTop_toTopOf="@id/buttonFlash"
+          tools:ignore="ContentDescription" />
+
+      <View
+          android:id="@+id/gridVertical1"
+          android:layout_width="1dp"
+          android:layout_height="0dp"
+          android:alpha="0.5"
+          android:background="@android:color/white"
+          android:elevation="2dp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.33"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+      <View
+          android:id="@+id/gridVertical2"
+          android:layout_width="1dp"
+          android:layout_height="0dp"
+          android:alpha="0.5"
+          android:background="@android:color/white"
+          android:elevation="2dp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.66"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+      <View
+          android:id="@+id/gridHorizontal1"
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:alpha="0.5"
+          android:background="@android:color/white"
+          android:elevation="2dp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintVertical_bias="0.33" />
+
+      <View
+          android:id="@+id/gridHorizontal2"
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:alpha="0.5"
+          android:background="@android:color/white"
+          android:elevation="2dp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintVertical_bias="0.66" />
+
+      <androidx.constraintlayout.widget.Group
+          android:id="@+id/groupGridLines"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:visibility="visible"
+          app:constraint_referenced_ids="gridVertical1,gridVertical2,gridHorizontal1,gridHorizontal2" />
+
+      <LinearLayout
+          android:id="@+id/layoutShutterOptions"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:background="@android:color/black"
+          android:elevation="3dp"
+          android:orientation="horizontal"
+          android:paddingStart="@dimen/fab_margin"
+          android:paddingTop="@dimen/double_margin"
+          android:paddingEnd="@dimen/fab_margin"
+          android:paddingBottom="@dimen/fab_margin"
+          android:visibility="gone"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/buttonShutterOff"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_size_small"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+
+            android:src="@drawable/ic_action_volume_off"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/buttonShutterOn"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_size_small"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_action_volume_on"
+            tools:ignore="ContentDescription" />
+
+
+
+      </LinearLayout>
+
+      <LinearLayout
+          android:id="@+id/layoutFlashOptions"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:background="@android:color/black"
+          android:elevation="3dp"
+          android:orientation="horizontal"
+          android:paddingStart="@dimen/fab_margin"
+          android:paddingTop="@dimen/double_margin"
+          android:paddingEnd="@dimen/fab_margin"
+          android:paddingBottom="@dimen/fab_margin"
+          android:visibility="gone"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/buttonFlashOff"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_size_small"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+
+            android:src="@drawable/ic_flash_off"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/buttonFlashAuto"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_size_small"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+
+            android:src="@drawable/ic_flash_auto"
+            tools:ignore="ContentDescription"/>
+
+        <ImageButton
+            android:id="@+id/buttonFlashOn"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_size_small"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+
+            android:src="@drawable/ic_flash_on"
+            tools:ignore="ContentDescription"/>
+
+      </LinearLayout>
+
+      <TextView
+          android:id="@+id/textCountDown"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:elevation="4dp"
+          android:textColor="@android:color/white"
+          android:textSize="@dimen/count_down_text_size"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          tools:text="0" />
+      <TextView
+          android:id="@+id/textCountDownTip"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:elevation="4dp"
+          android:textColor="@color/md_grey_400"
+
+          app:layout_constraintTop_toBottomOf="@+id/textCountDown"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          tools:text="0" />
+      <TextView
+          android:layout_width="230dp"
+          app:layout_constraintLeft_toLeftOf="parent"
+
+          app:layout_constraintBottom_toTopOf="@+id/rl_turn"
+          android:layout_marginBottom="30dp"
+          android:id="@+id/tv_location"
+          android:textColor="@android:color/white"
+          android:textSize="14sp"
+          android:text="定位"
+          android:drawablePadding="3dp"
+          android:gravity="left|center"
+
+          android:drawableStart="@drawable/ic_camera_location"
+          android:layout_height="wrap_content"/>
+
+      <com.google.android.material.slider.Slider
+          android:layout_width="match_parent"
+          android:layout_margin="10dp"
+          android:id="@+id/rulerView"
+          android:valueFrom="0.0"
+          android:valueTo="100.0"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintBottom_toTopOf="@+id/tv_location"
+          android:layout_marginBottom="30dp"
+
+          android:layout_height="wrap_content"/>
+
+
+
+      <RelativeLayout android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="gone"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintBottom_toTopOf="@+id/fabTakePicture"
+
+          android:layout_marginBottom="30dp"
+          android:id="@+id/rl_turn">
+
+        <ImageView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/iv_turnleft"
+
+            android:src="@drawable/icon_turn_left"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:contentDescription="@string/contentdescription" />
+        <ImageView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/iv_turncenter"
+            android:contentDescription="@string/contentdescription"
+            android:src="@drawable/icon_turn_180"
+
+            android:layout_marginTop="30dp"/>
+        <ImageView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/iv_turnright"
+            android:contentDescription="@string/contentdescription"
+            android:src="@drawable/icon_turn_right"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"/>
+      </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

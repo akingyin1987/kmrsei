@@ -272,19 +272,19 @@ object MediaMimeType {
      * @return
      */
     fun getImageMimeType(path: String?): String? {
-        try {
-            if (!TextUtils.isEmpty(path)) {
+        return try {
+            path?.let {
                 val file = File(path)
                 val fileName = file.name
                 val last = fileName.lastIndexOf(".") + 1
                 val temp = fileName.substring(last)
-                return "image/$temp"
-            }
+                "image/$temp"
+            }?:MIME_TYPE_IMAGE
+
         } catch (e: Exception) {
             e.printStackTrace()
-            return MIME_TYPE_IMAGE
+            MIME_TYPE_IMAGE
         }
-        return MIME_TYPE_IMAGE
     }
 
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  ~ akingyin@163.com
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:viewBindingIgnore="true"
+    android:layout_height="match_parent"
+  >
+
+  <TextureView
+      android:layout_width="match_parent"
+      android:id="@+id/camera_surface"
+      android:visibility="visible"
+      android:layout_height="match_parent"/>
+
+  <com.akingyin.media.camera.FouceView
+      android:layout_width="match_parent"
+      android:id="@+id/camera_fouce"
+      android:layout_marginTop="50dp"
+      android:layout_marginBottom="50dp"
+      android:layout_height="match_parent"/>
+
+  <com.github.chrisbanes.photoview.PhotoView
+      android:layout_width="match_parent"
+      android:id="@+id/camera_img"
+      android:scaleType="fitCenter"
+      android:visibility="gone"
+      android:background="#000000"
+      android:layout_height="match_parent"/>
+</RelativeLayout>

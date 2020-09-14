@@ -18,7 +18,7 @@ import com.akingyin.base.ble.exception.BleException
  * @ Date 2020/9/3 14:16
  * @version V1.0
  */
-abstract class BleIndicateCallback (key: String, handler: Handler)  : BleBaseCallback(key, handler){
+abstract class BleIndicateCallback  : BleBaseCallback(){
     abstract fun onIndicateSuccess()
 
     abstract fun onIndicateFailure(exception: BleException)

@@ -44,6 +44,12 @@
           android:indeterminate="true"
           android:layout_margin="5dp"
           />
+      <com.akingyin.base.widget.PowerConsumptionRankingsBatteryView
+          android:layout_width="28dp"
+          android:padding="3dp"
+          android:layout_margin="5dp"
+          android:layout_gravity="end"
+          android:layout_height="wrap_content"/>
     </com.google.android.material.appbar.MaterialToolbar>
   </com.google.android.material.appbar.AppBarLayout>
   <RelativeLayout

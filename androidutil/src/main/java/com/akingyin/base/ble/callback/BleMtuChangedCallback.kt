@@ -18,7 +18,7 @@ import com.akingyin.base.ble.exception.BleException
  * @ Date 2020/9/3 14:13
  * @version V1.0
  */
-abstract class BleMtuChangedCallback (key: String, handler: Handler)  : BleBaseCallback(key, handler){
+abstract class BleMtuChangedCallback  : BleBaseCallback(){
 
     abstract fun onSetMTUFailure(exception: BleException)
 
