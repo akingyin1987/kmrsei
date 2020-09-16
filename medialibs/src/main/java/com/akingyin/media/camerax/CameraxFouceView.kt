@@ -7,11 +7,10 @@
  * akingyin@163.com
  */
 
-package com.akingyin.media.camera
+package com.akingyin.media.camerax
 
 import android.content.Context
 import android.graphics.*
-import android.hardware.Camera
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.Animation
@@ -19,18 +18,15 @@ import android.view.animation.AnimationUtils
 import com.akingyin.media.R
 import kotlin.math.abs
 
-
 /**
  * @ Description:
  * @author king
- * @ Date 2020/7/16 17:20
+ * @ Date 2020/9/16 11:58
  * @version V1.0
  */
-
-@Suppress("DEPRECATION")
-class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) :
-        View(context, attrs, defStyleAttr, defStyleRes) {
-
+class CameraxFouceView @JvmOverloads constructor(
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
     ////焦点附近设置矩形区域作为对焦区域
     private var touchFocusRect: Rect? = null
 
@@ -67,11 +63,11 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         }
     }
 
-    var  screenPoint:Point?= null
+    var  screenPoint: Point?= null
     val FOCUS_AREA_SIZE = 300
-    private fun calculateTapArea(x: Float, y: Float, coefficient: Float):Rect? {
+    private fun calculateTapArea(x: Float, y: Float, coefficient: Float): Rect? {
 
-       return screenPoint?.let {
+        return screenPoint?.let {
             val areaSize = FOCUS_AREA_SIZE * (coefficient.toInt())
             val left =clamp((y/it.y*2000-1000).toInt(),areaSize)
             val top = clamp(((it.x-x)/it.x*2000-1000).toInt(),areaSize)
@@ -84,39 +80,33 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
 
     //对焦并绘制对焦矩形框
-    fun setTouchFoucusRect(camera: Camera, autoFocusCallback: Camera.AutoFocusCallback, x: Float, y: Float) {
+    fun setTouchFoucusRect(cameraxManager: CameraxManager, x: Float, y: Float) {
         //以焦点为中心，宽度为300的矩形框
 
         //以焦点为中心，宽度为300的矩形框
         touchFocusRect = Rect((x - 150).toInt(), (y - 150).toInt(), (x + 150).toInt(), (y + 150).toInt())
         //对焦区域
-        val targetFocusRect =calculateTapArea(x,y,1F)?: Rect().apply {
-            touchFocusRect?.let {
-                left = it.left * 2000 / width - 1000
-                top = it.top * 2000 / height - 1000
-                right = it.right * 2000 / width - 1000
-                bottom = it.bottom * 2000 / height - 1000
-            }
-        }
-        doTouchFocus(camera, autoFocusCallback, targetFocusRect)
+//        val targetFocusRect =calculateTapArea(x,y,1F)?: Rect().apply {
+//            touchFocusRect?.let {
+//                left = it.left * 2000 / width - 1000
+//                top = it.top * 2000 / height - 1000
+//                right = it.right * 2000 / width - 1000
+//                bottom = it.bottom * 2000 / height - 1000
+//            }
+//        }
+        doTouchFocus(cameraxManager,x,y)
         postInvalidate()//刷新界面，
     }
 
-    private fun doTouchFocus(camera: Camera, autoFocusCallback: Camera.AutoFocusCallback, tfocusRect: Rect) {
+    private fun doTouchFocus(cameraxManager: CameraxManager,x:Float,y:Float) {
         try {
-            val focusList = arrayListOf<Camera.Area>()
-            val focus = Camera.Area(tfocusRect, 1000) //相机参数：对焦区域
-            focusList.add(focus)
-            val par = camera.parameters.apply {
-                focusAreas = focusList
-                meteringAreas = focusList
-            }
-            camera.parameters = par
-            camera.autoFocus(autoFocusCallback)
+           cameraxManager.setCameraFocus(x,y){
+               disDrawTouchFocusRect(it)
+           }
 
         } catch (e: Exception) {
             e.printStackTrace()
-            autoFocusCallback.onAutoFocus(false, camera)
+
         }
 
     }
@@ -126,7 +116,7 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     //对焦完成后，清除对焦矩形框
     fun disDrawTouchFocusRect(result: Boolean = true) {
         mPaint.color = if (result) Color.GREEN else Color.RED
-        println("改变画笔颜色")
+
         invalidate()
 
         AnimationUtils.loadAnimation(context, R.anim.camera_fouce_rotate).run {
@@ -136,7 +126,7 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     touchFocusRect = null
                     mPaint.color = Color.WHITE
                     println("清除画笔颜色")
-                   postInvalidate()
+                    postInvalidate()
                 }
 
                 override fun onAnimationRepeat(animation: Animation) {}
@@ -171,10 +161,6 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             }
         }
 
-
-
-
     }
-
 
 }

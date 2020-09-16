@@ -29,7 +29,7 @@ object AppFileConfig {
      */
     var APP_FILE_ROOT = ""
 
-    fun getAppFileRoot(context: Context,appName:String?): File {
+    fun getAppFileRoot(context: Context,appName:String?=""): File {
       return if(appName.isNullOrEmpty()){
           File(context.getExternalFilesDir(null)
                   ?.absoluteFile.toString() )

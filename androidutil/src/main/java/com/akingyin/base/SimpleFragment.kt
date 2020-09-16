@@ -244,5 +244,7 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
         lazyLoadDataIfPrepared()
     }
 
-
+    override fun onPause() {
+        super.onPause()
+    }
 }

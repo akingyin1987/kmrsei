@@ -11,12 +11,12 @@ package com.akingyin.media.camerax
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.TextureView
+
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import com.akingyin.media.R
-import com.akingyin.media.camera.FouceView
+
 
 
 /**
@@ -29,8 +29,8 @@ class CameraxPreview @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RelativeLayout(context, attrs, defStyleAttr) {
 
-    var camera_surface: TextureView
-    var camera_fouce: FouceView
+    var camera_surface: CameraxSurfaceView
+    var camera_fouce: CameraxFouceView
     var camera_img: ImageView
     init {
         View.inflate(context,R.layout.camerax_view , this).run {

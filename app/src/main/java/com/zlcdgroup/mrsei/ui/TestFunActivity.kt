@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.ble.ui.SearchDeviceListActivity
 import com.akingyin.base.config.AppFileConfig
+import com.akingyin.media.camerax.ui.CameraxActivity
 import com.akingyin.media.model.ImageTextList
 import com.akingyin.media.model.ImageTextModel
 import com.akingyin.media.model.ImageTextTypeList
@@ -119,6 +120,7 @@ class TestFunActivity : SimpleActivity() {
 
                             add(FunModel("camera 测试",Intent(this@TestFunActivity,CameraTestActivity::class.java)))
                             add(FunModel("Ble测试",Intent(this@TestFunActivity,SearchDeviceListActivity::class.java)))
+                            add(FunModel("camerax 测试", Intent(this@TestFunActivity,CameraxActivity::class.java)))
                         }
                     }
             )

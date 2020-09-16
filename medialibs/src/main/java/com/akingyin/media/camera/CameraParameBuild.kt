@@ -125,40 +125,7 @@ class CameraParameBuild() : Parcelable {
         private var  cameraAngle = 90
 
         private var cameraResolution: Point? = null
-        fun flashModel(`val`: Int): Builder {
-            flashModel = `val`
-            return this
-        }
 
-        fun shutterSound(`val`: Int): Builder {
-            shutterSound = `val`
-            return this
-        }
-
-        fun netGrid(`val`: Int): Builder {
-            netGrid = `val`
-            return this
-        }
-
-        fun cameraResolution(`val`: Point?): Builder {
-            cameraResolution = `val`
-            return this
-        }
-
-        fun  buildLocalPath(localPath:String):Builder{
-            this.localPath = localPath
-            return this
-        }
-
-        fun  buildHorizontalPicture(horizontalPicture:Boolean):Builder{
-            this.horizontalPicture = horizontalPicture
-            return  this
-        }
-
-        fun buildCameraAngle(cameraAngle:Int):Builder{
-            this.cameraAngle = cameraAngle
-            return  this
-        }
 
         fun build(): CameraParameBuild {
             return CameraParameBuild().apply {

@@ -67,7 +67,7 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
                 cameraManager.camera?.let {
                     if (cameraParameBuild.supportManualFocus) {
                         //区域对焦
-                        camera_fouce.setTouchFoucusRect(it, Camera.AutoFocusCallback { success, _ ->
+                        camera_fouce.setTouchFoucusRect(it, { success, _ ->
                             camera_fouce.disDrawTouchFocusRect(success)
                             if (success) {
                                 //手动对焦成功

@@ -14,9 +14,10 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:background="@android:color/black"
       android:keepScreenOn="true"
+
       android:layout_height="match_parent"
       tools:ignore="MissingDefaultResource">
-    <com.akingyin.media.camera.CameraPreview
+    <com.akingyin.media.camerax.CameraxPreview
         android:id="@+id/viewFinder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

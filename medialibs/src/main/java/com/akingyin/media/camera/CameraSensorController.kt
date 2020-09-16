@@ -8,7 +8,6 @@
  */
 
 package com.akingyin.media.camera
-import android.app.Activity
 import android.content.Context
 import android.view.OrientationEventListener
 import kotlin.math.abs
