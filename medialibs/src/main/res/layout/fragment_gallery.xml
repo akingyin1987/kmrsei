@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  ~ akingyin@163.com
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/black"
+    android:layout_height="match_parent">
+  <androidx.viewpager2.widget.ViewPager2
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:id="@+id/photo_view_pager"/>
+
+ <androidx.constraintlayout.widget.ConstraintLayout
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:id="@+id/cutout_safe_area">
+   <ImageButton
+       android:id="@+id/back_button"
+       android:contentDescription="@string/back_button_alt"
+       app:layout_constraintTop_toTopOf="parent"
+       app:layout_constraintLeft_toLeftOf="parent"
+       android:layout_marginStart="@dimen/margin_xsmall"
+       android:layout_marginTop="@dimen/margin_small"
+       android:layout_width="@dimen/round_button_small"
+       android:layout_height="@dimen/round_button_small"
+       android:scaleType="fitCenter"
+       android:background="@android:color/transparent"
+       app:srcCompat="@drawable/ic_back" />
+
+   <ImageButton
+       android:id="@+id/share_button"
+       android:contentDescription="@string/share_button_alt"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintLeft_toLeftOf="parent"
+       app:layout_constraintRight_toRightOf="parent"
+       android:layout_marginEnd="@dimen/margin_xlarge"
+       android:layout_marginBottom="@dimen/margin_small"
+       android:layout_width="@dimen/round_button_small"
+       android:layout_height="@dimen/round_button_small"
+       android:scaleType="fitCenter"
+       android:background="@android:color/transparent"
+       app:srcCompat="@drawable/ic_share" />
+
+   <ImageButton
+       android:id="@+id/delete_button"
+       android:contentDescription="@string/delete_button_alt"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintLeft_toLeftOf="parent"
+       app:layout_constraintRight_toRightOf="parent"
+       android:layout_marginStart="@dimen/margin_xlarge"
+       android:layout_marginBottom="@dimen/margin_small"
+       android:layout_width="@dimen/round_button_small"
+       android:layout_height="@dimen/round_button_small"
+       android:scaleType="fitCenter"
+       android:background="@android:color/transparent"
+       app:srcCompat="@drawable/ic_delete" />
+
+ </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

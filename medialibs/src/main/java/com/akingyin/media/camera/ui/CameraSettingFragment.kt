@@ -19,6 +19,7 @@ import androidx.preference.SwitchPreferenceCompat
 import com.akingyin.base.dialog.MaterialDialogUtil
 import com.akingyin.media.camera.CameraSize
 import com.akingyin.media.R
+import com.akingyin.media.camera.CameraManager
 
 /**
  * @ Description:
@@ -40,8 +41,8 @@ class CameraSettingFragment : PreferenceFragmentCompat() {
         }
         setPreferencesFromResource(R.xml.camera_preferences_fragment, rootKey)
         findPreference<Preference>("camerax_resolution")?.let {
-            val x = preferenceManager.sharedPreferences.getInt(BaseCameraFragment.KEY_CAMERAX_RESOLUTION_X,0)
-            val y  = preferenceManager.sharedPreferences.getInt(BaseCameraFragment.KEY_CAMERAX_RESOLUTION_Y,0)
+            val x = preferenceManager.sharedPreferences.getInt(CameraManager.KEY_CAMERAX_RESOLUTION_X,0)
+            val y  = preferenceManager.sharedPreferences.getInt(CameraManager.KEY_CAMERAX_RESOLUTION_Y,0)
             if(x ==0 || y == 0){
                 it.title = "未知"
             }else{
@@ -53,8 +54,8 @@ class CameraSettingFragment : PreferenceFragmentCompat() {
                         width, hight ->
                         it.title = CameraSize(width,hight).toString()
                         preferenceManager.sharedPreferences.edit().run {
-                            putInt(BaseCameraFragment.KEY_CAMERAX_RESOLUTION_X,width)
-                                    .putInt(BaseCameraFragment.KEY_CAMERAX_RESOLUTION_Y,hight)
+                            putInt(CameraManager.KEY_CAMERAX_RESOLUTION_X,width)
+                                    .putInt(CameraManager.KEY_CAMERAX_RESOLUTION_Y,hight)
                         }.apply()
                     }
                     return@setOnPreferenceClickListener true
@@ -72,8 +73,8 @@ class CameraSettingFragment : PreferenceFragmentCompat() {
             }
         }
         findPreference<Preference>("camera_resolution")?.let {
-            val x = preferenceManager.sharedPreferences.getInt(BaseCameraFragment.KEY_CAMERA_RESOLUTION_X,0)
-            val y  = preferenceManager.sharedPreferences.getInt(BaseCameraFragment.KEY_CAMERA_RESOLUTION_Y,0)
+            val x = preferenceManager.sharedPreferences.getInt(CameraManager.KEY_CAMERA_RESOLUTION_X,0)
+            val y  = preferenceManager.sharedPreferences.getInt(CameraManager.KEY_CAMERA_RESOLUTION_Y,0)
             if(x ==0 || y == 0){
                 it.title = "未知"
             }else{
@@ -85,8 +86,8 @@ class CameraSettingFragment : PreferenceFragmentCompat() {
                         width, hight ->
                         it.title = CameraSize(width,hight).toString()
                         preferenceManager.sharedPreferences.edit().run {
-                            putInt(BaseCameraFragment.KEY_CAMERA_RESOLUTION_X,width)
-                                    .putInt(BaseCameraFragment.KEY_CAMERA_RESOLUTION_Y,hight)
+                            putInt(CameraManager.KEY_CAMERA_RESOLUTION_X,width)
+                                    .putInt(CameraManager.KEY_CAMERA_RESOLUTION_Y,hight)
                         }.apply()
                     }
                     return@setOnPreferenceClickListener true

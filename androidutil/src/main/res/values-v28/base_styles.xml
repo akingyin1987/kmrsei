@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources >
+
+  <style name="Theme.TranslucentNavigationBar" parent="Theme.AppCompat.Light.NoActionBar">
+    <!--Immersive模式是Android提供那些用户需要充分与屏幕交互的app的一种功能。
+    例如玩游戏、在图库中浏览图片，又或者阅读分页内容（电子书或ppt）。
+    在这种模式下系统的状态栏和导航栏会被隐藏，最大化屏幕的使用。
+    而当用户要“召唤”回系统的状态栏或导航栏时，
+    只需要从状态栏或导航栏隐藏的位置边缘向屏幕中心滑动即可。-->
+    <item name="android:immersive">true</item>
+    <item name="android:windowFullscreen">true</item>
+    <item name="android:windowTranslucentStatus">true</item>
+    <item name="android:windowTranslucentNavigation">true</item>
+    <!--适配凹凸屏-->
+    <item name="android:windowLayoutInDisplayCutoutMode" >shortEdges</item>
+  </style>
+
+</resources>

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <style name="Theme.TranslucentNavigationBar" parent="Theme.AppCompat.Light.NoActionBar">
-    <item name="android:windowTranslucentStatus">false</item>
-    <item name="android:windowFullscreen">true</item>
-    <item name="android:windowNoTitle">true</item>
-    <item name="windowActionBar">false</item>
+  <!--<style name="Theme.TranslucentNavigationBar" parent="Theme.AppCompat.Light.NoActionBar">-->
+  <!--  <item name="android:windowTranslucentStatus">false</item>-->
+  <!--  <item name="android:windowFullscreen">true</item>-->
+  <!--  <item name="android:windowNoTitle">true</item>-->
+  <!--  <item name="windowActionBar">false</item>-->
 
-    <item name="android:windowContentOverlay">@null</item>
-    <item name="colorPrimary">@color/primary</item>
-    <item name="colorPrimaryDark">@color/primary_dark</item>
-    <item name="colorAccent">@color/base_colorAccent</item>
-  </style>
+  <!--  <item name="android:windowContentOverlay">@null</item>-->
+  <!--  <item name="colorPrimary">@color/primary</item>-->
+  <!--  <item name="colorPrimaryDark">@color/primary_dark</item>-->
+  <!--  <item name="colorAccent">@color/base_colorAccent</item>-->
+  <!--</style>-->
   <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>

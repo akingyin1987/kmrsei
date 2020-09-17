@@ -31,7 +31,8 @@ class TypeButton @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     private var buttonType = 0
-    private var buttonSize = 0
+    private var buttonSize = 90
+    private var  btnConfigCancelText=""
 
     private var centerX = 0f
     private var centerY = 0f
@@ -45,9 +46,8 @@ class TypeButton @JvmOverloads constructor(
     private var rectF: RectF
 
     init {
-        val manager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val outMetrics = DisplayMetrics()
-        manager.defaultDisplay.getMetrics(outMetrics)
+        context.display?.getRealMetrics(outMetrics)
 
         val layoutWidth = if (this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             outMetrics.widthPixels
@@ -58,6 +58,7 @@ class TypeButton @JvmOverloads constructor(
         buttonType = attrs?.let {
             context.theme.obtainStyledAttributes(it, R.styleable.TypeButton,defStyleAttr,0).use {
                 typed->
+                btnConfigCancelText = typed.getString(R.styleable.TypeButton_btnConfigCancelText)?:""
                 typed.getInteger(R.styleable.TypeButton_btnConfigCancel,TYPE_CANCEL)
             }
 
@@ -71,7 +72,7 @@ class TypeButton @JvmOverloads constructor(
         strokeWidth = buttonSize / 50f
         index = buttonSize / 12f
         rectF = RectF(centerX, centerY - index, centerX + index * 2, centerY + index)
-        println("button_size=${buttonSize}")
+
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -144,10 +145,24 @@ class TypeButton @JvmOverloads constructor(
             }
             println("画确认的按钮")
         }
+        if(buttonType == TYPE_CUSTOM){
+            mPaint.run {
+                isAntiAlias = true
+                color = -0x1
+                style = Paint.Style.FILL
+                canvas.drawCircle(centerX, centerY, buttonRadius, this)
+            }
+            mPaint.run {
+                color = Color.RED
+                style = Paint.Style.STROKE
+                canvas.drawText(btnConfigCancelText,centerX,centerY,this)
+            }
+        }
     }
 
     companion object{
        const val TYPE_CANCEL = 2
        const val TYPE_CONFIRM = 1
+        const val TYPE_CUSTOM=3
     }
 }

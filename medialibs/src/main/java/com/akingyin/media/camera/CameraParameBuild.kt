@@ -59,6 +59,9 @@ class CameraParameBuild() : Parcelable {
     /** 音量键控制 0= 无 1=拍照 2=预览缩放 */
     var  volumeKeyControl = 0
 
+    /** 是否支持拍多张照片 */
+    var  supportMultiplePhoto = false
+
     /**
      * 设置相机分辨率
      */
@@ -100,13 +103,14 @@ class CameraParameBuild() : Parcelable {
         supportAutoSavePhoto = parcel.readByte() != 0.toByte()
         autoSavePhotoDelayTime = parcel.readInt()
         volumeKeyControl = parcel.readInt()
+        supportMultiplePhoto = parcel.readByte() != 0.toByte()
         cameraResolution = parcel.readParcelable(Point::class.java.classLoader)
         localPath = parcel.readString()?:""
         horizontalPicture = parcel.readByte() != 0.toByte()
         cameraAngle = parcel.readInt()
         lat = parcel.readDouble()
         lng = parcel.readDouble()
-        locType = parcel.readString()?:LocalType.CORR_TYPE_BD09
+        locType = parcel.readString()?:""
     }
 
     class Builder {
@@ -156,6 +160,7 @@ class CameraParameBuild() : Parcelable {
         parcel.writeByte(if (supportAutoSavePhoto) 1 else 0)
         parcel.writeInt(autoSavePhotoDelayTime)
         parcel.writeInt(volumeKeyControl)
+        parcel.writeByte(if (supportMultiplePhoto) 1 else 0)
         parcel.writeParcelable(cameraResolution, flags)
         parcel.writeString(localPath)
         parcel.writeByte(if (horizontalPicture) 1 else 0)

@@ -28,30 +28,36 @@ class CameraData() : Parcelable {
 
     var  originalPath = ""
 
+    var  supportMultiplePhoto = false
+
+    /** 多张照片 */
+    var  cameraPhotoDatas = mutableMapOf<String,String>()
+
     var   result = true
 
     constructor(parcel: Parcel) : this() {
         mediaType = parcel.readInt()
-        localPath = parcel.readString().toString()
-        originalPath = parcel.readString().toString()
+        localPath = parcel.readString()?:""
+        originalPath = parcel.readString()?:""
+        supportMultiplePhoto = parcel.readByte() != 0.toByte()
         result = parcel.readByte() != 0.toByte()
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(mediaType)
-        parcel.writeString(localPath)
-        parcel.writeString(originalPath)
-        parcel.writeByte(if (result) 1 else 0)
-    }
-
-    override fun describeContents(): Int {
-        return 0
     }
 
     override fun toString(): String {
         return "CameraData(mediaType=$mediaType, localPath='$localPath', originalPath='$originalPath', result=$result)"
     }
 
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(mediaType)
+        parcel.writeString(localPath)
+        parcel.writeString(originalPath)
+        parcel.writeByte(if (supportMultiplePhoto) 1 else 0)
+        parcel.writeByte(if (result) 1 else 0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
 
     companion object CREATOR : Parcelable.Creator<CameraData> {
         override fun createFromParcel(parcel: Parcel): CameraData {
@@ -62,5 +68,6 @@ class CameraData() : Parcelable {
             return arrayOfNulls(size)
         }
     }
+
 
 }

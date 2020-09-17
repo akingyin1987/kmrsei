@@ -39,6 +39,10 @@ import com.akingyin.media.camera.*
 import com.akingyin.media.camera.widget.CaptureButton
 import com.akingyin.media.MediaConfig
 import com.akingyin.media.R
+import com.akingyin.media.camera.CameraManager.Companion.KEYDOWN_VOLUME_KEY_ACTION
+import com.akingyin.media.camera.CameraManager.Companion.KEY_CAMERA_FLASH
+import com.akingyin.media.camera.CameraManager.Companion.KEY_CAMERA_GRID
+import com.akingyin.media.camera.CameraManager.Companion.KEY_CAMERA_SHUTTER_SOUND
 import com.akingyin.media.databinding.FragmentCameraBinding
 import com.akingyin.media.engine.LocationEngine
 import com.akingyin.media.engine.LocationManagerEngine
@@ -184,28 +188,11 @@ open class BaseCameraFragment : SimpleFragment() {
     }
 
     open    fun   initCameraParame(cameraParame: CameraParameBuild = cameraParameBuild, changeCameraParme:Boolean = false){
-        cameraParame.apply {
-            this.flashModel = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_FLASH, "0").toInt()
-            this.shutterSound = if(PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_SHUTTER_SOUND,true)) CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON else CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_OFF
-            this.horizontalPicture = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_PHTOT_HORIZONTAL,false)
-            this.netGrid = if(PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_GRID,false)) CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN else CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE
-            this.cameraResolution = Point().apply {
-                x = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_RESOLUTION_X,0)
-                y = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_RESOLUTION_Y,0)
+        CameraManager.readCameraParame(cameraParame,sharedPreferencesName)
+        cameraParame.cameraResolution?.let {
+            if(it.x>0 && it.y>0){
+                cameraManager.cameraCustomResolution = Point(it.x,it.y)
             }
-            cameraResolution?.let {
-                if(it.x>0 && it.y>0){
-                    cameraManager.cameraCustomResolution = Point(it.x,it.y)
-                }
-            }
-            this.supportMoveFocus = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_MOVE_AUTO_FOCUS,false)
-            this.autoSavePhotoDelayTime = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_AUTO_SAVE_DELAYTIME,"0").toInt()
-            this.focesedAutoPhotoDelayTime = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_AUTO_TAKEPHOTO_DELAYTIME,"0").toInt()
-            this.supportAutoSavePhoto = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_AUTOSAVE_TAKEPHOTO,false)
-            this.supportFocesedAutoPhoto = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_FOCUS_TAKEPHOTO,false)
-            this.supportManualFocus = PreferencesUtil.get(sharedPreferencesName,KEY_CAMERA_MANUAL_AUTO_FOCUS,false)
-            this.supportLocation = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_LOCATION,false)
-            this.volumeKeyControl = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_VOLUME_KEY_CONTROL,"0").toInt()
         }
         println("相机参数：$cameraParame")
         netGrid = cameraParame.netGrid
@@ -545,40 +532,7 @@ open class BaseCameraFragment : SimpleFragment() {
     companion object {
          const val REQUEST_CODE_PERMISSIONS = 10
 
-        const val KEY_CAMERA_FLASH = "key_camera_flash"
-        const val KEY_CAMERA_GRID = "key_camera_netgrid"
-        const val KEY_CAMERA_SHUTTER_SOUND = "key_camera_shutter_sound"
 
-        /** camera 相机分辨率 */
-        const val KEY_CAMERA_RESOLUTION_X = "camera_resolution_x"
-        const val KEY_CAMERA_RESOLUTION_Y = "camera_resolution_y"
-        const val KEY_CAMERA_PHTOT_HORIZONTAL = "key_camera_phtot_horizontal"
-
-        const val KEY_CAMERA_LOCATION = "key_camera_location"
-
-        /** 运动自动对焦 */
-        const val KEY_CAMERA_MOVE_AUTO_FOCUS ="key_camera_move_auto_focus"
-
-        /** 对焦模式 fase = 自动  true=手动 */
-        const val KEY_CAMERA_MANUAL_AUTO_FOCUS = "key_camera_manual_auto_focus"
-
-        const val KEY_CAMERA_FOCUS_TAKEPHOTO = "key_camera_focus_takephoto"
-
-        const val KEY_CAMERA_AUTO_TAKEPHOTO_DELAYTIME = "key_camera_auto_takephoto_delaytime"
-
-        const val KEY_CAMERA_AUTOSAVE_TAKEPHOTO = "key_camera_autosave_takephoto"
-
-        const val KEY_CAMERA_AUTO_SAVE_DELAYTIME = "key_camera_auto_save_delaytime"
-
-        /** 音量键控制 */
-        const val KEY_CAMERA_VOLUME_KEY_CONTROL ="key_camera_volume_key_control"
-
-
-        const val KEYDOWN_VOLUME_KEY_ACTION="android.keydown.volume"
-
-        /** camerax 相机分辨率 */
-        const val KEY_CAMERAX_RESOLUTION_X = "camerax_resolution_x"
-        const val KEY_CAMERAX_RESOLUTION_Y = "camerax_resolution_y"
         fun newInstance(cameraParameBuild: CameraParameBuild, sharedPreferencesName: String = "app_setting",locationManagerEngine: LocationManagerEngine?=null): BaseCameraFragment {
             return BaseCameraFragment().apply {
                 arguments = Bundle().apply {

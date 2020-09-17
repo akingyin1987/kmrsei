@@ -9,13 +9,15 @@
 
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_camerax_graph"
     app:startDestination="@id/permissions_fragment">
 
   <fragment
       android:id="@+id/permissions_fragment"
       android:name="com.akingyin.media.camerax.ui.PermissionsCameraFragment"
-      android:label="PermissionsFragment">
+      android:label="PermissionsFragment"
+      >
     <action
         android:id="@+id/action_permissions_to_camera"
         app:destination="@id/camerax_fragment"
@@ -26,7 +28,8 @@
   <fragment
       android:id="@+id/camerax_fragment"
       android:name="com.akingyin.media.camerax.ui.CameraxFragment"
-      android:label="CameraFragment">
+      android:label="拍照"
+      tools:layout="@layout/fragment_camerax">
     <action
         android:id="@+id/action_camera_to_permissions"
         app:destination="@id/permissions_fragment"
@@ -35,9 +38,11 @@
 
     <action
         android:id="@+id/action_camera_to_photo"
-        app:popUpTo="@id/camerax_fragment"
-        app:popUpToInclusive="true"
-        app:destination="@id/camerax_photo" />
+
+        app:destination="@id/config_photo_fragment" />
+
+    <action android:id="@+id/action_camera_to_gallery"
+            app:destination="@id/gallery_fragment"/>
     <argument
         android:name="fileDir"
         app:argType="string"
@@ -48,13 +53,29 @@
         app:nullable="false" />
   </fragment>
 
-  <fragment
-      android:id="@+id/camerax_photo"
-      android:name="com.akingyin.media.camerax.ui.PhotoFragment"
-      android:label="PhotoFragment">
-    <argument
-        android:name="filePath"
+
+
+  <fragment android:id="@+id/config_photo_fragment"
+           android:name="com.akingyin.media.camerax.ui.CameraxConfigPhotoFragment"
+            tools:layout="@layout/fragment_config_photo"
+           android:label="拍照图片确认">
+    <argument android:name="filePath"
+              app:argType="string"
+              app:nullable="false"/>
+    <argument android:name="sharedPreferencesName"
         app:argType="string"
-        app:nullable="false" />
+        app:nullable="false"/>
+
   </fragment>
+
+  <fragment android:id="@+id/gallery_fragment"
+            android:name="com.akingyin.media.camerax.ui.GalleryFragment"
+            tools:layout="@layout/fragment_gallery"
+            android:label="拍照图片浏览">
+
+    <argument android:name="filePaths"
+        app:argType="string"
+        app:nullable="false"/>
+  </fragment>
+
 </navigation>

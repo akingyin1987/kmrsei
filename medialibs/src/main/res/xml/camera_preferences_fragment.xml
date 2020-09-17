@@ -126,7 +126,14 @@
         app:allowDividerAbove="true"
         app:allowDividerBelow="true" />
   </PreferenceCategory>
-
+  <SwitchPreferenceCompat
+      android:defaultValue="false"
+      android:icon="@drawable/icon_many_imgs"
+      android:key="key_support_multiple_photo"
+      app:allowDividerAbove="true"
+      app:allowDividerBelow="true"
+      android:summary="允许相机一次拍多张照片"
+      android:title="拍多张照片" />
   <ListPreference
       android:entries="@array/camera_volume_key_control"
       android:entryValues="@array/camera_flash_value"

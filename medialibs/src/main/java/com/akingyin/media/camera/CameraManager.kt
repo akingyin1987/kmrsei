@@ -30,6 +30,8 @@ import com.akingyin.base.ext.*
 import com.akingyin.base.rx.RxUtil
 import com.akingyin.base.utils.CalculationUtil
 import com.akingyin.base.utils.FileUtils
+import com.akingyin.base.utils.PreferencesUtil
+import com.akingyin.media.camera.ui.BaseCameraFragment
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
@@ -258,7 +260,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
      * 这是自动对焦
      */
      fun autoStartFuoce(callBack: (result: Boolean, error: String?) -> Unit) {
-        println("autoStartFuoce=$focusing,$previewing")
+
         if (focusing || previewing) {
             return
         }
@@ -690,6 +692,45 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
 
         const val SCALE_1_1 = 1.0
 
+
+
+        const val KEY_CAMERA_FLASH = "key_camera_flash"
+        const val KEY_CAMERA_GRID = "key_camera_netgrid"
+        const val KEY_CAMERA_SHUTTER_SOUND = "key_camera_shutter_sound"
+
+        /** camera 相机分辨率 */
+        const val KEY_CAMERA_RESOLUTION_X = "camera_resolution_x"
+        const val KEY_CAMERA_RESOLUTION_Y = "camera_resolution_y"
+        const val KEY_CAMERA_PHTOT_HORIZONTAL = "key_camera_phtot_horizontal"
+
+        const val KEY_CAMERA_LOCATION = "key_camera_location"
+
+        /** 运动自动对焦 */
+        const val KEY_CAMERA_MOVE_AUTO_FOCUS ="key_camera_move_auto_focus"
+
+        /** 对焦模式 fase = 自动  true=手动 */
+        const val KEY_CAMERA_MANUAL_AUTO_FOCUS = "key_camera_manual_auto_focus"
+
+        const val KEY_CAMERA_FOCUS_TAKEPHOTO = "key_camera_focus_takephoto"
+
+        const val KEY_CAMERA_AUTO_TAKEPHOTO_DELAYTIME = "key_camera_auto_takephoto_delaytime"
+
+        const val KEY_CAMERA_AUTOSAVE_TAKEPHOTO = "key_camera_autosave_takephoto"
+
+        const val KEY_CAMERA_AUTO_SAVE_DELAYTIME = "key_camera_auto_save_delaytime"
+
+        /** 音量键控制 */
+        const val KEY_CAMERA_VOLUME_KEY_CONTROL ="key_camera_volume_key_control"
+
+
+        const val KEYDOWN_VOLUME_KEY_ACTION="android.keydown.volume"
+
+        /** camerax 相机分辨率 */
+        const val KEY_CAMERAX_RESOLUTION_X = "camerax_resolution_x"
+        const val KEY_CAMERAX_RESOLUTION_Y = "camerax_resolution_y"
+        /** 支持拍多张照片 */
+        const val KEY_SUPPORT_MULTIPLE_PHOTO ="key_support_multiple_photo"
+
         /**
          * 点击开始拍照动画
          */
@@ -742,6 +783,28 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
         }
 
 
+        fun   readCameraParame(cameraParame: CameraParameBuild ,sharedPreferencesName:String){
+            cameraParame.apply {
+                this.flashModel = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_FLASH, "0").toInt()
+                this.shutterSound = if(PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_SHUTTER_SOUND,true)) CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON else CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_OFF
+                this.horizontalPicture = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_PHTOT_HORIZONTAL,false)
+                this.netGrid = if(PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_GRID,false)) CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN else CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE
+                this.cameraResolution = Point().apply {
+                    x = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_RESOLUTION_X,0)
+                    y = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_RESOLUTION_Y,0)
+                }
+
+                this.supportMoveFocus = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_MOVE_AUTO_FOCUS,false)
+                this.autoSavePhotoDelayTime = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_AUTO_SAVE_DELAYTIME,"0").toInt()
+                this.focesedAutoPhotoDelayTime = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_AUTO_TAKEPHOTO_DELAYTIME,"0").toInt()
+                this.supportAutoSavePhoto = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_AUTOSAVE_TAKEPHOTO,false)
+                this.supportFocesedAutoPhoto = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_FOCUS_TAKEPHOTO,false)
+                this.supportManualFocus = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_MANUAL_AUTO_FOCUS,false)
+                this.supportLocation = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_LOCATION,false)
+                this.volumeKeyControl = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_VOLUME_KEY_CONTROL,"0").toInt()
+                this.supportMultiplePhoto = PreferencesUtil.get(sharedPreferencesName,KEY_SUPPORT_MULTIPLE_PHOTO,false)
+            }
+        }
 
 
         /**

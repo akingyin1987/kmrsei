@@ -10,7 +10,10 @@
 package com.akingyin.media.camerax
 
 import android.annotation.SuppressLint
+
 import android.content.Context
+import android.content.Intent
+
 import android.media.MediaActionSound
 import android.media.MediaScannerConnection
 import android.net.Uri
@@ -23,10 +26,15 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.lifecycle.LifecycleOwner
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.akingyin.base.ext.no
 import com.akingyin.base.ext.yes
+import com.akingyin.media.camera.CameraAutoFouceSensorController
+import com.akingyin.media.camera.CameraData
 import com.akingyin.media.camera.CameraManager
 import com.akingyin.media.camera.CameraParameBuild
+import com.akingyin.media.camerax.callback.MotionFocusCall
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.File
 import java.nio.ByteBuffer
@@ -49,12 +57,26 @@ typealias LumaListener = (luma: Double) -> Unit
  */
 class CameraxManager (var context: Context,var previewView: PreviewView){
 
-    private val TAG = "camera-manager"
+    private val TAG = "camerax-manager"
+    /** 拍照时相机旋转角度 */
+    var cameraAngle = 90
 
+    /** UI 显示旋转角度 */
+    var cameraUiAngle = 0
+    /** 是否在预览中 */
+     private var previewing = false
 
+    var motionFocusCall:MotionFocusCall?= null
 
      var cameraParameBuild: CameraParameBuild= CameraParameBuild()
-
+    /** 运动对焦监听器 */
+     private var cameraAutoFouceSensorController: CameraAutoFouceSensorController = CameraAutoFouceSensorController(context){
+          if(!previewing){
+              autoStartFuoce{  result,error->
+                  motionFocusCall?.focusCall(result,error)
+              }
+          }
+    }
     /** Blocking camera operations are performed using this executor */
     private  var cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     private  var cameraMainExecutor: Executor = ContextCompat.getMainExecutor(context)
@@ -74,7 +96,7 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
         cameraProviderFuture.addListener({
             cameraProvider = cameraProviderFuture.get()
-            callBack()
+
 
             // Get screen metrics used to setup camera for full screen resolution
             val metrics = DisplayMetrics().also { previewView.display.getRealMetrics(it) }
@@ -142,6 +164,7 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
                 // Attach the viewfinder's surface provider to preview use case
 
                 preview?.setSurfaceProvider(previewView.createSurfaceProvider())
+                callBack()
             } catch (exc: Exception) {
                exc.printStackTrace()
             }
@@ -157,6 +180,37 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
         preview?.targetRotation = view.display.rotation
         imageCapture?.targetRotation = view.display.rotation
         imageAnalyzer?.targetRotation = view.display.rotation
+    }
+
+    /**
+     * 配制相机的个性化参数
+     */
+    fun  setCameraParame(cameraParameBuild: CameraParameBuild){
+        this.cameraParameBuild = cameraParameBuild
+
+    }
+
+    /**
+     * 开始预览
+     */
+    fun   startCameraPreview(){
+        previewing = true
+        cameraParameBuild.let {
+            //设置运动对焦
+            if(it.supportMoveFocus){
+                cameraAutoFouceSensorController.onRegisterSensor()
+            }else{
+                cameraAutoFouceSensorController.unRegisterSensor()
+            }
+            setCameraFlashMode(it.flashModel)
+
+        }
+    }
+
+    fun  stopCameraPreview(){
+        previewing = false
+        cameraAutoFouceSensorController.unRegisterSensor()
+        camera?.cameraControl?.cancelFocusAndMetering()
     }
 
     /**
@@ -233,9 +287,9 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
 
     }
 
-    fun  getCameraMaxZoom()=camera?.cameraInfo?.zoomState?.value?.maxZoomRatio?:0F
+    fun  getCameraMaxZoom()=camera?.cameraInfo?.zoomState?.value?.maxZoomRatio?:100F
 
-    fun  getCameraMinZoom() = camera?.cameraInfo?.zoomState?.value?.maxZoomRatio?:0F
+    fun  getCameraMinZoom() = camera?.cameraInfo?.zoomState?.value?.minZoomRatio?:0F
 
     fun  getZoomRatio() = camera?.cameraInfo?.zoomState?.value?.zoomRatio?:0F
 
@@ -249,23 +303,62 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
      * 设置对焦
      */
     fun  setCameraFocus(x:Float, y:Float,callBack: (result : Boolean) -> Unit){
+        if(focusing){
+            callBack(false)
+            return
+        }
+        focusing = true
         val point = previewView.meteringPointFactory.createPoint(x,y)
         val action = FocusMeteringAction.Builder(point,FocusMeteringAction.FLAG_AF)
                 .setAutoCancelDuration(3,TimeUnit.SECONDS).build()
        camera?.cameraControl?.startFocusAndMetering(action)?.let {   future ->
          future.addListener({
             future.get().isFocusSuccessful.yes {
+
               cameraMainExecutor.execute {
+                  focusing = false
                   callBack.invoke(true)
               }
             }.no {
                 cameraMainExecutor.execute {
+                    focusing = false
                     callBack.invoke(false)
                 }
             }
          },cameraExecutor)
 
-       }?:callBack(false)
+       }?:callBack(false).apply {
+           focusing = false
+       }
+
+    }
+
+
+    private  var  focusing = false
+
+    /**
+     * 这是自动对焦
+     */
+    fun autoStartFuoce(callBack: (result: Boolean, error: String?) -> Unit) {
+        if(focusing){
+            callBack(false,"正在对焦中")
+            return
+        }
+        try {
+            GlobalScope.launch(Dispatchers.Main) {
+                delay(1000)
+                withContext(Dispatchers.IO) {
+                    setCameraFocus(previewView.width/2.toFloat(),previewView.height/2.toFloat()){
+                        callBack(it,"")
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            focusing = false
+
+            callBack(false, e.message)
+        }
 
     }
 
@@ -370,8 +463,43 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
         return AspectRatio.RATIO_16_9
     }
 
+
     companion object{
         private const val RATIO_4_3_VALUE = 4.0 / 3.0
         private const val RATIO_16_9_VALUE = 16.0 / 9.0
+        /** 新增照片*/
+        const val KEY_CAMERA_PHOTO_ADD_ACTION="android.camera.photo.add.action"
+        /**删除照片 */
+        const val KEY_CAMERA_PHOTO_DELECT_ACTION="android.camera.photo.delect.action"
+        /**拍照完成 */
+        const val KEY_CAMERA_PHOTO_COMPLETE_ACTION="android.camera.photo.complete.action"
+        /** 拍照取消 */
+        const val KEY_CAMERA_PHOTO_CANCEL_ACTION="android.camera.photo.cancel.action"
+
+        fun  sendAddTakePhoto(filePath:String,context: Context){
+            LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(KEY_CAMERA_PHOTO_ADD_ACTION).apply {
+                putExtra("filePath",filePath)
+            })
+        }
+        fun  sendDelectTakePhoto(filePath:String,context: Context){
+            LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(KEY_CAMERA_PHOTO_DELECT_ACTION).apply {
+                putExtra("filePath",filePath)
+            })
+        }
+
+        fun  sendTakePhotoComplete(cameraData: CameraData,context: Context){
+            LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(KEY_CAMERA_PHOTO_COMPLETE_ACTION).apply {
+               if(cameraData.supportMultiplePhoto){
+                   putExtra("filePaths",cameraData.cameraPhotoDatas.keys.toTypedArray())
+               }else{
+                   putExtra("filePath",cameraData.localPath)
+               }
+                putExtra("cameraData",cameraData)
+            })
+        }
+
+        fun  sendTakePhtotCancel(context: Context){
+            LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(KEY_CAMERA_PHOTO_CANCEL_ACTION))
+        }
     }
 }

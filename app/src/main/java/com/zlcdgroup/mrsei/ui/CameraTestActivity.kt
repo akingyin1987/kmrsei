@@ -24,6 +24,7 @@ import com.akingyin.bmap.BDLocationService
 import com.akingyin.bmap.BDMapManager
 import com.akingyin.bmap.PanoramaBaiduMapActivity
 import com.akingyin.bmap.SelectLocationBaiduActivity
+import com.akingyin.media.camera.CameraManager
 import com.akingyin.media.camera.CameraParameBuild
 import com.akingyin.media.camera.ui.BaseCameraFragment
 import com.akingyin.media.doodle.DoodleActivity
@@ -150,7 +151,7 @@ class CameraTestActivity : SimpleActivity() {
                 keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
                 keyCode == KeyEvent.KEYCODE_CAMERA) {
             LocalBroadcastManager.getInstance(this).sendBroadcast(Intent().apply {
-                action = BaseCameraFragment.KEYDOWN_VOLUME_KEY_ACTION
+                action = CameraManager.KEYDOWN_VOLUME_KEY_ACTION
                 putExtra("keyCode", keyCode)
 
             })

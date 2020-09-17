@@ -15,16 +15,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-import androidx.core.app.NavUtils
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavArgument
-import androidx.navigation.Navigation
+
 import androidx.navigation.fragment.NavHostFragment
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.config.AppFileConfig
 import com.akingyin.base.utils.StringUtils
 import com.akingyin.media.R
-import com.akingyin.media.camera.ui.BaseCameraFragment
+import com.akingyin.media.camera.CameraManager
 import com.akingyin.media.databinding.ActivityCameraxNavBinding
 
 private const val IMMERSIVE_FLAG_TIMEOUT = 500L
@@ -101,7 +101,7 @@ class CameraxActivity : SimpleActivity() {
                 keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
                 keyCode == KeyEvent.KEYCODE_CAMERA) {
             LocalBroadcastManager.getInstance(this).sendBroadcast(Intent().apply {
-                action = BaseCameraFragment.KEYDOWN_VOLUME_KEY_ACTION
+                action = CameraManager.KEYDOWN_VOLUME_KEY_ACTION
                 putExtra("keyCode", keyCode)
 
             })
