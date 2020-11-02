@@ -81,14 +81,7 @@ dependencies {
   //     AndroidX libraries use this lightweight import for Lifecycle
 
   api "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-
-
   api "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
-  //kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
-  // use kapt for Kotlin
-  // alternately - if using Java8, use the following instead of lifecycle-compiler
-  // optional - ReactiveStreams support for LiveData
-  // use -ktx for Kotlin
   api "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle_version" // use -ktx for Kotlin
   api "androidx.appcompat:appcompat:$appCompatVersion"
   api "androidx.cardview:cardview:$cardVersion"
@@ -127,28 +120,12 @@ dependencies {
   api "android.arch.work:work-runtime:$work_version"
 
 
-  def room_version = "2.2.5"
-  api "androidx.room:room-runtime:$room_version"
-  kapt "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
 
-  // optional - Kotlin Extensions and Coroutines support for Room
-  api "androidx.room:room-ktx:$room_version"
-
-  // optional - RxJava support for Room
-  api "androidx.room:room-rxjava2:$room_version"
-
-  // optional - Guava support for Room, including Optional and ListenableFuture
-  api "androidx.room:room-guava:$room_version"
-
-  // Test helpers
-  testImplementation "androidx.room:room-testing:$room_version"
   testImplementation 'junit:junit:4.13'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
- // api rootProject.ext.rxJavaLibs
- // api rootProject.ext.supportLibs
+
   api rootProject.ext.networkLibs
 
- // api 'com.bilibili:magicasakura:0.1.8@aar'
   api 'com.classic.common:multiple-status-view:1.7'
 
   def  dagger2_version="2.28.3"
@@ -160,7 +137,7 @@ dependencies {
   api "com.jakewharton.timber:timber:4.7.1"
 
 
-  //api 'com.github.tbruyelle:rxpermissions:0.10.2'
+
   api "org.permissionsdispatcher:permissionsdispatcher-ktx:1.0.0"
   api "org.permissionsdispatcher:permissionsdispatcher:4.8.0"
   kapt "org.permissionsdispatcher:permissionsdispatcher-processor:4.8.0"
