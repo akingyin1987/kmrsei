@@ -28,12 +28,12 @@ import androidx.core.net.toFile
 import androidx.lifecycle.LifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.akingyin.base.ext.no
+import com.akingyin.base.ext.withIO
 import com.akingyin.base.ext.yes
-import com.akingyin.media.camera.CameraAutoFouceSensorController
-import com.akingyin.media.camera.CameraData
-import com.akingyin.media.camera.CameraManager
-import com.akingyin.media.camera.CameraParameBuild
+import com.akingyin.base.utils.FileUtils
+import com.akingyin.media.camera.*
 import com.akingyin.media.camerax.callback.MotionFocusCall
+import id.zelory.compressor.Compressor
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.File
@@ -239,6 +239,9 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
                 // If the folder selected is an external media directory, this is
                 // unnecessary but otherwise other apps will not be able to access our
                 // images unless we scan them using [MediaScannerConnection]
+
+
+                CameraBitmapUtil.zipImageTo960x540(CameraBitmapUtil.decodeSampledBitmapFromFile(savedUri.toFile(),CameraBitmapUtil.NormWidth,CameraBitmapUtil.NormHigth),cameraParameBuild.cameraAngle,landscape = cameraParameBuild.horizontalPicture,fileDir = FileUtils.getFolderName(cameraParameBuild.localPath),fileName = FileUtils.getFileName(cameraParameBuild.localPath))
                 val mimeType = MimeTypeMap.getSingleton()
                         .getMimeTypeFromExtension(savedUri.toFile().extension)
                 MediaScannerConnection.scanFile(
@@ -476,9 +479,12 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
         /** 拍照取消 */
         const val KEY_CAMERA_PHOTO_CANCEL_ACTION="android.camera.photo.cancel.action"
 
-        fun  sendAddTakePhoto(filePath:String,context: Context){
+
+
+        fun  sendAddTakePhoto(filePath:String,context: Context,complete: Boolean = true){
             LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(KEY_CAMERA_PHOTO_ADD_ACTION).apply {
                 putExtra("filePath",filePath)
+                putExtra("complete",complete)
             })
         }
         fun  sendDelectTakePhoto(filePath:String,context: Context){

@@ -34,8 +34,8 @@ import java.util.*
  */
 object CameraBitmapUtil {
 
-    private const val NormWidth = 540
-    private const val NormHigth = 960
+     const val NormWidth = 540
+     const val NormHigth = 960
 
     // 最大偏移量
     private const val MaxpOffset = 40
@@ -80,7 +80,9 @@ object CameraBitmapUtil {
             return dataToBaseBitmap(data,dir,fileName,rotat)
         }
     }
-    fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+
+
+   private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
         // 原图片的宽高
         val height = options.outHeight
         val width = options.outWidth
@@ -145,6 +147,18 @@ object CameraBitmapUtil {
             }
         }
         return imgSrc
+    }
+
+    fun decodeSampledBitmapFromFile(imageFile: File, reqWidth: Int, reqHeight: Int): Bitmap {
+        return BitmapFactory.Options().run {
+            inJustDecodeBounds = true
+            BitmapFactory.decodeFile(imageFile.absolutePath, this)
+
+            inSampleSize = calculateInSampleSize(this, reqWidth, reqHeight)
+
+            inJustDecodeBounds = false
+            BitmapFactory.decodeFile(imageFile.absolutePath, this)
+        }
     }
 
 

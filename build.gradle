@@ -4,7 +4,7 @@ apply from: "config.gradle"
 //在项目的根目录下执行以下命令  ./gradlew dependencyUpdates 检查依赖库的版本更新
 apply from: './checkVersions.gradle'
 buildscript {
-  ext.kotlin_version = '1.4.0'
+  ext.kotlin_version = '1.4.10'
   repositories {
     maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
     google()
@@ -15,11 +15,11 @@ buildscript {
   dependencies {
     classpath "com.alibaba:arouter-register:1.0.2"
     classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:1.0.3'
-    classpath 'com.android.tools.build:gradle:4.0.1'
+    classpath 'com.android.tools.build:gradle:4.1.0'
     //获取最新的插件版本  命令 dependencyUpdates
     classpath "com.github.ben-manes:gradle-versions-plugin:0.29.0"
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.2.2"
+    classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.1"
     classpath 'org.greenrobot:greendao-gradle-plugin:3.3.0' // add plugin
     // NOTE: Do not place your application dependencies here; they belong
     // in the individual module build.gradle files

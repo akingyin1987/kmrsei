@@ -8,7 +8,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.list.listItemsMultiChoice
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
-import com.afollestad.materialdialogs.message.DialogMessageSettings
 
 /**
  * @ Description:
@@ -56,16 +55,18 @@ object MaterialDialogUtil {
     /**
      * 确认对话框
      */
-    fun  showConfigDialog(context:Context,title:String="提示",message:String,positive:String="确定",negative:String="取消",callback:(Boolean)->Unit){
-        MaterialDialog(context).title(text = title).message(text = message)
-                .apply {
-                    positiveButton(text = positive)
-                    negativeButton(text = negative)
-                }.positiveButton {
-                    callback.invoke(true)
-                }.negativeButton {
-                    callback.invoke(false)
-                }.show()
+    fun  showConfigDialog(context:Context,title:String="提示",message:String,positive:String="确定",negative:String="取消",callback:(Boolean)->Unit):MaterialDialog{
+       return MaterialDialog(context).title(text = title).message(text = message).show {
+           positiveButton(text = positive)
+
+           negativeButton(text = negative)
+
+       }.positiveButton {
+           callback.invoke(true)
+       }.negativeButton {
+           callback.invoke(false)
+       }
+
     }
 
     /**

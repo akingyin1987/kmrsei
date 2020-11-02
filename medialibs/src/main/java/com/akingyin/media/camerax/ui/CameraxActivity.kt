@@ -11,7 +11,11 @@
 
 package com.akingyin.media.camerax.ui
 
+import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -24,7 +28,9 @@ import com.akingyin.base.SimpleActivity
 import com.akingyin.base.config.AppFileConfig
 import com.akingyin.base.utils.StringUtils
 import com.akingyin.media.R
+import com.akingyin.media.camera.CameraData
 import com.akingyin.media.camera.CameraManager
+import com.akingyin.media.camerax.CameraxManager
 import com.akingyin.media.databinding.ActivityCameraxNavBinding
 
 private const val IMMERSIVE_FLAG_TIMEOUT = 500L
@@ -43,9 +49,44 @@ const val FLAGS_FULLSCREEN =
  */
 
 class CameraxActivity : SimpleActivity() {
+
+
+
+    private  var  cameraInfoBroadcastReceiver : BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let {
+                when(it.action){
+
+                    CameraxManager.KEY_CAMERA_PHOTO_COMPLETE_ACTION->{
+                           setResult(Activity.RESULT_OK,Intent().apply {
+                               putExtra("cameraData",it.getParcelableExtra<CameraData>("cameraData"))
+                               finish()
+                           })
+                    }
+                    CameraxManager.KEY_CAMERA_PHOTO_CANCEL_ACTION->{
+                       setResult(Activity.RESULT_CANCELED)
+                        finish()
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
     lateinit var  cameraxNavBinding: ActivityCameraxNavBinding
+
+
     override fun initInjection() {
 
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        LocalBroadcastManager.getInstance(this).registerReceiver(cameraInfoBroadcastReceiver, IntentFilter().apply {
+            addAction(CameraxManager.KEY_CAMERA_PHOTO_COMPLETE_ACTION)
+            addAction(CameraxManager.KEY_CAMERA_PHOTO_CANCEL_ACTION)
+            addAction(CameraxManager.KEY_CAMERA_PHOTO_ADD_ACTION)
+        })
+        setResult(Activity.RESULT_CANCELED)
     }
 
     override fun getLayoutId() = R.layout.activity_camerax_nav
@@ -108,5 +149,10 @@ class CameraxActivity : SimpleActivity() {
             return true
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(cameraInfoBroadcastReceiver)
     }
 }

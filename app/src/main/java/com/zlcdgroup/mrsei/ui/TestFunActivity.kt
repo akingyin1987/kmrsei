@@ -121,6 +121,7 @@ class TestFunActivity : SimpleActivity() {
                             add(FunModel("camera 测试",Intent(this@TestFunActivity,CameraTestActivity::class.java)))
                             add(FunModel("Ble测试",Intent(this@TestFunActivity,SearchDeviceListActivity::class.java)))
                             add(FunModel("camerax 测试", Intent(this@TestFunActivity,CameraxActivity::class.java)))
+                            add(FunModel("录音测试",Intent(this@TestFunActivity,TestRecordAudioActivity::class.java)))
                         }
                     }
             )

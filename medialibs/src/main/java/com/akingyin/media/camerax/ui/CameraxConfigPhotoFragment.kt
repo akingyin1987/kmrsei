@@ -9,24 +9,32 @@
 
 package com.akingyin.media.camerax.ui
 
+
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.akingyin.base.SimpleFragment
-import com.akingyin.base.ext.gone
-import com.akingyin.base.ext.visiable
+import com.akingyin.base.dialog.MaterialDialogUtil
+import com.akingyin.base.ext.*
 import com.akingyin.media.R
+import com.akingyin.media.camera.CameraBitmapUtil
 import com.akingyin.media.camera.CameraData
 import com.akingyin.media.camera.CameraManager
 import com.akingyin.media.camera.CameraParameBuild
 import com.akingyin.media.camerax.CameraxManager
 import com.akingyin.media.databinding.FragmentConfigPhotoBinding
+import com.akingyin.media.glide.GlideEngine
+import com.akingyin.media.ui.fragment.MedialFileInfoFragmentDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 
 /**
  * 拍照后确认
@@ -35,16 +43,18 @@ import kotlinx.coroutines.launch
  * @ Date 2020/9/17 11:13
  * @version V1.0
  */
+
 class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
 
     lateinit var  bindView:FragmentConfigPhotoBinding
-
+    private val args: CameraxConfigPhotoFragmentArgs by navArgs()
 
     override fun injection() {
 
     }
 
     override fun useViewBind() = true
+    override fun onUseActivityBackCallBack() = true
 
     override fun getLayoutId() = R.layout.fragment_config_photo
     override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -54,11 +64,15 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
 
 
     override fun initEventAndData() {
-
+        cameraParameBuild.apply {
+            localPath = args.filePath
+        }
+        CameraManager.readCameraParame(cameraParameBuild,args.sharedPreferencesName)
     }
 
      var  cameraParameBuild: CameraParameBuild = CameraParameBuild()
     override fun initView() {
+
          if(cameraParameBuild.supportMultiplePhoto){
              bindView.btnCustom.visiable()
          }else{
@@ -69,6 +83,75 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
                 saveTakePhoto()
             }
          }
+        GlideEngine.getGlideEngineInstance().loadImage(requireContext(),cameraParameBuild.localPath,bindView.cameraPhoto)
+        bindView.btnCancel.click {
+            if(cameraParameBuild.supportMultiplePhoto){
+              findNavController().popBackStack()
+            }else{
+                CameraxManager.sendTakePhtotCancel(requireContext())
+            }
+        }
+        bindView.backButton.click {
+            onBackPressed()
+        }
+        bindView.btnConfig.click {
+            CameraxManager.sendAddTakePhoto(args.filePath,requireContext(),!cameraParameBuild.supportMultiplePhoto)
+        }
+        bindView.btnCustom.click {
+            CameraxManager.sendAddTakePhoto(args.filePath,requireContext(),false)
+        }
+        bindView.infoButton.click {
+            MedialFileInfoFragmentDialog.newInstance(args.filePath).show(childFragmentManager,"medialInfo")
+        }
+        bindView.textCountDown.click {
+            countDownJob?.cancel()
+            showSucces("倒计时已取消")
+        }
+
+        bindView.ivTurnleft.click {
+            rotateTakePhotoBitmap(270)
+        }
+        bindView.ivTurnright.click {
+            rotateTakePhotoBitmap(90)
+        }
+        bindView.ivTurncenter.click {
+            rotateTakePhotoBitmap(180)
+        }
+    }
+    private fun  rotateTakePhotoBitmap(degree:Int){
+        File(cameraParameBuild.localPath).exists().yes {
+            lifecycleScope.launch(Dispatchers.Main){
+                withIO {
+                    CameraBitmapUtil.rotateBitmap(degree,cameraParameBuild.localPath, appServerTime)
+                }.yes {
+                    showSucces("图片旋转成功")
+
+                    bindView.cameraPhoto.setImageURI(null)
+                    GlideEngine.getGlideEngineInstance().clearCacheByImageView(bindView.cameraPhoto)
+                    GlideEngine.getGlideEngineInstance().loadImage(requireContext(),cameraParameBuild.localPath,bindView.cameraPhoto)
+
+                }.no {
+                    showError("图片旋转失败")
+                }
+            }
+        }.no {
+            showError("文件不存在，无法旋转")
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(cameraParameBuild.supportMultiplePhoto){
+            MaterialDialogUtil.showConfigDialog(requireContext(),message = "确定要放弃当前拍的所有照片？",positive = "放弃",negative = "再看看"){
+                if(it){
+                    CameraxManager.sendTakePhtotCancel(requireContext())
+                }else{
+                    findNavController().popBackStack()
+                }
+            }
+        }else{
+            findNavController().popBackStack()
+        }
     }
 
     private  fun  saveTakePhoto(){
@@ -101,6 +184,11 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        countDownStop()
+    }
+
     /**
      *取消倒计时
      */
@@ -112,4 +200,6 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
     override fun lazyLoad() {
 
     }
+
+
 }

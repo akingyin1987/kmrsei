@@ -51,6 +51,20 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
+    open  fun   onUseActivityBackCallBack() = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if(onUseActivityBackCallBack()){
+            requireActivity().onBackPressedDispatcher.addCallback(this,object :OnBackPressedCallback(true){
+                override fun handleOnBackPressed() {
+                    onBackPressed()
+                }
+            })
+        }
+
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         mView = if(useDataBindView()){
             initDataBindView(inflater,container)?:throw Exception("root view  must not be null")

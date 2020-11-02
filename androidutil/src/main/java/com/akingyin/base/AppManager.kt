@@ -29,14 +29,6 @@ class  AppManager  private  constructor(){ //私有的主构造器
 
 
 
-
-
-
-
-
-
-
-
     /**
      * 添加Activity到堆栈
      */

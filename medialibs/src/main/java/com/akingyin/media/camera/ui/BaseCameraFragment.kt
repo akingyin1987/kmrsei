@@ -26,6 +26,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -400,14 +401,17 @@ open class BaseCameraFragment : SimpleFragment() {
         }
 
     }
-
-    open  fun    startCameraSettingActivity(){
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-
+    private lateinit var startActivitylaunch: ActivityResultLauncher<Intent>
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        startActivitylaunch =  registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
             if( it.resultCode == Activity.RESULT_OK){
                 initCameraParame(changeCameraParme = true)
             }
-        }.launch(Intent(requireContext(),CameraSettingActivity::class.java).apply {
+        }
+    }
+    open  fun    startCameraSettingActivity(){
+       startActivitylaunch.launch(Intent(requireContext(),CameraSettingActivity::class.java).apply {
             cameraManager.camera?.let {
                 putExtra("cameraSizes",CameraManager.findSuportCameraSizeValue(it.parameters))
             }

@@ -78,6 +78,10 @@ interface ImageEngine {
      */
     fun loadGridImage(context: Context, url: String, imageView: ImageView,callBack:((result:Boolean)->Unit)?=null)
 
+    /**
+     * 清除某个view 缓存
+     */
+    fun  clearCacheByImageView(imageView: ImageView)
 
     interface  OnImageCompleteCallback{
         /**

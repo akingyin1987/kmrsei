@@ -26,7 +26,7 @@ abstract class BaseVMFragment<VM : BaseViewModel> :SimpleFragment() {
 
     private fun initVM() {
         providerVMClass()?.let {
-            mViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity!!.application).create(it)
+            mViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application).create(it)
 
             lifecycle.addObserver(mViewModel)
         }

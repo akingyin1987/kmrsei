@@ -15,7 +15,6 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.View
-import android.view.WindowManager
 import androidx.core.content.res.use
 import com.akingyin.media.R
 
@@ -56,10 +55,9 @@ class TypeButton @JvmOverloads constructor(
         }
         buttonSize = ((layoutWidth / 4.5f).toInt())
         buttonType = attrs?.let {
-            context.theme.obtainStyledAttributes(it, R.styleable.TypeButton,defStyleAttr,0).use {
-                typed->
+            context.theme.obtainStyledAttributes(it, R.styleable.TypeButton, defStyleAttr, 0).use { typed->
                 btnConfigCancelText = typed.getString(R.styleable.TypeButton_btnConfigCancelText)?:""
-                typed.getInteger(R.styleable.TypeButton_btnConfigCancel,TYPE_CANCEL)
+                typed.getInteger(R.styleable.TypeButton_btnConfigCancel, TYPE_CANCEL)
             }
 
         }?:TYPE_CANCEL
@@ -146,6 +144,7 @@ class TypeButton @JvmOverloads constructor(
             println("画确认的按钮")
         }
         if(buttonType == TYPE_CUSTOM){
+            mPaint.reset()
             mPaint.run {
                 isAntiAlias = true
                 color = -0x1
@@ -154,8 +153,15 @@ class TypeButton @JvmOverloads constructor(
             }
             mPaint.run {
                 color = Color.RED
+                textSize = 50f
                 style = Paint.Style.STROKE
-                canvas.drawText(btnConfigCancelText,centerX,centerY,this)
+                //获取文本宽度
+                val textWidth: Float = measureText(btnConfigCancelText)
+                val x = width / 2 - textWidth / 2
+                val fontMetrics: Paint.FontMetrics = fontMetrics
+                val dy: Float = (fontMetrics.descent - fontMetrics.ascent) / 2 - fontMetrics.descent
+                val y = height / 2 + dy
+                canvas.drawText(btnConfigCancelText, x, y, this)
             }
         }
     }

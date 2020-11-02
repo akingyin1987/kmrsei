@@ -107,7 +107,6 @@ android {
 
   buildTypes {
     release {
-
       signingConfig signingConfigs.release
       // buildConfigField "int", "AppCode", "1"
       //混淆

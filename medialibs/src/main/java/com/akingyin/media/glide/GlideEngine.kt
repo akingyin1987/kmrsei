@@ -233,6 +233,10 @@ class GlideEngine :ImageEngine{
 
     }
 
+    override fun clearCacheByImageView(imageView: ImageView) {
+       GlideApp.with(imageView).clear(imageView)
+    }
+
     companion object {
 
         @JvmStatic

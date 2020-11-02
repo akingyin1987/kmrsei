@@ -53,7 +53,6 @@ open class BaseRepository {
                 return Result.Success(it,0)
             }
 
-
         }
 
         return Result.Error(ApiException("Error Occurred during getting safe Api result, Custom ERROR - ${response.message()}"))

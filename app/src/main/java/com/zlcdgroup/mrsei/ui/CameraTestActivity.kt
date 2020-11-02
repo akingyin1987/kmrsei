@@ -15,7 +15,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.ext.startActivity
@@ -60,7 +59,7 @@ class CameraTestActivity : SimpleActivity() {
 
     override fun initView() {
         val fragment = BaseCameraFragment.newInstance(CameraParameBuild(), sharedPreferencesName = "app_camera_setting")
-        fragment.cameraLiveData.observe(this, Observer {
+        fragment.cameraLiveData.observe(this,  {
             println("data->$it")
             showSucces("拍照成功->$it")
             startActivity<DoodleActivity>(bundle = arrayOf(DoodleActivity.FILE_PATH to it.localPath))

@@ -99,7 +99,7 @@ open class CameraxFragment : SimpleFragment() {
 
 
     override fun initEventAndData() {
-
+        cameraxManager = CameraxManager(requireContext(),bindView.viewFinder.camera_surface)
         sharedPreferencesName = arguments?.getString("sharedPreferencesName", "app_setting")
             ?: "app_setting"
         cameraParameBuild = arguments?.getParcelable("data") ?: CameraParameBuild()
@@ -119,7 +119,7 @@ open class CameraxFragment : SimpleFragment() {
     }
 
     override fun initView() {
-        cameraxManager = CameraxManager(requireContext(),bindView.viewFinder.camera_surface)
+
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(volumeKeyControlBroadcast, IntentFilter().apply {
             addAction(CameraManager.KEYDOWN_VOLUME_KEY_ACTION)
         })

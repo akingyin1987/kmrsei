@@ -10,7 +10,6 @@
 package com.akingyin.media.ui.fragment
 
 import android.annotation.SuppressLint
-import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
