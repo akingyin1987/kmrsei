@@ -164,7 +164,7 @@ class  SensorHelp(context: Context)  :SensorEventListener{
                 return
             }
             lastTime = nowTime
-            println("x=${sensorEvent.values[0]}  y=${sensorEvent.values[1]}   z=${sensorEvent.values[2]}")
+
             if(sensorEvent.values[0] < 4 && sensorEvent.values[0] > -4){
                 //UP
                 if(sensorEvent.values[1] > 0){

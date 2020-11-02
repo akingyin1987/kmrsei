@@ -12,7 +12,7 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:keepScreenOn="true"
-    android:fitsSystemWindows="true"
+
     android:background="#232323"
     android:orientation="vertical"
 

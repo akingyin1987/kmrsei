@@ -53,13 +53,12 @@ import kotlin.math.*
  * @version V1.0
  */
 @SuppressLint("ViewConstructor")
-class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr),IDoodle {
-
-
+class DoodleView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr), IDoodle {
 
 
     /** 是否显示图标 */
     private var showIcons = false
+
     /** 是否显示边框 */
     private var showBorder = false
 
@@ -75,32 +74,35 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     private var mMagnifierPaint: Paint
     private val mScaleX = 1f
     private val mScaleY = 1f
-    @IntDef(value = [ActionMode.NONE, ActionMode.DRAG, ActionMode.ZOOM_WITH_TWO_FINGER, ActionMode.ICON, ActionMode.CLICK,ActionMode.DRAW,ActionMode.CIRCLE])
+
+    @IntDef(value = [ActionMode.NONE, ActionMode.DRAG, ActionMode.ZOOM_WITH_TWO_FINGER, ActionMode.ICON, ActionMode.CLICK, ActionMode.DRAW, ActionMode.CIRCLE])
     @Retention(AnnotationRetention.SOURCE)
-     annotation class ActionMode {
+    annotation class ActionMode {
         companion object {
             const val NONE = 0
             const val DRAG = 1
             const val ZOOM_WITH_TWO_FINGER = 2
             const val ICON = 3
             const val CLICK = 4
+
             /** 涂鸦画 */
             const val DRAW = 5
+
             /** 圆 */
             const val CIRCLE = 6
         }
     }
 
 
-
-
     /** 当前所有的图形 */
     private val stickers: MutableList<IDoodleShape> = ArrayList()
+
     /** 是否涂鸦保存过 */
-    var  isDoodleAndSave = false
+    var isDoodleAndSave = false
 
     /** 涂鸦是否发生过改变 */
-    var  isDoodleChange = stickers.size>0
+    var isDoodleChange = stickers.size > 0
+
     /** 贴纸四个角的图标 */
     private val icons: MutableList<BitmapStickerIcon> = ArrayList(4)
 
@@ -137,23 +139,24 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     private var oldRotation = 0f
 
     @ActionMode
-     var currentMode = ActionMode.NONE
+    var currentMode = ActionMode.NONE
 
     /** 当前选中操作的图形(拖动、删除、点击等) */
-     var handlingSticker: IDoodleShape? = null
+    var handlingSticker: IDoodleShape? = null
+
     /** 当前正在涂鸦的图形 */
-     var dragingDoodle:IDoodleShape? = null
+    var dragingDoodle: IDoodleShape? = null
 
     private var locked = false
     private var constrained = false
 
-     var onStickerOperationListener: OnStickerOperationListener? = null
+    var onStickerOperationListener: OnStickerOperationListener? = null
 
     private var lastClickTime: Long = 0
     private var minClickDelayTime = DEFAULT_MIN_CLICK_DELAY_TIME
 
     //当前画笔颜色
-    var  mCurrentPenColor = Color.RED
+    var mCurrentPenColor = Color.RED
 
     init {
         touchSlop = ViewConfiguration.get(context).scaledTouchSlop
@@ -167,8 +170,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
         mPointFillPaint.style = Paint.Style.FILL
         mPointFillPaint.alpha = 175
         mMagnifierPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-
-
+        mMagnifierPaint.isAntiAlias = true
         mMagnifierPaint.color = Color.WHITE
         mMagnifierPaint.style = Paint.Style.FILL
 
@@ -178,20 +180,20 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
         mMagnifierCrossPaint.strokeWidth = SizeUtils.dp2px(MAGNIFIER_CROSS_LINE_WIDTH).toFloat()
 
         attrs?.run {
-           context.theme.obtainStyledAttributes(this,R.styleable.StickerView,defStyleAttr,0).use {
-               showIcons = it.getBoolean(R.styleable.StickerView_showIcons, false)
-               showBorder = it.getBoolean(R.styleable.StickerView_showBorder, false)
-               bringToFrontCurrentSticker = it.getBoolean(R.styleable.StickerView_bringToFrontCurrentSticker, false)
-               borderPaint.isAntiAlias = true
-               borderPaint.strokeWidth =5f
-               borderPaint.color = it.getColor(R.styleable.StickerView_borderColor, Color.BLACK)
-               borderPaint.alpha = it.getInteger(R.styleable.StickerView_borderAlpha, 128)
+            context.theme.obtainStyledAttributes(this, R.styleable.StickerView, defStyleAttr, 0).use {
+                showIcons = it.getBoolean(R.styleable.StickerView_showIcons, false)
+                showBorder = it.getBoolean(R.styleable.StickerView_showBorder, false)
+                bringToFrontCurrentSticker = it.getBoolean(R.styleable.StickerView_bringToFrontCurrentSticker, false)
+                borderPaint.isAntiAlias = true
+                borderPaint.strokeWidth = 5f
+                borderPaint.color = it.getColor(R.styleable.StickerView_borderColor, Color.BLACK)
+                borderPaint.alpha = it.getInteger(R.styleable.StickerView_borderAlpha, 128)
 
-           }
+            }
         }
-        if(null == attrs){
+        if (null == attrs) {
             borderPaint.isAntiAlias = true
-            borderPaint.strokeWidth =5f
+            borderPaint.strokeWidth = 5f
             borderPaint.color = Color.BLACK
             borderPaint.alpha = 128
         }
@@ -201,89 +203,97 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     }
 
 
-
-
     /**
      * 设置放大镜参数
      */
-    fun  setMagnifierBitmap(dis: Bitmap){
-         val magnifierShader = BitmapShader(dis, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
-         mMagnifierDrawable = ShapeDrawable(OvalShape()).apply {
-             paint.shader = magnifierShader
-         }
+    fun setMagnifierBitmap(dis: Bitmap) {
+        val magnifierShader = BitmapShader(dis, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+        mMagnifierDrawable = ShapeDrawable(OvalShape()).apply {
+            paint.shader = magnifierShader
+        }
 
-         val origW: Int = dis.width
-         val origH: Int = dis.height
-         mActWidth = (origW * mScaleX).roundToInt()
-         mActHeight = (origH * mScaleY).roundToInt()
-         mActLeft = (width - mActWidth) / 2
-         mActTop = (height - mActHeight) / 2
-     }
+        val origW: Int = dis.width
+        val origH: Int = dis.height
+        mActWidth = (origW * mScaleX).roundToInt()
+        mActHeight = (origH * mScaleY).roundToInt()
+        mActLeft = (width - mActWidth) / 2
+        mActTop = (height - mActHeight) / 2
+        println("mActWidth=$mActWidth,$mActHeight,$mActLeft,$mActTop")
+    }
 
     /**
      * //实际显示图片的位置
      */
     private var mActWidth = 0
+
     /**
      * //实际显示图片的位置
      */
-    private  var mActHeight:Int = 0
+    private var mActHeight: Int = 0
+
     /**
      * //实际显示图片的位置
      */
-    private  var mActLeft:Int = 0
+    private var mActLeft: Int = 0
+
     /**
      * //实际显示图片的位置
      */
-    private  var mActTop:Int = 0
+    private var mActTop: Int = 0
 
 
-    private  var  mCurrentX = 0
-    private  var mCurrentY = 0
-      private val mMagnifierMatrix = Matrix()
-     private fun onDrawMagnifier(canvas: Canvas) {
+    private var mCurrentX = 0
+    private var mCurrentY = 0
+    val lineOffset by lazy {
+        SizeUtils.dp2px(MAGNIFIER_BORDER_WIDTH)
+    }
 
-         mMagnifierDrawable?.let {
-             mDraggingPoint.run {
-                 x = mCurrentX
-                 y = mCurrentY
-             }
-             if(mDraggingPoint.x == 0 && mDraggingPoint.y == 0){
-                 return
-             }
-             canvas.save()
-             val draggingX: Float = getViewPointX(mDraggingPoint)
-             val draggingY: Float = getViewPointY(mDraggingPoint)
-             val radius = (width / 8).coerceAtMost(height / 8).toFloat()
-             var cx = radius
-             val lineOffset = SizeUtils.dp2px(MAGNIFIER_BORDER_WIDTH)
+    private val mMagnifierMatrix = Matrix()
+    private fun onDrawMagnifier(canvas: Canvas) {
 
-             val pointsDistance: Double = CalculationUtil.getPointsDistance(draggingX, draggingY, 0f, 0f)
-             if (pointsDistance < radius * 2.5) {
-                 it.setBounds((mActWidth/mScaleX).toInt() - radius.toInt() * 2 + lineOffset, lineOffset, (mActHeight/mScaleY).toInt() - lineOffset, radius.toInt() * 2 - lineOffset)
-                 cx = (mActWidth/mScaleX).toInt()  - radius
-                 //平移到绘制shader的起始位置
-                 println("-----显示在右边---")
-             }else{
-                 it.setBounds(lineOffset, lineOffset, radius.toInt() * 2 - lineOffset, radius.toInt() * 2 - lineOffset)
-                 //平移到绘制shader的起始位置
-
-             }
-             mMagnifierMatrix.setTranslate(radius - draggingX, radius - draggingY)
-             canvas.drawCircle(cx, radius, radius, mMagnifierPaint)
+        mMagnifierDrawable?.let {
+            mDraggingPoint.run {
+                x = mCurrentX
+                y = mCurrentY
+            }
+            if (mDraggingPoint.x == 0 && mDraggingPoint.y == 0) {
+                return
+            }
+            canvas.save()
+            val draggingX: Float = getViewPointX(mDraggingPoint)
+            val draggingY: Float = getViewPointY(mDraggingPoint)
+            val radius = (width / 8).coerceAtMost(height / 8).toFloat()
+            var cx = radius
 
 
-             it.paint.shader.setLocalMatrix(mMagnifierMatrix)
-             it.draw(canvas)
+            val pointsDistance: Double = CalculationUtil.getPointsDistance(draggingX, draggingY, 0f, 0f)
+            if (pointsDistance < radius * 2.5) {
+                it.setBounds((mActWidth / mScaleX).toInt() - radius.toInt() * 2 - lineOffset, lineOffset, (mActWidth / mScaleY).toInt() - lineOffset, radius.toInt() * 2 + lineOffset)
+                cx = (mActWidth / mScaleX).toInt() - radius
+                //平移到绘制shader的起始位置
 
-             //画放大镜十字线
-             val crossLength: Float = SizeUtils.dp2px(MAGNIFIER_CROSS_LINE_LENGTH).toFloat()
-             canvas.drawLine(cx, radius - crossLength, cx, radius + crossLength, mMagnifierCrossPaint)
-             canvas.drawLine(cx - crossLength, radius, cx + crossLength, radius, mMagnifierCrossPaint)
-             canvas.restore()
-         }
+            } else {
+                it.setBounds(lineOffset, lineOffset, radius.toInt() * 2 - lineOffset, radius.toInt() * 2 - lineOffset)
+                //平移到绘制shader的起始位置
+
+
+            }
+            mMagnifierMatrix.setTranslate(radius - draggingX, radius - draggingY)
+            canvas.drawCircle(cx, radius, radius, mMagnifierPaint)
+
+
+            it.paint.shader.setLocalMatrix(mMagnifierMatrix)
+            it.draw(canvas)
+
+            //画放大镜十字线
+            val crossLength: Float = SizeUtils.dp2px(MAGNIFIER_CROSS_LINE_LENGTH).toFloat()
+            canvas.drawLine(cx, radius - crossLength, cx, radius + crossLength, mMagnifierCrossPaint)
+            canvas.drawLine(cx - crossLength, radius, cx + crossLength, radius, mMagnifierCrossPaint)
+            canvas.restore()
+        }
 
     }
+
     private fun getViewPointX(point: Point): Float {
         return getViewPointX(point.x.toFloat())
     }
@@ -303,36 +313,36 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     }
 
 
-
     fun setLocked(locked: Boolean): DoodleView {
         this.locked = locked
         invalidate()
         return this
     }
+
     /**
      * 设置默认的图标
      */
-   private fun configDefaultIcons() {
-         icons.clear()
-         ContextCompat.getDrawable(context, R.drawable.sticker_ic_close_white_18dp)?.let {
-             icons.add( BitmapStickerIcon(it, BitmapStickerIcon.Gravity.LEFT_TOP).apply {
-                 iconEvent = DeleteIconEvent()
-             })
+    private fun configDefaultIcons() {
+        icons.clear()
+        ContextCompat.getDrawable(context, R.drawable.sticker_ic_close_white_18dp)?.let {
+            icons.add(BitmapStickerIcon(it, BitmapStickerIcon.Gravity.LEFT_TOP).apply {
+                iconEvent = DeleteIconEvent()
+            })
         }
 
-        ContextCompat.getDrawable(context,R.drawable.sticker_ic_scale_white_18dp)?.let {
-            icons.add(BitmapStickerIcon(it,BitmapStickerIcon.Gravity.RIGHT_BOTOM).apply {
+        ContextCompat.getDrawable(context, R.drawable.sticker_ic_scale_white_18dp)?.let {
+            icons.add(BitmapStickerIcon(it, BitmapStickerIcon.Gravity.RIGHT_BOTOM).apply {
                 iconEvent = ZoomIconEvent()
             })
         }
 
         ContextCompat.getDrawable(context, R.drawable.sticker_ic_flip_white_18dp)?.let {
-            icons.add(BitmapStickerIcon(it,BitmapStickerIcon.Gravity.RIGHT_TOP).apply {
-                iconEvent =FlipHorizontallyEvent()
+            icons.add(BitmapStickerIcon(it, BitmapStickerIcon.Gravity.RIGHT_TOP).apply {
+                iconEvent = FlipHorizontallyEvent()
             })
         }
         ContextCompat.getDrawable(context, R.drawable.sticker_ic_flip_white_18dp)?.let {
-            icons.add(BitmapStickerIcon(it,BitmapStickerIcon.Gravity.LEFT_BOTTOM).apply {
+            icons.add(BitmapStickerIcon(it, BitmapStickerIcon.Gravity.LEFT_BOTTOM).apply {
                 iconEvent = FlipVerticallyEvent()
             })
         }
@@ -375,16 +385,12 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     }
 
 
-
-
-
     override fun dispatchDraw(canvas: Canvas?) {
         super.dispatchDraw(canvas)
         canvas?.let {
             drawStickers(it)
             onDrawMagnifier(it)
         }
-
 
 
     }
@@ -394,10 +400,10 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
      */
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
 
-        if (locked){
+        if (locked) {
             mCurrentX = 0
             mCurrentY = 0
-            return  super.onInterceptTouchEvent(ev)
+            return super.onInterceptTouchEvent(ev)
         }
         mCurrentX = ev.x.toInt()
         mCurrentY = ev.y.toInt()
@@ -406,8 +412,8 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
             MotionEvent.ACTION_DOWN -> {
                 downX = ev.x
                 downY = ev.y
-                val intercept = findCurrentIconTouched() != null || findHandlingSticker() != null||null != dragingDoodle||currentMode != ActionMode.NONE ||onStickerOperationListener?.onIntercept(ev)?:false
-                if(!intercept){
+                val intercept = findCurrentIconTouched() != null || findHandlingSticker() != null || null != dragingDoodle || currentMode != ActionMode.NONE || onStickerOperationListener?.onIntercept(ev) ?: false
+                if (!intercept) {
                     postInvalidate()
                 }
                 Timber.tag(TAG).d("onInterceptTouchEvent={0}".messageFormat(intercept))
@@ -423,6 +429,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     private fun delta(): Long {
         return System.currentTimeMillis() - mDownEventTimestamp
     }
+
     /**
      * 已经完整的处理了该事件，不希望其它回调方法再次处理 时返回true
      */
@@ -437,7 +444,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
 
             //当屏幕检测到第一个触点按下之后就会触发到这个事件
             MotionEvent.ACTION_DOWN -> {
-                 onStickerOperationListener?.onTouchDown()
+                onStickerOperationListener?.onTouchDown()
                 mDownEventTimestamp = System.currentTimeMillis()
                 if (!onTouchDown(event)) {
                     println("返回什么--->")
@@ -454,7 +461,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
                 oldRotation = calculateRotation(event)
                 midPoint = calculateMidPoint(event)
                 handlingSticker?.let {
-                    if(isInStickerArea(it,event.getX(1), event.getY(1)) && null == findCurrentIconTouched()){
+                    if (isInStickerArea(it, event.getX(1), event.getY(1)) && null == findCurrentIconTouched()) {
                         currentMode = ActionMode.ZOOM_WITH_TWO_FINGER
                     }
                 }
@@ -479,8 +486,8 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
             MotionEvent.ACTION_POINTER_UP -> {
                 println("onAction-ACTION_POINTER_UP")
                 handlingSticker?.let {
-                    if(currentMode == ActionMode.ZOOM_WITH_TWO_FINGER){
-                      //  onStickerOperationListener?.onStickerZoomFinished(it)
+                    if (currentMode == ActionMode.ZOOM_WITH_TWO_FINGER) {
+                        //  onStickerOperationListener?.onStickerZoomFinished(it)
                     }
                 }
                 currentMode = ActionMode.NONE
@@ -488,6 +495,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
         }
         return true
     }
+
     override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
         super.onSizeChanged(w, h, oldW, oldH)
         stickers.forEach {
@@ -501,7 +509,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
      * step 1：let the center of the sticker image is coincident with the center of the View.
      * step 2：Calculate the zoom and zoom
      */
-    private fun transformSticker( sticker: IDoodleShape) {
+    private fun transformSticker(sticker: IDoodleShape) {
 
         sizeMatrix.reset()
         val width = width.toFloat()
@@ -526,30 +534,30 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
         invalidate()
     }
 
-    private fun onTouchUp( event: MotionEvent) {
+    private fun onTouchUp(event: MotionEvent) {
 
         val currentTime = SystemClock.uptimeMillis()
-        when(currentMode){
-            ActionMode.ICON ->{
+        when (currentMode) {
+            ActionMode.ICON -> {
                 currentIcon?.let {
-                    if(null != handlingSticker){
-                        it.onActionUp(this,event)
+                    if (null != handlingSticker) {
+                        it.onActionUp(this, event)
                     }
                 }
             }
-            ActionMode.DRAW->{
+            ActionMode.DRAW -> {
                 Timber.tag(TAG).d("onTouchUp dragingDoodle")
                 dragingDoodle?.let {
-                    it.setEndLocation(event.x,event.y)
-                    if(it.isDrawShapeComplete() ){
+                    it.setEndLocation(event.x, event.y)
+                    if (it.isDrawShapeComplete()) {
                         onCreateSticketShape()
                     }
                 }
 
             }
-            ActionMode.DRAG->{
+            ActionMode.DRAG -> {
                 handlingSticker?.let {
-                    if(abs(event.x - downX) < touchSlop && abs(event.y - downY) < touchSlop){
+                    if (abs(event.x - downX) < touchSlop && abs(event.y - downY) < touchSlop) {
                         currentMode = ActionMode.CLICK
                         onStickerOperationListener?.onStickerClicked(it)
 //                        if (currentTime - lastClickTime < minClickDelayTime) {
@@ -568,14 +576,14 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     /**
      * 处理移动事件
      */
-    private fun handleCurrentMode( event: MotionEvent) {
+    private fun handleCurrentMode(event: MotionEvent) {
         when (currentMode) {
             ActionMode.NONE, ActionMode.CLICK -> {
                 println("click")
             }
-            ActionMode.DRAW ->{
+            ActionMode.DRAW -> {
                 Timber.tag(TAG).d("onTouchDown handleCurrentMode")
-                dragingDoodle?.setMoveLocation(event.x,event.y)
+                dragingDoodle?.setMoveLocation(event.x, event.y)
             }
             ActionMode.DRAG -> {
                 handlingSticker?.let {
@@ -588,23 +596,24 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
                 }
 
             }
-           ActionMode.ZOOM_WITH_TWO_FINGER -> {
-               handlingSticker?.let {
-                   val newDistance = calculateDistance(event)
-                   val newRotation = calculateRotation(event)
-                   moveMatrix.set(downMatrix)
-                   moveMatrix.postScale(newDistance / oldDistance, newDistance / oldDistance, midPoint.x,
-                           midPoint.y)
-                   moveMatrix.postRotate(newRotation - oldRotation, midPoint.x, midPoint.y)
-                   it.setMatrix(moveMatrix)
-               }
+            ActionMode.ZOOM_WITH_TWO_FINGER -> {
+                handlingSticker?.let {
+                    val newDistance = calculateDistance(event)
+                    val newRotation = calculateRotation(event)
+                    moveMatrix.set(downMatrix)
+                    moveMatrix.postScale(newDistance / oldDistance, newDistance / oldDistance, midPoint.x,
+                            midPoint.y)
+                    moveMatrix.postRotate(newRotation - oldRotation, midPoint.x, midPoint.y)
+                    it.setMatrix(moveMatrix)
+                }
 
-           }
+            }
             ActionMode.ICON -> if (handlingSticker != null && currentIcon != null) {
                 currentIcon?.onActionMove(this, event)
             }
         }
     }
+
     private fun constrainSticker(sticker: IDoodleShape) {
         var moveX = 0f
         var moveY = 0f
@@ -630,8 +639,8 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
      * 处理按下事件
      * @param event MotionEvent received from [)][.onTouchEvent]
      */
-    private fun onTouchDown( event: MotionEvent): Boolean {
-        if(currentMode == ActionMode.NONE){
+    private fun onTouchDown(event: MotionEvent): Boolean {
+        if (currentMode == ActionMode.NONE) {
             currentMode = ActionMode.DRAG
         }
         downX = event.x
@@ -656,15 +665,15 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
             //  onStickerOperationListener?.onStickerTouchedDown(it)
         }
 
-        if(null == currentIcon && null == handlingSticker && null == dragingDoodle){
+        if (null == currentIcon && null == handlingSticker && null == dragingDoodle) {
             //可以添加图形
             onStickerOperationListener?.onAddShape()
         }
-        if(null != dragingDoodle){
+        if (null != dragingDoodle) {
 
             Timber.tag(TAG).d("onTouchDown dragingDoodle")
             currentMode = ActionMode.DRAW
-            dragingDoodle?.setStartLocation(downX,downY)
+            dragingDoodle?.setStartLocation(downX, downY)
         }
 
         if (currentIcon == null && handlingSticker == null && null == dragingDoodle) {
@@ -678,29 +687,29 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     /**
      * 计算中心坐标
      */
-    private fun calculateMidPoint(event: MotionEvent?=null): PointF {
-      return when (event) {
-          null -> {
-              handlingSticker?.let {
-                  it.getMappedCenterPoint(midPoint,point,tmp)
-                  midPoint
-              }?:midPoint.apply {
-                  set(0f,0f)
-              }
-          }
-          else -> {
-              if(event.pointerCount < 2){
-                  midPoint.apply {
-                      set(0f,0f)
-                  }
-              }else{
-                  midPoint.apply {
-                      x = (event.getX(0) + event.getX(1)) / 2
-                      y= (event.getY(0) + event.getY(1)) / 2
-                  }
-              }
-          }
-      }
+    private fun calculateMidPoint(event: MotionEvent? = null): PointF {
+        return when (event) {
+            null -> {
+                handlingSticker?.let {
+                    it.getMappedCenterPoint(midPoint, point, tmp)
+                    midPoint
+                } ?: midPoint.apply {
+                    set(0f, 0f)
+                }
+            }
+            else -> {
+                if (event.pointerCount < 2) {
+                    midPoint.apply {
+                        set(0f, 0f)
+                    }
+                } else {
+                    midPoint.apply {
+                        x = (event.getX(0) + event.getX(1)) / 2
+                        y = (event.getY(0) + event.getY(1)) / 2
+                    }
+                }
+            }
+        }
 
 
     }
@@ -730,14 +739,16 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
         }
         return null
     }
-    private fun isInStickerArea( sticker: IDoodleShape, downX: Float, downY: Float): Boolean {
-        if(!sticker.supportOtherHandle()){
+
+    private fun isInStickerArea(sticker: IDoodleShape, downX: Float, downY: Float): Boolean {
+        if (!sticker.supportOtherHandle()) {
             return false
         }
         tmp[0] = downX
         tmp[1] = downY
         return sticker.contains(tmp)
     }
+
     /**
      * 画贴图
      */
@@ -746,7 +757,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
             val sticker: Sticker = stickers[i]
             sticker.draw(canvas)
         }
-        dragingDoodle?.drawHelpers(canvas,this)
+        dragingDoodle?.drawHelpers(canvas, this)
         if (handlingSticker != null && !locked && (showBorder || showIcons)) {
             getStickerPoints(handlingSticker, bitmapPoints)
             val x1 = bitmapPoints[0]
@@ -785,23 +796,23 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     /**
      *获取贴图坐标
      */
-    private fun getStickerPoints( sticker: Sticker?, dst: FloatArray) {
+    private fun getStickerPoints(sticker: Sticker?, dst: FloatArray) {
         sticker?.let {
             it.getBoundPoints(bounds)
             it.getMappedPoints(dst, bounds)
-        }?:Arrays.fill(dst,0F)
+        } ?: Arrays.fill(dst, 0F)
 
 
     }
 
 
-    private fun configIconMatrix( icon: BitmapStickerIcon, x: Float, y: Float,
-                                   rotation: Float) {
+    private fun configIconMatrix(icon: BitmapStickerIcon, x: Float, y: Float,
+                                 rotation: Float) {
         icon.run {
             this.x = x
             this.y = y
             this.matrix.reset()
-            this.matrix.postRotate(rotation,icon.getWidth()/2F,icon.getHeight()/2F)
+            this.matrix.postRotate(rotation, icon.getWidth() / 2F, icon.getHeight() / 2F)
             this.matrix.postTranslate(x - icon.getWidth() / 2, y - icon.getHeight() / 2)
         }
 
@@ -810,7 +821,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     /**
      * calculate rotation in line with two fingers and x-axis
      */
-    private fun calculateRotation( event: MotionEvent?): Float {
+    private fun calculateRotation(event: MotionEvent?): Float {
         return if (event == null || event.pointerCount < 2) {
             0f
         } else calculateRotation(event.getX(0), event.getY(0), event.getX(1), event.getY(1))
@@ -826,7 +837,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     /**
      * calculate Distance in two fingers
      */
-    private fun calculateDistance( event: MotionEvent?): Float {
+    private fun calculateDistance(event: MotionEvent?): Float {
         return if (event == null || event.pointerCount < 2) {
             0f
         } else calculateDistance(event.getX(0), event.getY(0), event.getX(1), event.getY(1))
@@ -839,23 +850,21 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     }
 
 
-
-
-    fun setConstrained(constrained: Boolean): DoodleView{
+    fun setConstrained(constrained: Boolean): DoodleView {
         this.constrained = constrained
         postInvalidate()
         return this
     }
 
 
-
     override fun flipCurrentSticker(direction: Int) {
         handlingSticker?.let {
-            flip(it,direction)
+            flip(it, direction)
         }
 
     }
-    private fun flip( sticker: IDoodleShape, @IDoodle.Flip direction: Int) {
+
+    private fun flip(sticker: IDoodleShape, @IDoodle.Flip direction: Int) {
         sticker.getCenterPoint(midPoint)
         if (direction and FLIP_HORIZONTALLY > 0) {
             sticker.matrix.preScale(-1f, 1f, midPoint.x, midPoint.y)
@@ -872,12 +881,12 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
 
 
     override fun zoomAndRotateCurrentSticker(event: MotionEvent) {
-      handlingSticker?.let {
-          zoomAndRotateSticker(it,event)
-      }
+        handlingSticker?.let {
+            zoomAndRotateSticker(it, event)
+        }
     }
 
-    private fun zoomAndRotateSticker( sticker: IDoodleShape,  event: MotionEvent) {
+    private fun zoomAndRotateSticker(sticker: IDoodleShape, event: MotionEvent) {
         val newDistance = calculateDistance(midPoint.x, midPoint.y, event.x, event.y)
         val newRotation = calculateRotation(midPoint.x, midPoint.y, event.x, event.y)
         moveMatrix.set(downMatrix)
@@ -895,9 +904,9 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
 
     }
 
-    fun   removeLast(){
-        if(stickers.size>0){
-            remove(stickers[stickers.size-1])
+    fun removeLast() {
+        if (stickers.size > 0) {
+            remove(stickers[stickers.size - 1])
         }
 
     }
@@ -913,7 +922,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
             invalidate()
             true
         } else {
-            Timber.d( "remove: the sticker is not in this StickerView")
+            Timber.d("remove: the sticker is not in this StickerView")
             false
         }
     }
@@ -940,10 +949,10 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     private fun addShapeImmediately(iDoodleShape: IDoodleShape, @Sticker.Position position: Int) {
         println("addShapeImmediately")
         setShapePosition(iDoodleShape, position)
-        if(null == iDoodleShape.getTranslateOffset()){
+        if (null == iDoodleShape.getTranslateOffset()) {
             iDoodleShape.getDrawable()?.let {
 
-                val widthScaleFactor: Float  = width.toFloat() / it.intrinsicWidth
+                val widthScaleFactor: Float = width.toFloat() / it.intrinsicWidth
                 val heightScaleFactor = height.toFloat() / it.intrinsicHeight
                 val scaleFactor: Float = if (widthScaleFactor > heightScaleFactor) heightScaleFactor else widthScaleFactor
                 iDoodleShape.matrix.postScale(scaleFactor / 2, scaleFactor / 2, width / 2f, height / 2f)
@@ -951,7 +960,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
         }
         stickers.add(iDoodleShape)
 
-        if(iDoodleShape.supportOtherHandle()){
+        if (iDoodleShape.supportOtherHandle()) {
             handlingSticker = iDoodleShape
         }
 
@@ -962,15 +971,15 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     private fun setShapePosition(iDoodleShape: IDoodleShape, @Sticker.Position position: Int) {
 
 
-        if(null != iDoodleShape.getTranslateOffset()){
+        if (null != iDoodleShape.getTranslateOffset()) {
             iDoodleShape.getTranslateOffset()?.run {
-                if(x>0 && y>0){
+                if (x > 0 && y > 0) {
                     println("getTranslateOffset=${toString()}")
-                    iDoodleShape.matrix.postTranslate(x,y)
+                    iDoodleShape.matrix.postTranslate(x, y)
                 }
 
             }
-           return
+            return
         }
         val width = width.toFloat()
         val height = height.toFloat()
@@ -1002,7 +1011,7 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
     }
 
     override fun replace(iDoodleShape: IDoodleShape, needStayState: Boolean): Boolean {
-     return   handlingSticker?.let {
+        return handlingSticker?.let {
             val width = width.toFloat()
             val height = height.toFloat()
             if (needStayState) {
@@ -1016,14 +1025,13 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
                 val offsetY = (height - it.getHeight()) / 2f
                 iDoodleShape.matrix.postTranslate(offsetX, offsetY)
 
-                val scaleFactor: Float = it.getDrawable()?.let {
-                     drawable->
+                val scaleFactor: Float = it.getDrawable()?.let { drawable ->
                     if (width < height) {
                         width / drawable.intrinsicWidth
                     } else {
                         height / drawable.intrinsicHeight
                     }
-                }?:0F
+                } ?: 0F
                 iDoodleShape.matrix.postScale(scaleFactor / 2f, scaleFactor / 2f, width / 2f, height / 2f)
             }
             val index = stickers.indexOf(it)
@@ -1032,36 +1040,36 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
 
             invalidate()
             true
-        }?:false
+        } ?: false
 
     }
 
     override fun onCreateSticketShape() {
-       dragingDoodle?.let {
-           if(it.qualifiedShape()){
-               it.resetDrawable()
-               addShape(it)
-           }
-           currentMode = ActionMode.NONE
-       }
+        dragingDoodle?.let {
+            if (it.qualifiedShape()) {
+                it.resetDrawable()
+                addShape(it)
+            }
+            currentMode = ActionMode.NONE
+        }
         dragingDoodle = null
     }
 
-    override fun saveDoodleBitmap(file: File,scale:Float, call: (result: Boolean, error: String?) -> Unit) {
+    override fun saveDoodleBitmap(file: File, scale: Float, call: (result: Boolean, error: String?) -> Unit) {
         tryCatch({
             createBitmap(scale)?.let {
 
-                CameraBitmapUtil.saveBitmapToPath(it,file.absolutePath).yes {
-                    if(!isDoodleAndSave){
-                        isDoodleAndSave = stickers.size>0
+                CameraBitmapUtil.saveBitmapToPath(it, file.absolutePath).yes {
+                    if (!isDoodleAndSave) {
+                        isDoodleAndSave = stickers.size > 0
                     }
-                    call(true,null)
+                    call(true, null)
                 }.no {
-                    call(false,"保存失败")
+                    call(false, "保存失败")
                 }
-            }?:call(false,"保存失败")
-        },{
-            call.invoke(false,it.message)
+            } ?: call(false, "保存失败")
+        }, {
+            call.invoke(false, it.message)
         })
 
 
@@ -1069,52 +1077,56 @@ class DoodleView @JvmOverloads constructor( context: Context, attrs: AttributeSe
 
 
     @Throws(OutOfMemoryError::class)
-    fun createBitmap(scale:Float = 0f): Bitmap? {
+    fun createBitmap(scale: Float = 0f): Bitmap? {
         handlingSticker = null
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         draw(canvas)
-        if(scale>0){
-           return CameraBitmapUtil.bitmapScale(bitmap,scale)
+        if (scale > 0) {
+            return CameraBitmapUtil.bitmapScale(bitmap, scale)
         }
         return bitmap
     }
-    companion object{
+
+    companion object {
         const val DEFAULT_MIN_CLICK_DELAY_TIME = 200
 
         const val FLIP_HORIZONTALLY = 1
         const val FLIP_VERTICALLY = 1 shl 1
 
 
-         const val MAGNIFIER_CROSS_LINE_WIDTH = 0.8f //dp，放大镜十字宽度
+        const val MAGNIFIER_CROSS_LINE_WIDTH = 0.8f //dp，放大镜十字宽度
 
-         const val MAGNIFIER_CROSS_LINE_LENGTH = 3f //dp， 放大镜十字长度
+        const val MAGNIFIER_CROSS_LINE_LENGTH = 3f //dp， 放大镜十字长度
 
-         const val MAGNIFIER_BORDER_WIDTH = 1f //dp，放大镜边框宽度
+        const val MAGNIFIER_BORDER_WIDTH = 1f //dp，放大镜边框宽度
 
         //放大镜的半径
-         const val RADIUS = 100
+        const val RADIUS = 100
 
         //放大倍数
-         const val FACTOR = 2
+        const val FACTOR = 2
 
-         const val TAG ="doodleView"
-
+        const val TAG = "doodleView"
 
 
     }
+
     interface OnStickerOperationListener {
-        fun onStickerAdded( sticker: IDoodleShape)
+        fun onStickerAdded(sticker: IDoodleShape)
         fun onStickerClicked(sticker: IDoodleShape)
         fun onStickerDeleted(sticker: IDoodleShape)
         fun onStickerDragFinished(sticker: IDoodleShape)
-       // fun onStickerTouchedDown(sticker: IDoodleShape)
-      //  fun onStickerZoomFinished(sticker: IDoodleShape)
+
+        // fun onStickerTouchedDown(sticker: IDoodleShape)
+        //  fun onStickerZoomFinished(sticker: IDoodleShape)
         fun onStickerFlipped(sticker: IDoodleShape)
-      //  fun onStickerDoubleTapped(sticker: IDoodleShape)
-        fun onTouchDown( select :Boolean = false)
+
+        //  fun onStickerDoubleTapped(sticker: IDoodleShape)
+        fun onTouchDown(select: Boolean = false)
         fun onTouchUp()
-        fun onIntercept(event: MotionEvent):Boolean
+        fun onIntercept(event: MotionEvent): Boolean
+
         //可以添加图形
         fun onAddShape()
     }

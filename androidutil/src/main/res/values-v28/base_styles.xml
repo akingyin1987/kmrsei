@@ -13,6 +13,7 @@
     <item name="android:windowTranslucentNavigation">true</item>
     <!--适配凹凸屏-->
     <item name="android:windowLayoutInDisplayCutoutMode" >shortEdges</item>
+    <item name="windowNoTitle">true</item>
   </style>
 
 </resources>

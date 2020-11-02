@@ -33,7 +33,7 @@ import com.akingyin.media.camera.CameraManager
 import com.akingyin.media.camerax.CameraxManager
 import com.akingyin.media.databinding.ActivityCameraxNavBinding
 
-private const val IMMERSIVE_FLAG_TIMEOUT = 500L
+const val IMMERSIVE_FLAG_TIMEOUT = 500L
 const val FLAGS_FULLSCREEN =
         View.SYSTEM_UI_FLAG_LOW_PROFILE or
                 View.SYSTEM_UI_FLAG_FULLSCREEN or

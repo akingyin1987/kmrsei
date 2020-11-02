@@ -19,6 +19,7 @@ import android.os.Bundle
 import android.text.Layout
 import android.util.DisplayMetrics
 import android.view.MotionEvent
+import android.view.WindowManager
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +31,8 @@ import com.akingyin.base.ext.*
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.media.R
 import com.akingyin.media.camera.CameraBitmapUtil
+import com.akingyin.media.camerax.ui.FLAGS_FULLSCREEN
+import com.akingyin.media.camerax.ui.IMMERSIVE_FLAG_TIMEOUT
 import com.akingyin.media.databinding.ActivityDoodleBinding
 import com.akingyin.media.doodle.core.IDoodleShape
 import com.akingyin.media.doodle.core.Sticker
@@ -45,6 +48,7 @@ import kotlin.properties.Delegates
  * @ Date 2020/8/14 11:48
  * @version V1.0
  */
+@Suppress("DEPRECATION")
 class DoodleActivity:SimpleActivity() {
 
     private  var  filePath=""
@@ -60,9 +64,14 @@ class DoodleActivity:SimpleActivity() {
 
     lateinit var bindView:ActivityDoodleBinding
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun initViewBind() {
          bindView = ActivityDoodleBinding.inflate(layoutInflater)
+
          setContentView(bindView.root)
     }
 
@@ -111,7 +120,6 @@ class DoodleActivity:SimpleActivity() {
                   srcBitmap = it
                   doodleView = bindView.doodleView
                   bindView.doodleImage.setImageBitmap(it)
-
                   doodleView.setMagnifierBitmap(it)
                   doodleView.apply {
                       setLocked(false)
@@ -176,8 +184,6 @@ class DoodleActivity:SimpleActivity() {
                           bindView.bootomBar.root.goneAlphaAnimation()
                           bindView.titleBar.root.goneAlphaAnimation()
                           println("onTouchDown=$select")
-
-
                       }
 
                       override fun onTouchUp() {
@@ -364,6 +370,13 @@ class DoodleActivity:SimpleActivity() {
             return
         }
         super.onBackPressed()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bindView.doodleView.postDelayed({
+            window.decorView.systemUiVisibility = FLAGS_FULLSCREEN
+        }, IMMERSIVE_FLAG_TIMEOUT)
     }
 
     override fun onDestroy() {

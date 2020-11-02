@@ -11,7 +11,7 @@ package com.zlcdgroup.mrsei.ui
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
+
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -40,6 +40,7 @@ import com.zlcdgroup.mrsei.R
  * @ Date 2020/7/20 17:24
  * @version V1.0
  */
+@Suppress("DEPRECATION")
 class CameraTestActivity : SimpleActivity() {
 
     override fun initInjection() {
@@ -110,19 +111,13 @@ class CameraTestActivity : SimpleActivity() {
     override fun onStart() {
         super.onStart()
         //全屏显示
-        if (Build.VERSION.SDK_INT >= 19) {
-            val decorView = window.decorView
-            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
-        } else {
-            val decorView = window.decorView
-            val option = View.SYSTEM_UI_FLAG_FULLSCREEN
-            decorView.systemUiVisibility = option
-        }
+        val decorView = window.decorView
+        decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
     }
 
     override fun onPause() {

@@ -25,10 +25,10 @@ import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.MotionEvent
 import android.view.View
-import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.use
 import com.akingyin.media.R
+
 
 /**
  * @ Description:
@@ -105,9 +105,10 @@ class CaptureButton @JvmOverloads constructor(
     private var rectF: RectF? = null
 
     init {
-        val manager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
         val outMetrics = DisplayMetrics()
-        manager.defaultDisplay.getMetrics(outMetrics)
+
+        context.display?.getRealMetrics(outMetrics)
         val layoutWidth = if (this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             outMetrics.widthPixels
         } else {

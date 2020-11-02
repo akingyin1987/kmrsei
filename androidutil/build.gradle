@@ -58,7 +58,7 @@ dependencies {
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
   //防止基础找不到DataBindingUtil ViewDataBinding 报错
-  implementation "androidx.databinding:databinding-runtime:4.2.0-alpha15"
+  implementation "androidx.databinding:databinding-runtime:4.1.0"
   api 'io.reactivex.rxjava3:rxandroid:3.0.0'
   // Because RxAndroid releases are few and far between, it is recommended you also
   // explicitly depend on RxJava's latest version for bug fixes and new features.
@@ -72,7 +72,7 @@ dependencies {
   api "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
   // alternatively - just ViewModel
  // use -ktx for Kotlin
-  api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-beta01"
+  api "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
   // alternatively - just LiveData
   api "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
@@ -80,7 +80,7 @@ dependencies {
   // alternatively - Lifecycles only (no ViewModel or LiveData). Some UI
   //     AndroidX libraries use this lightweight import for Lifecycle
 
-  api "androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-beta01"
+  api "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
 
 
   api "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
@@ -110,13 +110,13 @@ dependencies {
 
   // paging
   def paging_version = "3.0.0-alpha08"
-  api  "androidx.paging:paging-runtime:$paging_version"
+  api  "androidx.paging:paging-runtime-ktx:$paging_version"
 
   // Navigation library
   def nav_version = "2.3.1"
   // Java language implementation
-  api "androidx.navigation:navigation-fragment:$nav_version"
-  api "androidx.navigation:navigation-ui:$nav_version"
+
+  api "androidx.navigation:navigation-ui-ktx:$nav_version"
   // Kotlin
   api "androidx.navigation:navigation-fragment-ktx:$nav_version"
   api "androidx.navigation:navigation-ui-ktx:$nav_version"

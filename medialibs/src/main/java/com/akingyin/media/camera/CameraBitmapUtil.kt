@@ -38,7 +38,7 @@ object CameraBitmapUtil {
      const val NormHigth = 960
 
     // 最大偏移量
-    private const val MaxpOffset = 40
+    private const val MaxpOffset = 20
 
     // 保存图片的质量
     private const val quality = 90
@@ -412,6 +412,7 @@ object CameraBitmapUtil {
         }
         val screenWidth = dm.widthPixels.coerceAtMost(dm.heightPixels)
         val screenHight = dm.widthPixels.coerceAtLeast(dm.heightPixels)
+        println("屏幕大小：$screenWidth,$screenHight")
         // 当前图片比屏幕大
         if (width > screenWidth || heigth > screenHight) {
             val x: Float = (screenWidth - MaxpOffset) / width.toFloat()

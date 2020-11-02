@@ -28,12 +28,12 @@ import androidx.core.net.toFile
 import androidx.lifecycle.LifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.akingyin.base.ext.no
-import com.akingyin.base.ext.withIO
+
 import com.akingyin.base.ext.yes
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.media.camera.*
 import com.akingyin.media.camerax.callback.MotionFocusCall
-import id.zelory.compressor.Compressor
+
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.File
@@ -163,7 +163,7 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
 
                 // Attach the viewfinder's surface provider to preview use case
 
-                preview?.setSurfaceProvider(previewView.createSurfaceProvider())
+                preview?.setSurfaceProvider(previewView.surfaceProvider)
                 callBack()
             } catch (exc: Exception) {
                exc.printStackTrace()
@@ -275,6 +275,7 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
     fun   setCameraFlashMode( @CameraManager.CameraFlashModel flashModel:Int){
         when(flashModel){
             CameraManager.CameraFlashModel.CAMERA_FLASH_AUTO ->{
+
                 imageCapture?.flashMode = ImageCapture.FLASH_MODE_AUTO
                 camera?.cameraControl?.enableTorch(false)
             }

@@ -34,7 +34,7 @@
         android:id="@+id/images_detail_smooth_image"
         android:scaleType="fitCenter"/>
 
-  <cn.jzvd.JzvdStd
+  <com.akingyin.media.widget.SampleCoverVideo
       android:id="@+id/videoplayer"
       android:layout_width="match_parent"
 

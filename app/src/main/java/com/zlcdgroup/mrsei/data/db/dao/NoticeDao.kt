@@ -28,4 +28,10 @@ interface NoticeDao {
 
     @Insert
     fun  insertAll(notices:List<NoticeEntity>)
+
+    /**
+     * 模糊查询
+     */
+    @Query("select * from tb_notice where name  like '%' || :name||'%'")
+    fun  findNotice(name:String):List<NoticeEntity>
 }

@@ -147,14 +147,14 @@
         android:launchMode="singleTop"
         android:screenOrientation="portrait"
         android:theme="@style/Theme.TranslucentNavigationBar" />
-    <activity android:name=".ui.TestTuwenActivity" />
+
     <activity
         android:name=".ui.MotionTestActivity"
         android:theme="@style/Theme.MaterialComponents.Light.DarkActionBar" />
     <activity android:name="com.akingyin.media.camera.ui.CameraSettingActivity"/>
     <activity android:name=".ui.MedialFeilInfoActivity"/>
     <activity android:name="com.akingyin.media.doodle.DoodleActivity"
-          android:theme="@style/Theme.TranslucentNavigationBar"
+        android:theme="@style/Theme.MaterialComponents.NoActionBar"
         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
         android:launchMode="singleTop"/>
     <activity android:name="com.akingyin.media.camerax.ui.CameraxActivity"
