@@ -27,6 +27,7 @@ import android.view.*
 import android.widget.ImageButton
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -121,6 +122,7 @@ open class CameraxFragment : SimpleFragment() {
             }
         } ?: Unit
     }
+
 
     override fun initView() {
 

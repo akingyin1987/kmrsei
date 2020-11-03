@@ -17,6 +17,7 @@
       android:id="@+id/permissions_fragment"
       android:name="com.akingyin.media.camerax.ui.PermissionsCameraFragment"
       android:label="PermissionsFragment"
+      tools:layout="@layout/fragment_no_camera_permissions"
       >
     <action
         android:id="@+id/action_permissions_to_camera"

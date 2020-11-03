@@ -122,6 +122,7 @@ object CameraBitmapUtil {
             if (!file.exists()) {
                 file.mkdirs()
             }
+            println("")
             fos = FileOutputStream(File(path, img))
             imgSrc = BitmapFactory.decodeByteArray(data, 0, data.size)
             if (rotat != 0) {

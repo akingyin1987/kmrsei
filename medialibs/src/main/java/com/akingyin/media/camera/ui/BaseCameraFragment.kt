@@ -249,6 +249,11 @@ open class BaseCameraFragment : SimpleFragment() {
         bindView.rulerView.valueFrom = cameraManager.cameraMinZoom.toFloat()
         bindView.rulerView.valueTo = cameraManager.cameraMaxZoom.toFloat()
         bindView.rulerView.value = cameraManager.cameraCurrentZoom
+        if(cameraManager.cameraCurrentZoom>1){
+            bindView.rulerView.visiable()
+        }else{
+            bindView.rulerView.gone()
+        }
         bindView.tvLocation.click {
             getLocationInfo()
         }
@@ -319,9 +324,11 @@ open class BaseCameraFragment : SimpleFragment() {
         }
         bindView.rulerView.addOnChangeListener { _, value, fromUser ->
             if(fromUser){
-                cameraManager.setCameraZoom(value)
+
+                showCameraZoomBar(value)
             }
         }
+
 
     }
 

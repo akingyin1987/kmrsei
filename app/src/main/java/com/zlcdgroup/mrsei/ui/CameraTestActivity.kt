@@ -17,8 +17,10 @@ import android.view.KeyEvent
 import android.view.View
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.akingyin.base.SimpleActivity
+import com.akingyin.base.config.AppFileConfig
 import com.akingyin.base.ext.startActivity
 import com.akingyin.base.ext.startRegisterForActivityResult
+import com.akingyin.base.utils.RandomUtil
 import com.akingyin.bmap.BDLocationService
 import com.akingyin.bmap.BDMapManager
 import com.akingyin.bmap.PanoramaBaiduMapActivity
@@ -32,6 +34,7 @@ import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
 
 import com.zlcdgroup.mrsei.R
+import java.io.File
 
 
 /**
@@ -59,7 +62,10 @@ class CameraTestActivity : SimpleActivity() {
     }
 
     override fun initView() {
-        val fragment = BaseCameraFragment.newInstance(CameraParameBuild(), sharedPreferencesName = "app_camera_setting")
+        val fragment = BaseCameraFragment.newInstance(CameraParameBuild().apply {
+            saveFileDir = AppFileConfig.APP_FILE_ROOT
+            localPath = saveFileDir+ File.separator+RandomUtil.randomUUID+".jpg"
+        }, sharedPreferencesName = "app_camera_setting")
         fragment.cameraLiveData.observe(this,  {
             println("data->$it")
             showSucces("拍照成功->$it")
