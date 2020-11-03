@@ -19,19 +19,17 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.navigation.NavArgument
-
 import androidx.navigation.fragment.NavHostFragment
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.config.AppFileConfig
-import com.akingyin.base.utils.StringUtils
+import com.akingyin.base.utils.RandomUtil
 import com.akingyin.media.R
 import com.akingyin.media.camera.CameraData
 import com.akingyin.media.camera.CameraManager
 import com.akingyin.media.camerax.CameraxManager
 import com.akingyin.media.databinding.ActivityCameraxNavBinding
+import com.akingyin.media.engine.LocationManagerEngine
 
 const val IMMERSIVE_FLAG_TIMEOUT = 500L
 const val FLAGS_FULLSCREEN =
@@ -48,12 +46,13 @@ const val FLAGS_FULLSCREEN =
  * @version V1.0
  */
 
-class CameraxActivity : SimpleActivity() {
+open  class CameraxActivity : SimpleActivity() {
 
 
 
     private  var  cameraInfoBroadcastReceiver : BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
+            println("收到广播->>>")
             intent?.let {
                 when(it.action){
 
@@ -95,28 +94,28 @@ class CameraxActivity : SimpleActivity() {
 
     }
 
+    lateinit var  photoDir:String
+
+
     override fun initViewBind() {
+
         cameraxNavBinding = ActivityCameraxNavBinding.inflate(layoutInflater)
         setContentView(cameraxNavBinding.root)
-        val  fragment = supportFragmentManager.findFragmentById(R.id.nav_camerax_graph)
-        println("null==${null == fragment}")
-        supportFragmentManager.fragments.firstOrNull()?.let {
-            if(it is NavHostFragment){
-                it.navController.graph.addArgument("filePath",NavArgument.Builder().setDefaultValue(Bundle().apply {
-                    putString("fileDir", AppFileConfig.APP_FILE_ROOT)
-                    putString("fileName", StringUtils.getUUID()+".jpg")
-                }).build())
-            }
+        photoDir = intent.getStringExtra(CameraxManager.KEY_CAMERA_PHOTO_DIR)?:AppFileConfig.APP_FILE_ROOT
+        val  photoName = intent.getStringExtra(CameraxManager.KEY_CAMERA_PHOTO_SINGLE_NAME)?:RandomUtil.randomUUID+".jpg"
+        val sharedPreferencesName = intent.getStringExtra("sharedPreferencesName")?:"app_setting"
+        cameraxNavBinding.fragmentContainer.post {
+             supportFragmentManager.findFragmentById(R.id.fragment_container)?.let {
+                 val navHostFragment = it  as NavHostFragment
+                 navHostFragment.navController.setGraph(R.navigation.nav_camerax_graph,PermissionsCameraFragmentArgs.Builder(photoDir,photoName,sharedPreferencesName).build().toBundle())
+             }
+            CameraxFragment.setCameraXLocationEngine(getLocationEngine())
         }
-      //  Navigation.findNavController(this,R.id.nav_camerax_graph)
-//        Navigation.findNavController(cameraxNavBinding.fragmentContainer).graph.addArgument("filePath",
-//                NavArgument.Builder()
-//                        .setDefaultValue(Bundle().apply {
-//                            putString("fileDir",AppFileConfig.APP_FILE_ROOT)
-//                            putString("fileName",StringUtils.getUUID()+".jpg")
-//                        }).build())
+
 
     }
+
+    open  fun  getLocationEngine():LocationManagerEngine?=null
 
     override fun onSaveInstanceData(outState: Bundle?) {
 

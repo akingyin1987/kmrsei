@@ -29,15 +29,16 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.setPadding
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.navigation.Navigation
+
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.akingyin.base.SimpleFragment
 import com.akingyin.base.ext.*
 import com.akingyin.base.mvvm.SingleLiveEvent
-import com.akingyin.base.utils.FileUtils
 import com.akingyin.base.utils.PreferencesUtil
 import com.akingyin.media.MediaConfig
 import com.akingyin.media.R
@@ -45,6 +46,7 @@ import com.akingyin.media.camera.*
 import com.akingyin.media.camera.ui.CameraSettingActivity
 import com.akingyin.media.camerax.CameraxManager
 import com.akingyin.media.camerax.CameraxSurfaceView
+import com.akingyin.media.camerax.GalleryDataVo
 import com.akingyin.media.camerax.callback.MotionFocusCall
 import com.akingyin.media.databinding.FragmentCameraxBinding
 import com.akingyin.media.engine.LocationEngine
@@ -70,7 +72,9 @@ open class CameraxFragment : SimpleFragment() {
     lateinit var bindView: FragmentCameraxBinding
     lateinit var cameraxManager: CameraxManager
     lateinit var sharedPreferencesName: String
-    var locationEngine : LocationEngine?=null
+    private val locationEngine : LocationEngine? by lazy {
+        locationEngineManager?.createEngine()
+    }
     private var cameraParameBuild :CameraParameBuild  by Delegates.notNull()
     private var bindCameraInit = false
     lateinit var  displayManager:DisplayManager
@@ -100,10 +104,10 @@ open class CameraxFragment : SimpleFragment() {
 
     override fun initEventAndData() {
         cameraxManager = CameraxManager(requireContext(),bindView.viewFinder.camera_surface)
-        sharedPreferencesName = arguments?.getString("sharedPreferencesName", "app_setting")
-            ?: "app_setting"
-        cameraParameBuild = arguments?.getParcelable("data") ?: CameraParameBuild()
-        cameraParameBuild.localPath = args.fileDir+ File.separator+args.fileName
+        sharedPreferencesName = args.sharedPreferencesName
+        cameraParameBuild =  CameraParameBuild()
+        cameraParameBuild.localPath = if(args.fileName.isNullOrEmpty()){""}else{args.fileDir+File.separator+args.fileName}
+        cameraParameBuild.saveFileDir = args.fileDir
         println("传递的参数")
         initCameraParame(cameraParameBuild)
     }
@@ -222,6 +226,23 @@ open class CameraxFragment : SimpleFragment() {
         controls.findViewById<ImageButton>(R.id.camera_capture_button).click {
             captureImage()
         }
+        controls.findViewById<ImageButton>(R.id.photo_view_button).click {
+            cameraLiveData.value?.let {
+                cameraData ->
+                if(cameraData.cameraPhotoDatas.isEmpty()){
+                    showError("没有可查看的照片")
+                }else{
+                    findNavController().navigate(CameraxFragmentDirections.actionCameraToGallery(GalleryDataVo().apply {
+                        data =cameraData.cameraPhotoDatas
+                    }))
+                }
+
+            }?:showError("没有可查看的照片")
+
+        }
+        controls.findViewById<ImageButton>(R.id.camera_switch_button).click {
+            CameraxManager.sendTakePhtotCancel(requireContext())
+        }
 
 
 
@@ -304,7 +325,7 @@ open class CameraxFragment : SimpleFragment() {
             countDownStop()
             if(cameraParameBuild.focesedAutoPhotoDelayTime>0 ){
 
-                countDownStart(cameraParameBuild.focesedAutoPhotoDelayTime,"自动拍照"){
+                countDownStart(cameraParameBuild.focesedAutoPhotoDelayTime){
                     captureImage()
                 }
             }else{
@@ -318,8 +339,8 @@ open class CameraxFragment : SimpleFragment() {
     /**
      * 开始倒计时
      */
-    private fun  countDownStart(count:Int,tip:String,call:()->Unit){
-        bindView.textCountDownTip.text = tip
+    private fun  countDownStart(count:Int,call:()->Unit){
+        bindView.textCountDownTip.text = "自动拍照"
         countDownJob = lifecycleScope.launch(Dispatchers.Main){
             for (i in count downTo 1){
                 bindView.textCountDown.text = i.toString()
@@ -411,16 +432,27 @@ open class CameraxFragment : SimpleFragment() {
             }
         }
     }
+
+
     private  var  cameraInfoBroadcastReceiver : BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
+            println("fragment 收到相机广播信息--->")
             intent?.let {
                when(it.action){
                    CameraxManager.KEY_CAMERA_PHOTO_DELECT_ACTION->{
-
+                      val  filePath = it.getStringExtra("filePath")?:""
+                       cameraLiveData.value?.cameraPhotoDatas?.remove(filePath)
                    }
                    CameraxManager.KEY_CAMERA_PHOTO_ADD_ACTION->{
+                       val  filePath = it.getStringExtra("filePath")?:""
+                       cameraLiveData.value?.cameraPhotoDatas?.add(filePath)
+                       cameraLiveData.value?.cameraPhotoDatas?.lastOrNull()?.let { path->
+                           setGalleryThumbnail(File(path).toUri())
+                       }?: setGalleryThumbnail(null)
+
 
                    }
+                   else -> {}
                }
             }
         }
@@ -479,7 +511,7 @@ open class CameraxFragment : SimpleFragment() {
                        cameraLiveData.value = CameraData().apply {
                            if(cameraParameBuild.supportMultiplePhoto){
                                supportMultiplePhoto = true
-                               cameraPhotoDatas[it.getOrDefault("")] = it.getOrDefault("")
+                               cameraPhotoDatas.add(it.getOrDefault(""))
                            }else{
                                supportMultiplePhoto = false
                                mediaType = MediaConfig.TYPE_IMAGE
@@ -489,7 +521,7 @@ open class CameraxFragment : SimpleFragment() {
                        return@takePicture
                    }
                }
-               Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(CameraxFragmentDirections.actionCameraToPhoto(it.getOrDefault(""),sharedPreferencesName))
+               findNavController().navigate(CameraxFragmentDirections.actionCameraToPhoto(it.getOrDefault(""),sharedPreferencesName))
            }
 
         }
@@ -502,15 +534,15 @@ open class CameraxFragment : SimpleFragment() {
            },ANIMATION_SLOW_MILLIS)
         }
     }
-    private fun setGalleryThumbnail(uri: Uri) {
-        // Reference of the view that holds the gallery thumbnail
-        val thumbnail = bindView.root.findViewById<ImageButton>(R.id.photo_view_button)
+    private fun setGalleryThumbnail(uri: Uri?) {
 
-        // Run the operations in the view's thread
+        val thumbnail = bindView.root.findViewById<ImageButton>(R.id.photo_view_button)
+        println("setGalleryThumbnail->${null == thumbnail}")
+
         thumbnail?.post {
-            // Remove thumbnail padding
+            println("显示当前 拍照图片->$uri")
+
             thumbnail.setPadding(resources.getDimension(R.dimen.stroke_small).toInt())
-            // Load thumbnail into circular button using Glide
             Glide.with(thumbnail)
                     .load(uri)
                     .apply(RequestOptions.circleCropTransform())
@@ -530,44 +562,10 @@ open class CameraxFragment : SimpleFragment() {
             onPermissionGranted()
         }else{
             bindCameraInit = false
-
-            Navigation.findNavController(requireActivity(),R.id.fragment_container).navigate(CameraxFragmentDirections.actionCameraToPermissions().apply {
-                arguments.apply {
-                    putString("fileName",FileUtils.getFileName(cameraParameBuild.localPath))
-                    putString("fileDir",FileUtils.getFolderName(cameraParameBuild.localPath))
-                }
-            })
-            cameraSensorController.onResume()
-//            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
-//                //通过的权限
-//                val grantedList = it.filterValues {
-//                    value->
-//                    value
-//                }.mapNotNull {
-//                    value->
-//                    value.key
-//                }
-//                //是否所有权限都通过
-//                val allGranted = grantedList.size == it.size
-//                val list = (it - grantedList).map { it.key }
-//                //未通过的权限
-//                val deniedList = list.filter {
-//                    ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), it)
-//                }
-//                //拒绝并且点了“不再询问”权限
-//               val alwaysDeniedList = list - deniedList
-//                if(allGranted){
-//                    onPermissionGranted()
-//                }else{
-//                    mView.let { v ->
-//                        Snackbar.make(v, "拍照没有这些权限将无法运行！$alwaysDeniedList", Snackbar.LENGTH_INDEFINITE)
-//                                .setAction("退出") { ActivityCompat.finishAffinity(requireActivity()) }
-//                                .show()
-//                    }
-//                }
-//            }.launch(cameraPermissions)
-
+            findNavController().navigate(CameraxFragmentDirections.actionCameraToPermissions(args.fileDir,args.fileName,args.sharedPreferencesName))
         }
+
+        cameraSensorController.onResume()
     }
 
     // Check for the permissions
@@ -603,7 +601,7 @@ open class CameraxFragment : SimpleFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         // Shut down our background executor
-
+        println("onDestroyView->>>cameraFragment")
         cameraxManager.unBindCamera()
         cameraxManager.stopCameraPreview()
         // Unregister the broadcast receivers and listeners
@@ -615,17 +613,12 @@ open class CameraxFragment : SimpleFragment() {
     companion object{
         const val ANIMATION_FAST_MILLIS = 50L
         const val ANIMATION_SLOW_MILLIS = 100L
+        private var  locationEngineManager:LocationManagerEngine?=null
+        fun setCameraXLocationEngine(locationManagerEngine: LocationManagerEngine?){
+            locationEngineManager = locationManagerEngine
 
-
-        fun newInstance(cameraParameBuild: CameraParameBuild, sharedPreferencesName: String = "app_setting", locationManagerEngine: LocationManagerEngine?=null): CameraxFragment {
-            return CameraxFragment().apply {
-                locationEngine = locationManagerEngine?.createEngine()
-                arguments = Bundle().apply {
-                    putParcelable("data", cameraParameBuild)
-                    putString("sharedPreferencesName", sharedPreferencesName)
-
-                }
-            }
         }
+
+
     }
 }

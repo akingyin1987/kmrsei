@@ -7,6 +7,8 @@
  * akingyin@163.com
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.akingyin.media.camera
 
 import android.content.Context
@@ -88,7 +90,7 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
             }
         }
         camera_surface.pinchToZoomGestureDetector =  PinchToZoomGestureDetector(context, MyScaleGestureDetector(), object : PinchToZoomGestureDetector.OnCamerZoomListion {
-            override fun getZoomRatio() = cameraManager.getZoomRatio().toFloat()
+            override fun getZoomRatio() = cameraManager.getZoomRatio()
 
             override fun getMaxZoomRatio() = cameraManager.cameraMaxZoom.toFloat()
 

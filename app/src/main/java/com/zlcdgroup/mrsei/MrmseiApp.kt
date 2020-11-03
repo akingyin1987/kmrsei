@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.multidex.MultiDex
 import com.akingyin.base.BaseApp
 import com.akingyin.base.config.AppFileConfig
+import com.akingyin.base.config.BaseConfig
 import com.akingyin.base.ext.Ext
 import com.akingyin.base.ext.spGetString
 import com.akingyin.base.ext.spSetString
@@ -87,6 +88,7 @@ class MrmseiApp :BaseApp() {
         showDebugDBAddressLogToast(this)
         ApiHost.setHost("http://test.zlcdgroup.cn:38085/MRMSEIYCSW/")
         RetrofitConfig.getDefaultService()
+        BaseConfig.saveAuthority(BuildConfig.APPLICATION_ID)
         val  theme = spGetString("themePref")
         println("theme=$theme")
         if(TextUtils.isEmpty(theme)){

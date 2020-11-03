@@ -65,7 +65,8 @@ class SteperActivity : BaseDaggerActivity() , StepperLayout.StepperListener, OnN
     }
 
     override fun onChangeEndButtonsEnabled(enabled: Boolean) {
-
+        stepperLayout.setNextButtonVerificationFailed(!enabled)
+        stepperLayout.setCompleteButtonVerificationFailed(!enabled)
     }
 
     override fun onBackPressed() {

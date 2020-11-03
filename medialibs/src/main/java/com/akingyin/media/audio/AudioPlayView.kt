@@ -77,6 +77,7 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
         dialog_audio_name.text = error
     }
 
+    @Suppress("DEPRECATION")
     class AudioHandler(dialog: AudioPlayView) : Handler() {
         private val week: WeakReference<AudioPlayView> by lazy {
             WeakReference<AudioPlayView>(dialog)

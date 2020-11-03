@@ -46,6 +46,7 @@
        android:layout_width="@dimen/round_button_small"
        android:layout_height="@dimen/round_button_small"
        android:scaleType="fitCenter"
+
        android:background="@android:color/transparent"
        app:srcCompat="@drawable/ic_share" />
 

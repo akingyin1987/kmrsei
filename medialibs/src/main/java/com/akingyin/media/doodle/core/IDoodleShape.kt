@@ -10,7 +10,6 @@
 package com.akingyin.media.doodle.core
 
 import android.graphics.*
-import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 
 import com.akingyin.media.doodle.Pt
@@ -128,7 +127,7 @@ abstract class IDoodleShape : Sticker() {
         canvas.drawLine(x1, y1, x3, y3, paint)
         canvas.drawLine(x2, y2, x4, y4, paint)
         canvas.drawLine(x4, y4, x3, y3, paint)
-        val rotation = calculateRotation(x4, y4, x3, y3)
+       // val rotation = calculateRotation(x4, y4, x3, y3)
         canvas.restoreToCount(count)
     }
 

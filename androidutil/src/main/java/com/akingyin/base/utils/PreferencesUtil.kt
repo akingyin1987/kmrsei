@@ -119,6 +119,7 @@ object PreferencesUtil {
         return getPreferences(name).getStringSet(key, defValue)
     }
 
+    @Suppress("UNCHECKED_CAST")
     @TargetApi(Build.VERSION_CODES.FROYO)
     operator fun <C : Serializable?> get(name: String, key: String, defValue: C): C {
         var bais: ByteArrayInputStream? = null

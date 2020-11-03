@@ -36,6 +36,7 @@ import kotlin.math.abs
 
 internal typealias Func<T> = (T?) -> Unit
 
+@Suppress("DEPRECATION")
 class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: Activity, var autoLoc: Boolean = true) : IMapManager() {
 
 

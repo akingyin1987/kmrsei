@@ -17,11 +17,12 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
-import com.akingyin.media.R
 
-private const val PERMISSIONS_REQUEST_CODE = 10
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+
+
+
 private val PERMISSIONS_REQUIRED = arrayOf(Manifest.permission.CAMERA)
 /**
  * @ Description:
@@ -30,6 +31,9 @@ private val PERMISSIONS_REQUIRED = arrayOf(Manifest.permission.CAMERA)
  * @version V1.0
  */
 class PermissionsCameraFragment : Fragment(){
+
+     private val args: PermissionsCameraFragmentArgs by navArgs()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if(!hasPermissions(requireContext())){
@@ -46,18 +50,7 @@ class PermissionsCameraFragment : Fragment(){
     }
 
    private fun  gotoCameraFragment(){
-        val  fileName =arguments?.getString("fileName","")?:""
-        val  fileDir = arguments?.getString("fileDir","")?:""
-        if(fileName.isNotEmpty() and fileDir.isNotEmpty()){
-            Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(PermissionsCameraFragmentDirections.actionPermissionsToCamera(fileDir,fileName))
-
-        }else{
-            val map = NavHostFragment.findNavController(this).graph.arguments
-            val bundle = map["filePath"]?.defaultValue?.let {
-                it as Bundle
-            }
-            Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(PermissionsCameraFragmentDirections.actionPermissionsToCamera(bundle?.getString("fileDir")?:"",bundle?.getString("fileName")?:""))
-        }
+       findNavController().navigate(PermissionsCameraFragmentDirections.actionPermissionsToCamera(args.fileDir,args.fileName?:"",args.sharedPreferencesName))
 
     }
 

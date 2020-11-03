@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.akingyin.media.audio
 
 import android.content.ContentResolver

@@ -175,7 +175,7 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
     /**
      * 设置当前相机参数角度
      */
-    @SuppressLint("RestrictedApi")
+    @SuppressLint("RestrictedApi", "UnsafeExperimentalUsageError")
     fun  setCameraUseCasesRotation(view:View){
         preview?.targetRotation = view.display.rotation
         imageCapture?.targetRotation = view.display.rotation
@@ -218,6 +218,7 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
      */
     fun takePicture(callBack: (result:Result<String>) -> Unit){
         // Create output file to hold the image
+
         val photoFile = File(cameraParameBuild.localPath)
         // Setup image capture metadata
         val metadata = ImageCapture.Metadata().apply {
@@ -480,6 +481,11 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
         /** 拍照取消 */
         const val KEY_CAMERA_PHOTO_CANCEL_ACTION="android.camera.photo.cancel.action"
 
+        /** 拍照路径 */
+        const val KEY_CAMERA_PHOTO_DIR="camera.photo.dir"
+
+        /** 拍单张时图片名称 */
+        const val KEY_CAMERA_PHOTO_SINGLE_NAME="camera.photo.single.name"
 
 
         fun  sendAddTakePhoto(filePath:String,context: Context,complete: Boolean = true){
@@ -497,7 +503,7 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
         fun  sendTakePhotoComplete(cameraData: CameraData,context: Context){
             LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(KEY_CAMERA_PHOTO_COMPLETE_ACTION).apply {
                if(cameraData.supportMultiplePhoto){
-                   putExtra("filePaths",cameraData.cameraPhotoDatas.keys.toTypedArray())
+                   putExtra("filePaths",cameraData.cameraPhotoDatas.toTypedArray())
                }else{
                    putExtra("filePath",cameraData.localPath)
                }

@@ -79,26 +79,31 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
              bindView.btnCustom.gone()
          }
          if(cameraParameBuild.supportAutoSavePhoto){
-            countDownStart(cameraParameBuild.autoSavePhotoDelayTime,"拍照保存"){
+            countDownStart(cameraParameBuild.autoSavePhotoDelayTime){
                 saveTakePhoto()
             }
          }
         GlideEngine.getGlideEngineInstance().loadImage(requireContext(),cameraParameBuild.localPath,bindView.cameraPhoto)
         bindView.btnCancel.click {
+            //放弃当前拍照
             if(cameraParameBuild.supportMultiplePhoto){
-              findNavController().popBackStack()
+               findNavController().navigateUp()
             }else{
                 CameraxManager.sendTakePhtotCancel(requireContext())
             }
         }
         bindView.backButton.click {
-            onBackPressed()
+            findNavController().navigateUp()
         }
         bindView.btnConfig.click {
             CameraxManager.sendAddTakePhoto(args.filePath,requireContext(),!cameraParameBuild.supportMultiplePhoto)
+            if(cameraParameBuild.supportMultiplePhoto){
+                findNavController().navigateUp()
+            }
         }
         bindView.btnCustom.click {
             CameraxManager.sendAddTakePhoto(args.filePath,requireContext(),false)
+            findNavController().popBackStack()
         }
         bindView.infoButton.click {
             MedialFileInfoFragmentDialog.newInstance(args.filePath).show(childFragmentManager,"medialInfo")
@@ -170,8 +175,8 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
     /**
      * 开始倒计时
      */
-    private fun  countDownStart(count:Int,tip:String,call:()->Unit){
-        bindView.textCountDownTip.text = tip
+    private fun  countDownStart(count:Int,call:()->Unit){
+        bindView.textCountDownTip.text = "拍照保存"
         countDownJob = lifecycleScope.launch(Dispatchers.Main){
             for (i in count downTo 1){
                 bindView.textCountDown.text = i.toString()

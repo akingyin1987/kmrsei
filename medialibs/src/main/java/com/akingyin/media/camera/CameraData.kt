@@ -9,6 +9,7 @@
 
 package com.akingyin.media.camera
 
+
 import android.os.Parcel
 import android.os.Parcelable
 import com.akingyin.media.MediaMimeType
@@ -31,7 +32,7 @@ class CameraData() : Parcelable {
     var  supportMultiplePhoto = false
 
     /** 多张照片 */
-    var  cameraPhotoDatas = mutableMapOf<String,String>()
+    var  cameraPhotoDatas = mutableListOf<String>()
 
     var   result = true
 
@@ -41,10 +42,6 @@ class CameraData() : Parcelable {
         originalPath = parcel.readString()?:""
         supportMultiplePhoto = parcel.readByte() != 0.toByte()
         result = parcel.readByte() != 0.toByte()
-    }
-
-    override fun toString(): String {
-        return "CameraData(mediaType=$mediaType, localPath='$localPath', originalPath='$originalPath', result=$result)"
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

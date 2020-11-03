@@ -9,6 +9,7 @@
 
 package com.akingyin.amap
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.BitmapDrawable
 import android.location.Location
 import android.location.LocationManager
@@ -24,7 +25,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.akingyin.base.ext.click
 import com.akingyin.base.ext.startActivity
-import com.akingyin.base.utils.DateUtil
+
 import com.akingyin.map.IMarker
 import com.akingyin.map.R
 import com.akingyin.map.adapter.MarkerInfoViewPager2Adapter
@@ -76,6 +77,7 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
 
 
     private   var   lastZoomChangeTime = 0L
+    @SuppressLint("InflateParams")
     override fun initView() {
         super.initView()
 
@@ -328,7 +330,8 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
     /**
      * 显示当前marker详情
      */
-    fun    showMapMarkerListInfo(postion: Int,viewDatas:List<T> ,notsetMarker: Boolean = false){
+    @Suppress("UNCHECKED_CAST")
+    fun    showMapMarkerListInfo(postion: Int, viewDatas:List<T>, notsetMarker: Boolean = false){
         try {
 
             mPopupBottonWindow?.let {

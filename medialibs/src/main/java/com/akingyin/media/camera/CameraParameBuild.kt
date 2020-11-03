@@ -70,8 +70,10 @@ class CameraParameBuild() : Parcelable {
     /**
      * 当前图片保存路径
      */
-    var  localPath =AppFileConfig.APP_FILE_ROOT+ File.separator+StringUtils.getUUID()+".jpg"
+    var  localPath =""
 
+    /**保存文件目录 */
+    var  saveFileDir:String=AppFileConfig.APP_FILE_ROOT
     /**
      * 是否强制横向照片
      */
@@ -106,6 +108,7 @@ class CameraParameBuild() : Parcelable {
         supportMultiplePhoto = parcel.readByte() != 0.toByte()
         cameraResolution = parcel.readParcelable(Point::class.java.classLoader)
         localPath = parcel.readString()?:""
+        saveFileDir = parcel.readString()?:""
         horizontalPicture = parcel.readByte() != 0.toByte()
         cameraAngle = parcel.readInt()
         lat = parcel.readDouble()
@@ -163,6 +166,7 @@ class CameraParameBuild() : Parcelable {
         parcel.writeByte(if (supportMultiplePhoto) 1 else 0)
         parcel.writeParcelable(cameraResolution, flags)
         parcel.writeString(localPath)
+        parcel.writeString(saveFileDir)
         parcel.writeByte(if (horizontalPicture) 1 else 0)
         parcel.writeInt(cameraAngle)
         parcel.writeDouble(lat)

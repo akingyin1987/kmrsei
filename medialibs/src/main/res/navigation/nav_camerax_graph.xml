@@ -23,6 +23,18 @@
         app:destination="@id/camerax_fragment"
         app:popUpTo="@id/permissions_fragment"
         app:popUpToInclusive="true" />
+    <argument
+        android:name="fileDir"
+        app:argType="string"
+        app:nullable="false" />
+    <argument
+        android:name="fileName"
+        app:argType="string"
+        app:nullable="true" />
+    <argument android:name="sharedPreferencesName"
+        app:argType="string"/>
+
+
   </fragment>
 
   <fragment
@@ -33,8 +45,7 @@
     <action
         android:id="@+id/action_camera_to_permissions"
         app:destination="@id/permissions_fragment"
-        app:popUpTo="@id/camerax_fragment"
-        app:popUpToInclusive="true" />
+        />
 
     <action
         android:id="@+id/action_camera_to_photo"
@@ -50,7 +61,9 @@
     <argument
         android:name="fileName"
         app:argType="string"
-        app:nullable="false" />
+        app:nullable="true" />
+    <argument android:name="sharedPreferencesName"
+        app:argType="string"/>
   </fragment>
 
 
@@ -73,9 +86,9 @@
             tools:layout="@layout/fragment_gallery"
             android:label="拍照图片浏览">
 
-    <argument android:name="filePaths"
-        app:argType="string"
-        app:nullable="false"/>
+
+    <argument android:name="photoPaths"
+           app:argType="com.akingyin.media.camerax.GalleryDataVo"/>
   </fragment>
 
 </navigation>

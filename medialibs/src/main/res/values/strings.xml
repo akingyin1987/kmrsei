@@ -96,6 +96,6 @@
     <string name="capture_mode_hdr">HDR</string>
     <string name="capture_mode_night">Night</string>
     <string name="delete_button_alt">Delete</string>
-    <string name="delete_dialog">Delete current photo?</string>
-    <string name="delete_title">Confirm</string>
+    <string name="delete_dialog">确定要删除当前拍摄照片?</string>
+    <string name="delete_title">提示</string>
 </resources>
