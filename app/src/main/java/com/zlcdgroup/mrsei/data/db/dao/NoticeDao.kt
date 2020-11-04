@@ -1,6 +1,7 @@
 package com.zlcdgroup.mrsei.data.db.dao
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.zlcdgroup.mrsei.data.entity.NoticeEntity
@@ -41,4 +42,7 @@ interface NoticeDao {
      */
     @RawQuery
     fun  searchNotice(query:SupportSQLiteQuery):List<NoticeEntity>
+
+    @Query("select * from tb_notice ")
+    fun  searchPageNotice():PagingSource<Int,NoticeEntity>
 }

@@ -101,9 +101,6 @@ dependencies {
   // optional - Test helpers for LiveData
 
 
-  // paging
-  def paging_version = "3.0.0-alpha08"
-  api  "androidx.paging:paging-runtime-ktx:$paging_version"
 
   // Navigation library
   def nav_version = "2.3.1"

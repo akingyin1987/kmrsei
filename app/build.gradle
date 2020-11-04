@@ -165,15 +165,30 @@ greendao {
 dependencies {
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-  def room_version = "2.2.5"
+  def room_version = "2.3.0-alpha03"
   api "androidx.room:room-runtime:$room_version"
   kapt "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
   // optional - Kotlin Extensions and Coroutines support for Room
-  api "androidx.room:room-ktx:$room_version"
+  implementation "androidx.room:room-ktx:$room_version"
   // optional - RxJava support for Room
-  api "androidx.room:room-rxjava2:$room_version"
+  implementation "androidx.room:room-rxjava2:$room_version"
   // optional - Guava support for Room, including Optional and ListenableFuture
-  api "androidx.room:room-guava:$room_version"
+  implementation "androidx.room:room-guava:$room_version"
+
+  // paging
+  def paging_version = "3.0.0-alpha08"
+
+  implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+
+  // alternatively - without Android dependencies for tests
+  testImplementation "androidx.paging:paging-common-ktx:$paging_version"
+
+  // optional - RxJava2 support
+ // implementation "androidx.paging:paging-rxjava2:$paging_version"
+
+  // optional - Guava ListenableFuture support
+ // implementation "androidx.paging:paging-guava:$paging_version"
+
   // Test helpers
   testImplementation "androidx.room:room-testing:$room_version"
   debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
