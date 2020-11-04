@@ -23,6 +23,7 @@ import androidx.navigation.fragment.navArgs
 import com.akingyin.base.SimpleFragment
 import com.akingyin.base.config.BaseConfig
 import com.akingyin.base.ext.*
+
 import com.akingyin.media.R
 import com.akingyin.media.camera.CameraBitmapUtil
 import com.akingyin.media.camera.CameraData
@@ -32,6 +33,7 @@ import com.akingyin.media.camerax.CameraxManager
 import com.akingyin.media.databinding.FragmentConfigPhotoBinding
 import com.akingyin.media.glide.GlideEngine
 import com.akingyin.media.ui.fragment.MedialFileInfoFragmentDialog
+import com.bumptech.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -77,6 +79,7 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
 
          if(cameraParameBuild.supportMultiplePhoto){
              bindView.btnCustom.visiable()
+             println("显示")
          }else{
              bindView.btnCustom.gone()
          }
@@ -85,7 +88,12 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
                 saveTakePhoto()
             }
          }
-        GlideEngine.getGlideEngineInstance().loadImage(requireContext(),cameraParameBuild.localPath,bindView.cameraPhoto)
+         Glide.with(bindView.cameraPhoto).apply {
+             load(cameraParameBuild.localPath).fitCenter()
+
+                 .into(bindView.cameraPhoto)
+         }
+
         bindView.btnCancel.click {
             //放弃当前拍照
 
@@ -127,9 +135,6 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
             }
         }
 
-        if(cameraParameBuild.supportMultiplePhoto){
-           bindView.btnCustom.gone()
-        }
 
         bindView.btnCustom.click {
             CameraxManager.sendAddTakePhoto(args.filePath,requireContext(),false)

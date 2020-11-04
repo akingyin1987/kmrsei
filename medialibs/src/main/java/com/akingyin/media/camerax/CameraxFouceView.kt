@@ -14,8 +14,8 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import com.akingyin.media.R
+import android.view.animation.AnimationSet
+import android.view.animation.ScaleAnimation
 import kotlin.math.abs
 
 /**
@@ -25,7 +25,7 @@ import kotlin.math.abs
  * @version V1.0
  */
 class CameraxFouceView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
     ////焦点附近设置矩形区域作为对焦区域
     private var touchFocusRect: Rect? = null
@@ -69,9 +69,9 @@ class CameraxFouceView @JvmOverloads constructor(
 
         return screenPoint?.let {
             val areaSize = FOCUS_AREA_SIZE * (coefficient.toInt())
-            val left =clamp((y/it.y*2000-1000).toInt(),areaSize)
-            val top = clamp(((it.x-x)/it.x*2000-1000).toInt(),areaSize)
-            return@let Rect(left,top,left+areaSize,top+areaSize)
+            val left =clamp((y / it.y * 2000 - 1000).toInt(), areaSize)
+            val top = clamp(((it.x - x) / it.x * 2000 - 1000).toInt(), areaSize)
+            return@let Rect(left, top, left + areaSize, top + areaSize)
         }
 
 
@@ -84,7 +84,12 @@ class CameraxFouceView @JvmOverloads constructor(
         //以焦点为中心，宽度为300的矩形框
 
         //以焦点为中心，宽度为300的矩形框
-        touchFocusRect = Rect((x - 150).toInt(), (y - 150).toInt(), (x + 150).toInt(), (y + 150).toInt())
+        touchFocusRect = Rect(
+            (x - 150).toInt(),
+            (y - 150).toInt(),
+            (x + 150).toInt(),
+            (y + 150).toInt()
+        )
         //对焦区域
 //        val targetFocusRect =calculateTapArea(x,y,1F)?: Rect().apply {
 //            touchFocusRect?.let {
@@ -94,13 +99,13 @@ class CameraxFouceView @JvmOverloads constructor(
 //                bottom = it.bottom * 2000 / height - 1000
 //            }
 //        }
-        doTouchFocus(cameraxManager,x,y)
+        doTouchFocus(cameraxManager, x, y)
         postInvalidate()//刷新界面，
     }
 
-    private fun doTouchFocus(cameraxManager: CameraxManager,x:Float,y:Float) {
+    private fun doTouchFocus(cameraxManager: CameraxManager, x: Float, y: Float) {
         try {
-           cameraxManager.setCameraFocus(x,y){
+           cameraxManager.setCameraFocus(x, y){
                disDrawTouchFocusRect(it)
            }
 
@@ -110,8 +115,28 @@ class CameraxFouceView @JvmOverloads constructor(
         }
 
     }
+    private val scaleAnimation = ScaleAnimation(
+        1f, 2f, 1f, 2f,
+        Animation.RELATIVE_TO_SELF, 0.5f,
+        Animation.RELATIVE_TO_SELF, 0.5f
+    ).apply {
+        duration = 700
+    }
+    private val animationSet: AnimationSet = AnimationSet(true).apply {
+        addAnimation(scaleAnimation)
+        //  fillAfter = true
+        setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation) {}
+            override fun onAnimationEnd(animation: Animation) {
+                touchFocusRect = null
+                mPaint.color = Color.WHITE
+                println("清除画笔颜色")
+                postInvalidate()
+            }
 
-
+            override fun onAnimationRepeat(animation: Animation) {}
+        })
+    }
 
     //对焦完成后，清除对焦矩形框
     fun disDrawTouchFocusRect(result: Boolean = true) {
@@ -119,21 +144,22 @@ class CameraxFouceView @JvmOverloads constructor(
 
         invalidate()
 
-        AnimationUtils.loadAnimation(context, R.anim.camera_fouce_rotate).run {
-            setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation) {}
-                override fun onAnimationEnd(animation: Animation) {
-                    touchFocusRect = null
-                    mPaint.color = Color.WHITE
-                    println("清除画笔颜色")
-                    postInvalidate()
-                }
-
-                override fun onAnimationRepeat(animation: Animation) {}
-            })
-            startAnimation(this)
-
-        }
+        startAnimation(animationSet)
+//        AnimationUtils.loadAnimation(context, R.anim.camera_fouce_rotate).run {
+//            setAnimationListener(object : Animation.AnimationListener {
+//                override fun onAnimationStart(animation: Animation) {}
+//                override fun onAnimationEnd(animation: Animation) {
+//                    touchFocusRect = null
+//                    mPaint.color = Color.WHITE
+//                    println("清除画笔颜色")
+//                    postInvalidate()
+//                }
+//
+//                override fun onAnimationRepeat(animation: Animation) {}
+//            })
+//            startAnimation(this)
+//
+//        }
 
 
 
@@ -144,20 +170,68 @@ class CameraxFouceView @JvmOverloads constructor(
             canvas.run {
                 println("画笔颜色=${mPaint.color}")
                 //左下角
-                drawRect((left - 2).toFloat(), bottom.toFloat(), (left + 20).toFloat(), (bottom + 2).toFloat(), mPaint)
-                drawRect((left - 2).toFloat(), (bottom - 20).toFloat(), left.toFloat(), bottom.toFloat(), mPaint)
+                drawRect(
+                    (left - 2).toFloat(),
+                    bottom.toFloat(),
+                    (left + 20).toFloat(),
+                    (bottom + 2).toFloat(),
+                    mPaint
+                )
+                drawRect(
+                    (left - 2).toFloat(),
+                    (bottom - 20).toFloat(),
+                    left.toFloat(),
+                    bottom.toFloat(),
+                    mPaint
+                )
 
                 //左上角
-                drawRect((left - 2).toFloat(), (top - 2).toFloat(), (left + 20).toFloat(), top.toFloat(), mPaint)
-                drawRect((left - 2).toFloat(), top.toFloat(), (left + 2).toFloat(), (top + 20).toFloat(), mPaint)
+                drawRect(
+                    (left - 2).toFloat(),
+                    (top - 2).toFloat(),
+                    (left + 20).toFloat(),
+                    top.toFloat(),
+                    mPaint
+                )
+                drawRect(
+                    (left - 2).toFloat(),
+                    top.toFloat(),
+                    (left + 2).toFloat(),
+                    (top + 20).toFloat(),
+                    mPaint
+                )
 
                 //右上角
-                drawRect((right - 20).toFloat(), (top - 2).toFloat(), (right + 2).toFloat(), top.toFloat(), mPaint)
-                drawRect(right.toFloat(), top.toFloat(), (right + 2).toFloat(), (top + 20).toFloat(), mPaint)
+                drawRect(
+                    (right - 20).toFloat(),
+                    (top - 2).toFloat(),
+                    (right + 2).toFloat(),
+                    top.toFloat(),
+                    mPaint
+                )
+                drawRect(
+                    right.toFloat(),
+                    top.toFloat(),
+                    (right + 2).toFloat(),
+                    (top + 20).toFloat(),
+                    mPaint
+                )
 
                 //右下角
-                drawRect((right - 20).toFloat(), bottom.toFloat(), (right + 2).toFloat(), (bottom + 2).toFloat(), mPaint)
-                drawRect(right.toFloat(), (bottom - 20).toFloat(), (right + 2).toFloat(), bottom.toFloat(), mPaint)
+                drawRect(
+                    (right - 20).toFloat(),
+                    bottom.toFloat(),
+                    (right + 2).toFloat(),
+                    (bottom + 2).toFloat(),
+                    mPaint
+                )
+                drawRect(
+                    right.toFloat(),
+                    (bottom - 20).toFloat(),
+                    (right + 2).toFloat(),
+                    bottom.toFloat(),
+                    mPaint
+                )
             }
         }
 

@@ -312,29 +312,39 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
             callBack(false)
             return
         }
-        focusing = true
-        val point = previewView.meteringPointFactory.createPoint(x,y)
-        val action = FocusMeteringAction.Builder(point,FocusMeteringAction.FLAG_AF)
+        try {
+            focusing = true
+            val point = previewView.meteringPointFactory.createPoint(x,y)
+            val action = FocusMeteringAction.Builder(point,FocusMeteringAction.FLAG_AF)
                 .setAutoCancelDuration(3,TimeUnit.SECONDS).build()
-       camera?.cameraControl?.startFocusAndMetering(action)?.let {   future ->
-         future.addListener({
-            future.get().isFocusSuccessful.yes {
 
-              cameraMainExecutor.execute {
-                  focusing = false
-                  callBack.invoke(true)
-              }
-            }.no {
-                cameraMainExecutor.execute {
-                    focusing = false
-                    callBack.invoke(false)
-                }
+            camera?.cameraControl?.startFocusAndMetering(action)?.let {   future ->
+                future.addListener({
+                    future.get().isFocusSuccessful.yes {
+
+                        cameraMainExecutor.execute {
+                            focusing = false
+                            callBack.invoke(true)
+                        }
+                    }.no {
+                        cameraMainExecutor.execute {
+                            focusing = false
+                            callBack.invoke(false)
+                        }
+                    }
+                },cameraExecutor)
+
+            }?:callBack(false).apply {
+                focusing = false
             }
-         },cameraExecutor)
+        }catch (e :Exception){
+            e.printStackTrace()
+            cameraMainExecutor.execute {
+                focusing = false
+                callBack.invoke(false)
+            }
+        }
 
-       }?:callBack(false).apply {
-           focusing = false
-       }
 
     }
 

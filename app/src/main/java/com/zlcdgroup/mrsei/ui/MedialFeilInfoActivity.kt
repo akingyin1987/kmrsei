@@ -86,6 +86,10 @@ class MedialFeilInfoActivity:SimpleActivity() {
             override fun getLocationAddr(lat: Double, lng: Double, locType: String): String {
                return  BDMapManager.getBdMapGeocoderAddr(lat,lng,locType)
             }
+
+            override fun cancelLocation() {
+
+            }
         }
         supportFragmentManager.beginTransaction().add(R.id.container,fragmnet,"medialinfo")
                 .commit()

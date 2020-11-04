@@ -19,6 +19,7 @@ import com.blankj.utilcode.util.Utils
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
+import com.tencent.bugly.crashreport.CrashReport
 import com.umeng.commonsdk.UMConfigure
 import com.zlcdgroup.mrsei.data.db.help.DbCore
 import com.zlcdgroup.mrsei.di.component.DaggerAppComponent
@@ -71,6 +72,7 @@ class MrmseiApp :BaseApp() {
         DbCore.enableQueryBuilderLog()
         Timber.plant(Timber.DebugTree())
         BdMapApp.get().initBaiDuMap(this)
+        CrashReport.initCrashReport(applicationContext, "f56cc08d7c", false);
         registerReceiver(BdMapApp.get().receiver,BdMapApp.get().getiFilter())
         spSetString("ApiUrl","http://test.zlcdgroup.cn:38085/MRMSEIYCSW/")
         if(BuildConfig.DEBUG){

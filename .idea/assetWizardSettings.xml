@@ -31,17 +31,6 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
-                                      <entry key="clipartAsset">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="url" value="jar:file:/E:/Development/android-studio-stable/plugins/android/lib/android.jar!/images/material/icons/materialicons/undo/baseline_undo_24.xml" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
                                       <entry key="image">
                                         <value>
                                           <PersistentState>
@@ -61,6 +50,7 @@
                                               <map>
                                                 <entry key="color" value="000000" />
                                                 <entry key="opacityPercent" value="80" />
+                                                <entry key="text" value="再拍" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -73,6 +63,7 @@
                                               <map>
                                                 <entry key="color" value="000000" />
                                                 <entry key="opacityPercent" value="80" />
+                                                <entry key="text" value="再拍" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -82,9 +73,10 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="doodle_icon_undo" />
-                                      <entry key="theme" value="HOLO_DARK" />
-                                      <entry key="themeColor" value="000000" />
+                                      <entry key="assetType" value="TEXT" />
+                                      <entry key="outputName" value="ic_take_photo_agin" />
+                                      <entry key="theme" value="CUSTOM" />
+                                      <entry key="themeColor" value="d83a25" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -100,7 +92,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="imagePath" value="C:\Users\zlcd\AppData\Local\Temp\ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="C:\Users\Administrator\AppData\Local\Temp\ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -161,17 +153,6 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
-                                      <entry key="clipartAsset">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="url" value="jar:file:/E:/Development/android-studio-stable/plugins/android/lib/android.jar!/images/material/icons/materialicons/3d_rotation/baseline_3d_rotation_24.xml" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
                                       <entry key="image">
                                         <value>
                                           <PersistentState>
@@ -226,7 +207,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\zlcd\AppData\Local\Temp\ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="C:\Users\Administrator\AppData\Local\Temp\ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -290,7 +271,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="imagePath" value="C:\Users\zlcd\AppData\Local\Temp\ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="C:\Users\Administrator\AppData\Local\Temp\ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -364,7 +345,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/E:/Development/android-studio-stable/plugins/android/lib/android.jar!/images/material/icons/materialicons/zoom_out_map/baseline_zoom_out_map_24.xml" />
+                                      <entry key="url" value="file:/$PROJECT_DIR$/../../adt/sdk/icons/material/materialicons/check_circle/baseline_check_circle_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -376,7 +357,7 @@
                           <map>
                             <entry key="autoMirrored" value="true" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_baseline_zoom_out_map_24" />
+                            <entry key="outputName" value="ic_camera_check_circle_24" />
                             <entry key="sourceFile" value="C:\Users\zlcd" />
                           </map>
                         </option>

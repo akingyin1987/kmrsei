@@ -33,4 +33,9 @@ interface LocationEngine {
      * 通过位置获取地址
      */
     fun   getLocationAddr(lat: Double,lng: Double,locType: String):String
+
+    /**
+     * 取消定位
+     */
+    fun    cancelLocation()
 }

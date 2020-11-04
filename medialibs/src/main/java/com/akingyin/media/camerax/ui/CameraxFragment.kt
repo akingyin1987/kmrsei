@@ -235,6 +235,7 @@ open class CameraxFragment : SimpleFragment() {
 
 
     var thumbnail :ImageButton ?= null
+    var cancelButton :ImageButton?=null
     private  fun  updateCameraUi(){
        bindView.root.findViewById<ConstraintLayout>(R.id.camera_ui_container)?.let {
            bindView.root.removeView(it)
@@ -252,8 +253,14 @@ open class CameraxFragment : SimpleFragment() {
         controls?.findViewById<ImageButton>(R.id.camera_switch_button)?.click {
             CameraxManager.sendTakePhtotCancel(requireContext())
         }
-
-
+        cancelButton = controls?.findViewById(R.id.camera_switch_button)
+        if(cameraParameBuild.supportMultiplePhoto){
+            cancelButton?.visiable()
+            thumbnail?.visiable()
+        }else{
+            cancelButton?.gone()
+            thumbnail?.gone()
+        }
 
         bindView.tvLocation.click {
             locationPermissionsRequester.launch()
@@ -481,7 +488,7 @@ open class CameraxFragment : SimpleFragment() {
     }
     open    fun   initCameraParame(cameraParame: CameraParameBuild = cameraParameBuild, changeCameraParme:Boolean = false){
        CameraManager.readCameraParame(cameraParame,sharedPreferencesName)
-        println("相机参数：$cameraParame")
+
         netGrid = cameraParame.netGrid
         flashMode = cameraParame.flashModel
         shutterSound = cameraParame.shutterSound
@@ -489,6 +496,13 @@ open class CameraxFragment : SimpleFragment() {
             bindView.tvLocation.visiable()
         }else{
             bindView.tvLocation.gone()
+        }
+        if(cameraParame.supportMultiplePhoto){
+            cancelButton?.visiable()
+            thumbnail?.visiable()
+        }else{
+            cancelButton?.gone()
+            thumbnail?.gone()
         }
         cameraxManager.setCameraParame(cameraParame)
 
@@ -499,6 +513,7 @@ open class CameraxFragment : SimpleFragment() {
          startActivitylaunch =  registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
             if( it.resultCode == Activity.RESULT_OK){
                 initCameraParame(changeCameraParme = true)
+
             }
         }
         locationPermissionsRequester = constructLocationPermissionRequest(LocationPermission.FINE,LocationPermission.COARSE){
@@ -563,20 +578,19 @@ open class CameraxFragment : SimpleFragment() {
         }
     }
     private fun setGalleryThumbnail(uri: Uri?) {
+        if(cameraParameBuild.supportMultiplePhoto){
+            thumbnail?.post {
+                thumbnail?.let {
+                    it.setPadding(resources.getDimension(R.dimen.stroke_small).toInt())
+                    Glide.with(it)
+                            .load(uri)
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(it)
+                }
 
-
-          println("setGalleryThumbnail->${thumbnail == null}")
-        thumbnail?.post {
-            println("显示当前 拍照图片->$uri")
-            thumbnail?.let {
-                it.setPadding(resources.getDimension(R.dimen.stroke_small).toInt())
-                Glide.with(it)
-                        .load(uri)
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(it)
             }
-
         }
+
     }
     override fun onPause() {
         super.onPause()
@@ -626,6 +640,10 @@ open class CameraxFragment : SimpleFragment() {
         }
     }
 
+    override fun close() {
+        locationEngine?.cancelLocation()
+        super.close()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
