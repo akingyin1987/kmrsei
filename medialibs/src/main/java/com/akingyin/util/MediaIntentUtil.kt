@@ -11,7 +11,7 @@ package com.akingyin.util
 
 import android.app.Activity
 import android.content.Intent
-import com.akingyin.media.model.ImageTextModel
+import com.akingyin.media.model.MediaDataModel
 
 /**
  * @ Description:
@@ -23,10 +23,10 @@ object MediaIntentUtil {
     /** 多媒体文件选择及下载 code */
     const val ACTIVITY_REQUEST_MEDIA_SELECT_DOWNLOAD_CODE = 1000
 
-    fun getMediaSelectAndDownloadItems(requestCode: Int, resultCode: Int, data: Intent?, call: (ImageTextModel) -> Unit) {
+    fun getMediaSelectAndDownloadItems(requestCode: Int, resultCode: Int, data: Intent?, call: (MediaDataModel) -> Unit) {
         if (requestCode == ACTIVITY_REQUEST_MEDIA_SELECT_DOWNLOAD_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                data?.getParcelableArrayListExtra<ImageTextModel>("result")?.forEach {
+                data?.getParcelableArrayListExtra<MediaDataModel>("result")?.forEach {
                     call(it)
                 }
 

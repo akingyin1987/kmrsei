@@ -19,7 +19,7 @@ import com.akingyin.base.ext.messageFormat
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.media.DownloadFileUtil
 import com.akingyin.media.R
-import com.akingyin.media.model.ImageTextModel
+import com.akingyin.media.model.MediaDataModel
 import kotlinx.android.synthetic.main.activity_media_select_download_viewpager2.*
 import java.io.File
 import java.util.ArrayList
@@ -59,11 +59,11 @@ class MediaSelectDownloadViewPager2Activity : MediaViewPager2Activity() {
         }
     }
 
-    override fun onCheckedItem(imageTextModel: ImageTextModel) {
+    override fun onCheckedItem(imageTextModel: MediaDataModel) {
         button_apply.text="使用({0})".messageFormat(mediaViewpager2Adapter.getCheckedNum())
     }
 
-    override fun downloadItemFile(imageTextModel: ImageTextModel) {
+    override fun downloadItemFile(imageTextModel: MediaDataModel) {
         showLoading()
 
         val  filePath = AppFileConfig.APP_FILE_ROOT+ File.separator+FileUtils.getFileName(imageTextModel.serverPath)

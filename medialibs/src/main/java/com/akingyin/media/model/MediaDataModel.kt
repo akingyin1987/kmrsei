@@ -9,18 +9,17 @@ package com.akingyin.media.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import java.io.Serializable
 
 /**
- * 图文 显示
+ * 图文数据
  * @author king
  * @version V1.0
  * @ Description:
  *
  *
- * @ Date 2017/12/5 11:34
+ *
  */
-class ImageTextModel() : Serializable, Parcelable {
+class MediaDataModel() :  Parcelable {
 
     var localPath: String = ""
 
@@ -68,14 +67,14 @@ class ImageTextModel() : Serializable, Parcelable {
 
 
     companion object {
-        private const val serialVersionUID = -3037511222172328451L
+
 
         const val TEXT = 0
         const val IMAGE = 1
         const val VIDEO = 2
         const val AUDIO = 3
-        fun buildModel(localPath: String, serverPath: String, downloadPath: String = "", text: String = "", title: String = "", multimediaType: Int = 1, haveNetServer: Boolean = true, objectId: Long = 0L, itemType: Int = 0): ImageTextModel {
-            return ImageTextModel().apply {
+        fun buildModel(localPath: String, serverPath: String, downloadPath: String = "", text: String = "", title: String = "", multimediaType: Int = 1, haveNetServer: Boolean = true, objectId: Long = 0L, itemType: Int = 0): MediaDataModel {
+            return MediaDataModel().apply {
                 this.multimediaType = multimediaType
                 this.haveNetServer = haveNetServer
                 this.serverPath = serverPath
@@ -90,12 +89,12 @@ class ImageTextModel() : Serializable, Parcelable {
         }
 
         @JvmField
-        val CREATOR: Parcelable.Creator<ImageTextModel> = object : Parcelable.Creator<ImageTextModel> {
-            override fun createFromParcel(parcel: Parcel): ImageTextModel {
-                return ImageTextModel(parcel)
+        val CREATOR: Parcelable.Creator<MediaDataModel> = object : Parcelable.Creator<MediaDataModel> {
+            override fun createFromParcel(parcel: Parcel): MediaDataModel {
+                return MediaDataModel(parcel)
             }
 
-            override fun newArray(size: Int): Array<ImageTextModel?> {
+            override fun newArray(size: Int): Array<MediaDataModel?> {
                 return arrayOfNulls(size)
             }
         }

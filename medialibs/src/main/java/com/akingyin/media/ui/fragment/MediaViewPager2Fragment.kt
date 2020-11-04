@@ -15,8 +15,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.akingyin.base.SimpleFragment
 import com.akingyin.media.R
 import com.akingyin.media.adapter.MediaViewpager2Adapter
-import com.akingyin.media.model.ImageTextList
-import com.akingyin.media.model.ImageTextModel
+import com.akingyin.media.model.MediaDataListModel
+import com.akingyin.media.model.MediaDataModel
 import com.akingyin.media.ui.MediaTypeViewpagerActivity
 import kotlinx.android.synthetic.main.activity_media_type_viewpager2.*
 import kotlinx.android.synthetic.main.fragment_medial_viewpager2.*
@@ -39,22 +39,22 @@ class MediaViewPager2Fragment :SimpleFragment(){
 
     /** 父viewpager2 */
     lateinit var  mainViewPager:ViewPager2
-    var imageTextList:ImageTextList?= null
+    var imageTextList:MediaDataListModel?= null
     var titleName=""
     override fun initEventAndData() {
-         imageTextList = arguments?.getSerializable("data") as ImageTextList
+         imageTextList = arguments?.getSerializable("data") as MediaDataListModel
          titleName = arguments?.getString("titleName","")?:""
     }
 
     override fun initView() {
         mainViewPager = (activity as MediaTypeViewpagerActivity).viewpager
         mediaViewpager2Adapter = MediaViewpager2Adapter()
-        mediaViewpager2Adapter.setDiffCallback(object :DiffUtil.ItemCallback<ImageTextModel>(){
-            override fun areItemsTheSame(oldItem: ImageTextModel, newItem: ImageTextModel): Boolean {
+        mediaViewpager2Adapter.setDiffCallback(object :DiffUtil.ItemCallback<MediaDataModel>(){
+            override fun areItemsTheSame(oldItem: MediaDataModel, newItem: MediaDataModel): Boolean {
                 return oldItem.objectId == newItem.objectId
             }
 
-            override fun areContentsTheSame(oldItem: ImageTextModel, newItem: ImageTextModel): Boolean {
+            override fun areContentsTheSame(oldItem: MediaDataModel, newItem: MediaDataModel): Boolean {
                 return oldItem.toString() == newItem.toString()
             }
         })
@@ -113,7 +113,7 @@ class MediaViewPager2Fragment :SimpleFragment(){
     }
 
     companion object{
-        fun  newInstance(imageTextList: ImageTextList,titleName:String=""):MediaViewPager2Fragment{
+        fun  newInstance(imageTextList: MediaDataListModel, titleName:String=""):MediaViewPager2Fragment{
             return MediaViewPager2Fragment().apply {
                 arguments= Bundle().apply {
                     putSerializable("data",imageTextList)

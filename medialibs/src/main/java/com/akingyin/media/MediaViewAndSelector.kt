@@ -11,8 +11,6 @@ package com.akingyin.media
 
 import android.app.Activity
 import androidx.fragment.app.Fragment
-import com.akingyin.media.model.ImageTextList
-import com.akingyin.media.model.ImageTextTypeList
 import java.lang.ref.WeakReference
 
 /**

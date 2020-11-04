@@ -17,8 +17,7 @@ import com.akingyin.base.ext.click
 import com.akingyin.media.MediaViewAndSelector
 import com.akingyin.media.R
 import com.akingyin.media.adapter.MediaViewpager2Adapter
-import com.akingyin.media.model.ImageTextModel
-import com.akingyin.media.model.ImageTextTypeList
+import com.akingyin.media.model.*
 import kotlinx.android.synthetic.main.activity_media_type_viewpager2.*
 
 
@@ -45,19 +44,20 @@ class MediaTypeViewpagerActivity : SimpleActivity() {
 
     }
 
-    var data: ImageTextTypeList? = null
+    var data: MediaIncludeMediaDataModel = MediaIncludeMediaDataModel()
     lateinit var mediaViewpager2Adapter: MediaViewpager2Adapter
 
     override fun initView() {
         MediaViewAndSelector.BuildConfig().build(activity = this)
-        data = intent.getSerializableExtra("data") as ImageTextTypeList
-        data?.items?.let {
-            val listData = mutableListOf<ImageTextModel>()
+        data = intent.getParcelableExtra("data")?:MediaIncludeMediaDataModel()
+        data.items?.let {
+            val listData = mutableListOf<MediaDataModel>()
             it.forEach { typeModel ->
-                typeModel.items?.let { list ->
-                    tablayout.addTab(tablayout.newTab().setText(typeModel.text))
-                    listData.addAll(list)
+                tablayout.addTab(tablayout.newTab().setText(typeModel.text))
+                typeModel.items?.let {datas->
+                    listData.addAll(datas)
                 }
+
 
             }
             for (index in 0..tablayout.tabCount) {
@@ -72,12 +72,12 @@ class MediaTypeViewpagerActivity : SimpleActivity() {
             mediaViewpager2Adapter = MediaViewpager2Adapter()
             mediaViewpager2Adapter.showChecked = false
             viewpager.adapter = mediaViewpager2Adapter
-            mediaViewpager2Adapter.setDiffCallback(object : DiffUtil.ItemCallback<ImageTextModel>() {
-                override fun areItemsTheSame(oldItem: ImageTextModel, newItem: ImageTextModel): Boolean {
+            mediaViewpager2Adapter.setDiffCallback(object : DiffUtil.ItemCallback<MediaDataModel>() {
+                override fun areItemsTheSame(oldItem: MediaDataModel, newItem: MediaDataModel): Boolean {
                     return oldItem.objectId == newItem.objectId
                 }
 
-                override fun areContentsTheSame(oldItem: ImageTextModel, newItem: ImageTextModel): Boolean {
+                override fun areContentsTheSame(oldItem: MediaDataModel, newItem: MediaDataModel): Boolean {
                     return oldItem.toString() == newItem.toString()
                 }
             })
@@ -104,7 +104,7 @@ class MediaTypeViewpagerActivity : SimpleActivity() {
     }
 
     private fun getViewpagerPostionByTabPos(position: Int): Int {
-        return data?.items?.let {
+        return data.items?.let {
             var len = 0
             it.forEachIndexed { index, imageTextTypeModel ->
                 len += (imageTextTypeModel.items?.size ?: 0)
@@ -120,7 +120,7 @@ class MediaTypeViewpagerActivity : SimpleActivity() {
 
 
     fun getTablayPostionByViewpagerPos(position: Int): Int {
-        return data?.items?.let {
+        return data.items?.let {
             var len = 0
             it.forEachIndexed { index, imageTextTypeModel ->
                 len += (imageTextTypeModel.items?.size ?: 0)

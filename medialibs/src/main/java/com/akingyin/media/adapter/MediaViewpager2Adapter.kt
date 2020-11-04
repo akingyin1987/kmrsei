@@ -22,7 +22,7 @@ import com.akingyin.media.R
 import com.akingyin.media.glide.GlideImageView
 import com.akingyin.media.glide.OnProgressListener
 import com.akingyin.media.glide.progress.CircleProgressView
-import com.akingyin.media.model.ImageTextModel
+import com.akingyin.media.model.MediaDataModel
 import com.akingyin.media.widget.CheckView
 import com.akingyin.media.widget.SampleCoverVideo
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -38,7 +38,7 @@ import java.text.MessageFormat
  * @ Date 2020/7/2 16:29
  * @version V1.0
  */
-class MediaViewpager2Adapter : BaseQuickAdapter<ImageTextModel,BaseViewHolder>(R.layout.item_media_viewpager) {
+class MediaViewpager2Adapter : BaseQuickAdapter<MediaDataModel,BaseViewHolder>(R.layout.item_media_viewpager) {
 
     /** 选中或被选中消息 */
     var  liveEvent : SingleLiveEvent<Int> = SingleLiveEvent()
@@ -61,7 +61,7 @@ class MediaViewpager2Adapter : BaseQuickAdapter<ImageTextModel,BaseViewHolder>(R
         return  num
     }
 
-    override fun convert(holder: BaseViewHolder, item: ImageTextModel) {
+    override fun convert(holder: BaseViewHolder, item: MediaDataModel) {
        with(holder){
 
            getView<CheckView>(R.id.check_view).run {
@@ -102,13 +102,13 @@ class MediaViewpager2Adapter : BaseQuickAdapter<ImageTextModel,BaseViewHolder>(R
                downloadView.gone()
            }
            when(item.multimediaType){
-              ImageTextModel.TEXT ->{
+              MediaDataModel.TEXT ->{
                   downloadView.gone()
                   textView.visiable()
                   textView.text = item.text
               }
 
-               ImageTextModel.IMAGE ->{
+               MediaDataModel.IMAGE ->{
                    glideImageView.let {
                        it.visiable()
                        if(FileUtils.isFileExist(item.localPath)){
@@ -136,7 +136,7 @@ class MediaViewpager2Adapter : BaseQuickAdapter<ImageTextModel,BaseViewHolder>(R
 
                }
 
-               ImageTextModel.VIDEO ->{
+               MediaDataModel.VIDEO ->{
                    sampleCoverVideo.run {
                        visiable()
                        if(FileUtils.isFileExist(item.localPath)){
@@ -159,7 +159,7 @@ class MediaViewpager2Adapter : BaseQuickAdapter<ImageTextModel,BaseViewHolder>(R
                    }
                }
 
-               ImageTextModel.AUDIO ->{
+               MediaDataModel.AUDIO ->{
                    audioPlayView.let {
                        it.visiable()
                        if(FileUtils.isFileExist(item.localPath)){

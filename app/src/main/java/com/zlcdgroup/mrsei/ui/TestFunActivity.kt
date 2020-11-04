@@ -17,10 +17,10 @@ import com.akingyin.base.SimpleActivity
 import com.akingyin.base.ble.ui.SearchDeviceListActivity
 import com.akingyin.base.config.AppFileConfig
 import com.akingyin.media.camerax.ui.CameraxActivity
-import com.akingyin.media.model.ImageTextList
-import com.akingyin.media.model.ImageTextModel
+import com.akingyin.media.model.MediaDataListModel
+import com.akingyin.media.model.MediaDataModel
 import com.akingyin.media.model.ImageTextTypeList
-import com.akingyin.media.model.ImageTextTypeModel
+import com.akingyin.media.model.MediaDataListTypeModel
 import com.akingyin.media.ui.MediaSelectDownloadViewPager2Activity
 import com.akingyin.media.ui.MediaTypeViewpagerActivity
 import com.akingyin.media.ui.MediaViewPager2Activity
@@ -71,13 +71,13 @@ class TestFunActivity : SimpleActivity() {
                             add(FunModel("百度地图marker", Intent(this@TestFunActivity,TestBaiduMapActivity::class.java)))
                             add(FunModel("高德地图marker", Intent(this@TestFunActivity,TestAmapActivity::class.java)))
                             add(FunModel("多媒体查看", Intent(this@TestFunActivity,MediaViewPager2Activity::class.java).apply {
-                                putExtra("data",ImageTextList().apply {
-                                  items = arrayListOf<ImageTextModel>().apply {
-                                      add(ImageTextModel.buildModel(localPath = "",serverPath = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594014042023&di=1eefe5aba70bb14eee01111dff4b8813&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F64%2F76%2F20300001349415131407760417677.jpg"))
-                                      add(ImageTextModel.buildModel(localPath = "",serverPath = "",text = "这是测试",multimediaType = 0))
-                                      add(ImageTextModel.buildModel(localPath = "",serverPath = "http://7xjmzj.com1.z0.glb.clouddn.com/20171026175005_JObCxCE2.mp4",
+                                putExtra("data",MediaDataListModel().apply {
+                                  items = arrayListOf<MediaDataModel>().apply {
+                                      add(MediaDataModel.buildModel(localPath = "",serverPath = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594014042023&di=1eefe5aba70bb14eee01111dff4b8813&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F64%2F76%2F20300001349415131407760417677.jpg"))
+                                      add(MediaDataModel.buildModel(localPath = "",serverPath = "",text = "这是测试",multimediaType = 0))
+                                      add(MediaDataModel.buildModel(localPath = "",serverPath = "http://7xjmzj.com1.z0.glb.clouddn.com/20171026175005_JObCxCE2.mp4",
                                       multimediaType = 2))
-                                      add(ImageTextModel.buildModel(localPath = "",serverPath = "https://m3.8js.net/20200306/57_yelangDISCOrap.mp3",multimediaType = 3))
+                                      add(MediaDataModel.buildModel(localPath = "",serverPath = "https://m3.8js.net/20200306/57_yelangDISCOrap.mp3",multimediaType = 3))
                                   }
 
 
@@ -86,13 +86,13 @@ class TestFunActivity : SimpleActivity() {
                             }))
 
                             add(FunModel("多媒体查看2", Intent(this@TestFunActivity,MediaSelectDownloadViewPager2Activity::class.java).apply {
-                                putExtra("data",ImageTextList().apply {
-                                    items = arrayListOf<ImageTextModel>().apply {
-                                        add(ImageTextModel.buildModel(localPath = "",serverPath = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594014042023&di=1eefe5aba70bb14eee01111dff4b8813&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F64%2F76%2F20300001349415131407760417677.jpg",downloadPath = AppFileConfig.APP_FILE_ROOT))
-                                        add(ImageTextModel.buildModel(localPath = "",serverPath = "",text = "这是测试",multimediaType = 0))
-                                        add(ImageTextModel.buildModel(localPath = "",serverPath = "http://7xjmzj.com1.z0.glb.clouddn.com/20171026175005_JObCxCE2.mp4",
+                                putExtra("data",MediaDataListModel().apply {
+                                    items = arrayListOf<MediaDataModel>().apply {
+                                        add(MediaDataModel.buildModel(localPath = "",serverPath = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594014042023&di=1eefe5aba70bb14eee01111dff4b8813&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F64%2F76%2F20300001349415131407760417677.jpg",downloadPath = AppFileConfig.APP_FILE_ROOT))
+                                        add(MediaDataModel.buildModel(localPath = "",serverPath = "",text = "这是测试",multimediaType = 0))
+                                        add(MediaDataModel.buildModel(localPath = "",serverPath = "http://7xjmzj.com1.z0.glb.clouddn.com/20171026175005_JObCxCE2.mp4",
                                                 multimediaType = 2,downloadPath = AppFileConfig.APP_FILE_ROOT))
-                                        add(ImageTextModel.buildModel(localPath = "",serverPath = "https://m3.8js.net/20200306/57_yelangDISCOrap.mp3",multimediaType = 3,downloadPath = AppFileConfig.APP_FILE_ROOT))
+                                        add(MediaDataModel.buildModel(localPath = "",serverPath = "https://m3.8js.net/20200306/57_yelangDISCOrap.mp3",multimediaType = 3,downloadPath = AppFileConfig.APP_FILE_ROOT))
                                     }
                                 })
                             }))
@@ -100,16 +100,16 @@ class TestFunActivity : SimpleActivity() {
                             add(FunModel("多媒体查看3",Intent(this@TestFunActivity,MediaTypeViewpagerActivity::class.java)
                                     .apply {
                                         putExtra("data",ImageTextTypeList().apply {
-                                            val list  =  mutableListOf<ImageTextTypeModel>()
+                                            val list  =  mutableListOf<MediaDataListTypeModel>()
                                             for (i in 1..5){
-                                                list.add( ImageTextTypeModel().apply {
+                                                list.add( MediaDataListTypeModel().apply {
                                                     text = "这是标题$i"
-                                                    items = arrayListOf<ImageTextModel>().apply {
-                                                        add(ImageTextModel.buildModel(localPath = "",serverPath = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594014042023&di=1eefe5aba70bb14eee01111dff4b8813&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F64%2F76%2F20300001349415131407760417677.jpg",downloadPath = AppFileConfig.APP_FILE_ROOT,objectId = 1))
-                                                        add(ImageTextModel.buildModel(localPath = "",serverPath = "",text = "这是测试",multimediaType = 0,objectId = 2))
-                                                        add(ImageTextModel.buildModel(localPath = "",serverPath = "http://7xjmzj.com1.z0.glb.clouddn.com/20171026175005_JObCxCE2.mp4",
+                                                    items = arrayListOf<MediaDataModel>().apply {
+                                                        add(MediaDataModel.buildModel(localPath = "",serverPath = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594014042023&di=1eefe5aba70bb14eee01111dff4b8813&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F64%2F76%2F20300001349415131407760417677.jpg",downloadPath = AppFileConfig.APP_FILE_ROOT,objectId = 1))
+                                                        add(MediaDataModel.buildModel(localPath = "",serverPath = "",text = "这是测试",multimediaType = 0,objectId = 2))
+                                                        add(MediaDataModel.buildModel(localPath = "",serverPath = "http://7xjmzj.com1.z0.glb.clouddn.com/20171026175005_JObCxCE2.mp4",
                                                                 multimediaType = 2,downloadPath = AppFileConfig.APP_FILE_ROOT,objectId = 3))
-                                                        add(ImageTextModel.buildModel(localPath = "",serverPath = "https://m3.8js.net/20200306/57_yelangDISCOrap.mp3",multimediaType = 3,downloadPath = AppFileConfig.APP_FILE_ROOT,objectId = 4))
+                                                        add(MediaDataModel.buildModel(localPath = "",serverPath = "https://m3.8js.net/20200306/57_yelangDISCOrap.mp3",multimediaType = 3,downloadPath = AppFileConfig.APP_FILE_ROOT,objectId = 4))
                                                     }
                                                 })
                                             }
