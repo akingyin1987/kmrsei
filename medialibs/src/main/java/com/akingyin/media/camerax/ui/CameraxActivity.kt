@@ -48,6 +48,7 @@ const val FLAGS_FULLSCREEN =
 
 open  class CameraxActivity : SimpleActivity() {
 
+    private  val  cameraData = CameraData()
 
 
     private  var  cameraInfoBroadcastReceiver : BroadcastReceiver = object : BroadcastReceiver() {
@@ -62,9 +63,31 @@ open  class CameraxActivity : SimpleActivity() {
                                finish()
                            })
                     }
+
+                    CameraxManager.KEY_CAMERA_PHOTO_ADD_ACTION->{
+                        val complete = it.getBooleanExtra("complete",false)
+                        val  filePath = it.getStringExtra("filePath")?:""
+                        cameraData.cameraPhotoDatas.add(filePath)
+                        when {
+                            complete -> {
+                                setResult(Activity.RESULT_OK,Intent().apply {
+                                    putExtra("cameraData",cameraData)
+                                    finish()
+                                })
+                            }
+                            else -> {}
+                        }
+                    }
+
                     CameraxManager.KEY_CAMERA_PHOTO_CANCEL_ACTION->{
                        setResult(Activity.RESULT_CANCELED)
                         finish()
+                    }
+                    CameraxManager.KEY_GET_TAKE_PHOTO_PATH->{
+                        cameraData.cameraPhotoDatas.lastOrNull()?.let {path->
+                            CameraxManager.pushTakePhotoPath(this@CameraxActivity,path)
+                        }
+
                     }
                     else -> {}
                 }
@@ -84,6 +107,7 @@ open  class CameraxActivity : SimpleActivity() {
             addAction(CameraxManager.KEY_CAMERA_PHOTO_COMPLETE_ACTION)
             addAction(CameraxManager.KEY_CAMERA_PHOTO_CANCEL_ACTION)
             addAction(CameraxManager.KEY_CAMERA_PHOTO_ADD_ACTION)
+            addAction(CameraxManager.KEY_GET_TAKE_PHOTO_PATH)
         })
         setResult(Activity.RESULT_CANCELED)
     }

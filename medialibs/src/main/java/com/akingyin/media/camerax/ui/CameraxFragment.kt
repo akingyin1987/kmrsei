@@ -27,7 +27,7 @@ import android.view.*
 import android.widget.ImageButton
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
+
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -131,11 +131,10 @@ open class CameraxFragment : SimpleFragment() {
             addAction(CameraManager.KEYDOWN_VOLUME_KEY_ACTION)
         })
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(cameraInfoBroadcastReceiver,IntentFilter().apply {
-            addAction(CameraxManager.KEY_CAMERA_PHOTO_ADD_ACTION)
-            addAction(CameraxManager.KEY_CAMERA_PHOTO_CANCEL_ACTION)
-            addAction(CameraxManager.KEY_CAMERA_PHOTO_COMPLETE_ACTION)
-            addAction(CameraxManager.KEY_CAMERA_PHOTO_DELECT_ACTION)
+
+            addAction(CameraxManager.KEY_PUSH_TAKE_PHOTO_PATH)
         })
+        CameraxManager.getTakePhotoPath(requireContext())
         cameraSensorController = CameraSensorController(requireContext(), requireContext().display?.rotation?:0)
         cameraSensorController.mOrientationChangeListener = object : CameraSensorController.OrientationChangeListener {
             override fun onChange(relativeRotation: Int, uiRotation: Int) {
@@ -443,10 +442,9 @@ open class CameraxFragment : SimpleFragment() {
             intent?.let {
                when(it.action){
                    CameraxManager.KEY_CAMERA_PHOTO_DELECT_ACTION->{
-                      val  filePath = it.getStringExtra("filePath")?:""
-                       cameraLiveData.value?.cameraPhotoDatas?.remove(filePath)
+
                    }
-                   CameraxManager.KEY_CAMERA_PHOTO_ADD_ACTION->{
+                   CameraxManager.KEY_PUSH_TAKE_PHOTO_PATH->{
                        val  filePath = it.getStringExtra("filePath")?:""
                        cameraLiveData.value?.cameraPhotoDatas?.add(filePath)
                        cameraLiveData.value?.cameraPhotoDatas?.lastOrNull()?.let { path->

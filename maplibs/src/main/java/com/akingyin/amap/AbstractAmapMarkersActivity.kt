@@ -59,10 +59,10 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
 
     var pathRead = BitmapDescriptorFactory.fromAsset("icon_road_red_arrow.png")
     var pathGreen = BitmapDescriptorFactory.fromAsset("icon_road_green_arrow.png")
-    protected var readBitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_openmap_mark)
-   protected var startBitmap = BitmapDescriptorFactory.fromResource(R.drawable.ic_start)
-   protected var endBitmap: BitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_end)
-    protected var personADescriptor = BitmapDescriptorFactory.fromResource(R.drawable.person)
+    private var readBitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_openmap_mark)
+    private var startBitmap: BitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.amap_start)
+    private var endBitmap: BitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.amap_end)
+    protected var personADescriptor: BitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.person)
 
     private   var  supportMapClusterValue = false
     private   var  supportSuggestedPathValue = false
@@ -290,8 +290,8 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
                 endMarker?.remove()
 
                 if(pathLatlngs.size>1){
-                    startBitmap = startBitmap?:BitmapDescriptorFactory.fromResource(R.drawable.ic_start)
-                    endBitmap = endBitmap?:BitmapDescriptorFactory.fromResource(R.drawable.ic_end)
+                    startBitmap = startBitmap?:BitmapDescriptorFactory.fromResource(R.drawable.amap_start)
+                    endBitmap = endBitmap?:BitmapDescriptorFactory.fromResource(R.drawable.amap_end)
 
                     polylineMarker =  aMapManager.addPolylineMarker(pathLatlngs,pathIndex,customList)
                     val startmarker: MarkerOptions = MarkerOptions()

@@ -481,12 +481,28 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
         /** 拍照取消 */
         const val KEY_CAMERA_PHOTO_CANCEL_ACTION="android.camera.photo.cancel.action"
 
+        /**获取拍照路径 */
+        const val KEY_GET_TAKE_PHOTO_PATH="get.camera.take.photo.path"
+
+        /** 推送拍照路径 */
+        const val KEY_PUSH_TAKE_PHOTO_PATH="push.camera.take.photo.path"
+
         /** 拍照路径 */
         const val KEY_CAMERA_PHOTO_DIR="camera.photo.dir"
 
         /** 拍单张时图片名称 */
         const val KEY_CAMERA_PHOTO_SINGLE_NAME="camera.photo.single.name"
 
+
+        fun  getTakePhotoPath(context: Context){
+            LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(KEY_GET_TAKE_PHOTO_PATH))
+        }
+
+        fun pushTakePhotoPath(context: Context,localPath:String){
+            LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(KEY_PUSH_TAKE_PHOTO_PATH).apply {
+                putExtra("localPath",localPath)
+            })
+        }
 
         fun  sendAddTakePhoto(filePath:String,context: Context,complete: Boolean = true){
             LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(KEY_CAMERA_PHOTO_ADD_ACTION).apply {
