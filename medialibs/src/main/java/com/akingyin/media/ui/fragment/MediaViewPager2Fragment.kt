@@ -42,7 +42,7 @@ class MediaViewPager2Fragment :SimpleFragment(){
     var imageTextList:MediaDataListModel?= null
     var titleName=""
     override fun initEventAndData() {
-         imageTextList = arguments?.getSerializable("data") as MediaDataListModel
+         imageTextList = arguments?.getParcelable("data")?:MediaDataListModel()
          titleName = arguments?.getString("titleName","")?:""
     }
 
@@ -116,7 +116,7 @@ class MediaViewPager2Fragment :SimpleFragment(){
         fun  newInstance(imageTextList: MediaDataListModel, titleName:String=""):MediaViewPager2Fragment{
             return MediaViewPager2Fragment().apply {
                 arguments= Bundle().apply {
-                    putSerializable("data",imageTextList)
+                    putParcelable("data",imageTextList)
                     putString("titleName",titleName)
                 }
             }

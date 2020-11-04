@@ -102,6 +102,8 @@ dependencies {
 
   implementation 'me.gujun.android.taggroup:library:1.4@aar'
 
+   //录音相关
+  implementation 'com.github.adrielcafe:AndroidAudioRecorder:0.3.0'
   //颜色对话框
   implementation 'com.afollestad.material-dialogs:color:3.3.0'
 }

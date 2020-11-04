@@ -17,10 +17,7 @@ import com.akingyin.base.SimpleActivity
 import com.akingyin.base.ble.ui.SearchDeviceListActivity
 import com.akingyin.base.config.AppFileConfig
 import com.akingyin.media.camerax.ui.CameraxActivity
-import com.akingyin.media.model.MediaDataListModel
-import com.akingyin.media.model.MediaDataModel
-import com.akingyin.media.model.ImageTextTypeList
-import com.akingyin.media.model.MediaDataListTypeModel
+import com.akingyin.media.model.*
 import com.akingyin.media.ui.MediaSelectDownloadViewPager2Activity
 import com.akingyin.media.ui.MediaTypeViewpagerActivity
 import com.akingyin.media.ui.MediaViewPager2Activity
@@ -99,7 +96,7 @@ class TestFunActivity : SimpleActivity() {
 
                             add(FunModel("多媒体查看3",Intent(this@TestFunActivity,MediaTypeViewpagerActivity::class.java)
                                     .apply {
-                                        putExtra("data",ImageTextTypeList().apply {
+                                        putExtra("data",MediaIncludeMediaDataModel().apply {
                                             val list  =  mutableListOf<MediaDataListTypeModel>()
                                             for (i in 1..5){
                                                 list.add( MediaDataListTypeModel().apply {
@@ -114,6 +111,7 @@ class TestFunActivity : SimpleActivity() {
                                                 })
                                             }
                                             items = list
+
                                         })
 
                             }))
