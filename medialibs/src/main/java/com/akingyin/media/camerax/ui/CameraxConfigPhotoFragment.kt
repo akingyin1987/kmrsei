@@ -86,11 +86,13 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
         GlideEngine.getGlideEngineInstance().loadImage(requireContext(),cameraParameBuild.localPath,bindView.cameraPhoto)
         bindView.btnCancel.click {
             //放弃当前拍照
-            if(cameraParameBuild.supportMultiplePhoto){
-               findNavController().navigateUp()
-            }else{
-                CameraxManager.sendTakePhtotCancel(requireContext())
-            }
+
+            findNavController().navigateUp()
+//            if(cameraParameBuild.supportMultiplePhoto){
+//               findNavController().navigateUp()
+//            }else{
+//                CameraxManager.sendTakePhtotCancel(requireContext())
+//            }
         }
         bindView.backButton.click {
             findNavController().navigateUp()

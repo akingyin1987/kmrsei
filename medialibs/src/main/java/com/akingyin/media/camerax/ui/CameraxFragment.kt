@@ -92,6 +92,7 @@ open class CameraxFragment : SimpleFragment() {
 
     override fun useViewBind() = true
     override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View? {
+        println("cameraXFragemnt")
         bindView = FragmentCameraxBinding.inflate(inflater, container, false)
 //        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,object : OnBackPressedCallback(true){
 //            override fun handleOnBackPressed() {
@@ -125,7 +126,7 @@ open class CameraxFragment : SimpleFragment() {
 
 
     override fun initView() {
-
+        println("注册广播")
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(volumeKeyControlBroadcast, IntentFilter().apply {
             addAction(CameraManager.KEYDOWN_VOLUME_KEY_ACTION)
         })

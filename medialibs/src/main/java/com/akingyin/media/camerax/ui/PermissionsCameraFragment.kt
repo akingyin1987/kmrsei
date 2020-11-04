@@ -45,6 +45,7 @@ class PermissionsCameraFragment : Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println("注册权限处理 ---->>>")
         cameraPermissionsRequester =  constructPermissionsRequest(Manifest.permission.CAMERA,
             onShowRationale = ::onCameraShowRationale,
             onPermissionDenied = ::onCameraDenied,
@@ -92,6 +93,11 @@ class PermissionsCameraFragment : Fragment(){
     private fun onCameraNeverAskAgain() {
         tv_error.text = getString(R.string.permission_camera_never_ask_again)
         Toast.makeText(requireContext(), R.string.permission_camera_never_ask_again, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroyView() {
+        println("权限取消---->")
+        super.onDestroyView()
     }
 
     companion object{
