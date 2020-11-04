@@ -361,12 +361,20 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
         }
         try {
             GlobalScope.launch(Dispatchers.Main) {
-                delay(1000)
-                withContext(Dispatchers.IO) {
-                    setCameraFocus(previewView.width/2.toFloat(),previewView.height/2.toFloat()){
-                        callBack(it,"")
+                try {
+                    delay(1000)
+                    withContext(Dispatchers.IO) {
+                        setCameraFocus(previewView.width/2.toFloat(),previewView.height/2.toFloat()){
+                            callBack(it,"")
+                        }
                     }
+                }catch (e:Exception){
+                    e.printStackTrace()
+                    focusing = false
+
+                    callBack(false, e.message)
                 }
+
             }
         } catch (e: Exception) {
             e.printStackTrace()
