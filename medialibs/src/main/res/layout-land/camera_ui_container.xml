@@ -31,8 +31,8 @@
         android:layout_marginBottom="@dimen/margin_small"
         android:padding="@dimen/spacing_small"
         android:scaleType="fitXY"
-        android:background="@android:color/transparent"
-        app:srcCompat="@drawable/ic_switch"
+        android:background="@drawable/ic_outer_circle"
+        app:srcCompat="@drawable/ic_delete"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:contentDescription="@string/gallery_button_alt" />

@@ -14,12 +14,14 @@ package com.akingyin.media.ui.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.lifecycleScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.akingyin.base.ext.*
 import com.akingyin.base.utils.DateUtil
 import com.akingyin.base.utils.FileUtils
@@ -239,6 +241,12 @@ class MedialFileInfoFragmentDialog:BottomSheetDialogFragment() {
 
     }
 
+    override fun onDestroyView() {
+        LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(Intent(KEY_MEDIAL_FILE_INFO_DIALOG_ACTION))
+        super.onDestroyView()
+
+    }
+
     override fun onStart() {
         super.onStart()
         dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -260,6 +268,7 @@ class MedialFileInfoFragmentDialog:BottomSheetDialogFragment() {
         return statusBarHeight
     }
     companion object{
+        const val KEY_MEDIAL_FILE_INFO_DIALOG_ACTION="medial.file.dialog.action"
         fun newInstance(filePath: String, authEditLocation: Boolean = false, authEditTag: Boolean = false): MedialFileInfoFragmentDialog {
             return MedialFileInfoFragmentDialog().apply {
                 arguments = Bundle().apply {

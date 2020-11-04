@@ -30,6 +30,7 @@ import com.akingyin.media.camera.CameraManager
 import com.akingyin.media.camerax.CameraxManager
 import com.akingyin.media.databinding.ActivityCameraxNavBinding
 import com.akingyin.media.engine.LocationManagerEngine
+import com.akingyin.media.ui.fragment.MedialFileInfoFragmentDialog
 
 const val IMMERSIVE_FLAG_TIMEOUT = 500L
 const val FLAGS_FULLSCREEN =
@@ -65,8 +66,12 @@ open  class CameraxActivity : SimpleActivity() {
                     }
 
                     CameraxManager.KEY_CAMERA_PHOTO_ADD_ACTION->{
+                        it.extras?.let {bundle->
+                            println("filePath->>>${bundle.getString("filePath")}")
+                        }
                         val complete = it.getBooleanExtra("complete",false)
                         val  filePath = it.getStringExtra("filePath")?:""
+                        println("file->>>$filePath")
                         cameraData.cameraPhotoDatas.add(filePath)
                         when {
                             complete -> {
@@ -80,14 +85,29 @@ open  class CameraxActivity : SimpleActivity() {
                     }
 
                     CameraxManager.KEY_CAMERA_PHOTO_CANCEL_ACTION->{
-                       setResult(Activity.RESULT_CANCELED)
+                        setResult(Activity.RESULT_CANCELED)
                         finish()
                     }
                     CameraxManager.KEY_GET_TAKE_PHOTO_PATH->{
-                        cameraData.cameraPhotoDatas.lastOrNull()?.let {path->
-                            CameraxManager.pushTakePhotoPath(this@CameraxActivity,path)
+                        val allPath = it.getBooleanExtra("allPath",false)
+                        if(allPath){
+                            cameraData.cameraPhotoDatas.let {path->
+                                println("准备发送路径->$path")
+                                CameraxManager.pushTakeAllPhotoPaths(this@CameraxActivity,path.toList())
+                            }
+                        }else{
+                            cameraData.cameraPhotoDatas.lastOrNull()?.let {path->
+                                println("准备发送路径->$path")
+                                CameraxManager.pushTakePhotoPath(this@CameraxActivity,path)
+                            }
                         }
 
+
+                    }
+                    MedialFileInfoFragmentDialog.KEY_MEDIAL_FILE_INFO_DIALOG_ACTION->{
+                        cameraxNavBinding.fragmentContainer.postDelayed({
+                            window.decorView.systemUiVisibility = FLAGS_FULLSCREEN
+                        },IMMERSIVE_FLAG_TIMEOUT)
                     }
                     else -> {}
                 }
@@ -108,6 +128,7 @@ open  class CameraxActivity : SimpleActivity() {
             addAction(CameraxManager.KEY_CAMERA_PHOTO_CANCEL_ACTION)
             addAction(CameraxManager.KEY_CAMERA_PHOTO_ADD_ACTION)
             addAction(CameraxManager.KEY_GET_TAKE_PHOTO_PATH)
+            addAction(MedialFileInfoFragmentDialog.KEY_MEDIAL_FILE_INFO_DIALOG_ACTION)
         })
         setResult(Activity.RESULT_CANCELED)
     }
@@ -139,7 +160,7 @@ open  class CameraxActivity : SimpleActivity() {
 
     }
 
-    open  fun  getLocationEngine():LocationManagerEngine?=null
+    open  fun  getLocationEngine():LocationManagerEngine? = null
 
     override fun onSaveInstanceData(outState: Bundle?) {
 
@@ -172,6 +193,11 @@ open  class CameraxActivity : SimpleActivity() {
             return true
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_CANCELED)
+        super.onBackPressed()
     }
 
     override fun onDestroy() {

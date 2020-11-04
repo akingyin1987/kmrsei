@@ -2,6 +2,7 @@ package com.zlcdgroup.mrsei.data.db.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.zlcdgroup.mrsei.data.entity.NoticeEntity
 
 /**
@@ -32,6 +33,12 @@ interface NoticeDao {
     /**
      * 模糊查询
      */
-    @Query("select * from tb_notice where name  like '%' || :name||'%'")
+    @Query("select * from tb_notice where name  like '%' || :name||'%' ")
     fun  findNotice(name:String):List<NoticeEntity>
+
+    /**
+     * 通过 SimpleSQLiteQuery 查询复杂查询
+     */
+    @RawQuery
+    fun  searchNotice(query:SupportSQLiteQuery):List<NoticeEntity>
 }

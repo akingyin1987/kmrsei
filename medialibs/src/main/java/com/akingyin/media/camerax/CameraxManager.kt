@@ -62,7 +62,7 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
     var cameraAngle = 90
 
     /** UI 显示旋转角度 */
-    var cameraUiAngle = 0
+    var cameraUiAngle = -1
     /** 是否在预览中 */
      private var previewing = false
 
@@ -487,6 +487,9 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
         /** 推送拍照路径 */
         const val KEY_PUSH_TAKE_PHOTO_PATH="push.camera.take.photo.path"
 
+        /** 推送所有路径 */
+        const val KEY_PUSH_TAKE_PHOTO_ALL_PATH="push.camera.take.photo.all.path"
+
         /** 拍照路径 */
         const val KEY_CAMERA_PHOTO_DIR="camera.photo.dir"
 
@@ -494,13 +497,21 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
         const val KEY_CAMERA_PHOTO_SINGLE_NAME="camera.photo.single.name"
 
 
-        fun  getTakePhotoPath(context: Context){
-            LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(KEY_GET_TAKE_PHOTO_PATH))
+        fun  getTakePhotoPath(context: Context,allPath:Boolean = false){
+            LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(KEY_GET_TAKE_PHOTO_PATH).apply {
+                putExtra("allPath",allPath)
+            })
         }
 
         fun pushTakePhotoPath(context: Context,localPath:String){
             LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(KEY_PUSH_TAKE_PHOTO_PATH).apply {
                 putExtra("localPath",localPath)
+            })
+        }
+
+        fun pushTakeAllPhotoPaths(context: Context,paths:List<String>){
+            LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(KEY_PUSH_TAKE_PHOTO_ALL_PATH).apply {
+                putExtra("paths",paths.toTypedArray())
             })
         }
 

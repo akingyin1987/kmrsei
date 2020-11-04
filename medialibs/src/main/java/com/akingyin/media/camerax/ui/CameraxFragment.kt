@@ -31,7 +31,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.core.view.setPadding
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
@@ -41,6 +43,7 @@ import com.akingyin.base.SimpleFragment
 import com.akingyin.base.ext.*
 import com.akingyin.base.mvvm.SingleLiveEvent
 import com.akingyin.base.utils.PreferencesUtil
+import com.akingyin.base.utils.RandomUtil
 import com.akingyin.media.MediaConfig
 import com.akingyin.media.R
 import com.akingyin.media.camera.*
@@ -58,6 +61,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import permissions.dispatcher.ktx.LocationPermission
+import permissions.dispatcher.ktx.PermissionsRequester
+import permissions.dispatcher.ktx.constructLocationPermissionRequest
 import java.io.File
 import kotlin.properties.Delegates
 
@@ -73,9 +79,13 @@ open class CameraxFragment : SimpleFragment() {
     lateinit var bindView: FragmentCameraxBinding
     lateinit var cameraxManager: CameraxManager
     lateinit var sharedPreferencesName: String
+    lateinit var locationPermissionsRequester: PermissionsRequester
     private val locationEngine : LocationEngine? by lazy {
         locationEngineManager?.createEngine()
     }
+
+
+
     private var cameraParameBuild :CameraParameBuild  by Delegates.notNull()
     private var bindCameraInit = false
     lateinit var  displayManager:DisplayManager
@@ -94,6 +104,9 @@ open class CameraxFragment : SimpleFragment() {
     override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View? {
         println("cameraXFragemnt")
         bindView = FragmentCameraxBinding.inflate(inflater, container, false)
+        locationIsEnable.observe(viewLifecycleOwner,{
+            bindView.tvLocation.visibility = if(it){View.VISIBLE} else{View.GONE}
+        })
 //        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,object : OnBackPressedCallback(true){
 //            override fun handleOnBackPressed() {
 //
@@ -133,8 +146,9 @@ open class CameraxFragment : SimpleFragment() {
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(cameraInfoBroadcastReceiver,IntentFilter().apply {
 
             addAction(CameraxManager.KEY_PUSH_TAKE_PHOTO_PATH)
+            addAction(CameraxManager.KEY_PUSH_TAKE_PHOTO_ALL_PATH)
         })
-        CameraxManager.getTakePhotoPath(requireContext())
+
         cameraSensorController = CameraSensorController(requireContext(), requireContext().display?.rotation?:0)
         cameraSensorController.mOrientationChangeListener = object : CameraSensorController.OrientationChangeListener {
             override fun onChange(relativeRotation: Int, uiRotation: Int) {
@@ -219,37 +233,30 @@ open class CameraxFragment : SimpleFragment() {
     }
 
 
+
+    var thumbnail :ImageButton ?= null
     private  fun  updateCameraUi(){
        bindView.root.findViewById<ConstraintLayout>(R.id.camera_ui_container)?.let {
            bindView.root.removeView(it)
        }
         // Inflate a new view containing all UI for controlling the camera
-        val controls = View.inflate(requireContext(), R.layout.camera_ui_container,  bindView.root)
+       val  controls = View.inflate(requireContext(), R.layout.camera_ui_container,  bindView.root)
         controls.findViewById<ImageButton>(R.id.camera_capture_button).click {
             captureImage()
         }
+        thumbnail = controls.findViewById(R.id.photo_view_button)
+        CameraxManager.getTakePhotoPath(requireContext())
         controls.findViewById<ImageButton>(R.id.photo_view_button).click {
-            cameraLiveData.value?.let {
-                cameraData ->
-                if(cameraData.cameraPhotoDatas.isEmpty()){
-                    showError("没有可查看的照片")
-                }else{
-                    findNavController().navigate(CameraxFragmentDirections.actionCameraToGallery(GalleryDataVo().apply {
-                        data =cameraData.cameraPhotoDatas
-                    }))
-                }
-
-            }?:showError("没有可查看的照片")
-
+           CameraxManager.getTakePhotoPath(requireContext(),true)
         }
-        controls.findViewById<ImageButton>(R.id.camera_switch_button).click {
+        controls?.findViewById<ImageButton>(R.id.camera_switch_button)?.click {
             CameraxManager.sendTakePhtotCancel(requireContext())
         }
 
 
 
         bindView.tvLocation.click {
-            getLocationInfo()
+            locationPermissionsRequester.launch()
         }
         bindView.rulerView.addOnChangeListener { _, value, fromUser ->
             if(fromUser){
@@ -273,6 +280,11 @@ open class CameraxFragment : SimpleFragment() {
         }
         bindView.buttonFlashOff.click {
             closeFlashAndSelect(CameraManager.CameraFlashModel.CAMERA_FLASH_OFF)
+        }
+        lifecycleScope.launchWhenResumed {
+            if(bindView.tvLocation.isVisible){
+                getLocationInfo()
+            }
         }
     }
     private fun closeFlashAndSelect(@CameraManager.CameraFlashModel flash: Int) = bindView.layoutFlashOptions.circularClose(bindView.buttonFlash) {
@@ -438,20 +450,29 @@ open class CameraxFragment : SimpleFragment() {
 
     private  var  cameraInfoBroadcastReceiver : BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            println("fragment 收到相机广播信息--->")
+
             intent?.let {
+                println("fragment 收到相机广播信息--->${it.action}")
                when(it.action){
-                   CameraxManager.KEY_CAMERA_PHOTO_DELECT_ACTION->{
 
-                   }
                    CameraxManager.KEY_PUSH_TAKE_PHOTO_PATH->{
-                       val  filePath = it.getStringExtra("filePath")?:""
-                       cameraLiveData.value?.cameraPhotoDatas?.add(filePath)
-                       cameraLiveData.value?.cameraPhotoDatas?.lastOrNull()?.let { path->
-                           setGalleryThumbnail(File(path).toUri())
-                       }?: setGalleryThumbnail(null)
+                       println("data->${it.extras}")
+                        it.getStringExtra("localPath")?.let {path->
+                            setGalleryThumbnail(File(path).toUri())
+                        }?:setGalleryThumbnail(null)
+                   }
+                   CameraxManager.KEY_PUSH_TAKE_PHOTO_ALL_PATH->{
+                      it.getStringArrayExtra("paths")?.let {
+                          paths->
+                          if(paths.isEmpty()){
+                              showError("没有可查看的照片")
+                          }else{
+                              findNavController().navigate(CameraxFragmentDirections.actionCameraToGallery(GalleryDataVo().apply {
+                                  data =paths.toList()
+                              }))
+                          }
 
-
+                      }
                    }
                    else -> {}
                }
@@ -475,10 +496,13 @@ open class CameraxFragment : SimpleFragment() {
     private lateinit var startActivitylaunch: ActivityResultLauncher<Intent>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-      startActivitylaunch =  registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+         startActivitylaunch =  registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
             if( it.resultCode == Activity.RESULT_OK){
                 initCameraParame(changeCameraParme = true)
             }
+        }
+        locationPermissionsRequester = constructLocationPermissionRequest(LocationPermission.FINE,LocationPermission.COARSE){
+            getLocationInfo()
         }
     }
 
@@ -502,6 +526,9 @@ open class CameraxFragment : SimpleFragment() {
     open  fun  captureImage(){
         cameraParameBuild.cameraAngle =cameraxManager.cameraAngle
         cameraxManager.setCameraParame(cameraParameBuild)
+        if(cameraParameBuild.supportMultiplePhoto){
+            cameraParameBuild.localPath = cameraParameBuild.saveFileDir+File.separator+RandomUtil.randomUUID+".jpg"
+        }
         cameraxManager.takePicture {
            if(it.isFailure){
                showError(it.exceptionOrNull()?.message)
@@ -537,17 +564,18 @@ open class CameraxFragment : SimpleFragment() {
     }
     private fun setGalleryThumbnail(uri: Uri?) {
 
-        val thumbnail = bindView.root.findViewById<ImageButton>(R.id.photo_view_button)
-        println("setGalleryThumbnail->${null == thumbnail}")
 
+          println("setGalleryThumbnail->${thumbnail == null}")
         thumbnail?.post {
             println("显示当前 拍照图片->$uri")
+            thumbnail?.let {
+                it.setPadding(resources.getDimension(R.dimen.stroke_small).toInt())
+                Glide.with(it)
+                        .load(uri)
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(it)
+            }
 
-            thumbnail.setPadding(resources.getDimension(R.dimen.stroke_small).toInt())
-            Glide.with(thumbnail)
-                    .load(uri)
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(thumbnail)
         }
     }
     override fun onPause() {
@@ -615,9 +643,10 @@ open class CameraxFragment : SimpleFragment() {
         const val ANIMATION_FAST_MILLIS = 50L
         const val ANIMATION_SLOW_MILLIS = 100L
         private var  locationEngineManager:LocationManagerEngine?=null
+        private var  locationIsEnable:MutableLiveData<Boolean> = MutableLiveData(false)
         fun setCameraXLocationEngine(locationManagerEngine: LocationManagerEngine?){
             locationEngineManager = locationManagerEngine
-
+            locationIsEnable.postValue(locationManagerEngine != null)
         }
 
 

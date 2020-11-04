@@ -11,15 +11,17 @@ package com.akingyin.media.camerax.ui
 
 
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import android.webkit.MimeTypeMap
+import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.akingyin.base.SimpleFragment
-import com.akingyin.base.dialog.MaterialDialogUtil
+import com.akingyin.base.config.BaseConfig
 import com.akingyin.base.ext.*
 import com.akingyin.media.R
 import com.akingyin.media.camera.CameraBitmapUtil
@@ -98,14 +100,40 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
             findNavController().navigateUp()
         }
         bindView.btnConfig.click {
-            CameraxManager.sendAddTakePhoto(args.filePath,requireContext(),!cameraParameBuild.supportMultiplePhoto)
-            if(cameraParameBuild.supportMultiplePhoto){
-                findNavController().navigateUp()
+            CameraxManager.sendAddTakePhoto(args.filePath,requireContext(),true)
+
+        }
+
+        bindView.shareButton.click {
+            try {
+                val mediaFile = File(args.filePath)
+                val intent = Intent().apply {
+                    // Infer media type from file extension
+                    val mediaType = MimeTypeMap.getSingleton()
+                            .getMimeTypeFromExtension(mediaFile.extension)
+                    // Get URI from our FileProvider implementation
+                    val uri = FileProvider.getUriForFile(
+                            requireContext(), BaseConfig.getAuthority() + ".provider", mediaFile)
+                    // Set the appropriate intent extra, type, action and flags
+                    putExtra(Intent.EXTRA_STREAM, uri)
+                    type = mediaType
+                    action = Intent.ACTION_SEND
+                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                }
+                startActivity(Intent.createChooser(intent, getString(R.string.share_hint)))
+            }catch (e:Exception){
+                e.printStackTrace()
+                showError("分享出错了")
             }
         }
+
+        if(cameraParameBuild.supportMultiplePhoto){
+           bindView.btnCustom.gone()
+        }
+
         bindView.btnCustom.click {
             CameraxManager.sendAddTakePhoto(args.filePath,requireContext(),false)
-            findNavController().popBackStack()
+            findNavController().navigateUp()
         }
         bindView.infoButton.click {
             MedialFileInfoFragmentDialog.newInstance(args.filePath).show(childFragmentManager,"medialInfo")
@@ -148,17 +176,16 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if(cameraParameBuild.supportMultiplePhoto){
-            MaterialDialogUtil.showConfigDialog(requireContext(),message = "确定要放弃当前拍的所有照片？",positive = "放弃",negative = "再看看"){
-                if(it){
-                    CameraxManager.sendTakePhtotCancel(requireContext())
-                }else{
-                    findNavController().popBackStack()
-                }
-            }
-        }else{
-            findNavController().popBackStack()
-        }
+        findNavController().navigateUp()
+//        if(cameraParameBuild.supportMultiplePhoto){
+//            MaterialDialogUtil.showConfigDialog(requireContext(),message = "确定要放弃当前拍的所有照片？",positive = "放弃",negative = "再看看"){
+//                if(it){
+//                    CameraxManager.sendTakePhtotCancel(requireContext())
+//                }
+//            }
+//        }else{
+//            CameraxManager.sendTakePhtotCancel(requireContext())
+//        }
     }
 
     private  fun  saveTakePhoto(){

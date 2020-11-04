@@ -372,7 +372,7 @@
           android:text="定位"
           android:drawablePadding="3dp"
           android:gravity="left|center"
-
+          android:visibility="visible"
           android:drawableStart="@drawable/ic_camera_location"
           android:layout_height="wrap_content"/>
 

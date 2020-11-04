@@ -9,6 +9,7 @@ import android.os.Environment
 import android.util.Base64
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
+import androidx.sqlite.db.SimpleSQLiteQuery
 
 import autodispose2.ScopeProvider
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider
