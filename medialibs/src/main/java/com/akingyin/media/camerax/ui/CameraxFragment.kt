@@ -125,6 +125,7 @@ open class CameraxFragment : SimpleFragment() {
         cameraParameBuild.saveFileDir = args.fileDir
         println("传递的参数")
         initCameraParame(cameraParameBuild)
+
     }
     private val displayListener = object : DisplayManager.DisplayListener {
         override fun onDisplayAdded(displayId: Int) = Unit
