@@ -74,6 +74,7 @@ class DoubleListView<LEFTD, RIGHTD> @JvmOverloads constructor(
         rightListView.adapter = rightAdapter
         mRightAdapter.setOnItemClickListener { _, _, position ->
             rightSelectPostion.value = position
+            rightAdapter.setItemChecked(position)
             mOnRightItemClickListener?.onRightItemClick(mLeftAdapter.getItem(leftSelectPostion.verifyLiveDataNotEmpty()),mRightAdapter.getItem(position))
         }
         return this

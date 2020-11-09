@@ -121,6 +121,7 @@ class DropMenuAdapter @Inject constructor(var context: Activity) :MenuAdapter {
             }.apply {
                 setOnItemClickListener { _, _, position ->
                     println("setOnItemClickListener=${getItem(position)}")
+                    setItemChecked(position)
                 }
                 val datas = mutableListOf<String>()
                 for (index in 1..10){

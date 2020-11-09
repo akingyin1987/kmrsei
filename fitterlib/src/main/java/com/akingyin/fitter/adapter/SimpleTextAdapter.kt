@@ -4,6 +4,7 @@ import android.util.SparseBooleanArray
 import androidx.core.util.contains
 import androidx.core.util.forEach
 import androidx.core.util.getOrDefault
+import androidx.core.util.remove
 import com.akingyin.fitter.R
 import com.akingyin.fitter.view.FilterCheckedTextView
 import com.blankj.utilcode.util.SizeUtils
@@ -20,9 +21,10 @@ abstract class SimpleTextAdapter<T> : BaseQuickAdapter<T, BaseViewHolder>(R.layo
     private val paddingSize: Int by lazy {
         SizeUtils.dp2px(15F)
     }
-    private val selectedItems: SparseBooleanArray = SparseBooleanArray()
+    private var selectedItems: SparseBooleanArray = SparseBooleanArray()
 
     override fun convert(holder: BaseViewHolder, item: T) {
+        println("刷新第${holder.absoluteAdapterPosition}")
         holder.getView<FilterCheckedTextView>(R.id.tv_item_filter).let {
             it.setPadding(0, paddingSize, 0, paddingSize)
             initCheckedTextView(it,holder.absoluteAdapterPosition)
@@ -39,11 +41,14 @@ abstract class SimpleTextAdapter<T> : BaseQuickAdapter<T, BaseViewHolder>(R.layo
 
     open fun setItemChecked(position: Int){
         selectedItems.forEach { key, _ ->
+            println("key===>$key")
             if(position != key){
-                notifyItemChanged(position)
-                selectedItems.delete(position)
+                selectedItems.delete(key)
+
+                notifyItemChanged(key)
             }
         }
+        println("selectedItems=$selectedItems")
         selectedItems.put(position, true)
         notifyItemChanged(position)
     }
@@ -58,8 +63,9 @@ abstract class SimpleTextAdapter<T> : BaseQuickAdapter<T, BaseViewHolder>(R.layo
         if(selectSingle){
             selectedItems.forEach { key, _ ->
                 if(position != key){
-                    notifyItemChanged(position)
-                    selectedItems.delete(position)
+
+                    selectedItems.delete(key)
+                    notifyItemChanged(key)
                 }
             }
         }
