@@ -55,7 +55,7 @@ class DropDownMenu @JvmOverloads constructor(
         setContentView(findViewById(R.id.mFilterContentView))
     }
 
-    fun setContentView(contentView: View) {
+    private fun setContentView(contentView: View) {
         removeAllViews()
 
         /*

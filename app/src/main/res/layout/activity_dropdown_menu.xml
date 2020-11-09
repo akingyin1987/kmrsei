@@ -30,7 +30,7 @@
 
       <androidx.recyclerview.widget.RecyclerView
           android:layout_width="match_parent"
-          android:id="@+id/recycler"
+          android:id="@id/mFilterContentView"
           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
           android:layout_height="match_parent" />
     </com.akingyin.fitter.DropDownMenu>
