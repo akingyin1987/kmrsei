@@ -37,20 +37,20 @@
       android:layout_marginTop="10dp"
       android:id="@+id/rg_sort_name"
       android:orientation="vertical">
-    <com.google.android.material.radiobutton.MaterialRadioButton
+    <RadioButton
         android:layout_width="wrap_content"
         android:text="名称"
-        android:checked="true"
+
         android:layout_height="wrap_content"/>
-    <com.google.android.material.radiobutton.MaterialRadioButton
+    <RadioButton
         android:layout_width="wrap_content"
         android:text="日期"
         android:layout_height="wrap_content"/>
-    <com.google.android.material.radiobutton.MaterialRadioButton
+    <RadioButton
         android:layout_width="wrap_content"
         android:text="类型"
         android:layout_height="wrap_content"/>
-    <com.google.android.material.radiobutton.MaterialRadioButton
+    <RadioButton
         android:layout_width="wrap_content"
         android:text="大小"
         android:layout_height="wrap_content"/>
@@ -77,12 +77,12 @@
       android:layout_marginTop="10dp"
       android:id="@+id/rg_sort"
       android:orientation="vertical">
-    <com.google.android.material.radiobutton.MaterialRadioButton
+    <RadioButton
         android:layout_width="wrap_content"
         android:text="升序"
-        android:checked="true"
+
         android:layout_height="wrap_content"/>
-    <com.google.android.material.radiobutton.MaterialRadioButton
+    <RadioButton
         android:layout_width="wrap_content"
         android:text="降序"
         android:layout_height="wrap_content"/>
