@@ -160,6 +160,7 @@
     <activity android:name="com.akingyin.media.camerax.ui.CameraxActivity"
           android:screenOrientation="portrait"/>
     <activity android:name=".ui.TestRecordAudioActivity"/>
+    <activity android:name=".ui.DropDownMenuActivity"/>
   </application>
 
 </manifest>

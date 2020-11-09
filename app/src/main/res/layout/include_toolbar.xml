@@ -1,24 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/appbar"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        style="@style/Widget.AppCompat.ActionBar"
+    <data>
+
+    </data>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar">
 
-        app:elevation="4dp" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/Widget.AppCompat.ActionBar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
 
-    <!--<com.bilibili.magicasakura.widgets.TintToolbar-->
+            app:elevation="4dp" />
+
+        <!--<com.bilibili.magicasakura.widgets.TintToolbar-->
         <!--android:id="@+id/toolbar"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="?attr/actionBarSize"-->
         <!--android:background="?attr/colorPrimary"-->
         <!--app:layout_collapseMode="pin"-->
         <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
-</com.google.android.material.appbar.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+</layout>

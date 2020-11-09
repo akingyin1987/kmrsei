@@ -17,6 +17,7 @@ import com.zlcdgroup.mrsei.di.qualifier.Remote
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -61,6 +62,9 @@ abstract class DataModule {
         fun getPersonDao(daoSession: DaoSession):PersonEntityDao{
             return  daoSession.personEntityDao
         }
+
+
+
     }
 
 

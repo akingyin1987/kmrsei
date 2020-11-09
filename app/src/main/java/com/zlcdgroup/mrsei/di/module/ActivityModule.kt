@@ -36,30 +36,37 @@ abstract class ActivityModule {
 
 
 
-    @ContributesAndroidInjector(modules = arrayOf(UserModule::class))
+    @ContributesAndroidInjector(modules = [UserModule::class])
     @PerActivity
     abstract   fun contributeUserActivitytInjector():UserListActivity
 
-    @ContributesAndroidInjector(modules = arrayOf(UserModule::class))
+    @ContributesAndroidInjector(modules = [UserModule::class])
     @PerActivity
     abstract   fun  contributeBindUserActivitytInjector():UserListDataBindActivity
 
-    @ContributesAndroidInjector(modules = arrayOf(LoginModule::class))
+    @ContributesAndroidInjector(modules = [LoginModule::class])
     @PerActivity
     abstract   fun  contributeLoginActivityInjector():LoginActivity
 
-    @ContributesAndroidInjector(modules = arrayOf(StepModule::class, StepModule.StepModuleFragmentManagerModule::class))
+    @ContributesAndroidInjector(modules = [StepModule::class, StepModule.StepModuleFragmentManagerModule::class])
     @PerActivity
     abstract   fun contributeStepActivitytInjector():SteperActivity
 
-    @ContributesAndroidInjector(modules = arrayOf(AuthModule::class))
+    @ContributesAndroidInjector(modules = [AuthModule::class])
     @PerActivity
     abstract  fun contributeAuthActivitytInjector():AuthActivity
 
 
-    @ContributesAndroidInjector(modules = arrayOf(CoroutinedDemoModule::class))
+    @ContributesAndroidInjector(modules = [CoroutinedDemoModule::class])
     @PerActivity
     abstract fun contributeCoroutinesActivityInjector():CoroutinesDemo
+
+    @ContributesAndroidInjector(modules = [DropDownModule::class])
+    @PerActivity
+    abstract fun contributeDropMenActivityInjector():DropDownMenuActivity
+
+
+
 //    @ContributesAndroidInjector
 //    @PerActivity
 //    abstract fun contributeCoroutinesActivityInjector():CoroutinesDemo

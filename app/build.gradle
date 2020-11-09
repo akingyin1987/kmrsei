@@ -254,5 +254,6 @@ dependencies {
   implementation project(path: ':maplibs')
   implementation project(path: ':tuyalibs')
   implementation project(path: ':medialibs')
+  implementation project(path: ':fitterlib')
 }
 

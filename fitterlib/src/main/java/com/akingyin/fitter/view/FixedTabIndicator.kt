@@ -47,10 +47,10 @@ class FixedTabIndicator @JvmOverloads constructor(
             = 0
     var currentIndicatorPosition // 上一个指针选中条目
             = 0
-        private set
+
     var lastIndicatorPosition // 上一个指针选中条目
             = 0
-        private set
+
     private var mOnItemClickListener: OnItemClickListener? = null
 
     init {

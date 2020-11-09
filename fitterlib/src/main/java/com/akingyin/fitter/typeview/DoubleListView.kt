@@ -9,8 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.akingyin.base.ext.verifyLiveDataNotEmpty
 import com.akingyin.fitter.R
 import com.akingyin.fitter.adapter.SimpleTextAdapter
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.viewholder.BaseViewHolder
+
 
 
 /**
@@ -23,8 +22,8 @@ class DoubleListView<LEFTD, RIGHTD> @JvmOverloads constructor(
 
 
 
-    lateinit var mLeftAdapter: BaseQuickAdapter<LEFTD,BaseViewHolder>
-    lateinit var mRightAdapter: BaseQuickAdapter<RIGHTD,BaseViewHolder>
+    lateinit var mLeftAdapter: SimpleTextAdapter<LEFTD>
+    lateinit var mRightAdapter: SimpleTextAdapter<RIGHTD>
 
     /**左边被选中项 */
     private  var  leftSelectPostion = MutableLiveData(0)
@@ -45,6 +44,11 @@ class DoubleListView<LEFTD, RIGHTD> @JvmOverloads constructor(
 
     }
 
+    /**
+     *
+     * @param leftAdapter SimpleTextAdapter<LEFTD>
+     * @return DoubleListView<LEFTD, RIGHTD>
+     */
     fun leftAdapter(leftAdapter: SimpleTextAdapter<LEFTD>): DoubleListView<LEFTD, RIGHTD> {
         mLeftAdapter = leftAdapter
         leftListView.adapter = leftAdapter
@@ -60,7 +64,7 @@ class DoubleListView<LEFTD, RIGHTD> @JvmOverloads constructor(
 
             }
 
-          //  rightListView.setItemChecked(mRightLastChecked, mLeftLastCheckedPosition == position)
+            leftAdapter.setItemChecked(position)
         }
         return this
     }
@@ -81,6 +85,7 @@ class DoubleListView<LEFTD, RIGHTD> @JvmOverloads constructor(
         if (checkedPosition != -1) {
 
             leftListView.scrollToPosition(checkedPosition)
+            mLeftAdapter.setItemChecked(checkedPosition)
         }
     }
 
@@ -89,6 +94,7 @@ class DoubleListView<LEFTD, RIGHTD> @JvmOverloads constructor(
         rightSelectPostion.value = checkedPosition
         if (checkedPosition != -1) {
             rightListView.scrollToPosition(checkedPosition)
+            mRightAdapter.setItemChecked(checkedPosition)
         }
     }
 
@@ -103,12 +109,12 @@ class DoubleListView<LEFTD, RIGHTD> @JvmOverloads constructor(
         fun onRightItemClick(item: LEFTD, childItem: RIGHTD)
     }
 
-    fun onLeftItemClickListener(onLeftItemClickListener: OnLeftItemClickListener<LEFTD, RIGHTD>?): DoubleListView<LEFTD, RIGHTD> {
+    fun onLeftItemClickListener(onLeftItemClickListener: OnLeftItemClickListener<LEFTD, RIGHTD>): DoubleListView<LEFTD, RIGHTD> {
         mOnLeftItemClickListener = onLeftItemClickListener
         return this
     }
 
-    fun onRightItemClickListener(onRightItemClickListener: OnRightItemClickListener<LEFTD, RIGHTD>?): DoubleListView<LEFTD, RIGHTD> {
+    fun onRightItemClickListener(onRightItemClickListener: OnRightItemClickListener<LEFTD, RIGHTD>): DoubleListView<LEFTD, RIGHTD> {
         mOnRightItemClickListener = onRightItemClickListener
         return this
     }

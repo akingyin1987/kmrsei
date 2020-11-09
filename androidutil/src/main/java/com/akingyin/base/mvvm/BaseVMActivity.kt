@@ -1,9 +1,9 @@
 package com.akingyin.base.mvvm
 
+
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider
 import com.akingyin.base.BaseDataViewBindActivity
@@ -23,24 +23,21 @@ abstract class BaseVMActivity<DB : ViewDataBinding,VM:BaseViewModel>  :BaseDataV
     lateinit var mViewModel: VM
 
 
+
     override fun initDataBindView() {
         super.initDataBindView()
-        initVM()
+        mViewModel =  initVM()
         startObserve()
     }
 
-    private  fun  initVM(){
-        mViewModel = getViewModelFactory().create(providerVMClass())
-    }
+    abstract  fun  initVM():VM
 
 
-    abstract  fun   getViewModelFactory(): ViewModelProvider.Factory
 
-    abstract fun providerVMClass(): Class<VM>
     open fun startObserve() {
-        mViewModel.mException.observe(this, Observer { it?.let { onError(it) } })
+        mViewModel.mException.observe(this,  { it?.let { onError(it) } })
         mDataBind.lifecycleOwner = this
-        mViewModel.mStateLiveData.observe(this, Observer {
+        mViewModel.mStateLiveData.observe(this,  {
                 when(it){
                     is StateActionEvent.LoadState -> showLoadDialog(null)
                     is StateActionEvent.SuccessState-> hideLoadDialog()
