@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.akingyin.base.SimpleFragment
 import com.akingyin.base.ext.currentTimeMillis
 import com.akingyin.base.utils.DateUtil
+import com.akingyin.base.utils.RandomUtil
 import com.zlcdgroup.mrsei.R
 import kotlinx.android.synthetic.main.fragment_test.*
 
@@ -33,9 +34,11 @@ class FragmentLayzTest : SimpleFragment() {
     }
 
     override fun initEventAndData() {
-        tv_info.text = TAG
+        tv_info.text = arguments?.getString("data")?:TAG
         println("initEventAndData->${arguments?.getString("data")}")
     }
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,5 +81,6 @@ class FragmentLayzTest : SimpleFragment() {
         println("onStop=${TAG}")
     }
 
+    fun   isComplete() = RandomUtil.getRandomNum(1,10)/2 == 0
 
 }

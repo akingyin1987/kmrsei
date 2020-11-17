@@ -122,6 +122,7 @@ class TestFunActivity : SimpleActivity() {
                             add(FunModel("录音测试",Intent(this@TestFunActivity,TestRecordAudioActivity::class.java)))
                             add(FunModel("stepperView",Intent(this@TestFunActivity,SteperActivity::class.java)))
                             add(FunModel("droPdOWNmENU",Intent(this@TestFunActivity,DropDownMenuActivity::class.java)))
+                            add(FunModel("viewpager2",Intent(this@TestFunActivity,Viewpager2Activity::class.java)))
                         }
                     }
             )
