@@ -1,2 +1,3 @@
+include ':rxfiledownup'
 include ':fitterlib'
 include ':app', ':androidutil', ':zxingcamera', ':maplibs', ':tuyalibs', ':medialibs'
