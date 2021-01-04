@@ -176,7 +176,7 @@ dependencies {
   implementation "androidx.room:room-guava:$room_version"
 
   // paging
-  def paging_version = "3.0.0-alpha08"
+  def paging_version = "3.0.0-alpha10"
 
   implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 
@@ -221,7 +221,7 @@ dependencies {
  // implementation 'net.zetetic:android-database-sqlcipher:4.1.3@aar'
 
     kapt 'com.google.dagger:dagger-android-processor:2.28.3'
-    kapt 'com.google.dagger:dagger-compiler:2.28.3'
+    kapt 'com.google.dagger:dagger-compiler:2.29.1'
 
   implementation 'com.stepstone.stepper:material-stepper:4.3.1'
   debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
@@ -235,7 +235,7 @@ dependencies {
   implementation files('libs/wechat-sdk-android-without-mta-5.1.4.jar')
   implementation files('libs/umeng-share-QQ-simplify-6.9.4.jar')
 
-  implementation 'com.alibaba:arouter-api:1.5.0'
+  implementation 'com.alibaba:arouter-api:1.5.1'
   kapt 'com.alibaba:arouter-compiler:1.2.2'
   implementation 'com.github.florent37:camerafragment:1.0.9'
   kapt "org.permissionsdispatcher:permissionsdispatcher-processor:4.8.0"
@@ -247,7 +247,7 @@ dependencies {
   implementation 'com.github.adrielcafe:AndroidAudioRecorder:0.3.0'
   implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
   implementation 'com.lapism:search:2.2.0@aar'
-  implementation 'com.tencent.bugly:crashreport:3.2.422' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
+  implementation 'com.tencent.bugly:crashreport:3.3.1' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
   implementation 'com.tencent.bugly:nativecrashreport:3.7.500' //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
   api project(':androidutil')
   implementation project(path: ':zxingcamera')

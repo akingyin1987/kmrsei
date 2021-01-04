@@ -8,7 +8,7 @@ package com.akingyin.base.repo
  */
 sealed class StateActionEvent {
 
-    object LoadState : StateActionEvent()
+    object LoadingState : StateActionEvent()
 
     object SuccessState : StateActionEvent()
 

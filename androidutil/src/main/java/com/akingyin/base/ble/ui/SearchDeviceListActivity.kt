@@ -124,7 +124,7 @@ class SearchDeviceListActivity :SimpleActivity(){
         }
 
         override fun onConnectFail(bleDevice: BleDevice?, exception: BleException?) {
-            showError("连接失败${exception?.getDescription()}")
+            showError("连接失败${exception?.description}")
             hideLoadDialog()
         }
 
@@ -150,7 +150,7 @@ class SearchDeviceListActivity :SimpleActivity(){
             }
 
             override fun onNotifyFailure(exception: BleException) {
-                showError("获取通知失败${exception.getDescription()}")
+                showError("获取通知失败${exception.description}")
             }
 
             override fun onCharacteristicChanged(data: ByteArray) {

@@ -8,6 +8,10 @@
 
 package com.akingyin.base.net.mode;
 
+import com.akingyin.base.gson.DateLongStringAdapter;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * 封装的通用服务器返回对象，可自行定义
  * @author king
@@ -17,8 +21,11 @@ package com.akingyin.base.net.mode;
  */
 public class ApiResult<T> {
     private int code;
+    @SerializedName("message")
     private String msg;
     private T data;
+
+    @JsonAdapter(DateLongStringAdapter.class)
     private Long  time;
 
     public Long getTime() {

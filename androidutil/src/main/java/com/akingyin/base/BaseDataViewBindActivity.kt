@@ -20,6 +20,7 @@ abstract class BaseDataViewBindActivity<DB : ViewDataBinding> : BaseDaggerActivi
     override fun initDataBindView() {
         super.initDataBindView()
          mDataBind = DataBindingUtil.setContentView(this,getLayoutId())
+         mDataBind.lifecycleOwner = this
     }
 
 

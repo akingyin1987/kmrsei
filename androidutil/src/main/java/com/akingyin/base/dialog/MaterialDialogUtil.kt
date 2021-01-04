@@ -96,9 +96,11 @@ object MaterialDialogUtil {
     fun <T> showSingleSelectItemDialog(context:Context, title:String,selectIndex:Int = 0,datas:List<T>,callback: (data:T,selectIndex:Int) -> Unit) {
         MaterialDialog(context).title(text = title)
                 .listItemsSingleChoice(items=datas.map {
+                    println("it.toString->${it.toString()}")
                     it.toString()
                 },initialSelection = selectIndex){
                     _, index, _ ->
+
                     callback(datas[index],index)
                 }
                 .show()

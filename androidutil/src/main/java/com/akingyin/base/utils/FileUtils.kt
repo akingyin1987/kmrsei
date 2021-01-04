@@ -412,6 +412,15 @@ object FileUtils {
         return if (folder.exists() && folder.isDirectory) true else folder.mkdirs()
     }
 
+    fun makeAllDirs(filePath: String): Boolean {
+
+        if (StringUtils.isEmpty(filePath)) {
+            return false
+        }
+        val folder = File(filePath)
+        return if (folder.exists() && folder.isDirectory) true else folder.mkdirs()
+    }
+
     /**
      * @see .makeDirs
      */
@@ -494,11 +503,11 @@ object FileUtils {
      * @return returns the length of this file in bytes. returns -1 if the file does not exist.
      */
     fun getFileSize(path: String?): Long {
-        if (StringUtils.isBlank(path)) {
-            return -1
-        }
-        val file = File(path)
-        return if (file.exists() && file.isFile) file.length() else -1
+        return path?.let {
+            val file = File(it)
+            if (file.exists() && file.isFile) file.length() else -1
+        }?:-1
+
     }
 
     /**

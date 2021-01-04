@@ -21,6 +21,7 @@ import kotlin.coroutines.CoroutineContext
  */
 class Coroutine <T>(val scope: CoroutineScope,
                     context: CoroutineContext = Dispatchers.IO,
+
                     block: suspend CoroutineScope.() -> T){
 
     companion object {
@@ -34,6 +35,8 @@ class Coroutine <T>(val scope: CoroutineScope,
         ): Coroutine<T> {
             return Coroutine(scope, context, block)
         }
+
+
 
     }
 

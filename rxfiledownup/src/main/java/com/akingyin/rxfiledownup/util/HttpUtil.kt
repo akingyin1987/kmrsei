@@ -9,6 +9,11 @@
 
 package com.akingyin.rxfiledownup.util
 
+import retrofit2.Response
+import java.io.Closeable
+import java.util.*
+import java.util.regex.Pattern
+
 /**
  * @ Description:
  * @author king
@@ -20,6 +25,7 @@ package com.akingyin.rxfiledownup.util
 fun Closeable.closeQuietly() {
     try {
         close()
+
     } catch (rethrown: RuntimeException) {
         throw rethrown
     } catch (_: Exception) {
@@ -27,7 +33,7 @@ fun Closeable.closeQuietly() {
 }
 
 fun Response<*>.url(): String {
-    return raw().request().url().toString()
+    return raw().request.url.toString()
 }
 
 fun Response<*>.contentLength(): Long {
@@ -83,7 +89,7 @@ private fun Response<*>.contentDisposition(): String {
         return ""
     }
 
-    var result = matcher.group(1)
+    var result = matcher.group(1)?:""
     if (result.startsWith("\"")) {
         result = result.substring(1)
     }

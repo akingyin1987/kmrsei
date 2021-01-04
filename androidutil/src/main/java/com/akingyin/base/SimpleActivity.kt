@@ -1,7 +1,7 @@
 package com.akingyin.base
 
 import android.content.Context
-import android.content.Intent
+
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -19,8 +19,9 @@ import com.classic.common.MultipleStatusView
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog.Builder.ICON_TYPE_LOADING
 import es.dmoral.toasty.Toasty
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
+
 import kotlinx.coroutines.Job
 
 
@@ -134,7 +135,7 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
     /**
      * 保存当前状态
      */
-    abstract   fun    onSaveInstanceData(outState: Bundle?)
+    open   fun    onSaveInstanceData(outState: Bundle?){}
 
 
     /**
@@ -146,7 +147,7 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
     /**
      * 开始请求
      */
-    abstract    fun     startRequest()
+    open    fun     startRequest(){}
 
 
     /**
@@ -293,8 +294,5 @@ abstract class SimpleActivity : AppCompatActivity() ,IBaseView{
         super.onBackPressed()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        EasyActivityResult.dispatch(TAG,requestCode,resultCode,data)
-    }
+
 }

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.akingyin.base.ext
 
 import android.app.Activity

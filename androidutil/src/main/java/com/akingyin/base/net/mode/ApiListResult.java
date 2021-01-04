@@ -8,6 +8,9 @@
 
 package com.akingyin.base.net.mode;
 
+import com.akingyin.base.gson.DateLongStringAdapter;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
@@ -21,9 +24,12 @@ public class ApiListResult <E>  {
 
     private int code;
 
+    @SerializedName("message")
     private String msg;
 
     private List<E> data;
+
+    @JsonAdapter(DateLongStringAdapter.class)
     private Long  time;
 
     public Long getTime() {

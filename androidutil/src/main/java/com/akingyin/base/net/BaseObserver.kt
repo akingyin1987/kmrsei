@@ -5,6 +5,8 @@
  * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
+@file:Suppress("DEPRECATION")
+
 package com.akingyin.base.net
 
 import android.app.ProgressDialog
@@ -13,8 +15,9 @@ import android.content.Context
 import android.widget.Toast
 import com.akingyin.base.net.exception.ApiException
 import com.akingyin.base.net.mode.ApiResult
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.disposables.Disposable
+
 import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.net.ConnectException

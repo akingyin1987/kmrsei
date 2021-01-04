@@ -385,7 +385,7 @@ public class DateUtil {
       return String.format("%d分钟前", span / MIN);
     }
     // 获取当天00:00
-    long wee = (now / DAY) * DAY - 8 * HOUR;
+    long wee = startOfTodDay();
     if (millis >= wee) {
       return String.format("今天%tR", millis);
     } else if (millis >= wee - DAY) {
@@ -425,7 +425,16 @@ public class DateUtil {
     Date date=calendar.getTime();
     return date.getTime();
   }
-
+  public static long startOfTodDay(Long currentTime) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTimeInMillis(currentTime);
+    calendar.set(Calendar.HOUR_OF_DAY, 0);
+    calendar.set(Calendar.MINUTE, 0);
+    calendar.set(Calendar.SECOND, 0);
+    calendar.set(Calendar.MILLISECOND, 0);
+    Date date=calendar.getTime();
+    return date.getTime();
+  }
   /**
    * 当天的结束时间
    * @return

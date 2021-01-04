@@ -1,7 +1,6 @@
 package com.akingyin.base
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 
 import android.os.Bundle
@@ -25,9 +24,7 @@ import es.dmoral.toasty.Toasty
  */
 abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
 
-    lateinit var mView: View
-    private lateinit var mActivity: Activity
-    lateinit var mContext: Context
+
     private var isInited = false
     var  TAG :String  = this.javaClass.simpleName
 
@@ -35,14 +32,10 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
         injection()
         super.onAttach(context)
 
-        mActivity = context as Activity
-        mContext = context
     }
 
     open val cameraPermissions = arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.CAMERA
     )
     open val videoPermissions = arrayOf(
             Manifest.permission.CAMERA,
@@ -66,21 +59,16 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        mView = if(useDataBindView()){
-            initDataBindView(inflater,container)?:throw Exception("root view  must not be null")
-        }else{
-            if(useViewBind()){
-                initViewBind(inflater,container)?:throw Exception("root view  must not be null")
-            }else{
-                inflater.inflate(getLayoutId(), null)
-            }
-        }
-//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-//            override fun handleOnBackPressed() {
-//                onBackPressed()
-//            }
-//        })
-        return mView
+
+        return if(useDataBindView()){
+             initDataBindView(inflater,container) ?:throw Exception("root view  must not be null")
+         }else{
+             if(useViewBind()){
+                 initViewBind(inflater,container) ?:throw Exception("root view  must not be null")
+             }else{
+                 inflater.inflate(getLayoutId(), null)
+             }
+         }
     }
 
     abstract   fun  injection()
@@ -168,25 +156,25 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
 
     override fun showMessage(msg: String?) {
         if (msg != null) {
-            Toasty.info(mContext, msg, Toast.LENGTH_SHORT).show()
+            Toasty.info(requireContext(), msg, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun showSucces(msg: String?) {
         if (msg != null) {
-            Toasty.success(mContext, msg, Toast.LENGTH_SHORT).show()
+            Toasty.success(requireContext(), msg, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun showError(msg: String?) {
         if (msg != null) {
-            Toasty.error(mContext, msg, Toast.LENGTH_SHORT).show()
+            Toasty.error(requireContext(), msg, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun showWarning(msg: String?) {
         if (msg != null) {
-            Toasty.warning(mContext, msg, Toast.LENGTH_SHORT).show()
+            Toasty.warning(requireContext(), msg, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -195,7 +183,7 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
 
     override fun showTips(msg: String?) {
         if (msg != null) {
-            Toasty.info(mContext, msg, Toast.LENGTH_SHORT).show()
+            Toasty.info(requireContext(), msg, Toast.LENGTH_SHORT).show()
             // QMUITipDialog.Builder(this).setTipWord(msg).setFollowSkin(true).create(true).show()
 
         }
@@ -210,7 +198,7 @@ abstract class SimpleFragment : androidx.fragment.app.Fragment(), IBaseView {
             }.no { }
         }
 
-        loadingDialog = QMUITipDialog.Builder(mContext)
+        loadingDialog = QMUITipDialog.Builder(requireContext())
                 .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING).create(true)
 
         loadingDialog?.let { dialog ->

@@ -81,9 +81,9 @@ class  AppManager  private  constructor(){ //私有的主构造器
         var i = 0
         val size = activityStack!!.size
         while (i < size) {
-            if (null != activityStack!!.get(i)) {
+            if (null != activityStack!![i]) {
 
-                activityStack!!.get(i).finish()
+                activityStack!![i].finish()
             }
             i++
         }

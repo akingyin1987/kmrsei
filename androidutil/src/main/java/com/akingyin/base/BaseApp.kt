@@ -1,7 +1,8 @@
 package com.akingyin.base
 
 
-import dagger.android.DaggerApplication
+import android.app.Application
+
 import timber.log.Timber
 
 /**
@@ -10,7 +11,7 @@ import timber.log.Timber
  * @ Date 2018/9/3 12:17
  * @version V1.0
  */
-  abstract class BaseApp : DaggerApplication() {
+  abstract class BaseApp : Application() {
 
 
     override fun onCreate() {

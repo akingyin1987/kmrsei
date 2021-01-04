@@ -1,7 +1,7 @@
 package com.akingyin.base.mvvm.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import com.akingyin.base.ext.logDebug
 import com.akingyin.base.mvvm.SingleLiveEvent
 import com.akingyin.base.net.Result
 import com.akingyin.base.net.ResultList
@@ -10,8 +10,9 @@ import com.akingyin.base.net.mode.ApiCode
 import com.akingyin.base.net.mode.ApiListResult
 import com.akingyin.base.net.mode.ApiResult
 import com.akingyin.base.repo.StateActionEvent
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
+
 import kotlinx.coroutines.*
 import org.jetbrains.anko.AnkoLogger
 import kotlin.coroutines.CoroutineContext
@@ -32,6 +33,17 @@ open  class BaseViewModel :AutoDisposeViewModel(), CoroutineScope by MainScope()
     val mStateLiveData = SingleLiveEvent<StateActionEvent>()
     private var mCompositeDisposable: CompositeDisposable? = null
 
+    fun  postLoadingState(){
+        mStateLiveData.postValue(StateActionEvent.LoadingState)
+    }
+
+    fun  postSuccessState(){
+        mStateLiveData.postValue(StateActionEvent.SuccessState)
+    }
+
+    fun  postErrorState(errorMsg:String){
+        mStateLiveData.postValue(StateActionEvent.ErrorState(errorMsg))
+    }
 
 
     private val mLaunchManager: MutableList<Job> = mutableListOf()
@@ -76,7 +88,7 @@ open  class BaseViewModel :AutoDisposeViewModel(), CoroutineScope by MainScope()
                 tryBlock()
             } catch (e: Throwable) {
                 if (e !is CancellationException || handleCancellationExceptionManually) {
-                    mException.value = ApiException(e)
+                    mException.value = ApiException(throwable = e)
                     catchBlock(e)
                 } else {
                     throw e
@@ -108,12 +120,12 @@ open  class BaseViewModel :AutoDisposeViewModel(), CoroutineScope by MainScope()
         if(response.code == ApiCode.Http.SUCCESS){
             return response.data?.let {
                 Result.Success(it,response.time)
-            }?:Result.Error(ApiException("获取数据为空！").apply {
+            }?:Result.Error(ApiException(msg = "获取数据为空！").apply {
                 code = response.code
             })
         }
-         println("msg=${response.msg}")
-        return  Result.Error(ApiException(response.msg).apply {
+
+        return  Result.Error(ApiException(msg = response.msg).apply {
             code = response.code
         })
 
@@ -124,13 +136,13 @@ open  class BaseViewModel :AutoDisposeViewModel(), CoroutineScope by MainScope()
         if(response.code == ApiCode.Http.SUCCESS){
             return  response.data?.let {
                 ResultList.Success(it,response.time)
-            }?:ResultList.Error(ApiException("获取数据为空！").apply {
+            }?:ResultList.Error(ApiException(msg = "获取数据为空！").apply {
                 code = response.code
             })
 
         }
         println("msg=${response.msg}")
-        return  ResultList.Error(ApiException(response.msg).apply {
+        return  ResultList.Error(ApiException(msg = response.msg).apply {
             code = response.code
         })
 
@@ -147,6 +159,7 @@ open  class BaseViewModel :AutoDisposeViewModel(), CoroutineScope by MainScope()
 
     override fun onCleared() {
         super.onCleared()
+
         cancel()
         mCompositeDisposable?.apply {
             if(!isDisposed){

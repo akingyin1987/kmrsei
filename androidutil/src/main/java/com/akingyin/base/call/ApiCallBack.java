@@ -8,6 +8,8 @@
 
 package com.akingyin.base.call;
 
+import androidx.annotation.NonNull;
+
 /**
  * @author king
  * @version V1.0
@@ -17,7 +19,7 @@ package com.akingyin.base.call;
 
 public interface ApiCallBack<T> {
 
-    void   call(T t);
+    void   call(@NonNull T t);
 
-    void   onError(String msg);
+    void   onError(@NonNull String msg);
 }

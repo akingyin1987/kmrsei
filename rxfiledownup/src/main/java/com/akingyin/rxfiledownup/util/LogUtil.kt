@@ -9,6 +9,8 @@
 
 package com.akingyin.rxfiledownup.util
 
+import timber.log.Timber
+
 /**
  * @ Description:
  * @author king
@@ -23,9 +25,10 @@ const val LOG_TAG = "RxDownload"
 fun <T> T.log(prefix: String = ""): T {
     if (LOG_ENABLE) {
         if (this is Throwable) {
-            Log.w(LOG_TAG, prefix + this.message, this)
+
+            Timber.tag(LOG_TAG).w(this, "%s%s", prefix, this.message)
         } else {
-            Log.d(LOG_TAG, prefix + toString())
+            Timber.d("%s%s", prefix, toString())
         }
     }
     return this

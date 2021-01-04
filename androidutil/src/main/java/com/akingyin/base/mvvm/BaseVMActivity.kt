@@ -4,7 +4,6 @@ package com.akingyin.base.mvvm
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.ViewModelProvider
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider
 import com.akingyin.base.BaseDataViewBindActivity
 import com.akingyin.base.mvvm.viewmodel.BaseViewModel
@@ -39,13 +38,16 @@ abstract class BaseVMActivity<DB : ViewDataBinding,VM:BaseViewModel>  :BaseDataV
         mDataBind.lifecycleOwner = this
         mViewModel.mStateLiveData.observe(this,  {
                 when(it){
-                    is StateActionEvent.LoadState -> showLoadDialog(null)
+                    is StateActionEvent.LoadingState -> showLoadDialog(null)
                     is StateActionEvent.SuccessState-> hideLoadDialog()
                     is StateActionEvent.ErrorState -> {
                         hideLoadDialog()
                         showError(it.message)
                     }
-                    is StateActionEvent.SuccessInfoState -> showSucces(it.message)
+                    is StateActionEvent.SuccessInfoState -> {
+                        hideLoadDialog()
+                        showSucces(it.message)
+                    }
                 }
         })
     }
@@ -64,4 +66,6 @@ abstract class BaseVMActivity<DB : ViewDataBinding,VM:BaseViewModel>  :BaseDataV
     protected val scopeProvider: AndroidLifecycleScopeProvider by lazy {
         AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)
     }
+
+
 }

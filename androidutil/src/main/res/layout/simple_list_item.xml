@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/text"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/qmui_content_spacing_horizontal"
+    android:paddingRight="@dimen/qmui_content_spacing_horizontal"
+    tools:text="1111"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:background="@drawable/s_list_item_bg_dark_1"
+    app:qmui_skin_background="@drawable/s_list_item_bg_dark_1"
+    app:qmui_skin_text_color="@color/qmui_config_color_gray_1" />

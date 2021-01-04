@@ -10,11 +10,7 @@
 package com.akingyin.base
 
 import android.content.Context
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import dagger.android.support.AndroidSupportInjection
-import javax.inject.Inject
+
 
 /**
  * @ Description:
@@ -22,11 +18,10 @@ import javax.inject.Inject
  * @ Date 2020/7/21 15:31
  * @version V1.0
  */
-abstract class BaseDaggerFragment : SimpleFragment(), HasAndroidInjector,IBaseView {
+abstract class BaseDaggerFragment : SimpleFragment(),IBaseView {
 
 
-    @Inject
-    lateinit var childFragmentInjector: DispatchingAndroidInjector<Any>
+
 
     override fun onAttach(context: Context) {
         injection()
@@ -34,11 +29,9 @@ abstract class BaseDaggerFragment : SimpleFragment(), HasAndroidInjector,IBaseVi
         super.onAttach(context)
     }
 
-    override fun androidInjector(): AndroidInjector<Any> {
-        return   childFragmentInjector
-    }
+
 
     override fun injection() {
-        AndroidSupportInjection.inject(this)
+
     }
 }

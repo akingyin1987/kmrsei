@@ -34,7 +34,7 @@ object CallLogUtil {
 
     fun  findCurrentTel(context: Context):String{
          context.contentResolver.query(callUri, columns,CallLog.Calls.TYPE+"=?", arrayOf(CallLog.Calls.INCOMING_TYPE.toString()),CallLog.Calls.DEFAULT_SORT_ORDER)?.use {
-            var  oldNumber =""
+
             while (it.moveToNext()){
                 var newNumber = it.getString(it.getColumnIndex(CallLog.Calls.NUMBER))
                 println("用户电话：$newNumber")

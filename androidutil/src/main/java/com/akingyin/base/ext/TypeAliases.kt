@@ -17,7 +17,7 @@ package com.akingyin.base.ext
  */
 typealias action<T> = suspend () -> T
 
-
+typealias SuccessCall<T> = (data:T)->Unit
 
 typealias mapper<T,R> = (T) -> R
 

@@ -61,7 +61,7 @@ class UploadTask(var id: String = "", var filePath: String = "",
           }
           while (chunck< chuncks && (uploadStatus !is  Paused || uploadStatus !is Failed)){
               //上传当前块文件
-              val mBlock: ByteArray = file.getBlock((chunck - 1) * blockLength.toLong(), blockLength)
+              val mBlock: ByteArray = file.getBlock((chunck) * blockLength.toLong(), blockLength)
               val builder = MultipartBody.Builder().apply {
                   addFormDataPart("file", FileUtils.getFileName(filePath), mBlock.toRequestBody(MEDIA_TYPE_File))
                   addFormDataPart("chunks", chuncks.toString())
@@ -73,7 +73,7 @@ class UploadTask(var id: String = "", var filePath: String = "",
 
                   chunck++
               }else{
-                  return Result.Error(ApiException("上传文件失败"))
+                  return Result.Error(ApiException(msg="上传文件失败"))
               }
 
           }

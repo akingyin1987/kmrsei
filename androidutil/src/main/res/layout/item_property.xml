@@ -30,7 +30,7 @@
       android:layout_height="wrap_content"
       android:minHeight="25dp"
       android:layout_gravity="center"
-
+       android:text="这是值"
       android:layout_weight="1"
       android:textColor="@color/dark_font"
       android:textSize="14sp"/>
@@ -40,6 +40,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/ll_qmui_content"
         android:padding="3dp"
+        android:visibility="gone"
         android:orientation="horizontal"/>
 
 
@@ -52,7 +53,7 @@
       <ImageView android:layout_width="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/setting_view_arrow"
+                android:src="@drawable/common_arrow_right_selector"
                android:layout_height="wrap_content"/>
 
     </RelativeLayout>

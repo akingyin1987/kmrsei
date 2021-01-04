@@ -1,11 +1,12 @@
 package com.akingyin.base.ext
 
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
+
+import android.util.Base64
+
+import java.io.*
 import java.nio.channels.FileChannel
 import java.security.MessageDigest
+
 
 /**
  * @ Description:
@@ -81,9 +82,9 @@ fun File.deleteAll() {
     }
 }
 
-fun File.md5(): String? {
+fun File.md5(): String {
     if (!this.isFile) {
-        return null
+        return ""
     }
     return encryptFile(this, "MD5")
 }
@@ -95,30 +96,64 @@ fun File.sha1(): String? {
     return encryptFile(this, "SHA-1")
 }
 
+fun File.toBase64():String{
+    if(!isFile){
+        return ""
+    }
+   return FileInputStream(this).use { input->
+        // 缓存流
+         BufferedInputStream(input).use { bufInput->
+             // 先把二进制流写入到ByteArrayOutputStream中
+
+             ByteArrayOutputStream().use {
+                 byteArray->
+                 val bt = ByteArray(4096)
+                 var len: Int
+                 while (bufInput.read(bt).also { len = it } != -1) {
+                     byteArray.write(bt, 0, len)
+                 }
+                  byteArray.flush()
+                  Base64.encodeToString(byteArray.toByteArray(),Base64.DEFAULT)
+             }
+
+         }
+
+
+    }
+
+}
+
 private fun encryptFile(file: File, type: String): String {
     val digest: MessageDigest = MessageDigest.getInstance(type)
-    val input = FileInputStream(file)
-    val buffer = ByteArray(1024)
-    var len = input.read(buffer, 0, 1024)
-    while (len != -1) {
-        digest.update(buffer, 0, len)
-        len = input.read(buffer, 0, 1024)
-    }
-    input.close()
+
+     FileInputStream(file).use {input->
+         val buffer = ByteArray(1024)
+
+         var len: Int
+         while (input.read(buffer).also { len = it } != -1) {
+             digest.update(buffer, 0, len)
+         }
+     }
+
     return bytes2Hex(digest.digest())
 }
 
 fun File.toByteArray(): ByteArray {
-    val bos = ByteArrayOutputStream(this.length().toInt())
-    val input = FileInputStream(this)
-    val size = 1024
-    val buffer = ByteArray(size)
-    var len = input.read(buffer, 0, size)
-    while (len != -1) {
-        bos.write(buffer, 0, len)
-        len = input.read(buffer, 0, size)
-    }
-    input.close()
-    bos.close()
-    return bos.toByteArray()
+  return  FileInputStream(this).use { input ->
+      // 缓存流
+      BufferedInputStream(input).use { bufInput ->
+          // 先把二进制流写入到ByteArrayOutputStream中
+
+          ByteArrayOutputStream().use { byteArray ->
+              val bt = ByteArray(1024)
+              var len: Int
+              while (bufInput.read(bt).also { len = it } != -1) {
+                  byteArray.write(bt, 0, len)
+              }
+              byteArray.flush()
+              byteArray.toByteArray()
+          }
+
+      }
+  }
 }

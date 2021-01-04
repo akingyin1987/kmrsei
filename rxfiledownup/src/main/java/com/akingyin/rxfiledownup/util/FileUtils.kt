@@ -9,6 +9,7 @@
 
 package com.akingyin.rxfiledownup.util
 
+import com.akingyin.rxfiledownup.record.Task
 import java.io.File
 import java.io.RandomAccessFile
 import java.nio.channels.FileChannel
@@ -85,10 +86,10 @@ fun File.getBlock(offset: Long, blockSize: Int): ByteArray {
 
 }
 
-internal fun Task.getDir(): File {
-    return File(savePath)
-}
-
-internal fun Task.getFile(): File {
-    return File(savePath, saveName)
-}
+//internal fun Task.getDir(): File {
+//    return File(savePath)
+//}
+//
+//internal fun Task.getFile(): File {
+//    return File(savePath, saveName)
+//}

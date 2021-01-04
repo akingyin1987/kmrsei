@@ -43,7 +43,7 @@ open class BaseRepository {
             val response = call.invoke()
             if(response.code == ApiCode.Response.HTTP_SUCCESS) return Result.Success(response.data,response.time)
 
-            return Result.Error(ApiException("Error Occurred during getting safe Api result, Custom ERROR - $errorMessage"))
+            return Result.Error(ApiException(msg = "Error Occurred during getting safe Api result, Custom ERROR - $errorMessage"))
         }
 
     private suspend fun <T: Any> safeApiResult(call: suspend ()-> Response<T>) : Result<T>{
@@ -55,7 +55,7 @@ open class BaseRepository {
 
         }
 
-        return Result.Error(ApiException("Error Occurred during getting safe Api result, Custom ERROR - ${response.message()}"))
+        return Result.Error(ApiException(msg = "Error Occurred during getting safe Api result, Custom ERROR - ${response.message()}"))
     }
 
 

@@ -17,30 +17,14 @@ import java.io.Serializable
  * @ Date 2020/9/3 14:38
  * @version V1.0
  */
-abstract class BleException( code:Int=ERROR_CODE_OTHER,  description:String="") : Serializable{
-
-
-    private val serialVersionUID = 8004414918500865564L
+abstract class BleException(var code:Int=ERROR_CODE_OTHER, var description:String="") : Serializable{
 
 
 
-    private var code = 0
-    private var description: String=""
 
 
 
-    open fun getCode(): Int {
-        return code
-    }
 
-    open fun setCode(code: Int): BleException {
-        this.code = code
-        return this
-    }
-
-    open fun getDescription(): String {
-        return description
-    }
 
     open fun setDescription(description: String): BleException {
         this.description = description

@@ -8,6 +8,8 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import androidx.annotation.Nullable;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
@@ -623,5 +625,25 @@ public class StringUtils {
     final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
     int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
     return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+  }
+
+  public static String  getConversionLength(Double dis){
+    if(null == dis || dis< 0){
+      return DEFAULT_EMPTY;
+    }
+    if(dis<3){
+       return "附近";
+    }
+
+    if(dis/1000>0){
+      double d = dis.longValue()/1000+(dis%1000)/1000;
+      BigDecimal bg = new BigDecimal(d).setScale(1, RoundingMode.UP);
+      return "距离:约 "+ String.valueOf(bg.doubleValue())+"KM";
+    }
+    BigDecimal bg = new BigDecimal(dis).setScale(1, RoundingMode.UP);
+    if(dis < 100){
+      return "附近约 "+bg.doubleValue()+"M";
+    }
+    return  String.valueOf(bg.doubleValue())+"M";
   }
 }

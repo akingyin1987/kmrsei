@@ -29,7 +29,8 @@ abstract class BaseDataViewBindFragment<DB : ViewDataBinding> : BaseDaggerFragme
 
 
     override fun initDataBindView(inflater: LayoutInflater, container: ViewGroup?): View? {
-       mDataBind = DataBindingUtil.inflate(inflater,getLayoutId(),container,false)
+        mDataBind = DataBindingUtil.inflate(inflater,getLayoutId(),container,false)
+        mDataBind.lifecycleOwner = viewLifecycleOwner
         return mDataBind.root
     }
 

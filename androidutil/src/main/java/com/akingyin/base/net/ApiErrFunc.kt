@@ -5,23 +5,19 @@
  * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
+package com.akingyin.base.net
 
-package com.akingyin.base.net;
-
-import androidx.annotation.Nullable;
-import io.reactivex.Observable;
-
-import io.reactivex.functions.Function;
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.functions.Function
+import java.lang.Exception
 
 /**
  * Throwable转Observable<T>
  * Created by Administrator on 2017/9/12.
- */
-
-public class ApiErrFunc<T> implements Function<Throwable,Observable<T>> {
-
-    @Override
-    public Observable<T> apply(@Nullable Throwable throwable) throws Exception {
-        return Observable.error(throwable);
+</T> */
+class ApiErrFunc<T> : Function<Throwable?, Observable<T>?> {
+    @Throws(Exception::class)
+    override fun apply(throwable: Throwable?): Observable<T> {
+        return Observable.error(throwable)
     }
 }

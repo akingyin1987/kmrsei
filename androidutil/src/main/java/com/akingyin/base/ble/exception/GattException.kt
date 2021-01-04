@@ -15,5 +15,5 @@ package com.akingyin.base.ble.exception
  * @ Date 2020/9/3 14:39
  * @version V1.0
  */
-class GattException( gattStatus:Int ) : BleException(code = ERROR_CODE_GATT,description = "Gatt Exception Occurred! "){
+class GattException( gattStatus:Int =ERROR_CODE_GATT ) : BleException(code = gattStatus,description = "Gatt Exception Occurred! "){
 }

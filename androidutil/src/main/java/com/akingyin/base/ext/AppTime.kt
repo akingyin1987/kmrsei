@@ -1,6 +1,7 @@
 package com.akingyin.base.ext
 
 import android.os.SystemClock
+import com.akingyin.base.utils.DateUtil
 
 /**
  * @ Description:
@@ -31,7 +32,7 @@ class AppTime  private constructor(){
                  Instance.serverTime = spGetLong("serverTime",0L)
              }
              if(Instance.elapsedRealtime == 0L){
-                 Instance.serverTime = spGetLong("elapsedRealtime",0L)
+                 Instance.elapsedRealtime = spGetLong("elapsedRealtime",0L)
              }
              if(Instance.serverTime == 0L || Instance.elapsedRealtime == 0L){
                  return  System.currentTimeMillis()
@@ -39,9 +40,18 @@ class AppTime  private constructor(){
              return  Instance.serverTime + (SystemClock.elapsedRealtime() - Instance.elapsedRealtime)
          }
 
+         fun  getLoginTime():Long{
+             if(Instance.serverTime == 0L){
+                 Instance.serverTime = spGetLong("serverTime",0L)
+             }
+
+             return Instance.serverTime
+         }
+
          fun   saveServerTime(server:Long){
              Instance.serverTime = server
              Instance.elapsedRealtime = SystemClock.elapsedRealtime()
+             println("保存登录时间:${Instance.serverTime},${DateUtil.millis2String(Instance.serverTime)}")
              spSetLong("serverTime",server)
              spSetLong("elapsedRealtime", Instance.elapsedRealtime)
          }

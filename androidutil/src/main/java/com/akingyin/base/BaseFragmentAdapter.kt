@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentPagerAdapter
  * 应该使用FragmentStatePagerAdapter。
  * @version V1.0
  */
+@Suppress("DEPRECATION")
 class BaseFragmentAdapter   : FragmentPagerAdapter {
 
 

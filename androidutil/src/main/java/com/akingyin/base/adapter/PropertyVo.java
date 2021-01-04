@@ -25,9 +25,13 @@ public class PropertyVo  implements Serializable {
 
 	public    String     video;
 
+	public    String     audio;
+
 	public    String    propertyKey;
 
 	public    int    linkify;
+
+	public    boolean   jumpNext = false;
 
 
 	public   PropertyVo(){
