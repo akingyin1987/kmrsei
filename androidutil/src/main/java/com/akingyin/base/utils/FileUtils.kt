@@ -540,30 +540,21 @@ object FileUtils {
      * 将文件转byte
      */
     fun readFileToByteArray(file: File): ByteArray? {
-        val bos = ByteArrayOutputStream(file.length().toInt())
-        var `in`: BufferedInputStream? = null
+
         try {
-            `in` = BufferedInputStream(FileInputStream(file))
-            val buf_size = 1024
-            val buffer = ByteArray(buf_size)
-            var len = 0
-            while (-1 != `in`.read(buffer, 0, buf_size).also { len = it }) {
-                bos.write(buffer, 0, len)
+            ByteArrayOutputStream(file.length().toInt()).use {bos->
+                BufferedInputStream(FileInputStream(file)).use {input->
+                    val bufSize = 1024
+                    val buffer = ByteArray(bufSize)
+                    var len: Int
+                    while (-1 != input.read(buffer, 0, bufSize).also { len = it }) {
+                        bos.write(buffer, 0, len)
+                    }
+                }
+                return bos.toByteArray()
             }
-            return bos.toByteArray()
         } catch (e: IOException) {
             e.printStackTrace()
-        } finally {
-            try {
-                `in`!!.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            try {
-                bos.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
         }
         return null
     }
@@ -571,31 +562,23 @@ object FileUtils {
     /**
      * 采用NIO将文件转byte
      */
-    fun readFileToByteArrayByNIO(file: File?): ByteArray? {
-        var channel: FileChannel? = null
-        var fs: FileInputStream? = null
+    fun readFileToByteArrayByNIO(file: File): ByteArray? {
+
         try {
-            fs = FileInputStream(file)
-            channel = fs.channel
-            val byteBuffer = ByteBuffer.allocate(channel.size().toInt())
-            while (channel.read(byteBuffer) > 0) {
-                // do nothing
-                // System.out.println("reading");
-            }
-            return byteBuffer.array()
+             FileInputStream(file).use {fs->
+                 fs.channel.use {channel->
+
+                     val byteBuffer = ByteBuffer.allocate(channel.size().toInt())
+                     while (channel.read(byteBuffer) > 0) {
+                         // do nothing
+                         // System.out.println("reading");
+                     }
+                     return byteBuffer.array()
+                 }
+             }
+
         } catch (e: IOException) {
             e.printStackTrace()
-        } finally {
-            try {
-                channel!!.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            try {
-                fs!!.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
         }
         return null
     }
