@@ -97,10 +97,10 @@ public class BdMapApp {
       if (iError != 0) {
         // 授权Key错误：
         Toast.makeText(mContext,
-            "请在AndoridManifest.xml中输入正确的授权Key,并检查您的网络连接是否正常！error: " + iError, Toast.LENGTH_LONG).show();
+            "地图key验证未通过,检查您的网络连接是否正常(可联系相关技术人员)！error: " + iError, Toast.LENGTH_LONG).show();
       } else {
-        Toast.makeText(mContext, "key认证成功", Toast.LENGTH_LONG)
-            .show();
+        //Toast.makeText(mContext, "key认证成功", Toast.LENGTH_LONG)
+        //    .show();
       }
     }
   }

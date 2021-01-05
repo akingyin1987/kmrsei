@@ -82,7 +82,12 @@ class BDLocationService  private constructor(){
     }
 
     fun unregisterListener(listener: BDAbstractLocationListener?) {
-        client?.unRegisterLocationListener(listener)
+        client?.let {
+            listener?.let {
+                listener->
+                it.unRegisterLocationListener(listener)
+            }
+        }
 
     }
 
@@ -135,7 +140,7 @@ class BDLocationService  private constructor(){
      *
      * @return DefaultLocationClientOption  默认O设置
      */
-    fun getDefaultLocationClientOption(): LocationClientOption {
+    private fun getDefaultLocationClientOption(): LocationClientOption {
 
         if (mOption == null) {
 

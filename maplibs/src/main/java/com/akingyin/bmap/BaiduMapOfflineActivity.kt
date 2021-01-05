@@ -18,8 +18,6 @@ import com.akingyin.base.ext.no
 import com.akingyin.base.ext.yes
 import com.akingyin.bmap.adapter.BaiduOffineListAdapter
 import com.akingyin.map.R
-import com.baidu.location.BDAbstractLocationListener
-import com.baidu.location.BDLocation
 import com.baidu.mapapi.map.offline.MKOLUpdateElement
 import com.baidu.mapapi.map.offline.MKOfflineMap
 import com.baidu.mapapi.map.offline.MKOfflineMapListener

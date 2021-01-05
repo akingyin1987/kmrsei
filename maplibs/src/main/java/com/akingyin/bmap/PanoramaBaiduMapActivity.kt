@@ -1,6 +1,7 @@
 package com.akingyin.bmap
 
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.ext.no
 import com.akingyin.base.ext.yes
@@ -54,7 +55,7 @@ class PanoramaBaiduMapActivity : SimpleActivity() {
         panorama.setShowTopoLink(false)
         val imageMarker = ImageMarker().apply {
             setMarkerPosition(Point(lat,lng))
-            setMarker(getDrawable(R.drawable.icon_openmap_mark))
+            setMarker(ContextCompat.getDrawable(this@PanoramaBaiduMapActivity,R.drawable.icon_openmap_mark))
         }
         imageMarker.setOnTabMarkListener {
             showTips(addr.isEmpty().yes { "这是目标位置" }.no { addr })

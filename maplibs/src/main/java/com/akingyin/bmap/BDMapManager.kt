@@ -1,6 +1,7 @@
 package com.akingyin.bmap
 
-import android.app.Activity
+
+import android.content.Context
 import android.os.Bundle
 import com.akingyin.base.net.exception.ApiException
 import com.akingyin.base.net.okhttp.OkHttpUtils
@@ -37,7 +38,7 @@ import kotlin.math.abs
 internal typealias Func<T> = (T?) -> Unit
 
 @Suppress("DEPRECATION")
-class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: Activity, var autoLoc: Boolean = true) : IMapManager() {
+class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: Context, var autoLoc: Boolean = true) : IMapManager() {
 
 
 
@@ -261,9 +262,9 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: A
                             if (reverseGeoCodeResult.error == SearchResult.ERRORNO.NO_ERROR) {
                                 callBack(reverseGeoCodeResult.poiList, null)
                             } else {
-                                callBack(null, ApiException("未查询到数据"))
+                                callBack(null, ApiException(msg = "未查询到数据"))
                             }
-                        } ?: callBack(null, ApiException("未查询到数据"))
+                        } ?: callBack(null, ApiException(msg = "未查询到数据"))
                     }
                 }
             }

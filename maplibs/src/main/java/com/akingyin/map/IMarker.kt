@@ -63,7 +63,7 @@ abstract  class  IMarker constructor(var uuid:String ) {
      * 定位对象
      * @return
      */
-   var  data: Any? = null
+     var  data: Any? = null
 
     /**
      * 同一个经纬度或聚合定位对象
@@ -84,12 +84,12 @@ abstract  class  IMarker constructor(var uuid:String ) {
 
 
 
+
     /**
      * 是否已完成
      * @return
      */
    abstract fun isComplete(): Boolean
-
 
 
 }

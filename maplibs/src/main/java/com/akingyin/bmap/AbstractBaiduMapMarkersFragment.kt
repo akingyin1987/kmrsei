@@ -1,17 +1,8 @@
-/*
- * Copyright (c) 2020. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- * akingyin@163.com
- */
-
 package com.akingyin.bmap
 
 import android.content.Context
 import android.graphics.drawable.BitmapDrawable
-import android.os.Bundle
+
 import android.os.SystemClock
 import android.view.*
 import android.view.animation.Animation
@@ -24,6 +15,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.akingyin.base.ext.click
 import com.akingyin.base.ext.startActivity
 import com.akingyin.map.IMarker
+import com.akingyin.map.MapUtil
 import com.akingyin.map.R
 import com.akingyin.map.adapter.MarkerInfoViewPager2Adapter
 import com.akingyin.map.base.ILoadImage
@@ -35,27 +27,16 @@ import com.baidu.mapapi.map.*
 import com.baidu.mapapi.model.LatLng
 import com.baidu.mapapi.utils.DistanceUtil
 import com.blankj.utilcode.util.SPUtils
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantLock
-import kotlin.collections.set
 
-
-/**
- * 需要使用基础的地图界面
- * 百度地图处理显示markers
- * @ Description:
- * @author king
- * @ Date 2020/5/26 10:32
- * @version V1.0
- */
 @Suppress("UNCHECKED_CAST")
-abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
+abstract class AbstractBaiduMapMarkersFragment<T: IMarker> :BaseBdMapFragment() {
 
     var pathRead = BitmapDescriptorFactory.fromAsset("icon_road_red_arrow.png")
     var pathGreen = BitmapDescriptorFactory.fromAsset("icon_road_green_arrow.png")
@@ -66,35 +47,34 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
 
     private   var  supportMapClusterValue = false
     private   var  supportSuggestedPathValue = false
-    override fun initializationData(savedInstanceState: Bundle?) {
-        super.initializationData(savedInstanceState)
+
+    override fun initEventAndData() {
         supportMapClusterValue = SPUtils.getInstance("map_setting").getBoolean("support_map_cluster",false)
         supportSuggestedPathValue = SPUtils.getInstance("map_setting").getBoolean("map_suggest_path_key",false)
         initClusterManager(bdMapManager.baiduMap)
     }
 
-
     private   var   lastZoomChangeTime = 0L
     override fun initView() {
         super.initView()
 
-        popView = LayoutInflater.from(this).inflate(R.layout.item_openmap_recyclerview, null)
+        popView = LayoutInflater.from(requireContext()).inflate(R.layout.item_openmap_recyclerview, null)
         closeButton = popView.findViewById(R.id.close)
         closeButton.click {
             onCloseWindow()
         }
-        mShowAction = AnimationUtils.loadAnimation(this, R.anim.layer_pop_in)
-        mHiddenAction = AnimationUtils.loadAnimation(this, R.anim.layer_pop_out)
+        mShowAction = AnimationUtils.loadAnimation(requireContext(), R.anim.layer_pop_in)
+        mHiddenAction = AnimationUtils.loadAnimation(requireContext(), R.anim.layer_pop_out)
         viewPager2 = popView.findViewById(R.id.map_recycler)
         viewPager2.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         markerInfoViewPager2Adapter = MarkerInfoViewPager2Adapter()
         markerInfoViewPager2Adapter.iOperationListen = object :IOperationListion<T>{
             override fun initView(left: TextView?, center: TextView?, right: TextView?, postion: Int, iMarkerModel: T?, vararg views: View) {
-                initMarkerInfoView(left,center,right,postion,iMarkerModel, views.toList())
+               initMarkerInfoView(left,center,right,postion,iMarkerModel, views.toList())
             }
 
             override fun onOperation(postion: Int, iMarkerModel: T) {
-                onMarkerOperation(postion,iMarkerModel)
+               onMarkerOperation(postion,iMarkerModel)
             }
 
             override fun onPathPlan(postion: Int, iMarkerModel: T) {
@@ -102,11 +82,11 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
             }
 
             override fun onTuWen(postion: Int, iMarkerModel: T) {
-                onMarkerTuwen(postion,iMarkerModel)
+                 onMarkerTuwen(postion,iMarkerModel)
             }
 
             override fun onObjectImg(postion: Int, iMarkerModel: T, view: View?) {
-                onMarkerObjectImg(postion,iMarkerModel, view)
+                 onMarkerObjectImg(postion,iMarkerModel, view)
             }
 
             override fun onOtherOperation(postion: Int, iMarkerModel: T, view: View?) {
@@ -135,7 +115,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
                     onViewPageSelected(markerInfoViewPager2Adapter.getItem(position))
 
                 }
-               // initSelectedIndexViewDis(position)
+                // initSelectedIndexViewDis(position)
             }
         })
         bdMapManager.initMapMarkerConfig {
@@ -186,9 +166,9 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
             loadMarkerComplete.set(false)
             loadMarkerData.set(true)
             lock.lock()
-            GlobalScope.launch (Main){
+            GlobalScope.launch (Dispatchers.Main){
                 showLoading()
-                withContext(IO){
+                withContext(Dispatchers.IO){
                     dataQueue.clear()
                     dataQueue.addAll(searchMarkerData())
                     if(supportMapCluster()){
@@ -224,7 +204,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
 
 
 
-     private   var   fristLoadMarker = true
+    private   var   fristLoadMarker = true
     /**
      * 地图marker 加载完成
      */
@@ -283,60 +263,60 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
      */
     open   fun   onFilterMapMarkerBestPath(latlng:LatLng){
 
-         try {
-             lastLocation = BDLocation()
-             lastLocation?.let {
-                 it.latitude = latlng.latitude
-                 it.longitude = latlng.longitude
-             }
-             lastLocationTimme = SystemClock.elapsedRealtime()
-             GlobalScope.launch(Main) {
-                 if(customList.isEmpty()){
-                     customList.add(pathGreen)
-                     customList.add(pathRead)
-                 }
-                 pathDataQueue.clear()
-                 pathDataQueue.addAll(dataQueue)
-                 pathDataQueue.filter {
-                     !it.isComplete()
-                 }
-                 pathDataQueue =  withContext(IO){
+        try {
+            lastLocation = BDLocation()
+            lastLocation?.let {
+                it.latitude = latlng.latitude
+                it.longitude = latlng.longitude
+            }
+            lastLocationTimme = SystemClock.elapsedRealtime()
+            GlobalScope.launch(Dispatchers.Main) {
+                if(customList.isEmpty()){
+                    customList.add(pathGreen)
+                    customList.add(pathRead)
+                }
+                pathDataQueue.clear()
+                pathDataQueue.addAll(dataQueue)
+                pathDataQueue.filter {
+                    !it.isComplete()
+                }
+                pathDataQueue =  withContext(Dispatchers.IO){
 
-                     MapPathPlanUtil.getOptimalPathPlan(pathDataQueue,latlng).toMutableList()
-                 }
+                    MapPathPlanUtil.getOptimalPathPlan(pathDataQueue,latlng).toMutableList()
+                }
 
-                 val  pathIndex = mutableListOf<Int>()
-                 val  pathLatlngs = pathDataQueue.map {
-                     pathIndex.add(if(it.isComplete()){0}else{1})
+                val  pathIndex = mutableListOf<Int>()
+                val  pathLatlngs = pathDataQueue.map {
+                    pathIndex.add(if(it.isComplete()){0}else{1})
 
-                     LatLng(it.getLat(),it.getLng())
+                    LatLng(it.getLat(),it.getLng())
 
-                 }
+                }
 
-                 polylineMarker?.remove()
-                 startMarker?.remove()
-                 endMarker?.remove()
+                polylineMarker?.remove()
+                startMarker?.remove()
+                endMarker?.remove()
 
-                 if(pathLatlngs.size>1){
-                     polylineMarker =  bdMapManager.addPolylineMarker(pathLatlngs,pathIndex,customList)
-                     val startmarker: MarkerOptions = MarkerOptions()
-                             .position(pathLatlngs[0]).animateType(
-                                     MarkerOptions.MarkerAnimateType.drop).icon(startBitmap).draggable(false)
-                     startMarker = bdMapManager.addSingleMarker(startmarker)
-                     val endmarker: MarkerOptions = MarkerOptions()
-                             .position(pathLatlngs[pathLatlngs.size-1]).animateType(
-                                     MarkerOptions.MarkerAnimateType.drop).icon(endBitmap).draggable(false)
-                     endMarker = bdMapManager.addSingleMarker(endmarker)
-                     if(!supportMapClusterValue){
-                         showMapMarkerListInfo(0,pathDataQueue)
+                if(pathLatlngs.size>1){
+                    polylineMarker =  bdMapManager.addPolylineMarker(pathLatlngs,pathIndex,customList)
+                    val startmarker: MarkerOptions = MarkerOptions()
+                            .position(pathLatlngs[0]).animateType(
+                                    MarkerOptions.MarkerAnimateType.drop).icon(startBitmap).draggable(false)
+                    startMarker = bdMapManager.addSingleMarker(startmarker)
+                    val endmarker: MarkerOptions = MarkerOptions()
+                            .position(pathLatlngs[pathLatlngs.size-1]).animateType(
+                                    MarkerOptions.MarkerAnimateType.drop).icon(endBitmap).draggable(false)
+                    endMarker = bdMapManager.addSingleMarker(endmarker)
+                    if(!supportMapClusterValue){
+                        showMapMarkerListInfo(0,pathDataQueue)
 
-                     }
+                    }
 
-                 }
-             }
-         }catch (e : Exception){
-             e.printStackTrace()
-         }
+                }
+            }
+        }catch (e : Exception){
+            e.printStackTrace()
+        }
     }
 
 
@@ -354,12 +334,14 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
     lateinit var closeButton: ImageView
     lateinit var  viewPager2: ViewPager2
     lateinit var  markerInfoViewPager2Adapter: MarkerInfoViewPager2Adapter<T>
+
+
     /**
      * 显示当前marker详情
      */
-    fun    showMapMarkerListInfo(postion: Int,viewDatas:List<T> ,notsetMarker: Boolean = false){
+     fun    showMapMarkerListInfo(postion: Int = 0,viewDatas:List<T> = dataQueue ,notsetMarker: Boolean = false){
         try {
-           println("showMapMarkerListInfo-> size=${viewDatas.size},postion=${postion}")
+
             mPopupBottonWindow?.let {
                 if(it.isShowing){
                     it.dismiss()
@@ -373,18 +355,18 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
                         t.disFromPostion = DistanceUtil.getDistance(LatLng(latitude,longitude), LatLng(t.getLat(),t.getLng()))
                     }
                 }
-               if(null != t.markers && t.markers!!.isNotEmpty()){
-                   t.sortInfo = "详情   ${viewDatas.size} - ${index+1} (${t.markers!!.size+1}-1)"
-                   showMarkers.add(t)
-                   t.markers?.forEachIndexed { index2, iMarker ->
-                       iMarker.sortInfo = "详情   ${viewDatas.size} - ${index+1} (${t.markers!!.size+1}-${index2+2})"
-                       showMarkers.add(iMarker)
-                   }
-               }else{
-                   t.sortInfo = "详情   ${viewDatas.size} - ${index+1} "
-                   showMarkers.add(t)
-                   println("这是 sortInfo=${t.sortInfo}")
-               }
+                if(null != t.markers && t.markers!!.isNotEmpty()){
+                    t.sortInfo = "详情   ${viewDatas.size} - ${index+1} (${t.markers!!.size+1}-1)"
+                    showMarkers.add(t)
+                    t.markers?.forEachIndexed { index2, iMarker ->
+                        iMarker.sortInfo = "详情   ${viewDatas.size} - ${index+1} (${t.markers!!.size+1}-${index2+2})"
+                        showMarkers.add(iMarker)
+                    }
+                }else{
+                    t.sortInfo = "详情   ${viewDatas.size} - ${index+1} "
+                    showMarkers.add(t)
+                    println("这是 sortInfo=${t.sortInfo}")
+                }
             }
 
             markerInfoViewPager2Adapter.setDiffNewData(showMarkers.map {
@@ -464,7 +446,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
 
     open   fun   initPopupWindow(){
         if(null == mPopupBottonWindow){
-            mPopupBottonWindow = PopupWindow(this).apply {
+            mPopupBottonWindow = PopupWindow(requireContext()).apply {
                 contentView = popView
                 width = ViewGroup.LayoutParams.MATCH_PARENT
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -516,41 +498,41 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
             return
         }
         try {
-          showLoading()
-          loadMarkerComplete.set(false)
-          GlobalScope.launch(Main) {
-              onBeforeLoadMapMarker()
-              withContext(IO){
-                  val   list = mutableListOf<T>().apply {
-                      dataQueue.forEach {
-                          add(it)
-                      }
-                  }.filter {
-                      onFilterMarkerData(it)
-                  }
+            showLoading()
+            loadMarkerComplete.set(false)
+            GlobalScope.launch(Dispatchers.Main) {
+                onBeforeLoadMapMarker()
+                withContext(Dispatchers.IO){
+                    val   list = mutableListOf<T>().apply {
+                        dataQueue.forEach {
+                            add(it)
+                        }
+                    }.filter {
+                        onFilterMarkerData(it)
+                    }
 
-                  if(supportMapCluster()){
-                      loadMapClusterMarker(firstLoad)
-                  }else{
-                      val  overlays = list.map {
-                          data->
-                          bdMapManager.onCreateMarkerOptions(data)
-                                  .animateType(getMapMarkerAnimate())
-                                  .icon(getBitmapDescriptor(data))
-                                  .draggable(getMapMarkerDrag())
+                    if(supportMapCluster()){
+                        loadMapClusterMarker(firstLoad)
+                    }else{
+                        val  overlays = list.map {
+                            data->
+                            bdMapManager.onCreateMarkerOptions(data)
+                                    .animateType(getMapMarkerAnimate())
+                                    .icon(getBitmapDescriptor(data))
+                                    .draggable(getMapMarkerDrag())
 
-                      }
-                      bdMapManager.addDataToMap(overlays)
-                      if(firstLoad){
-                          bdMapManager.zoomToSpan()
-                      }
-                  }
+                        }
+                        bdMapManager.addDataToMap(overlays)
+                        if(firstLoad){
+                            bdMapManager.zoomToSpan()
+                        }
+                    }
 
 
-              }
-              hideLoadDialog()
-              loadMapMarkerViewComplete()
-          }
+                }
+                hideLoadDialog()
+                loadMapMarkerViewComplete()
+            }
         }catch (e : Exception){
             e.printStackTrace()
         }finally {
@@ -610,7 +592,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
     abstract   fun    getBitmapDescriptor(data:T):BitmapDescriptor
 
 
-        /**
+    /**
      * 查询地图数据
      */
 
@@ -643,31 +625,6 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
     open   fun   onClusterMarkerClick(marker: Marker){
 
     }
-    open fun initMarkerInfoView(left: TextView?, center: TextView?, right: TextView?, postion: Int, iMarkerModel: T?,  views: List<View>) {
-
-    }
-
-
-
-    open fun onMarkerPathPlan(postion: Int, iMarkerModel: T) {
-
-    }
-
-
-
-    open fun onMarkerOtherOperation(postion: Int, iMarkerModel: T, view: View?) {
-
-    }
-
-
-
-    abstract  fun  onMarkerTuwen(postion: Int, iMarkerModel: T)
-
-    abstract  fun  onMarkerOperation(postion: Int, iMarkerModel: T)
-
-    abstract  fun  onMarkerObjectImg(postion: Int, iMarkerModel: T, view: View?)
-
-    abstract  fun  loadMarkerImageView(path: String, context: Context, imageView: ImageView)
 
     /**
      * 展现的所有marker数据
@@ -711,7 +668,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
             return
         }
 
-       loadMarkerData()
+        loadMarkerData()
 
     }
 
@@ -743,18 +700,19 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
     }
 
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        setMapBaseMenu(menu,inflater)
+    }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        setMapBaseMenu(menu)
-        return true
+    open  fun  setMapBaseMenu(menu: Menu, inflater: MenuInflater){
+        inflater.inflate(R.menu.menu_map_setting,menu)
     }
-    open  fun  setMapBaseMenu(menu: Menu?){
-        menuInflater.inflate(R.menu.menu_map_setting,menu)
-    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.action_map_item_setting -> showMapSettingInfo()
-            
+
             R.id.action_map_refresh ->{
                 onMapRefresh()
             }
@@ -764,11 +722,38 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
                 onSearchMapData()
             }
         }
-       
+
         return super.onOptionsItemSelected(item)
     }
 
+    open fun initMarkerInfoView(left: TextView?, center: TextView?, right: TextView?, postion: Int, iMarkerModel: T?,  views: List<View>) {
 
+    }
+
+
+
+    open fun onMarkerPathPlan(postion: Int, iMarkerModel: T) {
+          bdMapManager.getMyLocationData()?.let {
+              MapUtil.showMapRoutePlanByBdLocation(requireContext(),startLatLng = LatLng(it.latitude,it.longitude),endLatLng = LatLng(iMarkerModel.getLat(),iMarkerModel.getLng()))
+          }?:showError("当前位置获取失败")
+
+    }
+
+
+
+    open fun onMarkerOtherOperation(postion: Int, iMarkerModel: T, view: View?) {
+
+    }
+
+
+
+    abstract  fun  onMarkerTuwen(postion: Int, iMarkerModel: T)
+
+    abstract  fun  onMarkerOperation(postion: Int, iMarkerModel: T)
+
+    abstract  fun  onMarkerObjectImg(postion: Int, iMarkerModel: T, view: View?)
+
+    abstract  fun  loadMarkerImageView(path: String, context: Context, imageView: ImageView)
 
     /**
      * 是否支持点聚合
@@ -788,7 +773,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
      * 绑定 聚合管理器
      */
     open fun    bindClusterManagerMapStatusChange():BaiduMap.OnMapStatusChangeListener?{
-          return null
+        return null
     }
 
 
@@ -815,6 +800,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
     open  fun     onSearchMapData(){
 
     }
+
 
 
 }

@@ -5,8 +5,8 @@
 
     <com.baidu.mapapi.map.MapView
         android:id="@+id/map_content"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
     </com.baidu.mapapi.map.MapView>
 
     <RelativeLayout

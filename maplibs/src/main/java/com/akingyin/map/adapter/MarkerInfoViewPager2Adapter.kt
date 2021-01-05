@@ -65,7 +65,10 @@ class MarkerInfoViewPager2Adapter<T:IMarker> :BaseQuickAdapter<T,BaseViewHolder>
                 "距离当前位置约："+MessageFormat.format("{0,number,#.##}",it)+"米"
             }?:"")
         }
-        holder.getView<View>(R.id.detai_title).gone()
+        holder.getView<TextView>(R.id.detai_title).let {
+            it.text =""
+            it.visibility = View.INVISIBLE
+        }
         val detai_info: TextView = holder.getView(R.id.detai_info)
         detai_info.text = HtmlUtils.getTextHtml(item.baseInfo)
         val left: TextView = holder.getView(R.id.openmap_detai_leftbtn)

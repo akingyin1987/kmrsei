@@ -25,4 +25,8 @@ data class PickupLatLngVo (var  currentLat:Double=0.0
                             var  locationAddr:String=""
                            ,var onlysee:Boolean = false,
                            var  draggable:Boolean = true,
-                           var  geoAdder:Boolean = false):Serializable
+                           var  geoAdder:Boolean = false):Serializable {
+    override fun toString(): String {
+        return "PickupLatLngVo(currentLat=$currentLat, currentLng=$currentLng, oldCurrentLat=$oldCurrentLat, oldCurrentLng=$oldCurrentLng, locationAddr='$locationAddr', onlysee=$onlysee, draggable=$draggable, geoAdder=$geoAdder)"
+    }
+}

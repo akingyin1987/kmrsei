@@ -68,6 +68,8 @@ class CoordinatePickupBaiduMapActivity : BaseBDMapActivity(){
          pickupLatLng = intent.getSerializableExtra(PICKUP_DATA_KEY)?.let {
               it as PickupLatLngVo
          }?:PickupLatLngVo()
+
+        println("---pickupLatLng---->>$pickupLatLng")
          if(pickupLatLng.onlysee && pickupLatLng.currentLng<=0){
              showError("当前定位信息不全，无法查看！")
              finish()
@@ -205,12 +207,9 @@ class CoordinatePickupBaiduMapActivity : BaseBDMapActivity(){
         super.onMapLoadComplete()
         if(pickupLatLng.currentLat>0 && pickupLatLng.currentLng>0){
             bdMapManager.setMapCenter(pickupLatLng.currentLat,pickupLatLng.currentLng)
-            marker =bdMapManager.addSingleMarker(MarkerOptions().apply {
-                position(LatLng(pickupLatLng.currentLng,pickupLatLng.currentLng))
-                icon(bitmap)
-                draggable(pickupLatLng.draggable)
+            onCreateMoveMarker(pickupLatLng.currentLat,pickupLatLng.currentLng,pickupLatLng.locationAddr)
+            println("添加marker-->")
 
-            })
         }else{
             bdMapManager.startLoction()
         }
@@ -241,7 +240,10 @@ class CoordinatePickupBaiduMapActivity : BaseBDMapActivity(){
         pickupLatLng.currentLat = lat
         pickupLatLng.currentLng = lng
         pickupLatLng.locationAddr = addr
-        tv_lalnginfo.text =MessageFormat.format("当前坐标: {0,number,#.######}/{1,number,#.######}",lat,lng)
+        tv_lalnginfo.post {
+            tv_lalnginfo.text =MessageFormat.format("当前坐标: {0,number,#.######}/{1,number,#.######}",lat,lng)
+        }
+
         marker=if(null == marker){
             bdMapManager.addSingleMarker(MarkerOptions().apply {
                 position(LatLng(lat,lng))
@@ -275,6 +277,7 @@ class CoordinatePickupBaiduMapActivity : BaseBDMapActivity(){
             println("onOptionsItemSelected-->")
            if(abs(pickupLatLng.currentLat - pickupLatLng.oldCurrentLat) >0.000001
                    || abs(pickupLatLng.currentLng-pickupLatLng.oldCurrentLng)>0.000001){
+               println("data=>${pickupLatLng.toString()}")
                setResult(Activity.RESULT_OK, Intent().apply {
                    putExtra(PICKUP_DATA_LAT,pickupLatLng.currentLat)
                    putExtra(PICKUP_DATA_LNG,pickupLatLng.currentLng)

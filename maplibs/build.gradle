@@ -70,6 +70,6 @@ dependencies {
 
   api files('libs/BaiduLBS_Android.jar')
   api files('libs/IndoorscapeAlbumPlugin.jar')
-  api files('libs/AMap3DMap.jar')
+ // api files('libs/AMap3DMap.jar')
   implementation project(path: ':androidutil')
 }

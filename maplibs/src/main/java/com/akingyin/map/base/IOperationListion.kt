@@ -29,7 +29,7 @@ interface IOperationListion<T : IMarker> {
      * @param right
      */
     fun initView(left: TextView?, center: TextView?, right: TextView?, postion: Int,
-                 iMarkerModel: T?, vararg views: View?)
+                 iMarkerModel: T?, vararg views: View)
 
     /**
      * 点击操作

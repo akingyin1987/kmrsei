@@ -1,8 +1,6 @@
 package com.akingyin.bmap
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
@@ -10,51 +8,46 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.akingyin.base.BaseNfcTagActivity
+import com.akingyin.base.SimpleBottomSheetFragmentDialog
+
 import com.akingyin.base.ext.click
 import com.akingyin.map.R
-
 import com.akingyin.map.base.MapLoadingDialog
 import com.baidu.location.BDLocation
 import com.baidu.mapapi.map.*
 
+
 /**
  * @ Description:
  * @author king
- * @ Date 2020/5/18 18:28
+ * @ Date 2020/11/21 17:37
  * @version V1.0
  */
-/**
- * 百度地图基础类
- * @ Description:
- * @author king
- * @ Date 2020/5/18 15:08
- * @version V1.0
- */
-abstract class BaseBDMapActivity : BaseNfcTagActivity(){
-
-
+abstract class BaseBdMapBottomSheetDialog : SimpleBottomSheetFragmentDialog() {
 
     lateinit var   bdMapManager:BDMapManager
 
-    override fun initializationData(savedInstanceState: Bundle?) {
-        val  mapView = findViewById<MapView>(R.id.map_content)
-        bdMapManager = BDMapManager(mapView.map,mapView,this,autoLocation())
+    lateinit var   rootView : View
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        rootView = view
+        val  mapView = view.findViewById<MapView>(R.id.map_content)
+        bdMapManager = BDMapManager(mapView.map,mapView,requireContext(),autoLocation())
         bdMapManager.onCreate(savedInstanceState)
         bdMapManager.initMapConfig()
 
         bdMapManager.onMapLoad {
             onMapLoadComplete()
         }
+        super.onViewCreated(view, savedInstanceState)
     }
 
-
     /** 地图模式（正常，跟随，罗盘）  */
-     lateinit var location_icon: ImageView
-     lateinit var location_switcher:ViewSwitcher
-     var location_progress: ProgressBar? = null
+    lateinit var location_icon: ImageView
+    lateinit var location_switcher: ViewSwitcher
+    var location_progress: ProgressBar? = null
 
     private lateinit var  zoom_in: ImageButton
     private lateinit var zoom_out: ImageButton
@@ -70,7 +63,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
 
 
     private var vs_seeall: ViewSwitcher? = null
-     var iv_seeall: ImageView? = null
+    var iv_seeall: ImageView? = null
 
     /** 显示当前位置  */
     private lateinit var vs_showloc: ViewSwitcher
@@ -82,26 +75,24 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
 
 
 
-
-
     override fun initView() {
-        location_icon = findViewById(R.id.location_icon)
-        zoom_out = findViewById(R.id.zoom_out)
-        zoom_in = findViewById(R.id.zoom_in)
-        road_condition = findViewById(R.id.road_condition)
-        vs_showloc = findViewById(R.id.vs_showloc)
-        iv_showloc = findViewById(R.id.iv_showloc)
-        iv_seeall = findViewById(R.id.iv_seeall)
-        vs_seeall = findViewById(R.id.vs_seeall)
+        location_icon = rootView.findViewById(R.id.location_icon)
+        zoom_out = rootView.findViewById(R.id.zoom_out)
+        zoom_in = rootView.findViewById(R.id.zoom_in)
+        road_condition = rootView.findViewById(R.id.road_condition)
+        vs_showloc = rootView.findViewById(R.id.vs_showloc)
+        iv_showloc = rootView.findViewById(R.id.iv_showloc)
+        iv_seeall = rootView.findViewById(R.id.iv_seeall)
+        vs_seeall = rootView.findViewById(R.id.vs_seeall)
         iv_seeall?.click {
             onSeeAllMarkers()
         }
-        location_icon = findViewById(R.id.location_icon)
-        location_progress = findViewById(R.id.location_progress)
-        location_switcher = findViewById(R.id.location)
+        location_icon = rootView.findViewById(R.id.location_icon)
+        location_progress = rootView.findViewById(R.id.location_progress)
+        location_switcher = rootView.findViewById(R.id.location)
 
-        map_layers = findViewById(R.id.map_layers)
-        map_street = findViewById(R.id.map_street)
+        map_layers = rootView.findViewById(R.id.map_layers)
+        map_street = rootView.findViewById(R.id.map_street)
         iv_showloc.tag = "0"
         iv_showloc.click {
             if(it.tag.toString() == "1"){
@@ -141,7 +132,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
                 bdMapManager.saveMapTraffic(true)
             }
         }
-        maplayer = LayoutInflater.from(this).inflate(R.layout.map_layer, null)
+        maplayer = LayoutInflater.from(requireContext()).inflate(R.layout.map_layer, null)
         layer_selector = maplayer.findViewById(R.id.layer_selector)
         layer_satellite = maplayer.findViewById(R.id.layer_satellite)
         layer_2d = maplayer.findViewById(R.id.layer_2d)
@@ -208,7 +199,6 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
         })
     }
 
-
     private var mPopupWindow: PopupWindow? = null
     private var layer_selector: RadioGroup? = null
     private var layer_satellite: RadioButton? = null
@@ -218,7 +208,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
     open fun showMapLayerDialog(v: View, xoff: Int, yoff: Int) {
         if (mPopupWindow == null) {
             mPopupWindow = PopupWindow(maplayer, ViewGroup.LayoutParams.WRAP_CONTENT,
-                  ViewGroup.LayoutParams.WRAP_CONTENT, true)
+                    ViewGroup.LayoutParams.WRAP_CONTENT, true)
             mPopupWindow?.setBackgroundDrawable(BitmapDrawable(resources, null as Bitmap?))
         }
         mPopupWindow?.let {
@@ -237,7 +227,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
     private   fun  goToMapStreet(){
         bdMapManager.baiduMap.locationData?.let {
             locationData->
-            startActivity(Intent(this, PanoramaBaiduMapActivity::class.java).apply {
+            startActivity(Intent(requireContext(), PanoramaBaiduMapActivity::class.java).apply {
                 putExtra("lat",locationData.latitude)
                 putExtra("lng",locationData.longitude)
             })
@@ -256,8 +246,6 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
         iv_showloc.tag = "0"
         bdMapManager.baiduMap.isMyLocationEnabled = true
     }
-
-
     /**
      * 获取定位图标  空则使用默认
      */
@@ -296,7 +284,7 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
      * 获取到第一次定位信息
      */
     open   fun   onFristMyLocation(bdLocation: BDLocation){
-         bdMapManager.setMapCenter(bdLocation.latitude,bdLocation.longitude,bdMapManager.getMapMaxZoomLevel()-1)
+        bdMapManager.setMapCenter(bdLocation.latitude,bdLocation.longitude,bdMapManager.getMapMaxZoomLevel()-1)
     }
 
     fun   initMapZoomUiEnable(){
@@ -317,18 +305,8 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
     override fun onResume() {
         super.onResume()
         bdMapManager.onResume()
-        if(!allPermissionsGranted()){
-            ActivityCompat.requestPermissions(this, locationPermissions, 1);
-        }
     }
 
-    open val locationPermissions = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    )
-    private fun allPermissionsGranted() = locationPermissions.all {
-        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-    }
     override fun onPause() {
         super.onPause()
         bdMapManager.onPause()
@@ -338,4 +316,6 @@ abstract class BaseBDMapActivity : BaseNfcTagActivity(){
         bdMapManager.onDestroy()
         super.onDestroy()
     }
+
+
 }
