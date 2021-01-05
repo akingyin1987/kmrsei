@@ -24,7 +24,6 @@ import android.provider.MediaStore
 import android.text.TextUtils
 import androidx.exifinterface.media.ExifInterface
 import com.akingyin.base.config.AppFileConfig
-import com.akingyin.base.utils.IOUtils
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import kotlin.math.abs
@@ -429,13 +428,13 @@ object MediaUtils {
      */
     fun getImageOrientationForUrl(context: Context, url: String): Int {
         var exifInterface: ExifInterface? = null
-        var inputStream: InputStream? = null
+
         return try {
             if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.Q && MediaMimeType.isContent(url)) {
-                inputStream = context.contentResolver.openInputStream(Uri.parse(url))
-                if (inputStream != null) {
-                    exifInterface = ExifInterface(inputStream)
-                }
+                 context.contentResolver.openInputStream(Uri.parse(url))?.use {
+                     exifInterface = ExifInterface(it)
+                 }
+
             } else {
                 exifInterface = ExifInterface(url)
             }
@@ -444,8 +443,6 @@ object MediaUtils {
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             0
-        } finally {
-            IOUtils.close(inputStream)
         }
     }
 

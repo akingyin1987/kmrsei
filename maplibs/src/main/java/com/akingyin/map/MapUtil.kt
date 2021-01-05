@@ -20,6 +20,8 @@ import com.baidu.mapapi.utils.route.RouteParaOption
  * @ Date 2018/3/2 17:30
  */
 object MapUtil {
+
+    @JvmStatic
     fun getLatlngAverage(latLngs: Collection<LatLng>): LatLng {
         var lat = 0.0
         var lng = 0.0
@@ -35,6 +37,7 @@ object MapUtil {
         return LatLng(lat, lng)
     }
 
+    @JvmStatic
     fun getLatlngCentent(latLngs: Collection<LatLng>): LatLng {
         var minlat = 0.0
         var maxlat = 0.0

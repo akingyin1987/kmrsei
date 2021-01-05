@@ -26,22 +26,34 @@ public class RxException <T extends Throwable> implements Consumer<T> {
     this.onError=onError;
 
   }
-  @Override public void accept(T t) throws Exception {
+  @Override public void accept(T t) throws Throwable {
     if (t instanceof SocketTimeoutException) {
-      Log.e(TAG, "onError: SocketTimeoutException----" + SOCKETTIMEOUTEXCEPTION);
 
-      onError.accept(new Throwable(SOCKETTIMEOUTEXCEPTION));
+      try {
+        onError.accept(new SocketTimeoutException(SOCKETTIMEOUTEXCEPTION));
+      } catch (Throwable throwable) {
+        throwable.printStackTrace();
+      }
     } else if (t instanceof ConnectException) {
-      Log.e(TAG, "onError: ConnectException-----" + CONNECTEXCEPTION);
-
-      onError.accept(new Throwable(CONNECTEXCEPTION));
+      try {
+        onError.accept(new ConnectException(CONNECTEXCEPTION));
+      } catch (Throwable throwable) {
+        throwable.printStackTrace();
+      }
     } else if (t instanceof UnknownHostException) {
-      Log.e(TAG, "onError: UnknownHostException-----" + UNKNOWNHOSTEXCEPTION);
 
-      onError.accept(new Throwable(UNKNOWNHOSTEXCEPTION));
+      try {
+        onError.accept(new UnknownHostException(UNKNOWNHOSTEXCEPTION));
+      } catch (Throwable throwable) {
+        throwable.printStackTrace();
+      }
     } else {
-      Log.e(TAG, "onError:----" + t.getMessage());
-      onError.accept(t);
+
+      try {
+        onError.accept(t);
+      } catch (Throwable throwable) {
+        throwable.printStackTrace();
+      }
     }
   }
 }

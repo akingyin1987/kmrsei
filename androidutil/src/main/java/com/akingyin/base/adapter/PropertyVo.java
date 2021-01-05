@@ -68,7 +68,7 @@ public class PropertyVo  implements Serializable {
 	
 	public  PropertyVo(String  propertyName,Long  propertyValue){
 		this.propertyName = propertyName;
-		this.propertyValue = null == propertyValue || propertyValue<=0?"": DateUtil.millis2String(propertyValue);
+		this.propertyValue = (null == propertyValue || propertyValue<=0)?"": DateUtil.millis2String(propertyValue);
 
 	}
 	

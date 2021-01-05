@@ -97,6 +97,7 @@ object DateUtil {
      * @param millis
      * @return
      */
+    @JvmStatic
     fun millis2String(millis: Long?): String {
         return if (null == millis || millis <= 0L) {
             StringUtils.DEFAULT_EMPTY

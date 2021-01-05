@@ -595,7 +595,7 @@ open class BaseCameraFragment : SimpleFragment() {
             if(allPermissionsGranted()){
                 onPermissionGranted()
             }else{
-                mView.let { v ->
+                view?.let { v ->
                     Snackbar.make(v, "拍照没有这些权限将无法运行！", Snackbar.LENGTH_INDEFINITE)
                             .setAction("退出") { ActivityCompat.finishAffinity(requireActivity()) }
                             .show()

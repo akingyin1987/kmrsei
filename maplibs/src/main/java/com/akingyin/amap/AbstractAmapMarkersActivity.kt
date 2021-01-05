@@ -20,7 +20,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.PopupWindow
-import android.widget.TextView
+
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.akingyin.base.ext.click
@@ -290,8 +290,8 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
                 endMarker?.remove()
 
                 if(pathLatlngs.size>1){
-                    startBitmap = startBitmap?:BitmapDescriptorFactory.fromResource(R.drawable.amap_start)
-                    endBitmap = endBitmap?:BitmapDescriptorFactory.fromResource(R.drawable.amap_end)
+//                    startBitmap = startBitmap?:BitmapDescriptorFactory.fromResource(R.drawable.amap_start)
+//                    endBitmap = endBitmap?:BitmapDescriptorFactory.fromResource(R.drawable.amap_end)
 
                     polylineMarker =  aMapManager.addPolylineMarker(pathLatlngs,pathIndex,customList)
                     val startmarker: MarkerOptions = MarkerOptions()
@@ -708,9 +708,7 @@ abstract class AbstractAmapMarkersActivity<T : IMarker> : BaseAMapActivity(), IL
         return super.onOptionsItemSelected(item)
     }
 
-    override fun initView(left: TextView?, center: TextView?, right: TextView?, postion: Int, iMarkerModel: T?, vararg views: View?) {
 
-    }
 
 
 

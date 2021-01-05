@@ -114,9 +114,7 @@ public abstract class OverlayManager implements OnMarkerClickListener, OnPolylin
         if (mBaiduMap == null) {
             return;
         }
-        System.out.println("stime="+ DateUtil.getNowTimeString(DateUtil.HH_MM_SS_SSS)+":"+Thread.currentThread().getName());
         removeFromMap();
-        System.out.println("etime="+ DateUtil.getNowTimeString(DateUtil.HH_MM_SS_SSS));
 
         List<OverlayOptions> overlayOptions = getOverlayOptions();
         if (overlayOptions != null) {

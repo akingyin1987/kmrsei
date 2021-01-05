@@ -77,7 +77,7 @@ class TaskShowDialog(var context: Context, var callBack: (Boolean) -> Unit) {
     }
 
 
-    fun setTipWord(message: String?) {
+    fun setTipWord(message: String) {
         tipView.text = HtmlUtils.getTextHtml(message)
     }
 

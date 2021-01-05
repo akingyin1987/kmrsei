@@ -570,10 +570,10 @@ open class CameraxFragment : SimpleFragment() {
 
         }
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-           mView.postDelayed({
-               mView.foreground = ColorDrawable(Color.WHITE)
-               mView.postDelayed({
-                   mView.foreground = null
+           view?.postDelayed({
+               view?.foreground = ColorDrawable(Color.WHITE)
+               view?.postDelayed({
+                   view?.foreground = null
                },ANIMATION_FAST_MILLIS)
            },ANIMATION_SLOW_MILLIS)
         }
