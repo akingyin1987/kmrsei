@@ -143,18 +143,26 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
 
     }
 
-    override fun loadImageView(path: String, context: Context, imageView: ImageView) {
+    override fun onMarkerTuwen(postion: Int, iMarkerModel: BdModel) {
+
+    }
+
+    override fun onMarkerOperation(postion: Int, iMarkerModel: BdModel) {
+
+    }
+
+    override fun onMarkerObjectImg(postion: Int, iMarkerModel: BdModel, view: View?) {
+
+    }
+
+    override fun loadMarkerImageView(path: String, context: Context, imageView: ImageView) {
         ImageLoadUtil.loadImage(path,context,imageView)
     }
 
-    override fun onOperation(postion: Int, iMarkerModel: BdModel) {
-    }
 
-    override fun onTuWen(postion: Int, iMarkerModel: BdModel) {
-    }
 
-    override fun onObjectImg(postion: Int, iMarkerModel: BdModel, view: View?) {
-    }
+
+
 
 
     private lateinit  var   clusterManager : ClusterManager<BdModel>

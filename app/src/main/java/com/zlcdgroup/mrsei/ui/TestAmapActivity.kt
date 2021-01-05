@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.akingyin.amap.AbstractAmapMarkersActivity
 import com.akingyin.base.utils.StringUtils
@@ -11,7 +12,7 @@ import com.akingyin.map.TestUtil
 import com.amap.api.maps.AMap
 import com.amap.api.maps.model.*
 import com.amap.clustering.ClusterManager
-import com.amap.clustering.algo.GridBasedAlgorithm
+
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.model.AMarker
 import com.zlcdgroup.nfcsdk.RfidInterface
@@ -35,6 +36,7 @@ class TestAmapActivity : AbstractAmapMarkersActivity<AMarker>() {
 
     override fun initView() {
         super.initView()
+
         aMapManager.aMap.myLocationStyle = MyLocationStyle().showMyLocation(true).interval(3000)
                 .myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER)
         val bar = findViewById<Toolbar>(R.id.toolbar)
@@ -172,6 +174,10 @@ class TestAmapActivity : AbstractAmapMarkersActivity<AMarker>() {
             initClickMarkerIcon(marker)
 
         }
+
+    }
+
+    override fun initView(left: TextView?, center: TextView?, right: TextView?, postion: Int, iMarkerModel: AMarker?, vararg views: View) {
 
     }
 

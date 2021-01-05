@@ -438,7 +438,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
 
     }
 
-    private fun    initLastMarkerIcon(){
+     fun    initLastMarkerIcon(){
         if(null != mCurrentMarker && null != lastClickMarkerIcon){
             mCurrentMarker?.icon = lastClickMarkerIcon
         }
@@ -447,7 +447,7 @@ abstract class AbstractBaiduMapMarkersActivity<T:IMarker> :BaseBDMapActivity(){
     /**
      * 处理当前点击的marker
      */
-    private fun   initClickMarkerIcon(marker: Marker){
+     fun   initClickMarkerIcon(marker: Marker){
         mCurrentMarker = marker
         lastClickMarkerIcon = mCurrentMarker?.icon
         mCurrentMarker?.icon = readBitmap

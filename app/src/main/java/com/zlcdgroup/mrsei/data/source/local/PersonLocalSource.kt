@@ -21,7 +21,7 @@ class PersonLocalSource @Inject constructor( var  personEntityDao: PersonEntityD
     }
 
     override fun delectOutTowMonth() =
-            personEntityDao.queryBuilder().where(PersonEntityDao.Properties.LoginTime.lt(DateUtil.getNowTimeMills()-60*DateUtil.DAY)).buildDelete().executeDeleteWithoutDetachingEntities()
+            personEntityDao.queryBuilder().where(PersonEntityDao.Properties.LoginTime.lt(DateUtil.nowTimeMills -60*DateUtil.DAY)).buildDelete().executeDeleteWithoutDetachingEntities()
 
     override fun savePerson(personEntity: PersonEntity) {
         personEntityDao.save(personEntity)
