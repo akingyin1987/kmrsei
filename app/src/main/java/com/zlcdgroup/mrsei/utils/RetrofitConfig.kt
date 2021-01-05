@@ -6,6 +6,7 @@ import com.akingyin.base.ext.currentTimeMillis
 import com.akingyin.base.ext.spGetString
 import com.akingyin.base.net.retrofitConverter.FastJsonConverterFactory
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+
 import com.zlcdgroup.mrsei.Constants
 import com.zlcdgroup.mrsei.data.source.remote.api.LoginServerApi
 import okhttp3.Cache
@@ -13,7 +14,8 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
+
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -168,7 +170,7 @@ class RetrofitConfig private constructor(){
         mRetrofit = Retrofit.Builder()
                 .client(mOkHttpClient)
                 .addConverterFactory(FastJsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .baseUrl(baseUrl)
                 .build()
 

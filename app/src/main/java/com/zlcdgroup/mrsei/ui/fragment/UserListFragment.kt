@@ -63,7 +63,7 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
     }
 
     override fun showAddUserDialog() {
-        MaterialDialog(mContext).show {
+        MaterialDialog(requireContext()).show {
             title(text = "用户信息修改")
             positiveButton(text = "确定")
             negativeButton(text = "取消")
@@ -95,7 +95,7 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
     }
 
     override fun showDelectUserDialog(userEntity: UserEntity, postion: Int) {
-       MaterialDialogUtil.showConfigDialog(mContext,message = "确定要删除当前信息?"){
+       MaterialDialogUtil.showConfigDialog(requireContext(),message = "确定要删除当前信息?"){
            if(it){
                userListFragmentPresenterImpl.delectUser(userEntity,postion)
            }
@@ -108,14 +108,14 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
     }
 
     override fun showModifyUser(userEntity: UserEntity, postion: Int) {
-        val view : View = LayoutInflater.from(mContext).inflate(R.layout.dialog_edit_user,null)
+        val view : View = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_user,null)
         val name:EditText = view.findViewById(R.id.edit_name)
         val age :EditText = view.findViewById(R.id.edit_age)
          name.setText(userEntity.name)
          age.setText(userEntity.age.toString())
 
 
-        MaterialDialog(mContext).show {
+        MaterialDialog(requireContext()).show {
             title(text = "用户信息修改")
             positiveButton(text = "确定")
             negativeButton(text = "取消")
@@ -135,7 +135,7 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
 
         userListFragmentPresenterImpl.attachView(this)
 
-        recycle.layoutManager= androidx.recyclerview.widget.LinearLayoutManager(mContext)
+        recycle.layoutManager= androidx.recyclerview.widget.LinearLayoutManager(requireContext())
         recycle.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
         recycle.adapter = userListAdapter
         userListAdapter.setOnItemClickListener{

@@ -159,7 +159,7 @@ dependencies {
   api 'com.tencent:mmkv-static:1.2.4'
   api 'com.github.andrefrsousa:SuperBottomSheet:2.0.0'
 
-  implementation 'com.google.code.gson:gson:2.8.6'
+  api 'com.google.code.gson:gson:2.8.6'
   testImplementation 'junit:junit:4.13.1'
   testImplementation("com.squareup.okhttp3:mockwebserver:4.9.0")
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

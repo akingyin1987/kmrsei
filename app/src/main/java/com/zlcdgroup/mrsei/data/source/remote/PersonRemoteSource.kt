@@ -89,7 +89,7 @@ class PersonRemoteSource @Inject constructor()  : IPersonSource{
                   }
                   },{
                       it.printStackTrace()
-                      callBack.onError(it.message)
+                      callBack.onError(it.message?:"")
                   })
 
         }catch (e:Exception){
