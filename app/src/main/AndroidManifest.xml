@@ -161,6 +161,7 @@
           android:screenOrientation="portrait"/>
     <activity android:name=".ui.TestRecordAudioActivity"/>
     <activity android:name=".ui.DropDownMenuActivity"/>
+    <activity android:name=".ui.Viewpager2Activity"/>
   </application>
 
 </manifest>
