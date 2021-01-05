@@ -24,7 +24,7 @@ class RetryWhenNetworkException :  Function<Observable<out Throwable>, Observabl
     private var increaseDelay: Long = 1000
     override fun apply(observable: Observable<out Throwable>): Observable<*> {
         return observable
-                .zipWith(Observable.range(1, count + 1), BiFunction<Throwable, Int, Wrapper> { t1, t2 -> Wrapper(t1, t2) })
+                .zipWith(Observable.range(1, count + 1), { t1, t2 -> Wrapper(t1, t2) })
                 .flatMap(Function<Wrapper, Observable<*>> { wrapper ->
                     if ((wrapper.throwable is ConnectException
                                     || wrapper.throwable is SocketTimeoutException

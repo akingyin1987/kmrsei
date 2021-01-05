@@ -28,7 +28,7 @@ class LoadingDialog(context: Context) : AppCompatDialog(context, R.style.MyDialo
         //content.setText(this.message);
     }
 
-    fun setHtmlText(htmlText: String?) {
+    fun setHtmlText(htmlText: String) {
         content?.let {
             it.text = HtmlUtils.getTextHtml(htmlText)
             if (TextUtils.isEmpty(htmlText)) {

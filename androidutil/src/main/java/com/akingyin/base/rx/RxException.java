@@ -1,7 +1,8 @@
 package com.akingyin.base.rx;
 
 import android.util.Log;
-import io.reactivex.functions.Consumer;
+
+import io.reactivex.rxjava3.functions.Consumer;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -23,6 +24,7 @@ public class RxException <T extends Throwable> implements Consumer<T> {
   private Consumer<? super Throwable> onError;
   public RxException(Consumer<? super Throwable> onError) {
     this.onError=onError;
+
   }
   @Override public void accept(T t) throws Exception {
     if (t instanceof SocketTimeoutException) {

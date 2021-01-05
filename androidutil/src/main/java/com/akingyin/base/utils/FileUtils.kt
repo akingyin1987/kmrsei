@@ -36,28 +36,28 @@ object FileUtils {
         if (!file.isFile) {
             return null
         }
-        var reader: BufferedReader? = null
         return try {
-            val `is` = InputStreamReader(FileInputStream(file), charsetName)
-            reader = BufferedReader(`is`)
-            var line: String
-            while (reader.readLine().also { line = it } != null) {
-                if ("" != fileContent.toString()) {
-                    fileContent.append("\r\n")
+            InputStreamReader(FileInputStream(file), charsetName).use {
+                input->
+                BufferedReader(input).use {reader->
+                    var line: String
+                    while (reader.readLine().also { line = it } != null) {
+                        if ("" != fileContent.toString()) {
+                            fileContent.append("\r\n")
+                        }
+                        fileContent.append(line)
+                    }
                 }
-                fileContent.append(line)
             }
             fileContent
         } catch (e: IOException) {
             throw RuntimeException("IOException occurred. ", e)
-        } finally {
-            IOUtils.close(reader)
         }
     }
     /**
      * write file
      *
-     * @param append is append, if true, write to the end of file, else clear content of file and
+     *  if true, write to the end of file, else clear content of file and
      * write into it
      * @return return false if content is empty, true otherwise
      * @throws RuntimeException if an error occurs while operator FileWriter
@@ -85,7 +85,7 @@ object FileUtils {
     /**
      * write file
      *
-     * @param append is append, if true, write to the end of file, else clear content of file and
+     *  append is append, if true, write to the end of file, else clear content of file and
      * write into it
      * @return return false if contentList is empty, true otherwise
      * @throws RuntimeException if an error occurs while operator FileWriter
@@ -101,22 +101,23 @@ object FileUtils {
                 false
             }
             else -> {
-                var fileWriter: FileWriter? = null
+
                 return try {
                     makeDirs(filePath)
-                    fileWriter = FileWriter(filePath, append)
-                    var i = 0
-                    for (line in contentList) {
-                        if (i++ > 0) {
-                            fileWriter.write("\r\n")
+                   FileWriter(filePath, append).use {
+                        for ((i, line) in contentList.withIndex()) {
+                            if (i > 0) {
+                                it.write("\r\n")
+                            }
+                            it.write(line)
                         }
-                        fileWriter.write(line)
                     }
+
                     true
                 } catch (e: IOException) {
                     throw RuntimeException("IOException occurred. ", e)
                 } finally {
-                    IOUtils.close(fileWriter)
+
                 }
             }
         }
@@ -125,9 +126,7 @@ object FileUtils {
     /**
      * write file
      *
-     * @param filePath the file to be opened for writing.
-     * @param stream the input stream
-     * @param append if `true`, then bytes will be written to the end of the file rather
+     *
      * than the beginning
      * @return return true
      * @throws RuntimeException if an error occurs while operator FileOutputStream
@@ -146,9 +145,6 @@ object FileUtils {
     /**
      * write file
      *
-     * @param file the file to be opened for writing.
-     * @param stream the input stream
-     * @param append if `true`, then bytes will be written to the end of the file rather
      * than the beginning
      * @return return true
      * @throws RuntimeException if an error occurs while operator FileOutputStream
@@ -160,24 +156,28 @@ object FileUtils {
      */
     @JvmOverloads
     fun writeFile(file: File, stream: InputStream, append: Boolean = false): Boolean {
-        var o: OutputStream? = null
+
         return try {
             makeDirs(file.absolutePath)
-            o = FileOutputStream(file, append)
-            val data = ByteArray(1024)
-            var length: Int
-            while (stream.read(data).also { length = it } != -1) {
-                o.write(data, 0, length)
-            }
-            o.flush()
+           FileOutputStream(file, append).use {o->
+               val data = ByteArray(1024)
+               var length: Int
+               stream.use {
+                   while (stream.read(data).also { length = it } != -1) {
+                       o.write(data, 0, length)
+                   }
+
+               }
+               o.flush()
+           }
+
             true
         } catch (e: FileNotFoundException) {
             throw RuntimeException("FileNotFoundException occurred. ", e)
         } catch (e: IOException) {
             throw RuntimeException("IOException occurred. ", e)
         } finally {
-            IOUtils.close(o)
-            IOUtils.close(stream)
+
         }
     }
 
@@ -242,19 +242,20 @@ object FileUtils {
         if ( !file.isFile) {
             return null
         }
-        var reader: BufferedReader? = null
+
         return try {
-            val `is` = InputStreamReader(FileInputStream(file), charsetName)
-            reader = BufferedReader(`is`)
-            var line: String
-            while (reader.readLine().also { line = it } != null) {
-                fileContent.add(line)
+            InputStreamReader(FileInputStream(file), charsetName).use {input->
+                BufferedReader(input).use {reader->
+                    var line: String
+                    while (reader.readLine().also { line = it } != null) {
+                        fileContent.add(line)
+                    }
+                    fileContent
+                }
             }
-            fileContent
+
         } catch (e: IOException) {
             throw RuntimeException("IOException occurred. ", e)
-        } finally {
-            IOUtils.close(reader)
         }
     }
 

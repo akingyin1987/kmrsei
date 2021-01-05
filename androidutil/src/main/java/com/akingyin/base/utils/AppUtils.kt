@@ -75,7 +75,7 @@ class AppUtils private constructor() {
          * @param authority 7.0及以上安装需要传入清单文件中的`<provider>`的authorities属性
          * <br></br>参看https://developer.android.com/reference/android/support/v4/content/FileProvider.html
          */
-        fun installApp(filePath: String, authority: String?) {
+        fun installApp(filePath: String, authority: String) {
             installApp(File(filePath), authority)
         }
 
@@ -86,7 +86,7 @@ class AppUtils private constructor() {
          * @param authority 7.0及以上安装需要传入清单文件中的`<provider>`的authorities属性
          * <br></br>参看https://developer.android.com/reference/android/support/v4/content/FileProvider.html
          */
-        fun installApp(file: File?, authority: String?) {
+        fun installApp(file: File?, authority: String) {
             if (null == file) {
                 return
             }
@@ -105,7 +105,7 @@ class AppUtils private constructor() {
          * <br></br>参看https://developer.android.com/reference/android/support/v4/content/FileProvider.html
          * @param requestCode 请求值
          */
-        fun installApp(activity: Activity, filePath: String, authority: String?, requestCode: Int) {
+        fun installApp(activity: Activity, filePath: String, authority: String, requestCode: Int) {
             installApp(activity, File(filePath), authority, requestCode)
         }
 
@@ -118,7 +118,7 @@ class AppUtils private constructor() {
          * <br></br>参看https://developer.android.com/reference/android/support/v4/content/FileProvider.html
          * @param requestCode 请求值
          */
-        fun installApp(activity: Activity, file: File?, authority: String?,
+        fun installApp(activity: Activity, file: File?, authority: String,
                        requestCode: Int) {
             if (null == file || !file.exists()) {
                 return
@@ -131,7 +131,7 @@ class AppUtils private constructor() {
          *
          * @param packageName 包名
          */
-        fun uninstallApp(packageName: String?) {
+        fun uninstallApp(packageName: String) {
             if (isSpace(packageName)) {
                 return
             }
@@ -145,7 +145,7 @@ class AppUtils private constructor() {
          * @param packageName 包名
          * @param requestCode 请求值
          */
-        fun uninstallApp(activity: Activity, packageName: String?, requestCode: Int) {
+        fun uninstallApp(activity: Activity, packageName: String, requestCode: Int) {
             if (isSpace(packageName)) {
                 return
             }
@@ -157,7 +157,7 @@ class AppUtils private constructor() {
          *
          * @param packageName 包名
          */
-        fun launchApp(packageName: String?) {
+        fun launchApp(packageName: String) {
             if (isSpace(packageName)) {
                 return
             }
@@ -171,7 +171,7 @@ class AppUtils private constructor() {
          * @param packageName 包名
          * @param requestCode 请求值
          */
-        fun launchApp(activity: Activity, packageName: String?, requestCode: Int) {
+        fun launchApp(activity: Activity, packageName: String, requestCode: Int) {
             if (isSpace(packageName)) {
                 return
             }
@@ -203,7 +203,7 @@ class AppUtils private constructor() {
          *
          * @param packageName 包名
          */
-        fun getAppDetailsSettings(packageName: String?) {
+        fun getAppDetailsSettings(packageName: String) {
             if (isSpace(packageName)) {
                 return
             }
