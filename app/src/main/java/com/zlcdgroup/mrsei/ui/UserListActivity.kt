@@ -23,6 +23,7 @@ import com.zlcdgroup.mrsei.presenter.UserListContract
 import com.zlcdgroup.mrsei.presenter.impl.UserListPresenterImpl
 import com.zlcdgroup.mrsei.ui.adapter.UserListAdapter
 import com.zlcdgroup.mrsei.utils.Defaultcontent
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_userlist.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import java.util.*
@@ -39,6 +40,7 @@ import kotlin.properties.Delegates
  * @version V1.0
  */
 @Route(path = "/user/list")
+@AndroidEntryPoint
 class UserListActivity  : BaseDaggerActivity(),UserListContract.View, UMShareListener {
 
     @Inject

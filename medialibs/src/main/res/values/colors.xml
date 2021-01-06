@@ -33,4 +33,8 @@
   <color name="doodle_btn_pressed_color">#ffffd943</color>
   <color name="doodle_btn_border">#88cccccc</color>
   <color name="colorButtonGreyBg">#444444</color>
+
+  <color name="icActive">#FFFFFFFF</color>
+  <color name="icFocused">#DDFFFFFF</color>
+  <color name="icPressed">#AAFFFFFF</color>
 </resources>

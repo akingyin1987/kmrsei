@@ -9,7 +9,7 @@ import android.os.Environment
 import android.util.Base64
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
-import androidx.sqlite.db.SimpleSQLiteQuery
+
 
 import autodispose2.ScopeProvider
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider
@@ -33,11 +33,13 @@ import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
 import com.zlcdgroup.mrsei.ui.mvvm.LoginViewModel
 import com.zlcdgroup.mrsei.utils.ThemeHelper
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
 
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.delay
 import permissions.dispatcher.ktx.constructPermissionsRequest
 import permissions.dispatcher.ktx.constructWriteSettingsPermissionRequest
@@ -53,7 +55,7 @@ import javax.inject.Inject
  * @version V1.0
  */
 
-
+@AndroidEntryPoint
 class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
 
     @Inject
@@ -86,6 +88,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
     override fun onSaveInstanceData(outState: Bundle?) {
     }
 
+    @ObsoleteCoroutinesApi
     override fun initView() {
 
           viewModel.Login("123","456")
@@ -112,16 +115,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
             userLoginPersenterImpl.login(et_mobile.text.toString(),et_password.text.toString())
         }
 
-        app_theme.click {
-            app_theme.isChecked.yes {
-                println("yes----------->>>>")
-            }
-            app_theme.isChecked.yes {
-                userLoginPersenterImpl.saveAppTheme(ThemeHelper.DARK_MODE)
-            }.no {
-                userLoginPersenterImpl.saveAppTheme(ThemeHelper.LIGHT_MODE)
-            }
-        }
+
 
         load {
             println("--------1111----------${Thread.currentThread().name}")

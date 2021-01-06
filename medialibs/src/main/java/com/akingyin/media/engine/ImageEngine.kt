@@ -83,6 +83,20 @@ interface ImageEngine {
      */
     fun  clearCacheByImageView(imageView: ImageView)
 
+
+    /**
+     * 清楚内存
+     * @param context Context
+     */
+    fun  clearMemory(context: Context)
+
+
+    /**
+     * 清除硬盘缓存
+     * @param context Context
+     */
+    fun  clearDiskCache(context: Context)
+
     interface  OnImageCompleteCallback{
         /**
          * Start loading

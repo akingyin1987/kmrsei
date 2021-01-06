@@ -15,6 +15,8 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.widget.Toast
+import com.akingyin.base.ext.toast
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -35,6 +37,9 @@ class CameraAutoFouceSensorController (var content:Context, var callBack:()->Uni
         mSensorManager = content.getSystemService(Activity.SENSOR_SERVICE) as SensorManager
         if(null != mSensorManager){
             mSensor = mSensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        }
+        if(null == mSensorManager || null == mSensor){
+           Toast.makeText(content,"当前传感器不支持运动对焦！",Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -91,7 +96,7 @@ class CameraAutoFouceSensorController (var content:Context, var callBack:()->Uni
                             if (!isFocusing) {
                                 canFocusIn = false
                                 //                                onCameraFocus();
-                                println("开始自动对焦---->>>>")
+                              
                                 callBack.invoke()
                             }
                         }

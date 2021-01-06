@@ -10,6 +10,8 @@
 package com.akingyin.media.doodle
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -17,7 +19,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color.*
 import android.os.Bundle
 import android.text.Layout
-import android.util.DisplayMetrics
+
 import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.annotation.ColorInt
@@ -37,6 +39,7 @@ import com.akingyin.media.databinding.ActivityDoodleBinding
 import com.akingyin.media.doodle.core.IDoodleShape
 import com.akingyin.media.doodle.core.Sticker
 import com.akingyin.media.doodle.shape.*
+import com.qmuiteam.qmui.util.QMUIDisplayHelper
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import java.io.File
@@ -51,8 +54,15 @@ import kotlin.properties.Delegates
 @Suppress("DEPRECATION")
 class DoodleActivity:SimpleActivity() {
 
-    private  var  filePath=""
+    /** 路经 */
+    private  var  fileDir=""
+    /** 旧图片名 */
+    private  var  oldFileName=""
+    /** 新图片名 */
     private  var  reFileName =""
+
+    /** 默认画的类型 */
+    private  var  defaultShape = CircleShape
 
 
 
@@ -67,6 +77,7 @@ class DoodleActivity:SimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN)
         super.onCreate(savedInstanceState)
+        setResult(Activity.RESULT_CANCELED)
     }
 
     override fun initViewBind() {
@@ -94,15 +105,16 @@ class DoodleActivity:SimpleActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun initView() {
           intent.run {
-              filePath = getStringExtra(FILE_PATH)?:""
-              reFileName = getStringExtra(FILE_RENAME)?:FileUtils.getFileName(filePath)
+              fileDir = getStringExtra(FILE_DIR)?:""
+              oldFileName = getStringExtra(FILE_OLDNAME)?:""
+              reFileName = getStringExtra(FILE_RENAME)?:oldFileName
+              defaultShape = getIntExtra(SHAPE_TYPE,defaultShape)
           }
           lifecycleScope.launch(Main){
-              val dm = DisplayMetrics()
-              display?.getRealMetrics(dm)
+              val dm = QMUIDisplayHelper.getDisplayMetrics(this@DoodleActivity)
 
               withIO {
-                  BitmapFactory.decodeFile(filePath).let {
+                  BitmapFactory.decodeFile(fileDir+File.separator+oldFileName).let {
                       scale = CameraBitmapUtil.getBitmapScale(it, dm)
                       if(scale>0){
                           CameraBitmapUtil.bitmapScale(it,scale)
@@ -191,6 +203,12 @@ class DoodleActivity:SimpleActivity() {
                           bindView.titleBar.root.visibleAlphaAnimation()
                       }
                   }
+                  when(defaultShape){
+                      CircleShape->drawCircle()
+                      ArrowShape -> drawArrow()
+                      LineArrowShape->drawLineArrow()
+                      LineShape ->drawLine()
+                  }
               }
 
           }
@@ -270,7 +288,7 @@ class DoodleActivity:SimpleActivity() {
             }
         }
         bindView.bootomBar.doodleBtnFinish.click { 
-           doodleView.saveDoodleBitmap(File(filePath),1/scale){
+           doodleView.saveDoodleBitmap(File(fileDir+File.separator+reFileName),1/scale){
                 result, error ->
                if(result){
                    showTips("保存成功")
@@ -369,6 +387,11 @@ class DoodleActivity:SimpleActivity() {
             }
             return
         }
+        if(FileUtils.isFileExist(fileDir+File.separator+reFileName)){
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra("tuyaLocalPath",fileDir+File.separator+reFileName)
+            })
+        }
         super.onBackPressed()
     }
 
@@ -385,7 +408,16 @@ class DoodleActivity:SimpleActivity() {
     }
 
     companion object{
-        const val FILE_PATH="filePath"
-        const val FILE_RENAME="rename"
+        const val FILE_DIR="fileDir"
+        const val FILE_OLDNAME="oldFileName"
+        const val FILE_RENAME="reFileName"
+        const val SHAPE_TYPE ="shape_type"
+
+        const val ArrowShape = 1
+        const val CircleShape =2
+        const val LineArrowShape =3
+        const val LineShape =4
+        const val TextShape =5
+
     }
 }

@@ -12,9 +12,8 @@ import android.graphics.Point
 import android.os.Parcel
 import android.os.Parcelable
 import com.akingyin.base.config.AppFileConfig
-import com.akingyin.base.utils.StringUtils
 import com.akingyin.media.camera.CameraManager.*
-import java.io.File
+
 
 
 /**
@@ -93,6 +92,12 @@ class CameraParameBuild() : Parcelable {
     @LocalType
     var  locType=LocalType.CORR_TYPE_BD09
 
+    /** 照片标签以逗号分割 */
+    var  imageTags =""
+
+    /** 提示信息 */
+    var  tipContent =""
+
     constructor(parcel: Parcel) : this() {
         flashModel = parcel.readInt()
         shutterSound = parcel.readInt()
@@ -114,6 +119,8 @@ class CameraParameBuild() : Parcelable {
         lat = parcel.readDouble()
         lng = parcel.readDouble()
         locType = parcel.readString()?:""
+        imageTags = parcel.readString()?:""
+        tipContent = parcel.readString()?:""
     }
 
     class Builder {
@@ -147,9 +154,7 @@ class CameraParameBuild() : Parcelable {
         }
     }
 
-    override fun toString(): String {
-        return "CameraParameBuild(flashModel=$flashModel, shutterSound=$shutterSound, netGrid=$netGrid, supportManualFocus=$supportManualFocus, supportLocation=$supportLocation, supportFocesedAutoPhoto=$supportFocesedAutoPhoto, focesedAutoPhotoDelayTime=$focesedAutoPhotoDelayTime, supportAutoSavePhoto=$supportAutoSavePhoto, autoSavePhotoDelayTime=$autoSavePhotoDelayTime, cameraResolution=$cameraResolution, localPath='$localPath', horizontalPicture=$horizontalPicture, cameraAngle=$cameraAngle)"
-    }
+
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(flashModel)
@@ -172,10 +177,16 @@ class CameraParameBuild() : Parcelable {
         parcel.writeDouble(lat)
         parcel.writeDouble(lng)
         parcel.writeString(locType)
+        parcel.writeString(imageTags)
+        parcel.writeString(tipContent)
     }
 
     override fun describeContents(): Int {
         return 0
+    }
+
+    override fun toString(): String {
+        return "CameraParameBuild(flashModel=$flashModel, shutterSound=$shutterSound, netGrid=$netGrid, supportManualFocus=$supportManualFocus, supportMoveFocus=$supportMoveFocus, supportLocation=$supportLocation, supportFocesedAutoPhoto=$supportFocesedAutoPhoto, focesedAutoPhotoDelayTime=$focesedAutoPhotoDelayTime, supportAutoSavePhoto=$supportAutoSavePhoto, autoSavePhotoDelayTime=$autoSavePhotoDelayTime, volumeKeyControl=$volumeKeyControl, supportMultiplePhoto=$supportMultiplePhoto, cameraResolution=$cameraResolution, localPath='$localPath', saveFileDir='$saveFileDir', horizontalPicture=$horizontalPicture, cameraAngle=$cameraAngle, lat=$lat, lng=$lng, locType='$locType', imageTags='$imageTags', tipContent='$tipContent')"
     }
 
     companion object CREATOR : Parcelable.Creator<CameraParameBuild> {

@@ -33,13 +33,13 @@
 # 混淆时不会产生形形色色的类名(混淆时不使用大小写混合类名)
 -dontusemixedcaseclassnames
 # 指定不去忽略非公共的库类(不跳过library中的非public的类)
--dontskipnonpubliclibraryclasses
+#-dontskipnonpubliclibraryclasses
 # 指定不去忽略包可见的库类的成员
--dontskipnonpubliclibraryclassmembers
+#-dontskipnonpubliclibraryclassmembers
 #不进行优化，建议使用此选项，
 -dontoptimize
  # 不进行预校验,Android不需要,可加快混淆速度。
--dontpreverify
+#-dontpreverify
 # 屏蔽警告
 -ignorewarnings
 # 指定混淆是采用的算法，后面的参数是一个过滤器
@@ -71,7 +71,7 @@
 #继承activity,application,service,broadcastReceiver,contentprovider....不进行混淆
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
--keep public class * extends android.support.multidex.MultiDexApplication
+#-keep public class * extends android.support.multidex.MultiDexApplication
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver
 -keep public class * extends android.content.ContentProvider
@@ -80,8 +80,8 @@
 -keep public class * extends android.view.View
 -keep class android.support.** {*;}## 保留support下的所有类及其内部类
 
--keep public class com.google.vending.licensing.ILicensingService
--keep public class com.android.vending.licensing.ILicensingService
+#-keep public class com.google.vending.licensing.ILicensingService
+#-keep public class com.android.vending.licensing.ILicensingService
 #表示不混淆上面声明的类，最后这两个类我们基本也用不上，是接入Google原生的一些服务时使用的。
 #----------------------------------------------------
 
@@ -122,8 +122,17 @@
 -keep interface androidx.** {*;}
 -dontwarn com.google.android.material.**
 -dontnote com.google.android.material.**
--dontwarn androidx.*
+-dontwarn androidx.**
 
+
+# ServiceLoader support
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+
+# Most of volatile fields are updated with AFU and should not be mangled
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
 
 #保持 native 方法不被混淆
 -keepclasseswithmembernames class * {
@@ -275,6 +284,7 @@ public static java.lang.String TABLENAME;
 
 # OkHttp platform used only on JVM and when Conscrypt dependency is available.
 -dontwarn okhttp3.internal.platform.ConscryptPlatform
+-dontwarn org.conscrypt.ConscryptHostnameVerifier
 
 # Okio
 -dontwarn com.squareup.**

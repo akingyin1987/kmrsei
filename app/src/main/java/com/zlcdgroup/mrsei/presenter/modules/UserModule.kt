@@ -1,14 +1,15 @@
 package com.zlcdgroup.mrsei.presenter.modules
 
-import android.app.Activity
+
 import com.zlcdgroup.mrsei.di.scope.PerActivity
 import com.zlcdgroup.mrsei.presenter.UserListContract
 import com.zlcdgroup.mrsei.presenter.impl.UserListPresenterImpl
-import com.zlcdgroup.mrsei.ui.UserListActivity
-import com.zlcdgroup.mrsei.ui.UserListDataBindActivity
+
 import dagger.Binds
 import dagger.Module
-import javax.inject.Named
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
+
 
 /**
  * @ Description:
@@ -17,17 +18,13 @@ import javax.inject.Named
  * @version V1.0
  */
  @Module
+ @InstallIn(ActivityComponent::class)
  abstract class UserModule {
 
-    @Binds
-    @PerActivity
-    abstract  fun   activity(activity: UserListActivity):Activity
 
 
-    @Binds
-    @PerActivity
-    @Named("binduser")
-    abstract  fun   bindUserActivity(activity: UserListDataBindActivity):Activity
+
+
 
      @Binds
      @PerActivity

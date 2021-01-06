@@ -2,12 +2,14 @@ package com.zlcdgroup.mrsei.ui
 
 import android.os.Bundle
 import android.view.View
+
 import com.akingyin.base.BaseDaggerActivity
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.ui.adapter.SampleStepAdapter
 import com.zlcdgroup.mrsei.ui.fragment.OnNavigationBarListener
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_stepper.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import javax.inject.Inject
@@ -19,18 +21,20 @@ import javax.inject.Inject
  * @version V1.0
  */
 
-
+@AndroidEntryPoint
 class SteperActivity : BaseDaggerActivity() , StepperLayout.StepperListener, OnNavigationBarListener {
 
-    @Inject
+
     lateinit var sampleStepAdapter: SampleStepAdapter
 
-    @Inject
-    lateinit var  fragmentManager: androidx.fragment.app.FragmentManager
+//    @Inject
+//    @ActivityFragmentModule.ActivityFragmentManager
+//    lateinit var  fragmentManager: FragmentManager
 
     override fun getLayoutId(): Int = R.layout.activity_stepper
 
     override fun initializationData(savedInstanceState: Bundle?) {
+        sampleStepAdapter = SampleStepAdapter(this,supportFragmentManager)
         stepperLayout.adapter = sampleStepAdapter
 
         stepperLayout.setListener(this)

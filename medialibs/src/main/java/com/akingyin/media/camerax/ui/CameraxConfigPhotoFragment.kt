@@ -79,7 +79,7 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
 
          if(cameraParameBuild.supportMultiplePhoto){
              bindView.btnCustom.visiable()
-             println("显示")
+
          }else{
              bindView.btnCustom.gone()
          }

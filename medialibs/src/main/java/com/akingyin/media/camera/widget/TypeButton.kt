@@ -13,10 +13,10 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.view.View
 import androidx.core.content.res.use
 import com.akingyin.media.R
+import com.qmuiteam.qmui.util.QMUIDisplayHelper
 
 
 /**
@@ -45,8 +45,8 @@ class TypeButton @JvmOverloads constructor(
     private var rectF: RectF
 
     init {
-        val outMetrics = DisplayMetrics()
-        context.display?.getRealMetrics(outMetrics)
+        val outMetrics = QMUIDisplayHelper.getDisplayMetrics(context)
+
 
         val layoutWidth = if (this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             outMetrics.widthPixels
@@ -113,7 +113,6 @@ class TypeButton @JvmOverloads constructor(
                 close()
                 canvas.drawPath(this, mPaint)
             }
-            println("画取消的按钮")
 
         }
         //如果类型为确认，则绘制绿色勾
@@ -141,7 +140,7 @@ class TypeButton @JvmOverloads constructor(
                 }
                 canvas.drawPath(path, this)
             }
-            println("画确认的按钮")
+
         }
         if(buttonType == TYPE_CUSTOM){
             mPaint.reset()

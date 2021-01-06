@@ -9,7 +9,8 @@
 
 package com.akingyin.media.audio.record
 
-import android.app.Activity
+
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import androidx.activity.result.ActivityResult
@@ -28,7 +29,7 @@ import com.akingyin.base.config.AppFileConfig
  * @ Date 2020/11/4 16:38
  * @version V1.0
  */
-class AudioRecorderHelp  private constructor(fragment: Fragment?=null,activity: Activity?=null){
+open class AudioRecorderHelp  private constructor(var fragment: Fragment?=null,var activity: AppCompatActivity?=null){
 
     protected val EXTRA_FILE_PATH = "filePath"
     protected val EXTRA_COLOR = "color"
@@ -38,8 +39,7 @@ class AudioRecorderHelp  private constructor(fragment: Fragment?=null,activity: 
     protected val EXTRA_AUTO_START = "autoStart"
     protected val EXTRA_KEEP_DISPLAY_ON = "keepDisplayOn"
 
-    private var activity: AppCompatActivity? = null
-    private var fragment: Fragment? = null
+
 
     private var filePath: String = AppFileConfig.APP_FILE_ROOT + "/recorded_audio.wav"
     private var source: AudioSource = AudioSource.MIC
@@ -51,13 +51,7 @@ class AudioRecorderHelp  private constructor(fragment: Fragment?=null,activity: 
     private var keepDisplayOn = false
 
 
-    fun with(activity: Activity): AudioRecorderHelp {
-        return AudioRecorderHelp(activity = activity)
-    }
 
-    fun with(fragment: Fragment): AudioRecorderHelp? {
-        return AudioRecorderHelp(fragment)
-    }
 
     fun setFilePath(filePath: String): AudioRecorderHelp {
         this.filePath = filePath
@@ -116,6 +110,18 @@ class AudioRecorderHelp  private constructor(fragment: Fragment?=null,activity: 
 
     }
 
+    fun  createIntent(context: Context):Intent{
+         val intent = Intent(context, AudioRecorderActivity::class.java)
+        intent.putExtra(EXTRA_FILE_PATH, filePath)
+        intent.putExtra(EXTRA_COLOR, color)
+        intent.putExtra(EXTRA_SOURCE, source)
+        intent.putExtra(EXTRA_CHANNEL, channel)
+        intent.putExtra(EXTRA_SAMPLE_RATE, sampleRate)
+        intent.putExtra(EXTRA_AUTO_START, autoStart)
+        intent.putExtra(EXTRA_KEEP_DISPLAY_ON, keepDisplayOn)
+        return intent
+    }
+
     fun recordFromFragment(callBack:(result: ActivityResult)->Unit) {
         fragment?.let {
             val intent = Intent(it.requireActivity(), AudioRecorderActivity::class.java)
@@ -132,6 +138,20 @@ class AudioRecorderHelp  private constructor(fragment: Fragment?=null,activity: 
 
         }
 
+    }
+
+    companion object{
+        fun with(activity: AppCompatActivity): AudioRecorderHelp {
+            return AudioRecorderHelp(activity = activity)
+        }
+
+        fun with(fragment: Fragment): AudioRecorderHelp {
+            return AudioRecorderHelp(fragment)
+        }
+
+        fun with():AudioRecorderHelp{
+            return AudioRecorderHelp(null,null)
+        }
     }
 
 }

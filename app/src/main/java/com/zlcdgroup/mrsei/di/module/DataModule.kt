@@ -11,13 +11,14 @@ import com.zlcdgroup.mrsei.data.source.local.PersonLocalSource
 import com.zlcdgroup.mrsei.data.source.local.UserLocalSource
 import com.zlcdgroup.mrsei.data.source.remote.PersonRemoteSource
 import com.zlcdgroup.mrsei.data.source.remote.UserRemoteSource
-import com.zlcdgroup.mrsei.di.qualifier.ApplicationContext
 import com.zlcdgroup.mrsei.di.qualifier.Local
 import com.zlcdgroup.mrsei.di.qualifier.Remote
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Singleton
 
 /**
@@ -28,9 +29,11 @@ import javax.inject.Singleton
  */
 
 @Module
+@InstallIn(ApplicationComponent::class)
 abstract class DataModule {
 
-    @Module(includes = arrayOf(DataModule ::class))
+    @Module(includes = [DataModule ::class])
+    @InstallIn(ApplicationComponent::class)
     object DataProvidesModule {
 
         @Singleton

@@ -65,7 +65,7 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
         camera_surface.holder.addCallback(this)
         camera_surface.onSurfaceViewListion = object : CameraSurfaceView.OnSurfaceViewListion {
             override fun onFouceClick(x: Float, y: Float) {
-                println("点击事件--->")
+
                 cameraManager.camera?.let {
                     if (cameraParameBuild.supportManualFocus) {
                         //区域对焦
@@ -88,7 +88,9 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
                 }
 
             }
+
         }
+
         camera_surface.pinchToZoomGestureDetector =  PinchToZoomGestureDetector(context, MyScaleGestureDetector(), object : PinchToZoomGestureDetector.OnCamerZoomListion {
             override fun getZoomRatio() = cameraManager.getZoomRatio()
 
@@ -140,11 +142,11 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
 
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        println("surfaceChanged->$width,$height,cameraParameBuild=$cameraParameBuild")
+
         cameraParameBuild.cameraResolution?.let {
-            println("cameraResolution=$it")
+
             cameraManager.findBestViewSize(cameraManager.theScreenResolution, it)?.let { best ->
-                println("best->$best")
+
 
                 camera_surface.layoutParams = camera_surface.layoutParams.apply {
                     if (best.x == 0 && layoutParams.height != best.y) {
@@ -165,7 +167,7 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
 
     fun takePhoto(cameraParame: CameraParameBuild = cameraParameBuild, callBack: (result: Boolean, error: String?) -> Unit) {
         cameraParameBuild.cameraAngle = cameraManager.cameraAngle
-        println("拍照参数->$cameraParame")
+
         cameraManager.takePictrue(cameraParame) { result, error ->
             if(result){
                 cameraManager.stopPreview()
@@ -202,7 +204,6 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
                 }
             }
         }
-        println("camera-${cameraManager.theScreenResolution},${cameraManager.cameraBestResolution}")
 
     }
 

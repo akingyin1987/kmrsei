@@ -42,6 +42,7 @@ import androidx.navigation.fragment.navArgs
 import com.akingyin.base.SimpleFragment
 import com.akingyin.base.ext.*
 import com.akingyin.base.mvvm.SingleLiveEvent
+import com.akingyin.base.utils.FileUtils
 import com.akingyin.base.utils.PreferencesUtil
 import com.akingyin.base.utils.RandomUtil
 import com.akingyin.media.MediaConfig
@@ -75,6 +76,7 @@ import kotlin.properties.Delegates
  * @ Date 2020/9/14 16:34
  * @version V1.0
  */
+@Suppress("DEPRECATION")
 open class CameraxFragment : SimpleFragment() {
     lateinit var bindView: FragmentCameraxBinding
     lateinit var cameraxManager: CameraxManager
@@ -102,10 +104,16 @@ open class CameraxFragment : SimpleFragment() {
 
     override fun useViewBind() = true
     override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View? {
-        println("cameraXFragemnt")
+
         bindView = FragmentCameraxBinding.inflate(inflater, container, false)
-        locationIsEnable.observe(viewLifecycleOwner,{
-            bindView.tvLocation.visibility = if(it){View.VISIBLE} else{View.GONE}
+        locationIsEnable.observe(viewLifecycleOwner, {
+
+            bindView.tvLocation.visibility = if (it) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
         })
 //        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,object : OnBackPressedCallback(true){
 //            override fun handleOnBackPressed() {
@@ -118,13 +126,15 @@ open class CameraxFragment : SimpleFragment() {
 
 
     override fun initEventAndData() {
-        cameraxManager = CameraxManager(requireContext(),bindView.viewFinder.camera_surface)
+        cameraxManager = CameraxManager(requireContext(), bindView.viewFinder.camera_surface)
         sharedPreferencesName = args.sharedPreferencesName
         cameraParameBuild =  CameraParameBuild()
         cameraParameBuild.localPath = if(args.fileName.isNullOrEmpty()){""}else{args.fileDir+File.separator+args.fileName}
         cameraParameBuild.saveFileDir = args.fileDir
-        println("传递的参数")
+        FileUtils.makeDirs(cameraParameBuild.saveFileDir)
+
         initCameraParame(cameraParameBuild)
+        cameraParameBuild.tipContent = args.cameraParame.tipContent
 
     }
     private val displayListener = object : DisplayManager.DisplayListener {
@@ -140,17 +150,17 @@ open class CameraxFragment : SimpleFragment() {
 
 
     override fun initView() {
-        println("注册广播")
+
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(volumeKeyControlBroadcast, IntentFilter().apply {
             addAction(CameraManager.KEYDOWN_VOLUME_KEY_ACTION)
         })
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(cameraInfoBroadcastReceiver,IntentFilter().apply {
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(cameraInfoBroadcastReceiver, IntentFilter().apply {
 
             addAction(CameraxManager.KEY_PUSH_TAKE_PHOTO_PATH)
             addAction(CameraxManager.KEY_PUSH_TAKE_PHOTO_ALL_PATH)
         })
-
-        cameraSensorController = CameraSensorController(requireContext(), requireContext().display?.rotation?:0)
+        val wm = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        cameraSensorController = CameraSensorController(requireContext(), wm.defaultDisplay.rotation)
         cameraSensorController.mOrientationChangeListener = object : CameraSensorController.OrientationChangeListener {
             override fun onChange(relativeRotation: Int, uiRotation: Int) {
                 var cameraRotation = uiRotation + 90
@@ -166,8 +176,8 @@ open class CameraxFragment : SimpleFragment() {
                 }
                 if(cameraxManager.cameraUiAngle != cameraRotation){
                     cameraxManager.cameraUiAngle = cameraRotation
-                    CameraManager.startCameraViewRoteAnimator((uiRotation).toFloat(),bindView.buttonShutter,bindView.buttonSetting,bindView.buttonFlash,
-                            bindView.buttonGrid,bindView.textCountDown)
+                    CameraManager.startCameraViewRoteAnimator((uiRotation).toFloat(), bindView.buttonShutter, bindView.buttonSetting, bindView.buttonFlash,
+                            bindView.buttonGrid, bindView.textCountDown)
                 }
             }
         }
@@ -176,6 +186,7 @@ open class CameraxFragment : SimpleFragment() {
         cameraxManager.motionFocusCall = object :MotionFocusCall{
             override fun focusCall(result: Boolean, error: String?) {
                 if(result){
+
                     focusSucessCaptureImage()
                 }
 
@@ -185,26 +196,35 @@ open class CameraxFragment : SimpleFragment() {
         displayManager.registerDisplayListener(displayListener, null)
         bindView.viewFinder.camera_surface.onSurfaceViewListion = object :CameraxSurfaceView.OnSurfaceViewListion{
             override fun onFouceClick(x: Float, y: Float) {
-                bindView.viewFinder.camera_fouce.setTouchFoucusRect(cameraxManager,x,y)
+
+                bindView.viewFinder.camera_fouce.setTouchFoucusRect( x, y)
+                cameraxManager.setCameraFocus(x,y){
+                    bindView.viewFinder.camera_fouce.disDrawTouchFocusRect(it)
+                    focusSucessCaptureImage()
+                }
             }
         }
-        bindView.viewFinder.camera_surface.pinchToZoomGestureDetector = PinchToZoomGestureDetector(requireContext(), MyScaleGestureDetector(),object :PinchToZoomGestureDetector.OnCamerZoomListion{
-           override fun getZoomRatio() = cameraxManager.getZoomRatio()
-           override fun getMaxZoomRatio() = cameraxManager.getCameraMaxZoom()
+        bindView.tvTip.text = cameraParameBuild.tipContent
+        bindView.tvLocation.click {
+            getLocationInfo()
+        }
+        bindView.viewFinder.camera_surface.pinchToZoomGestureDetector = PinchToZoomGestureDetector(requireContext(), MyScaleGestureDetector(), object : PinchToZoomGestureDetector.OnCamerZoomListion {
+            override fun getZoomRatio() = cameraxManager.getZoomRatio()
+            override fun getMaxZoomRatio() = cameraxManager.getCameraMaxZoom()
 
-           override fun getMinZoomRatio() = cameraxManager.getCameraMinZoom()
+            override fun getMinZoomRatio() = cameraxManager.getCameraMinZoom()
 
-           override fun setZoomRatio(zoom: Float) {
-             cameraxManager.setCameraZoom(zoom)
-           }
+            override fun setZoomRatio(zoom: Float) {
+                cameraxManager.setCameraZoom(zoom)
+            }
 
-           override fun isZoomSupported() = true
+            override fun isZoomSupported() = true
 
-           override fun isPinchToZoomEnabled()= true
-       })
+            override fun isPinchToZoomEnabled() = true
+        })
         bindView.viewFinder.camera_surface.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View?) {
-                displayManager.registerDisplayListener(displayListener,null)
+                displayManager.registerDisplayListener(displayListener, null)
             }
 
             override fun onViewDetachedFromWindow(v: View?) {
@@ -227,9 +247,18 @@ open class CameraxFragment : SimpleFragment() {
             updateCameraUi()
             cameraxManager.startCameraPreview()
         }
+        bindView.rulerView.valueFrom = cameraxManager.getCameraMinZoom()
+        bindView.rulerView.valueTo = cameraxManager.getCameraMaxZoom()
+        bindView.rulerView.value = cameraxManager.getZoomRatio()
+        if(cameraxManager.getZoomRatio()>1){
+            bindView.rulerView.visiable()
+        }else{
+            bindView.rulerView.gone()
+        }
         bindView.buttonSetting.click {
             startCameraSettingActivity()
         }
+        bindView.tvTip.text = cameraParameBuild.tipContent
 
     }
 
@@ -242,14 +271,14 @@ open class CameraxFragment : SimpleFragment() {
            bindView.root.removeView(it)
        }
         // Inflate a new view containing all UI for controlling the camera
-       val  controls = View.inflate(requireContext(), R.layout.camera_ui_container,  bindView.root)
+       val  controls = View.inflate(requireContext(), R.layout.camera_ui_container, bindView.root)
         controls.findViewById<ImageButton>(R.id.camera_capture_button).click {
             captureImage()
         }
         thumbnail = controls.findViewById(R.id.photo_view_button)
         CameraxManager.getTakePhotoPath(requireContext())
         controls.findViewById<ImageButton>(R.id.photo_view_button).click {
-           CameraxManager.getTakePhotoPath(requireContext(),true)
+           CameraxManager.getTakePhotoPath(requireContext(), true)
         }
         controls?.findViewById<ImageButton>(R.id.camera_switch_button)?.click {
             CameraxManager.sendTakePhtotCancel(requireContext())
@@ -289,6 +318,7 @@ open class CameraxFragment : SimpleFragment() {
         bindView.buttonFlashOff.click {
             closeFlashAndSelect(CameraManager.CameraFlashModel.CAMERA_FLASH_OFF)
         }
+        bindView.tvTip.text = cameraParameBuild.tipContent
         lifecycleScope.launchWhenResumed {
             if(bindView.tvLocation.isVisible){
                 getLocationInfo()
@@ -306,9 +336,9 @@ open class CameraxFragment : SimpleFragment() {
         bindView.buttonShutter.toggleButton(shutterSound == CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON,
                 180F,
                 R.drawable.ic_action_volume_off,
-                R.drawable.ic_action_volume_on){
-            flag ->
+                R.drawable.ic_action_volume_on){ flag ->
             shutterSound = if (flag) CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON else CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_OFF
+            cameraParameBuild.shutterSound = shutterSound
 
         }
     }
@@ -321,13 +351,12 @@ open class CameraxFragment : SimpleFragment() {
                 R.drawable.ic_grid_on
         ) { flag ->
             netGrid = if (flag) CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN else CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE
-
+            cameraParameBuild.netGrid = netGrid
         }
     }
     private  fun   getLocationInfo(){
         locationEngine?.let {
-            it.getNewLocation(CameraManager.LocalType.CORR_TYPE_BD09,cameraParameBuild.lat,cameraParameBuild.lng){
-                lat, lng, addr ->
+            it.getNewLocation(CameraManager.LocalType.CORR_TYPE_BD09, cameraParameBuild.lat, cameraParameBuild.lng){ lat, lng, addr ->
                 cameraParameBuild.locType = CameraManager.LocalType.CORR_TYPE_BD09
                 cameraParameBuild.lat = lat
                 cameraParameBuild.lng = lng
@@ -361,7 +390,7 @@ open class CameraxFragment : SimpleFragment() {
     /**
      * 开始倒计时
      */
-    private fun  countDownStart(count:Int,call:()->Unit){
+    private fun  countDownStart(count: Int, call: () -> Unit){
         bindView.textCountDownTip.text = "自动拍照"
         countDownJob = lifecycleScope.launch(Dispatchers.Main){
             for (i in count downTo 1){
@@ -425,7 +454,7 @@ open class CameraxFragment : SimpleFragment() {
                 PreferencesUtil.put(sharedPreferencesName, CameraManager.KEY_CAMERA_SHUTTER_SOUND, true)
                 R.drawable.ic_action_volume_on
             }
-            else ->{
+            else -> {
                 PreferencesUtil.put(sharedPreferencesName, CameraManager.KEY_CAMERA_SHUTTER_SOUND, false)
                 R.drawable.ic_action_volume_off
             }
@@ -439,14 +468,14 @@ open class CameraxFragment : SimpleFragment() {
             intent?.let {
                 if(it.action == CameraManager.KEYDOWN_VOLUME_KEY_ACTION){
 
-                    when(it.getIntExtra("keyCode",0)){
-                        KeyEvent.KEYCODE_VOLUME_DOWN ->{
+                    when(it.getIntExtra("keyCode", 0)){
+                        KeyEvent.KEYCODE_VOLUME_DOWN -> {
                             keyVolumeDown()
                         }
-                        KeyEvent.KEYCODE_VOLUME_UP ->{
+                        KeyEvent.KEYCODE_VOLUME_UP -> {
                             keyVolumeUp()
                         }
-                        KeyEvent.KEYCODE_CAMERA ->{
+                        KeyEvent.KEYCODE_CAMERA -> {
                             captureImage()
                         }
                     }
@@ -460,35 +489,34 @@ open class CameraxFragment : SimpleFragment() {
         override fun onReceive(context: Context?, intent: Intent?) {
 
             intent?.let {
-                println("fragment 收到相机广播信息--->${it.action}")
+
                when(it.action){
 
-                   CameraxManager.KEY_PUSH_TAKE_PHOTO_PATH->{
-                       println("data->${it.extras}")
-                        it.getStringExtra("localPath")?.let {path->
-                            setGalleryThumbnail(File(path).toUri())
-                        }?:setGalleryThumbnail(null)
-                   }
-                   CameraxManager.KEY_PUSH_TAKE_PHOTO_ALL_PATH->{
-                      it.getStringArrayExtra("paths")?.let {
-                          paths->
-                          if(paths.isEmpty()){
-                              showError("没有可查看的照片")
-                          }else{
-                              findNavController().navigate(CameraxFragmentDirections.actionCameraToGallery(GalleryDataVo().apply {
-                                  data =paths.toList()
-                              }))
-                          }
+                   CameraxManager.KEY_PUSH_TAKE_PHOTO_PATH -> {
 
-                      }
+                       it.getStringExtra("localPath")?.let { path ->
+                           setGalleryThumbnail(File(path).toUri())
+                       } ?: setGalleryThumbnail(null)
+                   }
+                   CameraxManager.KEY_PUSH_TAKE_PHOTO_ALL_PATH -> {
+                       it.getStringArrayExtra("paths")?.let { paths ->
+                           if (paths.isEmpty()) {
+                               showError("没有可查看的照片")
+                           } else {
+                               findNavController().navigate(CameraxFragmentDirections.actionCameraToGallery(GalleryDataVo().apply {
+                                   data = paths.toList()
+                               }))
+                           }
+
+                       }
                    }
                    else -> {}
                }
             }
         }
     }
-    open    fun   initCameraParame(cameraParame: CameraParameBuild = cameraParameBuild, changeCameraParme:Boolean = false){
-       CameraManager.readCameraParame(cameraParame,sharedPreferencesName)
+    open    fun   initCameraParame(cameraParame: CameraParameBuild = cameraParameBuild, changeCameraParme: Boolean = false){
+       CameraManager.readCameraParame(cameraParame, sharedPreferencesName)
 
         netGrid = cameraParame.netGrid
         flashMode = cameraParame.flashModel
@@ -505,6 +533,7 @@ open class CameraxFragment : SimpleFragment() {
             cancelButton?.gone()
             thumbnail?.gone()
         }
+
         cameraxManager.setCameraParame(cameraParame)
 
     }
@@ -513,11 +542,12 @@ open class CameraxFragment : SimpleFragment() {
         super.onCreate(savedInstanceState)
          startActivitylaunch =  registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
             if( it.resultCode == Activity.RESULT_OK){
+
                 initCameraParame(changeCameraParme = true)
 
             }
         }
-        locationPermissionsRequester = constructLocationPermissionRequest(LocationPermission.FINE,LocationPermission.COARSE){
+        locationPermissionsRequester = constructLocationPermissionRequest(LocationPermission.FINE, LocationPermission.COARSE){
             getLocationInfo()
         }
     }
@@ -525,18 +555,28 @@ open class CameraxFragment : SimpleFragment() {
     open  fun    startCameraSettingActivity(){
        startActivitylaunch.launch(Intent(requireContext(), CameraSettingActivity::class.java).apply {
 
-            putExtra("sharedPreferencesName",sharedPreferencesName)
-            putExtra("cameraOld",false)
-            putExtra("cameraX",true)
-        })
+           putExtra("sharedPreferencesName", sharedPreferencesName)
+           putExtra("cameraOld", false)
+           putExtra("cameraX", true)
+       })
 
     }
     open  fun  keyVolumeDown(){
-
+        if(cameraParameBuild.volumeKeyControl ==1){
+            captureImage()
+        }else if(cameraParameBuild.volumeKeyControl == 2){
+            val len = cameraxManager.getZoomRatio()-(cameraxManager.getCameraMaxZoom() - cameraxManager.getCameraMinZoom())/10
+            showCameraZoomBar(if(len<0) 0F else len)
+        }
     }
 
     open fun  keyVolumeUp(){
-
+        if(cameraParameBuild.volumeKeyControl ==1){
+            captureImage()
+        }else if(cameraParameBuild.volumeKeyControl == 2){
+            val len = cameraxManager.getZoomRatio()+(cameraxManager.getCameraMaxZoom() - cameraxManager.getCameraMinZoom())/10
+            showCameraZoomBar(if(len>cameraxManager.getCameraMaxZoom()) cameraxManager.getCameraMaxZoom() else len)
+        }
     }
 
     open  fun  captureImage(){
@@ -565,7 +605,7 @@ open class CameraxFragment : SimpleFragment() {
                        return@takePicture
                    }
                }
-               findNavController().navigate(CameraxFragmentDirections.actionCameraToPhoto(it.getOrDefault(""),sharedPreferencesName))
+               findNavController().navigate(CameraxFragmentDirections.actionCameraToPhoto(it.getOrDefault(""), sharedPreferencesName))
            }
 
         }
@@ -574,8 +614,8 @@ open class CameraxFragment : SimpleFragment() {
                view?.foreground = ColorDrawable(Color.WHITE)
                view?.postDelayed({
                    view?.foreground = null
-               },ANIMATION_FAST_MILLIS)
-           },ANIMATION_SLOW_MILLIS)
+               }, ANIMATION_FAST_MILLIS)
+           }, ANIMATION_SLOW_MILLIS)
         }
     }
     private fun setGalleryThumbnail(uri: Uri?) {
@@ -606,7 +646,7 @@ open class CameraxFragment : SimpleFragment() {
             onPermissionGranted()
         }else{
             bindCameraInit = false
-            findNavController().navigate(CameraxFragmentDirections.actionCameraToPermissions(args.fileDir,args.fileName,args.sharedPreferencesName))
+            findNavController().navigate(CameraxFragmentDirections.actionCameraToPermissions(args.fileDir, args.fileName, args.sharedPreferencesName,args.cameraParame))
         }
 
         cameraSensorController.onResume()
@@ -620,7 +660,7 @@ open class CameraxFragment : SimpleFragment() {
 
     private fun onPermissionGranted() {
         if(!bindCameraInit){
-           bindView.viewFinder.camera_surface.let {   vf ->
+           bindView.viewFinder.camera_surface.let { vf ->
              vf.post {
                  displayId = vf.display.displayId
              }
@@ -630,7 +670,7 @@ open class CameraxFragment : SimpleFragment() {
 
     }
     private   var  zoomBarJob:Job?=null
-    private  fun  showCameraZoomBar(zoom:Float){
+    private  fun  showCameraZoomBar(zoom: Float){
         zoomBarJob?.cancel()
         zoomBarJob = lifecycleScope.launch(Dispatchers.Main) {
             cameraxManager.setCameraZoom(zoom)
@@ -649,13 +689,14 @@ open class CameraxFragment : SimpleFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         // Shut down our background executor
-        println("onDestroyView->>>cameraFragment")
+
         cameraxManager.unBindCamera()
         cameraxManager.stopCameraPreview()
         // Unregister the broadcast receivers and listeners
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(volumeKeyControlBroadcast)
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(cameraInfoBroadcastReceiver)
         displayManager.unregisterDisplayListener(displayListener)
+        locationEngineManager = null
     }
 
     companion object{

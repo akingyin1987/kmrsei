@@ -20,6 +20,7 @@ import com.akingyin.base.SimpleActivity
 import com.akingyin.base.config.AppFileConfig
 import com.akingyin.base.ext.startActivity
 import com.akingyin.base.ext.startRegisterForActivityResult
+import com.akingyin.base.utils.FileUtils
 import com.akingyin.base.utils.RandomUtil
 import com.akingyin.bmap.BDLocationService
 import com.akingyin.bmap.BDMapManager
@@ -69,7 +70,7 @@ class CameraTestActivity : SimpleActivity() {
         fragment.cameraLiveData.observe(this,  {
             println("data->$it")
             showSucces("拍照成功->$it")
-            startActivity<DoodleActivity>(bundle = arrayOf(DoodleActivity.FILE_PATH to it.localPath))
+            startActivity<DoodleActivity>(bundle = arrayOf(DoodleActivity.FILE_DIR to FileUtils.getFolderName(it.localPath),DoodleActivity.FILE_OLDNAME to FileUtils.getFileName(it.localPath)))
             finish()
         })
         fragment.locationEngine = object : LocationEngine {

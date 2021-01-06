@@ -24,7 +24,7 @@ import kotlin.math.sqrt
  * @ Date 2020/7/30 12:20
  * @version V1.0
  */
-abstract class OnGestureListener constructor(context: Context): View.OnTouchListener{
+abstract class OnGestureListener constructor(var context: Context): View.OnTouchListener{
     private var count = 0 //点击次数
 
     private var firstClick: Long = 0 //第一次点击时间

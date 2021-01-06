@@ -41,7 +41,7 @@ class CameraxFouceView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas?) {
         canvas?.let {
-            println("正常画${mPaint.color}")
+
             drawTouchFocusRect(it)
         }
         super.onDraw(canvas)
@@ -80,7 +80,7 @@ class CameraxFouceView @JvmOverloads constructor(
 
 
     //对焦并绘制对焦矩形框
-    fun setTouchFoucusRect(cameraxManager: CameraxManager, x: Float, y: Float) {
+    fun setTouchFoucusRect( x: Float, y: Float) {
         //以焦点为中心，宽度为300的矩形框
 
         //以焦点为中心，宽度为300的矩形框
@@ -90,16 +90,7 @@ class CameraxFouceView @JvmOverloads constructor(
             (x + 150).toInt(),
             (y + 150).toInt()
         )
-        //对焦区域
-//        val targetFocusRect =calculateTapArea(x,y,1F)?: Rect().apply {
-//            touchFocusRect?.let {
-//                left = it.left * 2000 / width - 1000
-//                top = it.top * 2000 / height - 1000
-//                right = it.right * 2000 / width - 1000
-//                bottom = it.bottom * 2000 / height - 1000
-//            }
-//        }
-        doTouchFocus(cameraxManager, x, y)
+
         postInvalidate()//刷新界面，
     }
 
@@ -130,7 +121,7 @@ class CameraxFouceView @JvmOverloads constructor(
             override fun onAnimationEnd(animation: Animation) {
                 touchFocusRect = null
                 mPaint.color = Color.WHITE
-                println("清除画笔颜色")
+
                 postInvalidate()
             }
 
@@ -139,27 +130,12 @@ class CameraxFouceView @JvmOverloads constructor(
     }
 
     //对焦完成后，清除对焦矩形框
-    fun disDrawTouchFocusRect(result: Boolean = true) {
+     fun disDrawTouchFocusRect(result: Boolean = true) {
         mPaint.color = if (result) Color.GREEN else Color.RED
 
         invalidate()
 
         startAnimation(animationSet)
-//        AnimationUtils.loadAnimation(context, R.anim.camera_fouce_rotate).run {
-//            setAnimationListener(object : Animation.AnimationListener {
-//                override fun onAnimationStart(animation: Animation) {}
-//                override fun onAnimationEnd(animation: Animation) {
-//                    touchFocusRect = null
-//                    mPaint.color = Color.WHITE
-//                    println("清除画笔颜色")
-//                    postInvalidate()
-//                }
-//
-//                override fun onAnimationRepeat(animation: Animation) {}
-//            })
-//            startAnimation(this)
-//
-//        }
 
 
 
@@ -168,7 +144,7 @@ class CameraxFouceView @JvmOverloads constructor(
     private fun drawTouchFocusRect(canvas: Canvas) {
         touchFocusRect?.run {
             canvas.run {
-                println("画笔颜色=${mPaint.color}")
+
                 //左下角
                 drawRect(
                     (left - 2).toFloat(),

@@ -24,7 +24,6 @@ import android.provider.MediaStore
 import android.text.TextUtils
 import androidx.exifinterface.media.ExifInterface
 import com.akingyin.base.config.AppFileConfig
-import java.io.InputStream
 import java.text.SimpleDateFormat
 import kotlin.math.abs
 
@@ -114,14 +113,21 @@ object MediaUtils {
 
 
     private fun getLocalDuration(path: String): Long {
+        var mediaStore :MediaMetadataRetriever?=null
         return try {
-            MediaMetadataRetriever().use {
-                it.setDataSource(path)
-                return@use it.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong()?:0
-            }
-        } catch (e: java.lang.Exception) {
+            mediaStore =  MediaMetadataRetriever()
+            mediaStore.setDataSource(path)
+            return  mediaStore.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong()?:0L
+        } catch (e: Exception) {
             e.printStackTrace()
             0
+        }finally {
+            try {
+                mediaStore?.release()
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+
         }
     }
 
@@ -431,9 +437,9 @@ object MediaUtils {
 
         return try {
             if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.Q && MediaMimeType.isContent(url)) {
-                 context.contentResolver.openInputStream(Uri.parse(url))?.use {
-                     exifInterface = ExifInterface(it)
-                 }
+                context.contentResolver.openInputStream(Uri.parse(url))?.use {
+                    exifInterface = ExifInterface(it)
+                }
 
             } else {
                 exifInterface = ExifInterface(url)

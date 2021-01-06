@@ -84,20 +84,26 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
         }
 
         override fun handleMessage(msg: Message) {
-            println("handleMessage->${week.get()?.mediaPlayer?.currentPosition}")
+
             week.get()?.dialog_audio_bar?.progress = week.get()?.mediaPlayer?.currentPosition ?: 0
         }
     }
 
 
     private fun initPlayer() {
-        println("url=${url}")
+
         mediaPlayer=mediaPlayer?:MediaPlayer()
         if(url.isNotEmpty()){
-            mediaPlayer?.setDataSource(url)
-            mediaPlayer?.prepareAsync()
+            try {
+                mediaPlayer?.reset()
+                mediaPlayer?.setDataSource(url)
+                mediaPlayer?.prepareAsync()
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+
             mediaPlayer?.setOnPreparedListener { play ->
-                println("资源加载成功--->${null == audioHandler}")
+
                 dialog_audio_bar.max = play.duration
                 audioHandler?.post(this)
                 dialog_audio_countTime.text = secToTime(play.duration / 1000)
@@ -109,7 +115,7 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
                 dialog_audio_nowTime.start()
             }
             mediaPlayer?.setOnCompletionListener {
-                println("setOnCompletionListener")
+
                 stopPlay()
                 dialog_audio_bar.progress = 0
 
@@ -227,6 +233,6 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
         audioHandler?.removeCallbacks(this)
         audioHandler?.removeCallbacksAndMessages(null)
         audioHandler = null
-        println("onDetachedFromWindow-->>${url}")
+
     }
 }

@@ -22,12 +22,13 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.os.CountDownTimer
 import android.util.AttributeSet
-import android.util.DisplayMetrics
+
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.use
 import com.akingyin.media.R
+import com.qmuiteam.qmui.util.QMUIDisplayHelper
 
 
 /**
@@ -106,9 +107,8 @@ class CaptureButton @JvmOverloads constructor(
 
     init {
 
-        val outMetrics = DisplayMetrics()
+        val outMetrics =  QMUIDisplayHelper.getDisplayMetrics(context)
 
-        context.display?.getRealMetrics(outMetrics)
         val layoutWidth = if (this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             outMetrics.widthPixels
         } else {
@@ -193,7 +193,7 @@ class CaptureButton @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                 println("state--->$state")
+
                 if (event.pointerCount > 1 || state != STATE_IDLE) {
                     return false
                 }

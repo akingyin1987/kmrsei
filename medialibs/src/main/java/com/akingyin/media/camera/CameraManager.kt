@@ -31,7 +31,6 @@ import com.akingyin.base.rx.RxUtil
 import com.akingyin.base.utils.CalculationUtil
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.base.utils.PreferencesUtil
-import com.akingyin.media.camera.ui.BaseCameraFragment
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
@@ -125,7 +124,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
         }.first()
         cameraAutoFouceSensorController = CameraAutoFouceSensorController(content) {
             autoStartFuoce { result, msg ->
-                println("运动对焦$result,$msg")
+
                 if (result) {
                     autoFouceCall.invoke()
                 }
@@ -179,22 +178,23 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
      */
     fun setCameraParametersValues(camera: Camera, cameraParameBuild: CameraParameBuild, callBack: (result: Boolean, error: String?) -> Unit) {
         try {
-            println("设置相机参数->$cameraParameBuild")
+
             cameraShutterSound = cameraParameBuild.shutterSound
             if (cameraShutterSound != CameraShutterSound.CAMERA_SHUTTER_SOUND_NONE) {
                 camera.enableShutterSound(cameraShutterSound == CameraShutterSound.CAMERA_SHUTTER_SOUND_ON)
             }
             if(cameraParameBuild.supportMoveFocus){
-                cameraAutoFouceSensorController.unRegisterSensor()
-            }else{
                 cameraAutoFouceSensorController.onRegisterSensor()
+            }else{
+                cameraAutoFouceSensorController.unRegisterSensor()
             }
 
             camera.parameters = camera.parameters.apply {
                 pictureFormat = ImageFormat.JPEG
+
                 var point = cameraParameBuild.cameraResolution ?: cameraBestResolution
                 if(point.x == 0 || point.y == 0){
-                    point = cameraBestResolution
+                    point = Point(cameraBestResolution.x,cameraBestResolution.y)
                 }
                 setPreviewSize(point.x, point.y)
                 setPictureSize(point.x, point.y)
@@ -261,23 +261,30 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
      */
      fun autoStartFuoce(callBack: (result: Boolean, error: String?) -> Unit) {
 
-        if (focusing || previewing) {
+        if (focusing || !previewing) {
             return
         }
+
         focusing = true
         try {
             GlobalScope.launch(Main) {
                 delay(1000)
-                withContext(IO) {
-
-                    camera?.let {
-                        it.cancelAutoFocus()
-                        it.autoFocus { success, _ ->
-                            focusing = false
-                            callBack(success, null)
+                try {
+                    withContext(IO) {
+                        camera?.let {
+                            it.cancelAutoFocus()
+                            it.autoFocus { success, _ ->
+                                focusing = false
+                                callBack(success, null)
+                            }
                         }
                     }
+                }catch (e : Exception){
+                    e.printStackTrace()
+                    focusing = false
+                    callBack(false, e.message)
                 }
+
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -346,7 +353,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
     @Synchronized
     fun stopPreview() {
 
-        println("pr=$previewing")
+
         if (camera != null && previewing) {
             camera?.stopPreview()
             previewing = false
@@ -364,7 +371,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
     @Synchronized
     fun takePictrue(cameraParameBuild: CameraParameBuild, callBack: (result: Boolean, error: String?) -> Unit) {
         try {
-            println("当前角度=$cameraAngle")
+
             if(takePhotoing){
                 callBack(false,"正在拍照中")
                 return
@@ -375,20 +382,23 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
             }
             camera?.takePicture(if (cameraParameBuild.shutterSound == CameraShutterSound.CAMERA_SHUTTER_SOUND_ON) {
                 Camera.ShutterCallback {
-                    println("ShutterCallback")
+
                 }
             } else {
                 null
-            }, null, Camera.PictureCallback { data, _ ->
+            }, null, { data, _ ->
                 GlobalScope.launch(Main) {
                     try {
+
                         withIO {
-                            CameraBitmapUtil.dataToBaseBitmap(data, FileUtils.getFolderName(cameraParameBuild.localPath),
+
+                            CameraBitmapUtil.dataToJpgFile(data, FileUtils.getFolderName(cameraParameBuild.localPath),
                                     "base_" + FileUtils.getFileName(cameraParameBuild.localPath), 90)
                         }?.let {
                             withIO {
-                                println("当前width=${it.width},hight=${it.height}")
-                                CameraBitmapUtil.zipImageTo960x540(it, cameraParameBuild.cameraAngle,landscape = cameraParameBuild.horizontalPicture, fileDir = FileUtils.getFolderName(cameraParameBuild.localPath), fileName = FileUtils.getFileName(cameraParameBuild.localPath))
+
+                                CameraBitmapUtil.zipImageTo960x540(it, cameraParameBuild.cameraAngle,time = appServerTime,landscape = cameraParameBuild.horizontalPicture, fileDir = FileUtils.getFolderName(cameraParameBuild.localPath), fileName = FileUtils.getFileName(cameraParameBuild.localPath))
+
 
                             }.yes {
                                 try {
@@ -412,8 +422,13 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                         } ?: callBack(true, "图片转换失败")
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        println("发现异常1")
+
                         callBack(false, e.message)
+                        takePhotoing = false
+                    }catch (error:Error){
+                        error.printStackTrace()
+
+                        callBack(false, error.message)
                         takePhotoing = false
                     }
 
@@ -421,7 +436,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
             })
         }catch (e : Exception){
             e.printStackTrace()
-            println("发现异常2")
+
             callBack(false,"出错了,${e.message}")
         }finally {
             takePhotoing = false
@@ -439,7 +454,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
             camera?.release()
             camera = null
 
-            println("关闭自定义相机")
+
         }
     }
 
@@ -448,7 +463,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
         //手机上camera的数量 =0 则当前手机无摄像头
         var cameraId = cameraOpenId
         val numCameras = Camera.getNumberOfCameras()
-        println("numCameras=$numCameras")
+
         if (numCameras == 0) {
             Timber.tag(TAG).w("No cameras!")
             return null
@@ -500,6 +515,8 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
      */
     private fun findBestPreviewSizeValue(parameters: Camera.Parameters, screenResolution: Point): Point? {
 
+        Timber.tag(TAG).d("screenResolution=$screenResolution")
+
         //找到所有支持的Size
         val rawSupportedSizes = parameters.supportedPreviewSizes
         if (rawSupportedSizes == null) {
@@ -548,7 +565,8 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                 it.remove()
                 continue
             }
-            if (maybeFlippedWidth == screenResolution.x && maybeFlippedHeight == screenResolution.y) {
+            Timber.tag(TAG).d("maybeFlippedWidth=$maybeFlippedWidth,$maybeFlippedHeight")
+            if (maybeFlippedWidth == max(screenResolution.x,screenResolution.y) && maybeFlippedHeight == min(screenResolution.y,screenResolution.x)) {
                 val exactPoint = Point(realWidth, realHeight)
                 Timber.tag(TAG).i("Found preview size exactly matching screen size: $exactPoint")
                 return exactPoint
@@ -740,7 +758,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
             configBtn.visiable()
             cancelBtn.visiable()
             rotationView.visiable()
-            println("with=${configBtn.width},${cancelBtn.width}")
+
             AnimatorSet().apply {
                 playTogether(ObjectAnimator.ofFloat(cancelBtn, "translationX", cancelBtn.width / 4F, 0F),
                         ObjectAnimator.ofFloat(configBtn, "translationX", configBtn.width / -4f, 0F))
@@ -786,9 +804,9 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
         fun   readCameraParame(cameraParame: CameraParameBuild ,sharedPreferencesName:String){
             cameraParame.apply {
                 this.flashModel = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_FLASH, "0").toInt()
-                this.shutterSound = if(PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_SHUTTER_SOUND,true)) CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_ON else CameraManager.CameraShutterSound.CAMERA_SHUTTER_SOUND_OFF
+                this.shutterSound = if(PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_SHUTTER_SOUND,true)) CameraShutterSound.CAMERA_SHUTTER_SOUND_ON else CameraShutterSound.CAMERA_SHUTTER_SOUND_OFF
                 this.horizontalPicture = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_PHTOT_HORIZONTAL,false)
-                this.netGrid = if(PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_GRID,false)) CameraManager.CameraNetGrid.CAMERA_NET_GRID_OPEN else CameraManager.CameraNetGrid.CAMERA_NET_GRID_CLOSE
+                this.netGrid = if(PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_GRID,false)) CameraNetGrid.CAMERA_NET_GRID_OPEN else CameraNetGrid.CAMERA_NET_GRID_CLOSE
                 this.cameraResolution = Point().apply {
                     x = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_RESOLUTION_X,0)
                     y = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_RESOLUTION_Y,0)

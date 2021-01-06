@@ -75,6 +75,9 @@ class DoodleView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     private val mScaleX = 1f
     private val mScaleY = 1f
 
+
+
+
     @IntDef(value = [ActionMode.NONE, ActionMode.DRAG, ActionMode.ZOOM_WITH_TWO_FINGER, ActionMode.ICON, ActionMode.CLICK, ActionMode.DRAW, ActionMode.CIRCLE])
     @Retention(AnnotationRetention.SOURCE)
     annotation class ActionMode {

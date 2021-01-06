@@ -7,6 +7,8 @@
  * akingyin@163.com
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.akingyin.media.camera.ui
 
 import android.app.Activity
@@ -151,7 +153,7 @@ open class BaseCameraFragment : SimpleFragment() {
         super.onAttach(context)
         cameraManager = CameraManager(context) {
             showSucces("运动对焦成功！")
-            println("运动对焦成功")
+
             focusSucessCaptureImage()
         }
 
@@ -195,7 +197,7 @@ open class BaseCameraFragment : SimpleFragment() {
                 cameraManager.cameraCustomResolution = Point(it.x,it.y)
             }
         }
-        println("相机参数：$cameraParame")
+
         netGrid = cameraParame.netGrid
         flashMode = cameraParame.flashModel
         shutterSound = cameraParame.shutterSound
@@ -232,7 +234,7 @@ open class BaseCameraFragment : SimpleFragment() {
                 if (cameraRotation == 360) {
                     cameraRotation = 180
                 }
-                println("uiRotation=>$uiRotation,$cameraRotation,${cameraManager.cameraAngle}")
+
                 if(cameraManager.cameraAngle != cameraRotation){
                     cameraManager.cameraAngle = cameraRotation
 
@@ -245,7 +247,7 @@ open class BaseCameraFragment : SimpleFragment() {
             }
         }
 
-
+        bindView.tvTip.text = cameraParameBuild.tipContent
         bindView.rulerView.valueFrom = cameraManager.cameraMinZoom.toFloat()
         bindView.rulerView.valueTo = cameraManager.cameraMaxZoom.toFloat()
         bindView.rulerView.value = cameraManager.cameraCurrentZoom
@@ -290,7 +292,7 @@ open class BaseCameraFragment : SimpleFragment() {
             }
         }
         bindView.btnConfig.click {
-            println("放送消息")
+
             countDownJob?.cancel()
             cameraLiveData.postValue(CameraData().apply {
                 mediaType = MediaConfig.TYPE_IMAGE
@@ -364,7 +366,7 @@ open class BaseCameraFragment : SimpleFragment() {
 
     /** 拍照*/
     private  fun  captureImage(){
-        println("cameraAngle=${cameraManager.cameraAngle}")
+
         cameraParameBuild.cameraAngle =cameraManager.cameraAngle
         bindView.viewFinder.takePhoto { result, error ->
             if (result) {
@@ -558,11 +560,13 @@ open class BaseCameraFragment : SimpleFragment() {
     private  var bindCameraInit = false
     override fun onResume() {
         super.onResume()
+
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(volumeKeyControlBroadcast, IntentFilter().apply {
             addAction(KEYDOWN_VOLUME_KEY_ACTION)
         })
         if(allPermissionsGranted()){
             onPermissionGranted()
+
         }else{
             bindView.viewFinder.unBindSurfaceView()
             bindCameraInit = false
@@ -584,9 +588,12 @@ open class BaseCameraFragment : SimpleFragment() {
                 zoom ->
                 showCameraZoomBar(zoom)
             })
+
         }
         bindCameraInit = true
-
+        if(cameraParameBuild.lat<=0.0 && cameraParameBuild.supportLocation){
+            getLocationInfo()
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

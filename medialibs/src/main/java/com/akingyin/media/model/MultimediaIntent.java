@@ -203,7 +203,7 @@ public class MultimediaIntent implements Serializable{
   public static final String SAVE_NAME="save_name";
    public  static Intent   getMultimediaIntent(MultimediaTypeEnum  multimediaEnum,MultimediaIntent  multimediaIntent,Context context){
      Intent   intent  = new Intent();
-     System.out.println("getMultimediaIntent="+multimediaEnum.getName());
+
      int  sdkVersion = Build.VERSION.SDK_INT;
      File    file = new File(multimediaIntent.getSaveDir(),multimediaIntent.getSaveName());
 

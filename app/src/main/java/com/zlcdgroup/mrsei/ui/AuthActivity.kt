@@ -2,22 +2,18 @@ package com.zlcdgroup.mrsei.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
-import androidx.activity.viewModels
+
 import com.akingyin.base.BaseDaggerActivity
-import com.akingyin.base.ext.withMain
+
 import com.umeng.socialize.UMShareAPI
 import com.umeng.socialize.bean.SHARE_MEDIA
 import com.umeng.socialize.shareboard.SnsPlatform
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserAuthContract
 import com.zlcdgroup.mrsei.ui.adapter.AuthAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.android.synthetic.main.include_toolbar.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
 import javax.inject.Inject
 
 
@@ -27,6 +23,8 @@ import javax.inject.Inject
  * @ Date 2019/5/10 13:45
  * @version V1.0
  */
+
+@AndroidEntryPoint
 class AuthActivity :BaseDaggerActivity(),UserAuthContract.View{
 
     override fun getLayoutId() = R.layout.activity_auth

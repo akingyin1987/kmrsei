@@ -15,6 +15,7 @@ import com.zlcdgroup.mrsei.data.entity.UserEntity
 import com.zlcdgroup.mrsei.presenter.UserListContract
 import com.zlcdgroup.mrsei.presenter.impl.UserListPresenterImpl
 import com.zlcdgroup.mrsei.ui.adapter.DataBindUserListAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_userlist.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import javax.inject.Inject
@@ -25,6 +26,7 @@ import javax.inject.Inject
  * @ Date 2019/5/15 15:30
  * @version V1.0
  */
+@AndroidEntryPoint
 class UserListDataBindActivity :BaseDaggerActivity(), UserListContract.View{
 
     @Inject

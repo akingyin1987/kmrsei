@@ -9,9 +9,9 @@
 
 package com.akingyin.media.audio.record
 
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
+
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -46,6 +46,7 @@ import java.util.*
  * @ Date 2020/11/4 16:48
  * @version V1.0
  */
+@Suppress("DEPRECATION")
 class AudioRecorderActivity : SimpleActivity() , PullTransport.OnAudioChunkPulledListener, MediaPlayer.OnCompletionListener {
     private var filePath: String=""
     private var source: AudioSource? = null
@@ -99,6 +100,11 @@ class AudioRecorderActivity : SimpleActivity() , PullTransport.OnAudioChunkPulle
             autoStart = intent.getBooleanExtra(EXTRA_AUTO_START, false)
             keepDisplayOn = intent.getBooleanExtra(EXTRA_KEEP_DISPLAY_ON, false)
         }
+        try {
+            File(filePath).parentFile?.mkdirs()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
         if(keepDisplayOn){
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
@@ -108,7 +114,8 @@ class AudioRecorderActivity : SimpleActivity() , PullTransport.OnAudioChunkPulle
             it.setDisplayShowTitleEnabled(false)
             it.elevation = 0F
             it.setBackgroundDrawable(
-                    ColorDrawable(Util.getDarkerColor(color)))
+                ColorDrawable(Util.getDarkerColor(color))
+            )
             it.setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.aar_ic_clear))
         }
         visualizerView = GLAudioVisualizationView.Builder(this)
@@ -136,8 +143,14 @@ class AudioRecorderActivity : SimpleActivity() , PullTransport.OnAudioChunkPulle
         playView.visibility = View.INVISIBLE
 
         if (Util.isBrightColor(color)) {
-            ContextCompat.getDrawable(this, R.drawable.aar_ic_clear)?.colorFilter = BlendModeColorFilter(Color.BLACK, BlendMode.SRC_ATOP)
-            ContextCompat.getDrawable(this, R.drawable.aar_ic_check)?.colorFilter = BlendModeColorFilter(Color.BLACK, BlendMode.SRC_ATOP)
+            ContextCompat.getDrawable(this, R.drawable.aar_ic_clear)?.setColorFilter(
+                Color.BLACK,
+                PorterDuff.Mode.SRC_ATOP
+            )
+            ContextCompat.getDrawable(this, R.drawable.aar_ic_check)?.setColorFilter(
+                Color.BLACK,
+                PorterDuff.Mode.SRC_ATOP
+            )
             statusView.setTextColor(Color.BLACK)
             timerView.setTextColor(Color.BLACK)
             restartView.setColorFilter(Color.BLACK)
@@ -237,8 +250,7 @@ class AudioRecorderActivity : SimpleActivity() , PullTransport.OnAudioChunkPulle
             }
         }
     }
-
-    fun togglePlaying(v: View?) {
+     fun togglePlaying(v: View?) {
         pauseRecording()
         Util.wait(100) {
             if (isPlaying()) {
@@ -249,25 +261,29 @@ class AudioRecorderActivity : SimpleActivity() , PullTransport.OnAudioChunkPulle
         }
     }
 
-    fun restartRecording(v: View?) {
-        if (isRecording) {
-            stopRecording()
-        } else if (isPlaying()) {
-            stopPlaying()
-        } else {
-            visualizerHandler = VisualizerHandler().apply {
-                visualizerView.linkTo(this)
-                visualizerView.release()
-                stop()
+     fun restartRecording(v: View?) {
+        when {
+            isRecording -> {
+                stopRecording()
             }
+            isPlaying() -> {
+                stopPlaying()
+            }
+            else -> {
+                visualizerHandler = VisualizerHandler().apply {
+                    visualizerView.linkTo(this)
+                    visualizerView.release()
+                    stop()
+                }
 
+            }
         }
         saveMenuItem?.isVisible = false
         statusView.visibility = View.INVISIBLE
         restartView.visibility = View.INVISIBLE
         playView.visibility = View.INVISIBLE
         recordView.setImageResource(R.drawable.aar_ic_rec)
-        timerView.text = "00:00:00"
+        timerView.text = getString(R.string.timer)
         recorderSecondsElapsed = 0
         playerSecondsElapsed = 0
     }
@@ -286,11 +302,12 @@ class AudioRecorderActivity : SimpleActivity() , PullTransport.OnAudioChunkPulle
         }
 
         if (recorder == null) {
-            timerView.text = "00:00:00"
+            timerView.text = getString(R.string.timer)
 
             recorder = OmRecorder.wav(
-                    PullTransport.Default(Util.getMic(source, channel, sampleRate), this),
-                    File(filePath))
+                PullTransport.Default(Util.getMic(source, channel, sampleRate), this),
+                File(filePath)
+            )
         }
         recorder?.resumeRecording()
         startTimer()
@@ -333,10 +350,15 @@ class AudioRecorderActivity : SimpleActivity() , PullTransport.OnAudioChunkPulle
                 setDataSource(filePath)
                 prepare()
                 start()
-                visualizerView.linkTo(DbmHandler.Factory.newVisualizerHandler(this@AudioRecorderActivity, this))
+                visualizerView.linkTo(
+                    DbmHandler.Factory.newVisualizerHandler(
+                        this@AudioRecorderActivity,
+                        this
+                    )
+                )
                 visualizerView.post { setOnCompletionListener(this@AudioRecorderActivity) }
             }
-            timerView.text = "00:00:00"
+            timerView.text = getString(R.string.timer)
             statusView.setText(R.string.aar_playing)
             statusView.visibility = View.VISIBLE
             playView.setImageResource(R.drawable.aar_ic_stop)
@@ -376,10 +398,10 @@ class AudioRecorderActivity : SimpleActivity() , PullTransport.OnAudioChunkPulle
         stopTimer()
         timer = Timer().apply {
             scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                updateTimer()
-            }
-        }, 0, 1000)
+                override fun run() {
+                    updateTimer()
+                }
+            }, 0, 1000)
         }
 
     }

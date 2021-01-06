@@ -8,13 +8,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.os.SystemClock
-import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 
 import android.widget.SeekBar
 import com.akingyin.media.R
+import com.qmuiteam.qmui.util.QMUIDisplayHelper
 import kotlinx.android.synthetic.main.dialog_audio_play_layout.*
 import java.lang.ref.WeakReference
 
@@ -103,8 +103,8 @@ class PlayAudioDialog : AudioManagerDialog(), SeekBar.OnSeekBarChangeListener, R
 
 
         val intArray = IntArray(2)
-        val displayMetrics = DisplayMetrics()
-        context?.display?.getRealMetrics(displayMetrics)
+        val displayMetrics = QMUIDisplayHelper.getDisplayMetrics(requireContext())
+
 
         intArray[0] = displayMetrics.widthPixels
         intArray[1] = displayMetrics.heightPixels

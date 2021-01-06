@@ -1,11 +1,13 @@
 package com.zlcdgroup.mrsei.ui.adapter
 
-import android.app.Activity
+import android.content.Context
 import android.os.Bundle
+import androidx.fragment.app.FragmentManager
 import com.stepstone.stepper.Step
 import com.stepstone.stepper.adapter.AbstractFragmentStepAdapter
 import com.stepstone.stepper.viewmodel.StepViewModel
 import com.zlcdgroup.mrsei.ui.fragment.UserListFragment
+
 import javax.inject.Inject
 
 /**
@@ -14,16 +16,16 @@ import javax.inject.Inject
  * @ Date 2018/9/8 12:05
  * @version V1.0
  */
-class SampleStepAdapter  @Inject constructor(context: Activity, fragmentManager: androidx.fragment.app.FragmentManager) : AbstractFragmentStepAdapter(fragmentManager,context) {
+class SampleStepAdapter   constructor( context: Context, fragmentManager: FragmentManager) : AbstractFragmentStepAdapter(fragmentManager,context) {
 
-    @Inject
-    lateinit var  userListFragment1: UserListFragment
 
-    @Inject
-    lateinit var  userListFragment2: UserListFragment
+     var  userListFragment1: UserListFragment = UserListFragment()
 
-    @Inject
-    lateinit var  userListFragment3: UserListFragment
+
+     var  userListFragment2: UserListFragment = UserListFragment()
+
+
+     var  userListFragment3: UserListFragment = UserListFragment()
 
     override fun getCount(): Int {
         return  3

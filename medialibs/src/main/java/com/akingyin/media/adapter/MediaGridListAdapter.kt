@@ -10,9 +10,12 @@
 package com.akingyin.media.adapter
 
 import android.graphics.PorterDuff
+import android.view.View
+
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import com.akingyin.base.ext.click
 import com.akingyin.base.ext.gone
 import com.akingyin.base.ext.visiable
@@ -37,8 +40,9 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
  */
 
 
-class MediaGridListAdapter<T : LocalMediaData>(imageEngine: ImageEngine, supportDel: Boolean = false,
-                                               supportChecked: Boolean = false, supportCamera: Boolean = false) : BaseProviderMultiAdapter<T>() {
+ open class MediaGridListAdapter<T : LocalMediaData>( imageEngine: ImageEngine,var callBaseUri:((data: LocalMediaData)->String)?=null, var supportDel: Boolean = false,
+                                                supportChecked: Boolean = false, var delectCall:((postion:Int)->Unit)?=null,
+                                                var takeCameraCall:()->Unit ={}, var takeVideoCall :()->Unit={},var takeAudioCall:()->Unit={}) : BaseProviderMultiAdapter<T>() {
     /** 选中或被选中消息 */
     var checkLiveEvent: SingleLiveEvent<Int> = SingleLiveEvent()
 
@@ -48,11 +52,16 @@ class MediaGridListAdapter<T : LocalMediaData>(imageEngine: ImageEngine, support
 
 
     init {
-        addItemProvider(MediaGridItemProvider(imageEngine, supportDel, supportChecked, checkLiveEvent, delectLiveEvent))
-        if (supportCamera) {
-            addItemProvider(CameraItemProvide())
-        }
+
+        this.addItemProvider(provider = MediaGridItemProvider(imageEngine, supportDel, supportChecked, checkLiveEvent, delectLiveEvent))
+        this.addItemProvider(CameraItemProvide(1))
+        this@MediaGridListAdapter.addItemProvider(CameraItemProvide(2))
+        this.addItemProvider(CameraItemProvide(3))
     }
+
+
+
+
 
     /**
      * 返回 item 类型
@@ -61,25 +70,61 @@ class MediaGridListAdapter<T : LocalMediaData>(imageEngine: ImageEngine, support
      * @return Int
      */
     override fun getItemType(data: List<T>, position: Int): Int {
-        return data[position].itemType
+
+        return data[position].itemType.let { if(it>3){0}else{it} }
     }
 
-    class CameraItemProvide<T : LocalMediaData> : BaseItemProvider<T>() {
+   inner  class  CameraItemProvide<T : LocalMediaData>(var mediaType:Int) : BaseItemProvider<T>() {
         override val itemViewType: Int
-            get() = 0
+            get() = mediaType
+
         override val layoutId: Int
             get() = R.layout.item_multimedia_camera
 
         override fun convert(helper: BaseViewHolder, item: T) {
+             helper.getView<TextView>( R.id.tvCamera).let {
+                 textView ->
+                 textView.text = item.mediaText
+                 when(mediaType){
+                     1 -> {
+                         val drawable = ContextCompat.getDrawable(context,R.drawable.picture_icon_camera)?.apply {
+                             setBounds(0,0,minimumWidth,minimumHeight)
+                         }
+                         textView.setCompoundDrawables(null,drawable,null,null)
+                     }
+                     2 -> {
+                         val drawable = ContextCompat.getDrawable(context,R.drawable.icon_take_video)?.apply {
+                             setBounds(0,0,minimumWidth,minimumHeight)
+                         }
+                         textView.setCompoundDrawables(null,drawable,null,null)
+                     }
+                     3 -> {
+                         val drawable = ContextCompat.getDrawable(context,R.drawable.icon_take_audio)?.apply {
+                             setBounds(0,0,minimumWidth,minimumHeight)
+                         }
+                         textView.setCompoundDrawables(null,drawable,null,null)
+                     }
+                 }
+             }
 
+        }
+
+        override fun onClick(helper: BaseViewHolder, view: View, data: T, position: Int) {
+            when(data.itemType){
+                1->takeCameraCall.invoke()
+                2->takeVideoCall.invoke()
+                3->takeAudioCall.invoke()
+            }
         }
     }
 
-    class MediaGridItemProvider<T : LocalMediaData>(var imageEngine: ImageEngine, var supportDel: Boolean = false,
+
+
+   inner class MediaGridItemProvider<T : LocalMediaData>(var imageEngine: ImageEngine, var supportDel: Boolean = false,
                                                     var supportChecked: Boolean = false, var checkLiveEvent: SingleLiveEvent<Int>
                                                     , var delectLiveEvent: SingleLiveEvent<Int>) : BaseItemProvider<T>() {
-        override val itemViewType: Int
-            get() = 1
+        override val itemViewType: Int = 0
+
         override val layoutId: Int
             get() = R.layout.item_multimedia_grid
 
@@ -94,8 +139,11 @@ class MediaGridListAdapter<T : LocalMediaData>(imageEngine: ImageEngine, support
                 val tv_duration = getView<TextView>(R.id.tv_duration)
                 tv_duration.gone()
                 val check_view = getView<CheckView>(R.id.check_view)
+                val tv_num = getView<TextView>(R.id.tv_num)
                 dispatchHandle(item,ivImage,tvText)
                 if (supportChecked) {
+                    tv_num.visiable()
+                    tv_num.text = (helper.absoluteAdapterPosition+1).toString()
                     check_view.visiable()
                     check_view.setCountable(true)
                     check_view.setChecked(item.mediaChecked)
@@ -118,6 +166,7 @@ class MediaGridListAdapter<T : LocalMediaData>(imageEngine: ImageEngine, support
                     ivDel.click {
                         item.mediaDelect = true
                         delectLiveEvent.value = bindingAdapterPosition
+                        delectCall?.invoke(bindingAdapterPosition)
                     }
                 } else {
                     ivDel.gone()
@@ -185,7 +234,9 @@ class MediaGridListAdapter<T : LocalMediaData>(imageEngine: ImageEngine, support
                 textView.gone()
             } else {
                 //采用网络获取
-                imageEngine.loadGridImage(context, data.mediaServerPath, imageView) {
+
+
+                imageEngine.loadGridImage(context, (callBaseUri?.invoke(data)?:"")+data.mediaServerPath, imageView) {
                     if (it) {
                         textView.visiable()
                         textView.text = "在线"
@@ -205,5 +256,16 @@ class MediaGridListAdapter<T : LocalMediaData>(imageEngine: ImageEngine, support
         }
     }
 
+
+    companion object class  MediaGridDiffCallBack: DiffUtil.ItemCallback< LocalMediaData>(){
+        override fun areItemsTheSame(oldItem: LocalMediaData, newItem: LocalMediaData): Boolean {
+            return  oldItem.mediaType == newItem.mediaType &&(oldItem.mediaText+oldItem.mediaLocalPath+oldItem.mediaServerPath == newItem.mediaText+newItem.mediaLocalPath+newItem.mediaServerPath)
+
+        }
+
+        override fun areContentsTheSame(oldItem: LocalMediaData, newItem: LocalMediaData): Boolean {
+            return  oldItem == newItem
+        }
+    }
 
 }

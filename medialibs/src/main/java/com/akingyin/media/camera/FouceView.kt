@@ -45,7 +45,7 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     override fun onDraw(canvas: Canvas?) {
         canvas?.let {
-            println("正常画${mPaint.color}")
+
             drawTouchFocusRect(it)
         }
         super.onDraw(canvas)
@@ -126,7 +126,7 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     //对焦完成后，清除对焦矩形框
     fun disDrawTouchFocusRect(result: Boolean = true) {
         mPaint.color = if (result) Color.GREEN else Color.RED
-        println("改变画笔颜色")
+
         invalidate()
 
         AnimationUtils.loadAnimation(context, R.anim.camera_fouce_rotate).run {
@@ -135,7 +135,7 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 override fun onAnimationEnd(animation: Animation) {
                     touchFocusRect = null
                     mPaint.color = Color.WHITE
-                    println("清除画笔颜色")
+
                    postInvalidate()
                 }
 
@@ -152,7 +152,7 @@ class FouceView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     private fun drawTouchFocusRect(canvas: Canvas) {
         touchFocusRect?.run {
             canvas.run {
-                println("画笔颜色=${mPaint.color}")
+
                 //左下角
                 drawRect((left - 2).toFloat(), bottom.toFloat(), (left + 20).toFloat(), (bottom + 2).toFloat(), mPaint)
                 drawRect((left - 2).toFloat(), (bottom - 20).toFloat(), left.toFloat(), bottom.toFloat(), mPaint)

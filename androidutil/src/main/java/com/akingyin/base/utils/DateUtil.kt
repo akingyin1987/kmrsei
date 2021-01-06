@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
 
 /**
  * 日期类工具
@@ -222,7 +223,7 @@ object DateUtil {
      * @return unit时间戳
      */
     fun getTimeSpan(time0: String?, time1: String?, unit: TimeUnit?, pattern: String?): Long {
-        return millis2TimeSpan(Math.abs(string2Millis(time0, pattern) - string2Millis(time1, pattern)), unit)
+        return millis2TimeSpan(abs(string2Millis(time0, pattern) - string2Millis(time1, pattern)), unit)
     }
 
     /**

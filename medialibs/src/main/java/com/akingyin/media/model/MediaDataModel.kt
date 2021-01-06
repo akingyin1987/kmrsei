@@ -9,6 +9,8 @@ package com.akingyin.media.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.akingyin.media.MediaConfig
+import com.akingyin.media.MediaMimeType
 
 /**
  * 图文数据
@@ -69,10 +71,10 @@ class MediaDataModel() :  Parcelable {
     companion object {
 
 
-        const val TEXT = 0
-        const val IMAGE = 1
-        const val VIDEO = 2
-        const val AUDIO = 3
+        const val TEXT = MediaConfig.TYPE_TEXT
+        const val IMAGE = MediaConfig.TYPE_IMAGE
+        const val VIDEO = MediaConfig.TYPE_VIDEO
+        const val AUDIO = MediaConfig.TYPE_AUDIO
         fun buildModel(localPath: String, serverPath: String, downloadPath: String = "", text: String = "", title: String = "", multimediaType: Int = 1, haveNetServer: Boolean = true, objectId: Long = 0L, itemType: Int = 0): MediaDataModel {
             return MediaDataModel().apply {
                 this.multimediaType = multimediaType

@@ -43,7 +43,7 @@ object CameraBitmapUtil {
     // 保存图片的质量
     private const val quality = 90
 
-    const val  MAX_BITMAP = 2 * 1024 *1024
+    private const val  MAX_BITMAP = 300 *1024
 
     fun   dataToJpgFile(data: ByteArray, dir: String, fileName: String, rotat: Int):Bitmap?{
          val  file = File(dir,fileName)
@@ -56,6 +56,7 @@ object CameraBitmapUtil {
                     bufferedSink.write(data)
                 }
             }
+
            val options =  BitmapFactory.Options()
             // 先将inJustDecodeBounds设置为true不会申请内存去创建Bitmap，返回的是一个空的Bitmap，但是可以获取
             //图片的一些属性，例如图片宽高，图片类型等等
@@ -114,7 +115,6 @@ object CameraBitmapUtil {
 
     @Throws(Exception::class, Error::class)
     fun dataToBaseBitmap(data: ByteArray, path: String, img: String, rotat: Int): Bitmap? {
-
         var imgSrc: Bitmap?
         var fos: FileOutputStream? = null
         try {
@@ -122,7 +122,7 @@ object CameraBitmapUtil {
             if (!file.exists()) {
                 file.mkdirs()
             }
-            println("")
+
             fos = FileOutputStream(File(path, img))
             imgSrc = BitmapFactory.decodeByteArray(data, 0, data.size)
             if (rotat != 0) {
@@ -133,8 +133,10 @@ object CameraBitmapUtil {
             imgSrc.compress(Bitmap.CompressFormat.JPEG, quality, fos)
         } catch (e: Exception) {
             e.printStackTrace()
+
             throw e
         } catch (e: Error) {
+
             e.printStackTrace()
             throw  e
         } finally {
@@ -169,8 +171,7 @@ object CameraBitmapUtil {
      * @param mBitmap
      * @param rotat
      * @param
-     * @param path
-     * @param img
+
      * @return
      */
     @JvmOverloads
@@ -202,7 +203,7 @@ object CameraBitmapUtil {
                 } else {
                     (NormHigth.toFloat() / mBitmap.height)
                 }
-                println("sx=$sx")
+
                 m.postScale(sx, sx)
             }
             if (landscape) {
@@ -221,7 +222,6 @@ object CameraBitmapUtil {
                 if (rotat != 90) {
                     m.preRotate(if (rotat - 90 < 0) 270f else (rotat - 90).toFloat(), srcBitmap.width.toFloat() / 2, srcBitmap.height.toFloat() / 2)
                 }
-                println("当前2222-width=${srcBitmap.width},hight=${srcBitmap.height}")
                 srcBitmap = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.width, srcBitmap.height, m, true)
             }
             val canvas = Canvas(srcBitmap)
@@ -257,7 +257,7 @@ object CameraBitmapUtil {
             canvas.drawPath(desPath, p)
             canvas.drawText(arrowTxt, srcBitmap.width - 210.toFloat(), srcBitmap.height - 10.toFloat(), paint)
             canvas.save()
-            println("data-保存照片->>>$arrowTxt")
+
             file = File(fileDir, fileName)
             fos = FileOutputStream(file)
             srcBitmap.compress(Bitmap.CompressFormat.JPEG, quality, fos)
@@ -351,7 +351,7 @@ object CameraBitmapUtil {
         return false
     }
     const val TAG_DATETIME = "YYYY:MM:DD HH:MM:SS"
-    val imgSdf: ThreadLocal<SimpleDateFormat> = object : ThreadLocal<SimpleDateFormat>() {
+    private val imgSdf: ThreadLocal<SimpleDateFormat> = object : ThreadLocal<SimpleDateFormat>() {
         override fun initialValue(): SimpleDateFormat {
             return SimpleDateFormat(TAG_DATETIME, Locale.CHINA)
         }
@@ -372,7 +372,7 @@ object CameraBitmapUtil {
 
     fun saveExifinterAttr(localpath: String, key: String, value: String) {
         try {
-            println("保存图片属性=$key$value")
+
             val exifInterface = ExifInterface(localpath)
             exifInterface.setAttribute(key, value)
             exifInterface.saveAttributes()
@@ -413,7 +413,7 @@ object CameraBitmapUtil {
         }
         val screenWidth = dm.widthPixels.coerceAtMost(dm.heightPixels)
         val screenHight = dm.widthPixels.coerceAtLeast(dm.heightPixels)
-        println("屏幕大小：$screenWidth,$screenHight")
+
         // 当前图片比屏幕大
         if (width > screenWidth || heigth > screenHight) {
             val x: Float = (screenWidth - MaxpOffset) / width.toFloat()
@@ -427,7 +427,7 @@ object CameraBitmapUtil {
         if (width * (1 / minScale) < screenWidth || heigth * (1 / minScale) < screenHight) {
             val x = screenWidth.toFloat() * minScale / width
             val y = screenHight.toFloat() * minScale / heigth
-            println("x=$x:y=$y")
+
             return x.coerceAtMost(y)
         }
         return 0f

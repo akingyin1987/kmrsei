@@ -4,12 +4,12 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.media.MediaPlayer
 import android.os.*
-import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import com.akingyin.media.R
+import com.qmuiteam.qmui.util.QMUIDisplayHelper
 import kotlinx.android.synthetic.main.dialog_audio_play_layout.*
 import java.lang.ref.WeakReference
 
@@ -92,8 +92,8 @@ import java.lang.ref.WeakReference
    private fun getDisplay() :IntArray{
 
         val intArray = IntArray(2)
-        val displayMetrics = DisplayMetrics()
-        context?.display?.getRealMetrics(displayMetrics)
+        val displayMetrics = QMUIDisplayHelper.getDisplayMetrics(requireContext())
+
 
         intArray[0] = displayMetrics.widthPixels
         intArray[1] = displayMetrics.heightPixels

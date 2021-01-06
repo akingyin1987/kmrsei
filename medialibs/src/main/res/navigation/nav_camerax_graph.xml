@@ -34,6 +34,8 @@
         app:nullable="true" />
     <argument android:name="sharedPreferencesName"
         app:argType="string"/>
+    <argument app:argType="com.akingyin.media.camera.CameraParameBuild"
+           android:name="cameraParame"/>
 
 
   </fragment>
@@ -65,6 +67,8 @@
         app:nullable="true" />
     <argument android:name="sharedPreferencesName"
         app:argType="string"/>
+    <argument app:argType="com.akingyin.media.camera.CameraParameBuild"
+        android:name="cameraParame"/>
   </fragment>
 
 

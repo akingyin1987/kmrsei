@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.lifecycle.LifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.akingyin.base.ext.appServerTime
 import com.akingyin.base.ext.no
 
 import com.akingyin.base.ext.yes
@@ -71,7 +72,7 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
      var cameraParameBuild: CameraParameBuild= CameraParameBuild()
     /** 运动对焦监听器 */
      private var cameraAutoFouceSensorController: CameraAutoFouceSensorController = CameraAutoFouceSensorController(context){
-          if(!previewing){
+          if(previewing){
               autoStartFuoce{  result,error->
                   motionFocusCall?.focusCall(result,error)
               }
@@ -187,19 +188,32 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
      */
     fun  setCameraParame(cameraParameBuild: CameraParameBuild){
         this.cameraParameBuild = cameraParameBuild
+        cameraParameBuild.let {
+            //设置运动对焦
+            if(it.supportMoveFocus){
 
+                cameraAutoFouceSensorController.onRegisterSensor()
+            }else{
+
+                cameraAutoFouceSensorController.unRegisterSensor()
+            }
+
+        }
     }
 
     /**
      * 开始预览
      */
     fun   startCameraPreview(){
+
         previewing = true
         cameraParameBuild.let {
             //设置运动对焦
             if(it.supportMoveFocus){
+
                 cameraAutoFouceSensorController.onRegisterSensor()
             }else{
+
                 cameraAutoFouceSensorController.unRegisterSensor()
             }
             setCameraFlashMode(it.flashModel)
@@ -219,7 +233,9 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
     fun takePicture(callBack: (result:Result<String>) -> Unit){
         // Create output file to hold the image
 
+
         val photoFile = File(cameraParameBuild.localPath)
+
         // Setup image capture metadata
         val metadata = ImageCapture.Metadata().apply {
             // Mirror image when using the front camera
@@ -242,7 +258,7 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
                 // images unless we scan them using [MediaScannerConnection]
 
 
-                CameraBitmapUtil.zipImageTo960x540(CameraBitmapUtil.decodeSampledBitmapFromFile(savedUri.toFile(),CameraBitmapUtil.NormWidth,CameraBitmapUtil.NormHigth),cameraParameBuild.cameraAngle,landscape = cameraParameBuild.horizontalPicture,fileDir = FileUtils.getFolderName(cameraParameBuild.localPath),fileName = FileUtils.getFileName(cameraParameBuild.localPath))
+                CameraBitmapUtil.zipImageTo960x540(CameraBitmapUtil.decodeSampledBitmapFromFile(savedUri.toFile(),CameraBitmapUtil.NormWidth,CameraBitmapUtil.NormHigth),cameraParameBuild.cameraAngle,time = appServerTime,landscape = cameraParameBuild.horizontalPicture,fileDir = FileUtils.getFolderName(cameraParameBuild.localPath),fileName = FileUtils.getFileName(cameraParameBuild.localPath))
                 val mimeType = MimeTypeMap.getSingleton()
                         .getMimeTypeFromExtension(savedUri.toFile().extension)
                 MediaScannerConnection.scanFile(
@@ -259,6 +275,7 @@ class CameraxManager (var context: Context,var previewView: PreviewView){
             }
 
             override fun onError(exception: ImageCaptureException) {
+                exception.printStackTrace()
                 cameraMainExecutor.execute {
                     callBack.invoke(Result.failure(CameraException(code = exception.imageCaptureError,errorMsg = "数据出错了,代码=${exception.imageCaptureError},${exception.message}",exception)))
                 }

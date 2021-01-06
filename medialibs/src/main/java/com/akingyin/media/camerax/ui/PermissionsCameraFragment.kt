@@ -45,7 +45,7 @@ class PermissionsCameraFragment : Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        println("注册权限处理 ---->>>")
+
         cameraPermissionsRequester =  constructPermissionsRequest(Manifest.permission.CAMERA,
             onShowRationale = ::onCameraShowRationale,
             onPermissionDenied = ::onCameraDenied,
@@ -53,7 +53,7 @@ class PermissionsCameraFragment : Fragment(){
             gotoCameraFragment()
         }
         lifecycleScope.launchWhenResumed {
-            println("进来了吗")
+
             cameraPermissionsRequester.launch()
         }
 //        if(!hasPermissions(requireContext())){
@@ -78,7 +78,7 @@ class PermissionsCameraFragment : Fragment(){
     }
 
     private fun  gotoCameraFragment(){
-       findNavController().navigate(PermissionsCameraFragmentDirections.actionPermissionsToCamera(args.fileDir,args.fileName?:"",args.sharedPreferencesName))
+       findNavController().navigate(PermissionsCameraFragmentDirections.actionPermissionsToCamera(args.fileDir,args.fileName?:"",args.sharedPreferencesName,args.cameraParame))
 
     }
     private fun onCameraDenied() {
@@ -96,7 +96,7 @@ class PermissionsCameraFragment : Fragment(){
     }
 
     override fun onDestroyView() {
-        println("权限取消---->")
+
         super.onDestroyView()
     }
 

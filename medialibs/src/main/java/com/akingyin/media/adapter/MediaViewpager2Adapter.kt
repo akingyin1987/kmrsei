@@ -11,20 +11,22 @@ package com.akingyin.media.adapter
 
 import android.widget.ImageView
 import android.widget.TextView
+import cn.jzvd.JzvdStd
 import com.akingyin.media.audio.AudioPlayView
 import com.akingyin.base.ext.click
 import com.akingyin.base.ext.gone
 import com.akingyin.base.ext.visiable
 import com.akingyin.base.mvvm.SingleLiveEvent
 import com.akingyin.base.utils.FileUtils
-import com.akingyin.media.ImageLoadUtil
 import com.akingyin.media.R
+import com.akingyin.media.glide.GlideEngine
 import com.akingyin.media.glide.GlideImageView
 import com.akingyin.media.glide.OnProgressListener
 import com.akingyin.media.glide.progress.CircleProgressView
 import com.akingyin.media.model.MediaDataModel
 import com.akingyin.media.widget.CheckView
-import com.akingyin.media.widget.SampleCoverVideo
+import com.akingyin.util.VideoCacheProxy
+
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 
@@ -82,13 +84,14 @@ class MediaViewpager2Adapter : BaseQuickAdapter<MediaDataModel,BaseViewHolder>(R
            downloadView.click {
                downloadLiveEvent.value = bindingAdapterPosition
            }
+           setText(R.id.tv_tips,item.title)
            val textView : TextView = getView(R.id.tv_text)
            textView.gone()
            val glideImageView: GlideImageView = getView(R.id.iv_image)
            glideImageView.gone()
            val circleProgressView = getView<CircleProgressView>(R.id.progressView)
            circleProgressView.gone()
-           val sampleCoverVideo :SampleCoverVideo =  getView(R.id.video_player)
+           val sampleCoverVideo : JzvdStd =  getView(R.id.video_player)
            sampleCoverVideo.gone()
            val audioPlayView : AudioPlayView = getView(R.id.audio_player)
            audioPlayView.gone()
@@ -112,16 +115,15 @@ class MediaViewpager2Adapter : BaseQuickAdapter<MediaDataModel,BaseViewHolder>(R
                    glideImageView.let {
                        it.visiable()
                        if(FileUtils.isFileExist(item.localPath)){
-                           ImageLoadUtil.loadImageLocalFile(item.localPath,context,it)
+                           GlideEngine.getGlideEngineInstance().loadImage(it.context,item.localPath,it)
                        }else{
                            if(item.haveNetServer){
                                circleProgressView.visiable()
                                circleProgressView.progress = 0
                                circleProgressView.max = 100
-
-                               it.load(item.serverPath,R.drawable.big_img_error,object :OnProgressListener{
+                               it.load(item.serverPath,R.drawable.ic_img_loading_error,object :OnProgressListener{
                                    override fun onProgress(isComplete: Boolean, percentage: Int, bytesRead: Long, totalBytes: Long) {
-                                       println("isComplete=${isComplete} percentage=${percentage}")
+
                                        if(isComplete){
                                            circleProgressView.gone()
                                        }
@@ -140,20 +142,15 @@ class MediaViewpager2Adapter : BaseQuickAdapter<MediaDataModel,BaseViewHolder>(R
                    sampleCoverVideo.run {
                        visiable()
                        if(FileUtils.isFileExist(item.localPath)){
-                           loadCoverImage("file://${item.localPath}",R.drawable.big_img_error)
-                           setUpLazy("file://${item.localPath}",true,null,null,FileUtils.getFileName(item.localPath))
-                           playPosition = bindingAdapterPosition
-                           isAutoFullWithSize = true
+                           setUp("file://${item.localPath}",FileUtils.getFileName(item.localPath))
+                           GlideEngine.getGlideEngineInstance().loadImage(context,"file://${item.localPath}",posterImageView,null,null)
                        }else{
-                           println("serverpath=${item.serverPath}")
+
                            if(item.haveNetServer){
-                               loadCoverImage(item.serverPath,R.drawable.big_img_error)
-                               setUpLazy(item.serverPath,true,null,null,FileUtils.getFileName(item.serverPath))
-                               playPosition = bindingAdapterPosition
-                               isAutoFullWithSize = true
+                               setUp(VideoCacheProxy.getProxy(context).getProxyUrl(item.serverPath),FileUtils.getFileName(item.serverPath))
+                               GlideEngine.getGlideEngineInstance().loadImage(context,item.serverPath,posterImageView,null,null)
                            }else{
-                               loadCoverImage("file://${item.localPath}",R.drawable.big_img_error)
-                               setUpLazy("file://${item.localPath}",true,null,null,FileUtils.getFileName(item.localPath))
+                              posterImageView.setImageResource(R.drawable.ic_img_loading_error)
                            }
                        }
                    }

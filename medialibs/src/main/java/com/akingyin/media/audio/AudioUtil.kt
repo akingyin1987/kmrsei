@@ -51,7 +51,7 @@ object AudioUtil {
                 duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
 
             }
-            println("di=$duration")
+            
             cursor?.close()
         } catch (e: Exception) {
             e.printStackTrace()

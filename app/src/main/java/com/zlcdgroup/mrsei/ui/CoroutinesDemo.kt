@@ -8,6 +8,7 @@ import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.db.dao.NoticeDao
 import com.zlcdgroup.mrsei.data.entity.NoticeEntity
 import com.zlcdgroup.mrsei.utils.RetrofitConfig
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_coroutlines.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +24,8 @@ import javax.inject.Inject
  * @ Date 2019/7/4 11:11
  * @version V1.0
  */
+
+@AndroidEntryPoint
 class CoroutinesDemo :BaseDaggerActivity() {
 
      @Inject

@@ -1,5 +1,6 @@
 package com.zlcdgroup.mrsei
 
+import android.app.Application
 import android.content.Context
 import android.os.Build
 import android.text.TextUtils
@@ -11,7 +12,6 @@ import com.akingyin.base.ext.Ext
 import com.akingyin.base.ext.spGetString
 import com.akingyin.base.ext.spSetString
 import com.akingyin.base.net.mode.ApiHost
-import com.akingyin.base.net.okhttp.OkHttpUtils
 import com.akingyin.map.BdMapApp
 import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.Utils
@@ -21,17 +21,11 @@ import com.orhanobut.logger.PrettyFormatStrategy
 import com.tencent.bugly.crashreport.CrashReport
 import com.umeng.commonsdk.UMConfigure
 import com.zlcdgroup.mrsei.data.db.help.DbCore
-import com.zlcdgroup.mrsei.di.component.DaggerAppComponent
-import com.zlcdgroup.mrsei.di.module.ClientModule
-import com.zlcdgroup.mrsei.di.module.GlobalConfigModule
 import com.zlcdgroup.mrsei.utils.RetrofitConfig
 import com.zlcdgroup.mrsei.utils.ThemeHelper
-import dagger.android.AndroidInjector
-import dagger.android.DaggerApplication
+import dagger.hilt.android.HiltAndroidApp
 
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
+
 import timber.log.Timber
 
 
@@ -41,27 +35,28 @@ import timber.log.Timber
  * @ Date 2018/9/3 17:27
  * @version V1.0
  */
-class MrmseiApp :DaggerApplication() {
+@HiltAndroidApp
+class MrmseiApp :Application() {
 
 
-
-     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        val  configmodel : GlobalConfigModule.GlobalProvideModule =GlobalConfigModule.Builder().okhttpConfiguration(object : ClientModule.ClientProvideModule.OkhttpConfiguration {
-            override fun configOkhttp(context: Context, builder: OkHttpClient.Builder) {
-                println("configOkhttp")
-                builder.addInterceptor(OkHttpUtils.httpLoggingInterceptor)
-
-            }
-        }).retrofitConfiguration(object : ClientModule.ClientProvideModule.RetrofitConfiguration {
-            override fun configRetrofit(context: Context, builder: Retrofit.Builder) {
-                builder.baseUrl(ApiHost.getHost())
-                println("configRetrofit")
-            }
-        }).addInterceptor(HttpLoggingInterceptor())
-                .build()
-
-       return  DaggerAppComponent.builder().applicationContext(this).application(this).globalConfigModule(configmodel).build()
-    }
+//
+//     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+//        val  configmodel : GlobalConfigModule.GlobalProvideModule =GlobalConfigModule.Builder().okhttpConfiguration(object : ClientModule.ClientProvideModule.OkhttpConfiguration {
+//            override fun configOkhttp(context: Context, builder: OkHttpClient.Builder) {
+//                println("configOkhttp")
+//                builder.addInterceptor(OkHttpUtils.httpLoggingInterceptor)
+//
+//            }
+//        }).retrofitConfiguration(object : ClientModule.ClientProvideModule.RetrofitConfiguration {
+//            override fun configRetrofit(context: Context, builder: Retrofit.Builder) {
+//                builder.baseUrl(ApiHost.getHost())
+//                println("configRetrofit")
+//            }
+//        }).addInterceptor(HttpLoggingInterceptor())
+//                .build()
+//
+//       return  DaggerAppComponent.builder().applicationContext(this).application(this).globalConfigModule(configmodel).build()
+//    }
 
     override fun onCreate() {
         super.onCreate()

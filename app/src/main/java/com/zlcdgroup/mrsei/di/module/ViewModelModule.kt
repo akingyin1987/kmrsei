@@ -13,9 +13,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.zlcdgroup.mrsei.data.db.dao.UserEntityDao
 import com.zlcdgroup.mrsei.ui.mvvm.LoginViewModel
-import com.zlcdgroup.mrsei.viewModel.UserViewModel
+
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
 
 /**
  * viewModel 注入
@@ -26,9 +28,11 @@ import dagger.Provides
  */
 
 @Module
+@InstallIn(ActivityComponent::class)
 abstract class ViewModelModule {
 
-    @Module(includes = arrayOf(ViewModelModule::class))
+    @Module(includes = [ViewModelModule::class])
+    @InstallIn(ActivityComponent::class)
     class  ViewModelProvideModule{
 
         @Provides

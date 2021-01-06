@@ -45,9 +45,8 @@ class PinchToZoomGestureDetector(context: Context, myScaleGestureDetector: MySca
         } else {
             1.0f - (1.0f - scale) * 2
         }
-        println("scale=$scale")
+
         var newRatio: Float = if(listion.getZoomRatio()==0F) scale else listion.getZoomRatio()*scale
-        println("onScale=$newRatio,${listion.getMaxZoomRatio()},${listion.getZoomRatio()}")
 
         newRatio = rangeLimit(newRatio, listion.getMaxZoomRatio(), listion.getMinZoomRatio())
         listion.setZoomRatio(newRatio)

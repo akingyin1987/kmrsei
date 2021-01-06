@@ -21,6 +21,7 @@ import com.akingyin.media.MediaUtils
 import com.akingyin.media.R
 import com.akingyin.media.engine.ImageEngine
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
@@ -113,6 +114,7 @@ class GlideEngine :ImageEngine{
      * @param imageView
      */
     override fun loadImage(context: Context, url: String, imageView: ImageView, longImageView: SubsamplingScaleImageView?, callback: ImageEngine.OnImageCompleteCallback?) {
+
        GlideApp.with(context)
                .asBitmap().load(url)
                .applyDefaultImage()
@@ -206,10 +208,10 @@ class GlideEngine :ImageEngine{
     override fun loadGridImage(context: Context, url: String, imageView: ImageView,callBack: ((result: Boolean) -> Unit)?) {
         GlideApp.with(context).run {
             if(null == callBack){
-                load(url)
-                        .override(200, 200)
-                        .centerCrop()
-                        .applyDefaultImage()
+                load(url).placeholder(R.drawable.ic_img_loading_error)
+                        .format(DecodeFormat.PREFER_RGB_565)
+                        .error(R.drawable.icon_img_load_error)
+                        .skipMemoryCache(false)
                         .into(imageView)
             }else{
                 asBitmap().load(url)
@@ -235,6 +237,14 @@ class GlideEngine :ImageEngine{
 
     override fun clearCacheByImageView(imageView: ImageView) {
        GlideApp.with(imageView).clear(imageView)
+    }
+
+    override fun clearMemory(context: Context) {
+        GlideApp.get(context).clearMemory()
+    }
+
+    override fun clearDiskCache(context: Context) {
+       GlideApp.get(context).clearDiskCache()
     }
 
     companion object {

@@ -18,7 +18,8 @@ import com.zlcdgroup.mrsei.presenter.UserListFragmentContract
 import com.zlcdgroup.mrsei.presenter.impl.UserListFragmentPresenterImpl
 import com.zlcdgroup.mrsei.ui.adapter.UserListAdapter
 import com.zlcdgroup.mrsei.ui.adapter.UserViewHolder
-import dagger.android.support.AndroidSupportInjection
+import dagger.hilt.android.AndroidEntryPoint
+
 import kotlinx.android.synthetic.main.fragment_userlist.*
 import java.util.*
 import javax.inject.Inject
@@ -31,7 +32,8 @@ import javax.inject.Inject
  */
 
 
-class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentContract.View , BlockingStep {
+@AndroidEntryPoint
+class  UserListFragment  :BaseFragment() ,UserListFragmentContract.View , BlockingStep {
     companion object {
         private const val TAP_THRESHOLD = 2
     }
@@ -190,7 +192,7 @@ class  UserListFragment @Inject constructor() :BaseFragment() ,UserListFragmentC
     }
 
     override fun injection() {
-        AndroidSupportInjection.inject(this)
+
     }
 
     override fun onBackClicked(callback: StepperLayout.OnBackClickedCallback?) {

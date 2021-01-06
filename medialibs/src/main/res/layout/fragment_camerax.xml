@@ -348,7 +348,7 @@
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
-          tools:text="0" />
+          tools:text="0221222" />
       <TextView
           android:id="@+id/textCountDownTip"
           android:layout_width="wrap_content"
@@ -360,12 +360,14 @@
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           tools:text="0" />
+
+
       <TextView
           android:layout_width="230dp"
           app:layout_constraintLeft_toLeftOf="parent"
 
           app:layout_constraintBottom_toTopOf="@+id/rl_turn"
-          android:layout_marginBottom="30dp"
+          android:layout_marginBottom="165dp"
           android:id="@+id/tv_location"
           android:textColor="@android:color/white"
           android:textSize="14sp"
@@ -389,14 +391,25 @@
 
           android:layout_height="wrap_content"/>
 
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          app:layout_constraintBottom_toTopOf="@+id/rulerView"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          android:gravity="center"
 
+          tools:text="这是测试提示信息"
+          android:layout_marginBottom="10dp"
+          android:textColor="@color/red_600"
+          android:id="@+id/tv_tip"/>
 
       <RelativeLayout android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:visibility="gone"
           app:layout_constraintLeft_toLeftOf="parent"
           app:layout_constraintRight_toRightOf="parent"
-          app:layout_constraintBottom_toTopOf="@+id/fabTakePicture"
+          app:layout_constraintBottom_toBottomOf="parent"
 
           android:layout_marginBottom="30dp"
           android:id="@+id/rl_turn">

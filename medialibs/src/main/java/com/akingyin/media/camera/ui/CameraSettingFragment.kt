@@ -40,32 +40,37 @@ class CameraSettingFragment : PreferenceFragmentCompat() {
             cameraOld = it.getBoolean("cameraOld",false)
         }
         setPreferencesFromResource(R.xml.camera_preferences_fragment, rootKey)
+        findPreference<SwitchPreferenceCompat>("key_support_multiple_photo")?.let {
+            it.isVisible = false
+        }
         findPreference<Preference>("camerax_resolution")?.let {
-            val x = preferenceManager.sharedPreferences.getInt(CameraManager.KEY_CAMERAX_RESOLUTION_X,0)
-            val y  = preferenceManager.sharedPreferences.getInt(CameraManager.KEY_CAMERAX_RESOLUTION_Y,0)
-            if(x ==0 || y == 0){
-                it.title = "未知"
-            }else{
-                it.title = CameraSize(x,y).toString()
-            }
-            if(cameraX){
-                it.setOnPreferenceClickListener {
-                    selectCameraResolution(x,y){
-                        width, hight ->
-                        it.title = CameraSize(width,hight).toString()
-                        preferenceManager.sharedPreferences.edit().run {
-                            putInt(CameraManager.KEY_CAMERAX_RESOLUTION_X,width)
-                                    .putInt(CameraManager.KEY_CAMERAX_RESOLUTION_Y,hight)
-                        }.apply()
-                    }
-                    return@setOnPreferenceClickListener true
-                }
-            }else{
-                it.isVisible = false
-            }
+            it.isVisible = false
+//            val x = preferenceManager.sharedPreferences.getInt(CameraManager.KEY_CAMERAX_RESOLUTION_X,0)
+//            val y  = preferenceManager.sharedPreferences.getInt(CameraManager.KEY_CAMERAX_RESOLUTION_Y,0)
+//            if(x ==0 || y == 0){
+//                it.title = "未知"
+//            }else{
+//                it.title = CameraSize(x,y).toString()
+//            }
+//            if(cameraX){
+//                it.setOnPreferenceClickListener {
+//                    selectCameraResolution(x,y){
+//                        width, hight ->
+//                        it.title = CameraSize(width,hight).toString()
+//                        preferenceManager.sharedPreferences.edit().run {
+//                            putInt(CameraManager.KEY_CAMERAX_RESOLUTION_X,width)
+//                                    .putInt(CameraManager.KEY_CAMERAX_RESOLUTION_Y,hight)
+//                        }.apply()
+//                    }
+//                    return@setOnPreferenceClickListener true
+//                }
+//            }else{
+//                it.isVisible = false
+//            }
         }
 
         findPreference<SwitchPreferenceCompat>("key_camera_manual_auto_focus")?.let {
+
             it.summary = if(it.isChecked)"点击界面进行区域对焦" else "点击界面进行自动对焦"
             it.setOnPreferenceChangeListener { _, _ ->
                 it.summary = if(it.isChecked)"点击界面进行区域对焦" else "点击界面进行自动对焦"
@@ -98,6 +103,7 @@ class CameraSettingFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<EditTextPreference>("key_camera_auto_takephoto_delaytime")?.let {
+
             it.summary = "对焦成功后自动拍照延时${preferenceManager.sharedPreferences.getString("key_camera_auto_takephoto_delaytime","")}(秒)"
             it.setOnBindEditTextListener {
                 editText ->

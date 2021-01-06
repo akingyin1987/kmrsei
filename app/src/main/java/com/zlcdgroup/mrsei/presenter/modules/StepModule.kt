@@ -1,17 +1,10 @@
 package com.zlcdgroup.mrsei.presenter.modules
-
-import android.app.Activity
-import androidx.fragment.app.FragmentManager
-import com.zlcdgroup.mrsei.di.scope.PerActivity
-import com.zlcdgroup.mrsei.di.scope.PerFragment
 import com.zlcdgroup.mrsei.presenter.UserListFragmentContract
 import com.zlcdgroup.mrsei.presenter.impl.UserListFragmentPresenterImpl
-import com.zlcdgroup.mrsei.ui.SteperActivity
-import com.zlcdgroup.mrsei.ui.fragment.UserListFragment
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
-import dagger.android.ContributesAndroidInjector
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
 
 /**
  * @ Description:
@@ -21,34 +14,9 @@ import dagger.android.ContributesAndroidInjector
  */
 
 @Module
-abstract class StepModule {
+@InstallIn(ActivityComponent::class)
+abstract class StepModule{
 
     @Binds
-    @PerActivity
-    abstract fun  activity(activity: SteperActivity):Activity
-
-
-    @ContributesAndroidInjector
-    @PerFragment
-    abstract fun  fragment(): UserListFragment
-
-
-
-    @Module(includes = [StepModule::class])
-    class StepModuleFragmentManagerModule {
-
-        @Provides
-        @PerActivity
-        fun provideFragmentManager(activity: SteperActivity): androidx.fragment.app.FragmentManager {
-            return activity.supportFragmentManager
-        }
-    }
-
-
-
-
-
-    @Binds
-    @PerActivity
     abstract  fun  tackPresenter(presenter: UserListFragmentPresenterImpl): UserListFragmentContract.Presenter
 }

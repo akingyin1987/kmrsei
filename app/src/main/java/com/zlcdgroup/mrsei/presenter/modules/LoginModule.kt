@@ -7,6 +7,8 @@ import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
 import com.zlcdgroup.mrsei.ui.LoginActivity
 import dagger.Binds
 import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
 
 /**
  * @ Description:
@@ -15,11 +17,10 @@ import dagger.Module
  * @version V1.0
  */
 @Module
+@InstallIn(ActivityComponent::class)
 abstract class LoginModule {
 
-    @PerActivity
-    @Binds
-    abstract  fun   activity(activty:LoginActivity):Activity
+
 
 
     @Binds

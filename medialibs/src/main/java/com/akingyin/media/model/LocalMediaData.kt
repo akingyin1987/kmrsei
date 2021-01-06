@@ -10,9 +10,10 @@
 package com.akingyin.media.model
 
 
-import com.akingyin.media.MediaMimeType
+import android.os.Parcel
+import android.os.Parcelable
 import com.chad.library.adapter.base.entity.MultiItemEntity
-import java.io.Serializable
+
 
 /**
  * @ Description:
@@ -20,13 +21,15 @@ import java.io.Serializable
  * @ Date 2020/7/15 12:10
  * @version V1.0
  */
- open class LocalMediaData :Serializable, MultiItemEntity {
+ open class LocalMediaData() : MultiItemEntity, Parcelable {
+
+
 
     /**
      * 多媒体类型
      */
-    @MediaMimeType.MediaType
-    var   mediaType = MediaMimeType.ofAll()
+
+    var   mediaType = 0
 
     /**
      * 文本类型
@@ -73,13 +76,52 @@ import java.io.Serializable
      */
     var  mediaDelect = false
 
-    /**
-     * 换转成实体文件
-      */
-    fun   transformEntity(){
 
-    }
 
     override val itemType: Int
-        get() = if(mediaType == MediaMimeType.ofAll()){0}else{1}
+        get() = mediaType
+
+    constructor(parcel: Parcel) : this() {
+        mediaType = parcel.readInt()
+        mediaText = parcel.readString()?:""
+        mediaLocalPath = parcel.readString()?:""
+        mediaDuration = parcel.readLong()
+        mediaServerPath = parcel.readString()?:""
+        mediaOriginalPath = parcel.readString()?:""
+        mediaSort = parcel.readInt()
+        mediaSelected = parcel.readByte() != 0.toByte()
+        mediaChecked = parcel.readByte() != 0.toByte()
+        mediaDelect = parcel.readByte() != 0.toByte()
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(mediaType)
+        parcel.writeString(mediaText)
+        parcel.writeString(mediaLocalPath)
+        parcel.writeLong(mediaDuration)
+        parcel.writeString(mediaServerPath)
+        parcel.writeString(mediaOriginalPath)
+        parcel.writeInt(mediaSort)
+        parcel.writeByte(if (mediaSelected) 1 else 0)
+        parcel.writeByte(if (mediaChecked) 1 else 0)
+        parcel.writeByte(if (mediaDelect) 1 else 0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<LocalMediaData> {
+        override fun createFromParcel(parcel: Parcel): LocalMediaData {
+            return LocalMediaData(parcel)
+        }
+
+        override fun newArray(size: Int): Array<LocalMediaData?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return super.equals(other)
+    }
 }

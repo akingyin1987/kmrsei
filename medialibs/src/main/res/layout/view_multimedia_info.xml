@@ -34,11 +34,11 @@
         android:id="@+id/images_detail_smooth_image"
         android:scaleType="fitCenter"/>
 
-  <com.akingyin.media.widget.SampleCoverVideo
-      android:id="@+id/videoplayer"
-      android:layout_width="match_parent"
+<!--  <com.akingyin.media.widget.SampleCoverVideo-->
+<!--      android:id="@+id/videoplayer"-->
+<!--      android:layout_width="match_parent"-->
 
-      android:layout_height="match_parent"/>
+<!--      android:layout_height="match_parent"/>-->
 
   <RelativeLayout android:layout_width="match_parent"
       android:layout_height="match_parent">

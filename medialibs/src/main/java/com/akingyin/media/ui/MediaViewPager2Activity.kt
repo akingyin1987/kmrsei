@@ -13,12 +13,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
+import androidx.viewpager2.widget.ViewPager2
+import cn.jzvd.Jzvd
 import com.akingyin.base.SimpleActivity
 import com.akingyin.media.R
 import com.akingyin.media.adapter.MediaViewpager2Adapter
 import com.akingyin.media.model.MediaDataListModel
 import com.akingyin.media.model.MediaDataModel
-import com.shuyu.gsyvideoplayer.GSYVideoManager
+
 import kotlinx.android.synthetic.main.activity_media_viewpager2_info.*
 
 
@@ -52,6 +54,7 @@ open class MediaViewPager2Activity : SimpleActivity() {
         data.items?.let {
             mediaViewpager2Adapter = MediaViewpager2Adapter()
             onBindAdapter()
+
             mediaViewpager2Adapter.downloadLiveEvent.observe(this,  { postion ->
                 downloadItemFile(mediaViewpager2Adapter.getItem(postion))
             })
@@ -69,6 +72,15 @@ open class MediaViewPager2Activity : SimpleActivity() {
                 }
             })
             mediaViewpager2Adapter.setDiffNewData(it.toMutableList())
+            val post = intent.getIntExtra("postion",0)
+            if(post>0){
+                viewpager.currentItem = post
+            }
+            viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+                override fun onPageSelected(position: Int) {
+                    Jzvd.releaseAllVideos()
+                }
+            })
         } ?: finish()
     }
 
@@ -82,6 +94,7 @@ open class MediaViewPager2Activity : SimpleActivity() {
      */
     open fun onBindAdapter() {
         viewpager.adapter = mediaViewpager2Adapter
+
     }
 
     /**
@@ -98,33 +111,30 @@ open class MediaViewPager2Activity : SimpleActivity() {
 
     }
 
+
+
     companion object {
-        fun startMediaViewPager(context: Context, imageTextList: MediaDataListModel) {
+        fun startMediaViewPager(context: Context, imageTextList: MediaDataListModel,postion:Int = 0) {
             context.startActivity(Intent(context, MediaViewPager2Activity::class.java).apply {
                 putExtra("data", imageTextList)
+                putExtra("postion",postion)
             })
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        GSYVideoManager.onResume()
-    }
+
 
     override fun onPause() {
         super.onPause()
-        GSYVideoManager.onPause()
+        Jzvd.releaseAllVideos()
     }
 
     override fun onBackPressed() {
-        if (GSYVideoManager.backFromWindowFull(this)) {
+        if (Jzvd.backPress()) {
             return
         }
         super.onBackPressed()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        GSYVideoManager.releaseAllVideos()
-    }
+
 }

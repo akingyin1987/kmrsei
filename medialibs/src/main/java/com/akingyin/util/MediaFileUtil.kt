@@ -144,7 +144,8 @@ object MediaFileUtil {
 
     fun getFileType(path: String): MediaFileType? {
         val lastDot = path.lastIndexOf(".")
-        return if (lastDot < 0) null else sFileTypeMap[path.substring(lastDot + 1).toUpperCase(Locale.ROOT)]
+        val mediaType = if(lastDot< 0){path} else{path.substring(lastDot + 1).toUpperCase(Locale.ROOT)}
+        return sFileTypeMap[mediaType]
     }
 
     //根据视频文件路径判断文件类型
@@ -164,7 +165,7 @@ object MediaFileUtil {
     }
 
     //根据mime类型查看文件类型
-    fun getFileTypeForMimeType(mimeType: String?): Int {
+    fun getFileTypeForMimeType(mimeType: String): Int {
         val value = sMimeTypeMap[mimeType]
         return value ?: 0
     }

@@ -7,34 +7,7 @@
       android:supportsRtl="true">
 
 
-    <activity
-        android:name="com.akingyin.media.ImagesDetailActivity"
-        android:hardwareAccelerated="true"
-        android:screenOrientation="portrait" />
-    <activity
-        android:name="com.akingyin.media.ImageTextPagerActivity"
-        android:configChanges="orientation|screenSize|keyboardHidden"
-        android:hardwareAccelerated="true"
-        android:launchMode="singleTop"
-        android:screenOrientation="portrait"
-         />
 
-
-    <activity
-        android:name="com.akingyin.media.ImageTextTypesActivity"
-        android:configChanges="orientation|screenSize|keyboardHidden"
-        android:hardwareAccelerated="true"
-        android:launchMode="singleTop"
-        android:screenOrientation="portrait"
-         />
-
-    <activity
-        android:name="com.akingyin.media.ui.ImageVideoPagerActivity"
-        android:configChanges="orientation|screenSize|keyboardHidden"
-        android:hardwareAccelerated="true"
-        android:launchMode="singleTop"
-        android:screenOrientation="portrait"
-        android:theme="@style/Theme.TranslucentNavigationBar" />
 
 
   </application>

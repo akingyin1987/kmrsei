@@ -17,6 +17,7 @@ import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.databinding.ActivityDropdownMenuBinding
 import com.zlcdgroup.mrsei.ui.adapter.DropMenuAdapter
 import com.zlcdgroup.mrsei.viewModel.DropDownMenuViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.include_toolbar.*
 import javax.inject.Inject
 
@@ -26,6 +27,7 @@ import javax.inject.Inject
  * @ Date 2020/11/9 11:08
  * @version V1.0
  */
+@AndroidEntryPoint
 class DropDownMenuActivity :BaseVMActivity<ActivityDropdownMenuBinding, DropDownMenuViewModel>() {
 
     private val  dropDownMenuViewModel:DropDownMenuViewModel by viewModels()

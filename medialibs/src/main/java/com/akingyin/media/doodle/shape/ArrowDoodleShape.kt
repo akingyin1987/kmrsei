@@ -222,5 +222,6 @@ class ArrowDoodleShape(colorPen:Int = Color.RED) : IDoodleShape() {
     companion object{
         const val MIN_WIDTH = 15
         const val MIN_HEIGHT = 15
+
     }
 }
