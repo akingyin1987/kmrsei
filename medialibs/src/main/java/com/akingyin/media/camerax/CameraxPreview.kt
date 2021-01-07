@@ -15,6 +15,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.camera.view.PreviewView
 import com.akingyin.media.R
 
 
@@ -29,7 +30,7 @@ class CameraxPreview @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RelativeLayout(context, attrs, defStyleAttr) {
 
-    var camera_surface: CameraxSurfaceView
+    var camera_surface: PreviewView
     var camera_fouce: CameraxFouceView
     var camera_img: ImageView
     init {
