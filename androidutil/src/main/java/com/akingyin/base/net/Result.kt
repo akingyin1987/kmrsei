@@ -13,7 +13,7 @@ import com.akingyin.base.net.exception.ApiException
  */
 sealed class Result<out T:Any> {
 
-    data class Success<out T : Any>(val data: T,val time:Long) : Result<T>()
+    data class Success<out T : Any>(val data: T) : Result<T>()
 
-    data class Error(val exception: ApiException) : Result<Nothing>()
+    data class Failure(val exception: Exception) : Result<Nothing>()
 }

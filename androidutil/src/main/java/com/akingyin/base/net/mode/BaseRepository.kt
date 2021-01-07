@@ -1,6 +1,5 @@
 package com.akingyin.base.net.mode
-
-import android.util.Log
+import com.akingyin.base.net.Result
 import retrofit2.Response
 import java.io.IOException
 
@@ -20,8 +19,8 @@ open class BaseRepository{
         when(result) {
             is Result.Success ->
                 data = result.data
-            is Result.Error -> {
-                Log.d("1.DataRepository", "$errorMessage & Exception - ${result.exception}")
+            is Result.Failure -> {
+
             }
         }
 
@@ -34,6 +33,6 @@ open class BaseRepository{
         val response = call.invoke()
         if(response.isSuccessful) return Result.Success(response.body()!!)
 
-        return Result.Error(IOException("Error Occurred during getting safe Api result, Custom ERROR - $errorMessage"))
+        return Result.Failure(IOException("Error Occurred during getting safe Api result, Custom ERROR - $errorMessage"))
     }
 }

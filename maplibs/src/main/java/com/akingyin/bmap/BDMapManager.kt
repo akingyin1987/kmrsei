@@ -536,7 +536,7 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: C
             println("url--->$url")
             val  request = Request.Builder().url(url).build()
             try {
-                val  response = OkHttpUtils.getInstance().newCall(request).execute()
+                val  response = OkHttpUtils.instance.newCall(request).execute()
                 if(response.isSuccessful){
                     val result  = response.body?.string()?:"{}"
                     return JSON.parseObject(result).let {

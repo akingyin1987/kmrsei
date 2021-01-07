@@ -31,7 +31,7 @@ class ApiTest {
     fun   initTest(){
         ShadowLog.stream = System.out
 
-        loginServerApi = RetrofitUtils.createApi(LoginServerApi::class.java,OkHttpUtils.getInstance()," https://easy-mock.com/mock/5cd90c3fc6690f660b93bd66/api/")
+        loginServerApi = RetrofitUtils.createApi(LoginServerApi::class.java,OkHttpUtils.instance," https://easy-mock.com/mock/5cd90c3fc6690f660b93bd66/api/")
     }
 
     @Test

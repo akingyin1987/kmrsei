@@ -66,7 +66,7 @@ object DownloadFileUtil {
             return null
         }
         File(dir).mkdirs()
-        val response = OkHttpUtils.getInstance().newCall(Request.Builder().url(url).build()).execute()
+        val response = OkHttpUtils.instance.newCall(Request.Builder().url(url).build()).execute()
         if(response.isSuccessful){
             var input: InputStream? = null
             val buf = ByteArray(2048)
