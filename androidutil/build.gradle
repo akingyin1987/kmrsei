@@ -157,6 +157,8 @@ dependencies {
 
   //基于 mmap 的高性能通用 key-value 组件
   api 'com.tencent:mmkv-static:1.2.4'
+  //将 sp 全部替换为 DataStore
+  api "androidx.datastore:datastore-preferences:1.0.0-alpha05"
   api 'com.github.andrefrsousa:SuperBottomSheet:2.0.0'
 
   api 'com.google.code.gson:gson:2.8.6'

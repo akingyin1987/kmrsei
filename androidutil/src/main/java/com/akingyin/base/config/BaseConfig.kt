@@ -9,7 +9,6 @@
 
 package com.akingyin.base.config
 
-import com.akingyin.base.ext.AppTime
 import com.akingyin.base.ext.spGetString
 import com.akingyin.base.ext.spRemove
 import com.akingyin.base.ext.spSetString
