@@ -5,22 +5,19 @@
  * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
+package com.akingyin.base.taskmanager
 
-package com.akingyin.base.taskmanager;
-
-import com.akingyin.base.taskmanager.enums.TaskManagerStatusEnum;
-import com.akingyin.base.taskmanager.enums.TaskStatusEnum;
+import com.akingyin.base.taskmanager.enums.TaskManagerStatusEnum
+import com.akingyin.base.taskmanager.enums.TaskStatusEnum
 
 /**
  * 任务执行结果回调
  * Created by Administrator on 2016/7/3.
  */
-public interface ITaskResultCallBack {
-
+interface ITaskResultCallBack {
     //任务状态回调
-    void    onCallBack(TaskStatusEnum statusEnum, String error);
+    fun onCallBack(statusEnum: TaskStatusEnum, error: String)
 
     //取消所有任务执行
-    void    onCancelAllTask(TaskManagerStatusEnum statusEnum, String error);
-
+    fun onCancelAllTask(statusEnum: TaskManagerStatusEnum, error: String)
 }

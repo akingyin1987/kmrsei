@@ -5,10 +5,9 @@
  * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
+package com.akingyin.base.taskmanager
 
-package com.akingyin.base.taskmanager;
-
-import com.akingyin.base.taskmanager.enums.TaskStatusEnum;
+import com.akingyin.base.taskmanager.enums.TaskStatusEnum
 
 /**
  * * *                #                                                   #
@@ -41,10 +40,6 @@ import com.akingyin.base.taskmanager.enums.TaskStatusEnum;
  * @ Date 2016/10/24 17:00
  * @ Version V1.0
  */
-
-public interface ApiSonTaskCallBack {
-
-  void   call(TaskStatusEnum taskStatusEnum, AbsTaskRunner taskRunner);
-
-
+interface ApiSonTaskCallBack {
+    fun call(taskStatusEnum: TaskStatusEnum, taskRunner: AbsTaskRunner)
 }

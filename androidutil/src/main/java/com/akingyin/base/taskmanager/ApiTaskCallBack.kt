@@ -5,35 +5,32 @@
  * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
+package com.akingyin.base.taskmanager
 
-package com.akingyin.base.taskmanager;
-
-import com.akingyin.base.taskmanager.enums.TaskManagerStatusEnum;
+import com.akingyin.base.taskmanager.enums.TaskManagerStatusEnum
 
 /**
  * 任务管理返回接口
  * Created by Administrator on 2016/7/3.
  */
-public interface ApiTaskCallBack {
-
+interface ApiTaskCallBack {
     /**
-     *  //返回结果
+     * //返回结果
      * @param total
      * @param progress
      * @param error
      */
-    void   onCallBack(int total, int progress, int error);
+    fun onCallBack(total: Int, progress: Int, error: Int)
 
     /**
      * 任务正常完成时回调
      */
-    void   onComplete();
+    fun onComplete()
 
     /**
      * 任务出错时回调
      * @param message
      * @param statusEnum
      */
-    void   onError(String message, TaskManagerStatusEnum statusEnum);
-
+    fun onError(message: String, statusEnum: TaskManagerStatusEnum)
 }
