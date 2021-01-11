@@ -22,12 +22,15 @@ import android.view.animation.Interpolator
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.annotation.ColorRes
+
 import androidx.annotation.DrawableRes
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.akingyin.base.ext.ViewClickDelay.SPACE_TIME
+import com.akingyin.base.ext.ViewClickDelay.hash
+import com.akingyin.base.ext.ViewClickDelay.lastClickTime
 import com.akingyin.base.utils.MainExecutor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -152,6 +155,35 @@ fun TextView.bold(isBold: Boolean = true) {
 }
 
 
+
+object ViewClickDelay {
+    var hash: Int = 0
+    var lastClickTime: Long = 0
+    var SPACE_TIME: Long = 2000  // 间隔时间
+}
+
+/**
+ * 防快速点击
+ * @receiver View
+ * @param clickAction 要响应的操作
+ */
+
+@Suppress("UNCHECKED_CAST")
+infix fun <T : View> T.clickDelay(clickAction: (T) -> Unit) {
+    setOnClickListener {
+        if (hashCode() != hash) {
+            hash = this.hashCode()
+            lastClickTime = System.currentTimeMillis()
+            clickAction(it as T)
+        } else {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastClickTime > SPACE_TIME) {
+                lastClickTime = System.currentTimeMillis()
+                clickAction( it as T)
+            }
+        }
+    }
+}
 
 @Suppress("UNCHECKED_CAST")
 fun <T : View> T.click(block: (T) -> Unit) = setOnClickListener {
@@ -310,6 +342,15 @@ fun View.isGone() = visibility == View.GONE
 fun View.isInvisible() = visibility == View.INVISIBLE
 
 
+/**
+ * 对两个图片的切换
+ * @receiver ImageButton
+ * @param flag Boolean   判断使用哪张图片显示 true =显示第一张
+ * @param rotationAngle Float
+ * @param firstIcon Int
+ * @param secondIcon Int
+ * @param action Function1<Boolean, Unit>
+ */
 fun ImageButton.toggleButton(
         flag: Boolean, rotationAngle: Float, @DrawableRes firstIcon: Int, @DrawableRes secondIcon: Int,
         action: (Boolean) -> Unit
@@ -345,6 +386,12 @@ fun ImageButton.toggleButton(
     }
 }
 
+
+/**
+ * 以前指定控件 为中心创建  当前viewGroup 的圆形缩放(显示)动画
+ * @receiver ViewGroup
+ * @param button ImageButton
+ */
 fun ViewGroup.circularReveal(button: ImageButton) {
     this.visibility = View.VISIBLE
     ViewAnimationUtils.createCircularReveal(
@@ -358,6 +405,12 @@ fun ViewGroup.circularReveal(button: ImageButton) {
     }.start()
 }
 
+/**
+ *  以前指定控件 为中心创建  当前viewGroup 的圆形缩放(关闭)动画
+ * @receiver ViewGroup
+ * @param button ImageButton
+ * @param action Function0<Unit>
+ */
 fun ViewGroup.circularClose(button: ImageButton, action: () -> Unit = {}) {
     ViewAnimationUtils.createCircularReveal(
             this,
