@@ -31,6 +31,8 @@ jobs:
           key: gradle-${{ hashFiles('gradle-checksums.txt') }}-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-${{ hashFiles('gradle-checksums.txt') }}-
+      - name: testPermission
+        run: chmod 755 gradlew
       - name: unitTest
         run: ./gradlew test
 
