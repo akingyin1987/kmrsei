@@ -1,7 +1,6 @@
 package com.akingyin.base.mvvm.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import com.akingyin.base.ext.logDebug
 import com.akingyin.base.mvvm.SingleLiveEvent
 import com.akingyin.base.net.Result
 import com.akingyin.base.net.ResultList
@@ -108,9 +107,9 @@ open  class BaseViewModel :AutoDisposeViewModel(), CoroutineScope by MainScope()
              is Result.Success ->{
                  data = result.data
              }
-             is Result.Error ->{
+             is Result.Failure ->{
 
-                 errorCall(result.exception.code,result.exception.msg)
+                 errorCall(result.exception.hashCode(),result.exception.message?:"")
              }
          }
          return  data
@@ -119,13 +118,13 @@ open  class BaseViewModel :AutoDisposeViewModel(), CoroutineScope by MainScope()
         val response = call.invoke()
         if(response.code == ApiCode.Http.SUCCESS){
             return response.data?.let {
-                Result.Success(it,response.time)
-            }?:Result.Error(ApiException(msg = "获取数据为空！").apply {
+                Result.Success(it)
+            }?:Result.Failure(ApiException(msg = "获取数据为空！").apply {
                 code = response.code
             })
         }
 
-        return  Result.Error(ApiException(msg = response.msg).apply {
+        return  Result.Failure(ApiException(msg = response.msg).apply {
             code = response.code
         })
 

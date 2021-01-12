@@ -1,6 +1,7 @@
 package com.akingyin.base.mvvm.job
 
-import com.akingyin.base.net.mode.Result
+import com.akingyin.base.net.Result
+
 
 abstract class BaseJob<T : Any>  {
 

@@ -2,7 +2,7 @@ package com.akingyin.base.mvvm.viewmodel
 
 
 import com.akingyin.base.mvvm.job.BaseJob
-import com.akingyin.base.net.mode.Result
+import com.akingyin.base.net.Result
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
 
@@ -42,7 +42,7 @@ class CoroutlineList<T : Any>(val scope: CoroutineScope,
                                     println("成功")
                                     progressCall.invoke(progress,error,total,"")
                                 }
-                                is Result.Error->{
+                                is Result.Failure->{
                                     println("错误")
                                     error++
                                     progressCall.invoke(progress,error,total,result.exception.message?:"")

@@ -29,7 +29,7 @@ open class BaseRepository {
             when(result) {
                 is Result.Success ->
                     data = result.data
-                is Result.Error -> {
+                is Result.Failure -> {
                     Timber.tag("DataRepository").d( "$errorMessage & Exception - ${result.exception}")
                 }
             }
@@ -41,21 +41,21 @@ open class BaseRepository {
 
         private suspend fun <T: Any> safeApiResult(call: suspend ()-> ApiResult<T>, errorMessage: String) : Result<T>{
             val response = call.invoke()
-            if(response.code == ApiCode.Response.HTTP_SUCCESS) return Result.Success(response.data,response.time)
+            if(response.code == ApiCode.Response.HTTP_SUCCESS) return Result.Success(response.data)
 
-            return Result.Error(ApiException(msg = "Error Occurred during getting safe Api result, Custom ERROR - $errorMessage"))
+            return Result.Failure(ApiException(msg = "Error Occurred during getting safe Api result, Custom ERROR - $errorMessage"))
         }
 
     private suspend fun <T: Any> safeApiResult(call: suspend ()-> Response<T>) : Result<T>{
         val response = call.invoke()
         if(response.isSuccessful){
             response.body()?.let {
-                return Result.Success(it,0)
+                return Result.Success(it)
             }
 
         }
 
-        return Result.Error(ApiException(msg = "Error Occurred during getting safe Api result, Custom ERROR - ${response.message()}"))
+        return Result.Failure(ApiException(msg = "Error Occurred during getting safe Api result, Custom ERROR - ${response.message()}"))
     }
 
 
