@@ -1,7 +1,7 @@
 package com.zlcdgroup.mrsei.presenter.impl
 
 import com.akingyin.base.BasePresenter
-import com.akingyin.base.call.ApiCallBack
+
 import com.akingyin.base.ext.spGetString
 import com.akingyin.base.ext.spSetString
 import com.akingyin.base.taskmanager.ApiTaskCallBack
@@ -10,7 +10,7 @@ import com.akingyin.base.taskmanager.enums.TaskManagerStatusEnum
 import com.akingyin.base.taskmanager.enums.ThreadTypeEnum
 import com.zlcdgroup.mrsei.data.entity.PersonEntity
 import com.zlcdgroup.mrsei.data.source.PersonRepository
-import com.zlcdgroup.mrsei.data.source.remote.model.LoginResultModel
+
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.task.TestTask
 import javax.inject.Inject
@@ -39,8 +39,11 @@ class UserLoginPersenterImpl @Inject constructor(var personRepository: PersonRep
              override fun onComplete() {
              }
 
-             override fun onError(message: String?, statusEnum: TaskManagerStatusEnum?) {
+             override fun onError(message: String, statusEnum: TaskManagerStatusEnum) {
+
              }
+
+
          }
        // taskManager.executeTask()
         // mRootView?.setAppTheme(getTheme())

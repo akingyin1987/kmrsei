@@ -98,6 +98,9 @@ class CameraParameBuild() : Parcelable {
     /** 提示信息 */
     var  tipContent =""
 
+    /** 其它Json信息 */
+    var  dataJson = ""
+
     constructor(parcel: Parcel) : this() {
         flashModel = parcel.readInt()
         shutterSound = parcel.readInt()
@@ -121,6 +124,7 @@ class CameraParameBuild() : Parcelable {
         locType = parcel.readString()?:""
         imageTags = parcel.readString()?:""
         tipContent = parcel.readString()?:""
+        dataJson = parcel.readString()?:""
     }
 
     class Builder {
@@ -179,6 +183,7 @@ class CameraParameBuild() : Parcelable {
         parcel.writeString(locType)
         parcel.writeString(imageTags)
         parcel.writeString(tipContent)
+        parcel.writeString(dataJson)
     }
 
     override fun describeContents(): Int {

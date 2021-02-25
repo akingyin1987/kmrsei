@@ -82,9 +82,7 @@ open class CameraxFragment : SimpleFragment() {
     lateinit var cameraxManager: CameraxManager
     lateinit var sharedPreferencesName: String
     lateinit var locationPermissionsRequester: PermissionsRequester
-    private val locationEngine: LocationEngine? by lazy {
-        locationEngineManager?.createEngine()
-    }
+    private var locationEngine: LocationEngine?=null
 
 
     private var cameraParameBuild: CameraParameBuild by Delegates.notNull()
@@ -107,9 +105,14 @@ open class CameraxFragment : SimpleFragment() {
 
         bindView = FragmentCameraxBinding.inflate(inflater, container, false)
         locationIsEnable.observe(viewLifecycleOwner, {
-
+            locationEngine = if(it){
+                locationEngineManager?.createEngine()
+            }else{
+                null
+            }
             bindView.tvLocation.visibility = if (it) {
                 View.VISIBLE
+
             } else {
                 View.GONE
             }
@@ -135,6 +138,7 @@ open class CameraxFragment : SimpleFragment() {
             args.fileDir + File.separator + args.fileName
         }
         cameraParameBuild.saveFileDir = args.fileDir
+        cameraParameBuild.supportMultiplePhoto = args.cameraParame.supportMultiplePhoto
         FileUtils.makeDirs(cameraParameBuild.saveFileDir)
 
         initCameraParame(cameraParameBuild)

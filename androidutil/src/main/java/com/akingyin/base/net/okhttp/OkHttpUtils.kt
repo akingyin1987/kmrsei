@@ -17,6 +17,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by zlcd on 2015/12/29.
@@ -25,6 +26,15 @@ object OkHttpUtils {
 
     private val MEDIA_TYPE_JPG: MediaType = "application/octet-stream".toMediaType()
     private val MEDIA_TYPE_TEXT: MediaType = "text/plain".toMediaType()
+
+
+     val mOkHttpClient by lazy {
+         OkHttpClient().newBuilder().apply {
+             connectTimeout(40, TimeUnit.SECONDS)
+             readTimeout(40, TimeUnit.SECONDS)
+             writeTimeout(40, TimeUnit.SECONDS)
+         }.build()
+     }
 
     /**
      * 创建文件类

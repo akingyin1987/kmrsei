@@ -21,41 +21,45 @@ import android.graphics.Point
 import android.hardware.Camera
 import android.hardware.Camera.CAMERA_ERROR_SERVER_DIED
 import android.hardware.Camera.CAMERA_ERROR_UNKNOWN
-import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.akingyin.base.SimpleFragment
 import com.akingyin.base.ext.*
 import com.akingyin.base.mvvm.SingleLiveEvent
 import com.akingyin.base.utils.PreferencesUtil
 import com.akingyin.media.camera.*
-import com.akingyin.media.camera.widget.CaptureButton
+
 import com.akingyin.media.MediaConfig
 import com.akingyin.media.R
 import com.akingyin.media.camera.CameraManager.Companion.KEYDOWN_VOLUME_KEY_ACTION
 import com.akingyin.media.camera.CameraManager.Companion.KEY_CAMERA_FLASH
 import com.akingyin.media.camera.CameraManager.Companion.KEY_CAMERA_GRID
 import com.akingyin.media.camera.CameraManager.Companion.KEY_CAMERA_SHUTTER_SOUND
+import com.akingyin.media.camerax.CameraxManager
+import com.akingyin.media.camerax.ui.CameraxFragment
 import com.akingyin.media.databinding.FragmentCameraBinding
 import com.akingyin.media.engine.LocationEngine
 import com.akingyin.media.engine.LocationManagerEngine
 import com.google.android.material.snackbar.Snackbar
-
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.io.File
 import java.util.concurrent.CancellationException
 import kotlin.properties.Delegates
 
@@ -68,11 +72,11 @@ import kotlin.properties.Delegates
 
 @Suppress("DEPRECATION", "ClickableViewAccessibility")
 open class BaseCameraFragment : SimpleFragment() {
-
+    private val args: BaseCameraFragmentArgs by navArgs()
     lateinit var bindView: FragmentCameraBinding
     lateinit var sharedPreferencesName: String
     lateinit var cameraSensorController: CameraSensorController
-      var locationEngine :LocationEngine?=null
+    var locationEngine :LocationEngine?=null
     var cameraParameBuild :CameraParameBuild  by Delegates.notNull()
 
     var cameraLiveData: SingleLiveEvent<CameraData> = SingleLiveEvent()
@@ -169,6 +173,19 @@ open class BaseCameraFragment : SimpleFragment() {
 
     override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View? {
         bindView = FragmentCameraBinding.inflate(inflater, container, false)
+        locationIsEnable.observe(viewLifecycleOwner, {
+            locationEngine = if(it){
+                locationEngineManager?.createEngine()
+            }else{
+                null
+            }
+            bindView.tvLocation.visibility = if (it) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
+        })
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,object :OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
                 zoomBarJob?.cancel()
@@ -242,11 +259,11 @@ open class BaseCameraFragment : SimpleFragment() {
                 if(cameraManager.cameraUiAngle != cameraRotation){
                     cameraManager.cameraUiAngle = cameraRotation
                     CameraManager.startCameraViewRoteAnimator((uiRotation).toFloat(),bindView.buttonShutter,bindView.buttonSetting,bindView.buttonFlash,
-                            bindView.buttonGrid,bindView.btnConfig,bindView.btnCancel,bindView.textCountDown)
+                            bindView.buttonGrid,bindView.textCountDown)
                 }
             }
         }
-
+        updateCameraUi()
         bindView.tvTip.text = cameraParameBuild.tipContent
         bindView.rulerView.valueFrom = cameraManager.cameraMinZoom.toFloat()
         bindView.rulerView.valueTo = cameraManager.cameraMaxZoom.toFloat()
@@ -259,28 +276,28 @@ open class BaseCameraFragment : SimpleFragment() {
         bindView.tvLocation.click {
             getLocationInfo()
         }
-        bindView.fabTakePicture.captureLisenter = object : CaptureButton.onClickTakePicturesListener() {
-            override fun takePictures() {
-                bindView.fabTakePicture.isEnabled = false
-                captureImage()
-            }
-        }
-        bindView.btnCancel.click {
-            countDownJob?.cancel()
-            CameraManager.recoveryCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel,bindView.rlTurn)
-            bindView.fabTakePicture.resetRecordAnim()
-            bindView.fabTakePicture.isEnabled = true
-            bindView.viewFinder.onStartCameraView()
-        }
-        bindView.ivTurnleft.click {
-            rotateTakePhotoBitmap(270)
-        }
-        bindView.ivTurnright.click {
-            rotateTakePhotoBitmap(90)
-        }
-        bindView.ivTurncenter.click {
-            rotateTakePhotoBitmap(180)
-        }
+//        bindView.fabTakePicture.captureLisenter = object : CaptureButton.onClickTakePicturesListener() {
+//            override fun takePictures() {
+//                bindView.fabTakePicture.isEnabled = false
+//                captureImage()
+//            }
+//        }
+//        bindView.btnCancel.click {
+//            countDownJob?.cancel()
+//            CameraManager.recoveryCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel,bindView.rlTurn)
+//            bindView.fabTakePicture.resetRecordAnim()
+//            bindView.fabTakePicture.isEnabled = true
+//            bindView.viewFinder.onStartCameraView()
+//        }
+//        bindView.ivTurnleft.click {
+//            rotateTakePhotoBitmap(270)
+//        }
+//        bindView.ivTurnright.click {
+//            rotateTakePhotoBitmap(90)
+//        }
+//        bindView.ivTurncenter.click {
+//            rotateTakePhotoBitmap(180)
+//        }
         bindView.viewFinder.errorCallback = Camera.ErrorCallback { error, _ ->
             when (error) {
                 CAMERA_ERROR_SERVER_DIED -> {
@@ -291,14 +308,14 @@ open class BaseCameraFragment : SimpleFragment() {
                 }
             }
         }
-        bindView.btnConfig.click {
-
-            countDownJob?.cancel()
-            cameraLiveData.postValue(CameraData().apply {
-                mediaType = MediaConfig.TYPE_IMAGE
-                localPath = bindView.viewFinder.cameraParameBuild.localPath
-            })
-        }
+//        bindView.btnConfig.click {
+//
+//            countDownJob?.cancel()
+//            cameraLiveData.postValue(CameraData().apply {
+//                mediaType = MediaConfig.TYPE_IMAGE
+//                localPath = bindView.viewFinder.cameraParameBuild.localPath
+//            })
+//        }
         bindView.buttonGrid.click {
             toggleGrid()
         }
@@ -331,6 +348,36 @@ open class BaseCameraFragment : SimpleFragment() {
             }
         }
 
+
+    }
+
+    var thumbnail: ImageButton? = null
+    var cancelButton: ImageButton? = null
+    private fun updateCameraUi() {
+        bindView.root.findViewById<ConstraintLayout>(R.id.camera_ui_container)?.let {
+            bindView.root.removeView(it)
+        }
+        // Inflate a new view containing all UI for controlling the camera
+        val controls = View.inflate(requireContext(), R.layout.camera_ui_container, bindView.root)
+        controls.findViewById<ImageButton>(R.id.camera_capture_button).click {
+            captureImage()
+        }
+        thumbnail = controls.findViewById(R.id.photo_view_button)
+        CameraxManager.getTakePhotoPath(requireContext())
+        controls.findViewById<ImageButton>(R.id.photo_view_button).click {
+            CameraxManager.getTakePhotoPath(requireContext(), true)
+        }
+        controls?.findViewById<ImageButton>(R.id.camera_switch_button)?.click {
+            CameraxManager.sendTakePhtotCancel(requireContext())
+        }
+        cancelButton = controls?.findViewById(R.id.camera_switch_button)
+        if (cameraParameBuild.supportMultiplePhoto) {
+            cancelButton?.visiable()
+            thumbnail?.visiable()
+        } else {
+            cancelButton?.gone()
+            thumbnail?.gone()
+        }
 
     }
 
@@ -371,7 +418,7 @@ open class BaseCameraFragment : SimpleFragment() {
         bindView.viewFinder.takePhoto { result, error ->
             if (result) {
 
-                CameraManager.startTypeCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel,bindView.rlTurn)
+               // CameraManager.startTypeCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel,bindView.rlTurn)
                 if(cameraParameBuild.supportAutoSavePhoto){
                     if(cameraParameBuild.autoSavePhotoDelayTime>0){
                         countDownStart(cameraParameBuild.autoSavePhotoDelayTime,"拍照自动保存倒计时"){
@@ -390,9 +437,9 @@ open class BaseCameraFragment : SimpleFragment() {
                 }
             } else {
                 countDownJob?.cancel()
-                CameraManager.recoveryCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel,bindView.rlTurn)
-                bindView.fabTakePicture.resetRecordAnim()
-                bindView.fabTakePicture.isEnabled = true
+//                CameraManager.recoveryCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel,bindView.rlTurn)
+//                bindView.fabTakePicture.resetRecordAnim()
+//                bindView.fabTakePicture.isEnabled = true
                 bindView.viewFinder.onStartCameraView()
                 showError(error)
             }
@@ -482,23 +529,23 @@ open class BaseCameraFragment : SimpleFragment() {
         countDownJob?.cancel()
     }
 
-    private fun  rotateTakePhotoBitmap(degree:Int){
-        File(cameraParameBuild.localPath).exists().yes {
-            lifecycleScope.launch(Main){
-                withIO {
-                    CameraBitmapUtil.rotateBitmap(degree,cameraParameBuild.localPath, appServerTime)
-                }.yes {
-                    showSucces("图片旋转成功")
-                    bindView.viewFinder.camera_img.setImageURI(null)
-                    bindView.viewFinder.camera_img.setImageURI(Uri.parse(cameraParameBuild.localPath))
-                }.no {
-                    showError("图片旋转失败")
-                }
-            }
-        }.no {
-            showError("文件不存在，无法旋转")
-        }
-    }
+//    private fun  rotateTakePhotoBitmap(degree:Int){
+//        File(cameraParameBuild.localPath).exists().yes {
+//            lifecycleScope.launch(Main){
+//                withIO {
+//                    CameraBitmapUtil.rotateBitmap(degree,cameraParameBuild.localPath, appServerTime)
+//                }.yes {
+//                    showSucces("图片旋转成功")
+//                    bindView.viewFinder.camera_img.setImageURI(null)
+//                    bindView.viewFinder.camera_img.setImageURI(Uri.parse(cameraParameBuild.localPath))
+//                }.no {
+//                    showError("图片旋转失败")
+//                }
+//            }
+//        }.no {
+//            showError("文件不存在，无法旋转")
+//        }
+//    }
 
     /** 音量键*/
     private  fun  keyVolumeDown(){
@@ -543,9 +590,15 @@ open class BaseCameraFragment : SimpleFragment() {
     }
 
     companion object {
-         const val REQUEST_CODE_PERMISSIONS = 10
-
-
+        const val REQUEST_CODE_PERMISSIONS = 10
+        const val ANIMATION_FAST_MILLIS = 50L
+        const val ANIMATION_SLOW_MILLIS = 100L
+        private var locationEngineManager: LocationManagerEngine? = null
+        private var locationIsEnable: MutableLiveData<Boolean> = MutableLiveData(false)
+        fun setCameraXLocationEngine(locationManagerEngine: LocationManagerEngine?) {
+            locationEngineManager = locationManagerEngine
+            locationIsEnable.postValue(locationManagerEngine != null)
+        }
         fun newInstance(cameraParameBuild: CameraParameBuild, sharedPreferencesName: String = "app_setting",locationManagerEngine: LocationManagerEngine?=null): BaseCameraFragment {
             return BaseCameraFragment().apply {
                 arguments = Bundle().apply {
@@ -570,7 +623,8 @@ open class BaseCameraFragment : SimpleFragment() {
         }else{
             bindView.viewFinder.unBindSurfaceView()
             bindCameraInit = false
-            ActivityCompat.requestPermissions(requireActivity(), cameraPermissions, REQUEST_CODE_PERMISSIONS)
+            findNavController().navigate(BaseCameraFragmentDirections.actionCameraToPermissions( args.cameraData, args.sharedPreferencesName))
+
         }
         cameraSensorController.onResume()
     }

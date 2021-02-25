@@ -820,7 +820,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                 this.supportManualFocus = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_MANUAL_AUTO_FOCUS,false)
                 this.supportLocation = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_LOCATION,false)
                 this.volumeKeyControl = PreferencesUtil.get(sharedPreferencesName, KEY_CAMERA_VOLUME_KEY_CONTROL,"0").toInt()
-                this.supportMultiplePhoto = PreferencesUtil.get(sharedPreferencesName,KEY_SUPPORT_MULTIPLE_PHOTO,false)
+               // this.supportMultiplePhoto = PreferencesUtil.get(sharedPreferencesName,KEY_SUPPORT_MULTIPLE_PHOTO,false)
             }
         }
 

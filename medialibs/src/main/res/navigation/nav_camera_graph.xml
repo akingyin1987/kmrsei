@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2021. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  ~ akingyin@163.com
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:id="@+id/nav_camera_graph">
+
+  <fragment
+      android:id="@+id/permissions_fragment"
+      android:name="com.akingyin.media.camera.ui.PermissionsCameraFragment"
+      android:label="拍照权限"
+      tools:layout="@layout/fragment_no_camera_permissions">
+    <action
+        android:id="@+id/action_permissions_to_camera"
+        app:destination="@id/camera_fragment"
+        app:popUpTo="@id/permissions_fragment"
+        app:popUpToInclusive="true" />
+
+    <argument
+        android:name="cameraData"
+        app:argType="com.akingyin.media.camera.CameraData" />
+    <argument
+        android:name="sharedPreferencesName"
+        app:argType="string" />
+
+  </fragment>
+  <fragment
+      android:id="@+id/camera_fragment"
+      android:name="com.akingyin.media.camera.ui.BaseCameraFragment"
+      android:label="拍照"
+      tools:layout="@layout/fragment_camerax">
+    <action
+        android:id="@+id/action_camera_to_permissions"
+        app:destination="@id/permissions_fragment" />
+    <argument
+        android:name="sharedPreferencesName"
+        app:argType="string" />
+    <argument
+        android:name="cameraData"
+        app:argType="com.akingyin.media.camera.CameraData" />
+  </fragment>
+
+
+  <fragment
+      android:id="@+id/config_photo_camera"
+      android:name="com.akingyin.media.camera.ui.CameraConfigPhotoFragment"
+      android:label="拍照图片确认"
+      tools:layout="@layout/fragment_config_photo">
+    <argument android:name="filePath"
+        app:argType="string"
+        app:nullable="false"/>
+    <argument android:name="sharedPreferencesName"
+        app:argType="string"
+        app:nullable="false"/>
+    <argument
+        android:name="cameraData"
+        app:argType="com.akingyin.media.camera.CameraData" />
+  </fragment>
+</navigation>

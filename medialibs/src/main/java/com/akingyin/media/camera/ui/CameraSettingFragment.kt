@@ -41,7 +41,7 @@ class CameraSettingFragment : PreferenceFragmentCompat() {
         }
         setPreferencesFromResource(R.xml.camera_preferences_fragment, rootKey)
         findPreference<SwitchPreferenceCompat>("key_support_multiple_photo")?.let {
-            it.isVisible = false
+            it.isVisible = true
         }
         findPreference<Preference>("camerax_resolution")?.let {
             it.isVisible = false

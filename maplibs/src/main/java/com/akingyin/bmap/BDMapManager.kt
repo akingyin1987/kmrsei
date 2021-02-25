@@ -20,6 +20,7 @@ import com.baidu.mapapi.search.core.PoiInfo
 import com.baidu.mapapi.search.core.SearchResult
 import com.baidu.mapapi.search.geocode.*
 import com.baidu.mapapi.search.poi.*
+import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
@@ -536,7 +537,7 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: C
             println("url--->$url")
             val  request = Request.Builder().url(url).build()
             try {
-                val  response = OkHttpUtils.instance.newCall(request).execute()
+                val  response = OkHttpClient.Builder().build().newCall(request).execute()
                 if(response.isSuccessful){
                     val result  = response.body?.string()?:"{}"
                     return JSON.parseObject(result).let {
