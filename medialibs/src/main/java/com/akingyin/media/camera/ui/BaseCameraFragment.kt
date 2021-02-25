@@ -17,10 +17,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.graphics.Point
+import android.graphics.drawable.ColorDrawable
 import android.hardware.Camera
 import android.hardware.Camera.CAMERA_ERROR_SERVER_DIED
 import android.hardware.Camera.CAMERA_ERROR_UNKNOWN
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -33,6 +37,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.setPadding
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -42,8 +47,8 @@ import com.akingyin.base.SimpleFragment
 import com.akingyin.base.ext.*
 import com.akingyin.base.mvvm.SingleLiveEvent
 import com.akingyin.base.utils.PreferencesUtil
+import com.akingyin.base.utils.RandomUtil
 import com.akingyin.media.camera.*
-
 import com.akingyin.media.MediaConfig
 import com.akingyin.media.R
 import com.akingyin.media.camera.CameraManager.Companion.KEYDOWN_VOLUME_KEY_ACTION
@@ -51,15 +56,17 @@ import com.akingyin.media.camera.CameraManager.Companion.KEY_CAMERA_FLASH
 import com.akingyin.media.camera.CameraManager.Companion.KEY_CAMERA_GRID
 import com.akingyin.media.camera.CameraManager.Companion.KEY_CAMERA_SHUTTER_SOUND
 import com.akingyin.media.camerax.CameraxManager
-import com.akingyin.media.camerax.ui.CameraxFragment
 import com.akingyin.media.databinding.FragmentCameraBinding
 import com.akingyin.media.engine.LocationEngine
 import com.akingyin.media.engine.LocationManagerEngine
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.concurrent.CancellationException
 import kotlin.properties.Delegates
 
@@ -415,26 +422,29 @@ open class BaseCameraFragment : SimpleFragment() {
     private  fun  captureImage(){
 
         cameraParameBuild.cameraAngle =cameraManager.cameraAngle
+        if (cameraParameBuild.supportMultiplePhoto) {
+            cameraParameBuild.localPath = cameraParameBuild.saveFileDir + File.separator + RandomUtil.randomUUID + ".jpg"
+        }
         bindView.viewFinder.takePhoto { result, error ->
             if (result) {
-
                // CameraManager.startTypeCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel,bindView.rlTurn)
                 if(cameraParameBuild.supportAutoSavePhoto){
-                    if(cameraParameBuild.autoSavePhotoDelayTime>0){
-                        countDownStart(cameraParameBuild.autoSavePhotoDelayTime,"拍照自动保存倒计时"){
-                            cameraLiveData.value = CameraData().apply {
+                    if (cameraParameBuild.autoSavePhotoDelayTime == 0) {
+                        setGalleryThumbnail(Uri.parse(cameraParameBuild.localPath))
+                        cameraLiveData.value = CameraData().apply {
+                            if (cameraParameBuild.supportMultiplePhoto) {
+                                supportMultiplePhoto = true
+                                cameraPhotoDatas.add(cameraParameBuild.localPath)
+                            } else {
+                                supportMultiplePhoto = false
                                 mediaType = MediaConfig.TYPE_IMAGE
                                 localPath = cameraParameBuild.localPath
                             }
                         }
-                    }else{
-                        cameraLiveData.value = CameraData().apply {
-                            mediaType = MediaConfig.TYPE_IMAGE
-                            localPath = cameraParameBuild.localPath
-                        }
-
+                        return@takePhoto
                     }
                 }
+                findNavController().navigate(BaseCameraFragmentDirections.actionCameraToPermissions(args.cameraData,args.sharedPreferencesName))
             } else {
                 countDownJob?.cancel()
 //                CameraManager.recoveryCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel,bindView.rlTurn)
@@ -444,7 +454,33 @@ open class BaseCameraFragment : SimpleFragment() {
                 showError(error)
             }
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            view?.postDelayed({
+                view?.foreground = ColorDrawable(Color.WHITE)
+                view?.postDelayed({
+                    view?.foreground = null
+                }, ANIMATION_FAST_MILLIS)
+            }, ANIMATION_SLOW_MILLIS)
+        }
     }
+
+    private fun setGalleryThumbnail(uri: Uri?) {
+        if (cameraParameBuild.supportMultiplePhoto) {
+            thumbnail?.post {
+                thumbnail?.let {
+                    it.setPadding(resources.getDimension(R.dimen.stroke_small).toInt())
+                    Glide.with(it)
+                            .load(uri)
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(it)
+                }
+
+            }
+        }
+
+    }
+
 
     private fun closeFlashAndSelect(@CameraManager.CameraFlashModel flash: Int) = bindView.layoutFlashOptions.circularClose(bindView.buttonFlash) {
         flashMode = flash
@@ -506,7 +542,7 @@ open class BaseCameraFragment : SimpleFragment() {
     /**
      * 开始倒计时
      */
-    private fun  countDownStart(count:Int,tip:String,call:()->Unit){
+    private fun  countDownStart(count:Int,tip:String="自动拍照",call:()->Unit){
         bindView.textCountDownTip.text = tip
        countDownJob = lifecycleScope.launch(Main){
             for (i in count downTo 1){
