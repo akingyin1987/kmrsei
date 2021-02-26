@@ -123,6 +123,7 @@ class TestFunActivity : SimpleActivity() {
                             add(FunModel("stepperView",Intent(this@TestFunActivity,SteperActivity::class.java)))
                             add(FunModel("droPdOWNmENU",Intent(this@TestFunActivity,DropDownMenuActivity::class.java)))
                             add(FunModel("viewpager2",Intent(this@TestFunActivity,Viewpager2Activity::class.java)))
+                            add(FunModel("测试横竖屏对话框",Intent(this@TestFunActivity,HorizontalVerticalTestDialogActivity::class.java)))
                         }
                     }
             )
