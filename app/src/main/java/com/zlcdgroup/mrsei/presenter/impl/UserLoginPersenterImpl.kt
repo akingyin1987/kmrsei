@@ -1,16 +1,18 @@
 package com.zlcdgroup.mrsei.presenter.impl
 
-import com.akingyin.base.BasePresenter
 
+import android.hardware.biometrics.BiometricPrompt
+import android.os.CancellationSignal
+import com.akingyin.base.BasePresenter
 import com.akingyin.base.ext.spGetString
 import com.akingyin.base.ext.spSetString
 import com.akingyin.base.taskmanager.ApiTaskCallBack
 import com.akingyin.base.taskmanager.MultiTaskManager
 import com.akingyin.base.taskmanager.enums.TaskManagerStatusEnum
 import com.akingyin.base.taskmanager.enums.ThreadTypeEnum
+import com.akingyin.base.utils.MainExecutor
 import com.zlcdgroup.mrsei.data.entity.PersonEntity
 import com.zlcdgroup.mrsei.data.source.PersonRepository
-
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.task.TestTask
 import javax.inject.Inject
@@ -111,5 +113,36 @@ class UserLoginPersenterImpl @Inject constructor(var personRepository: PersonRep
 
     override fun cancelSubscribe() {
         personRepository.cancelSubscribe()
+    }
+
+    override fun fingerprintLogin(callBack: (result: Boolean, error: String?) -> Unit) {
+        val cancelSignal = CancellationSignal().apply {
+            setOnCancelListener {
+                println("取消验证")
+            }
+        }
+        val authCallback = object : BiometricPrompt.AuthenticationCallback(){
+            override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
+                super.onAuthenticationError(errorCode, errString)
+                println("errorCode=$errorCode,errString=$errString")
+                callBack.invoke(false,errString?.toString())
+            }
+
+            override fun onAuthenticationHelp(helpCode: Int, helpString: CharSequence?) {
+                super.onAuthenticationHelp(helpCode, helpString)
+                callBack.invoke(false,helpString?.toString())
+            }
+
+            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult?) {
+                super.onAuthenticationSucceeded(result)
+                callBack.invoke(true,"")
+            }
+
+            override fun onAuthenticationFailed() {
+                super.onAuthenticationFailed()
+                callBack.invoke(false,"")
+            }
+        }
+        mRootView?.showFingerprintDialog()?.authenticate(cancelSignal,MainExecutor(),authCallback)
     }
 }

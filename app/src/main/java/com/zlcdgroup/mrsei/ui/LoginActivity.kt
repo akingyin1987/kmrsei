@@ -3,7 +3,11 @@ package com.zlcdgroup.mrsei.ui
 import android.Manifest
 import android.app.Activity
 import android.content.ClipData
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import android.hardware.biometrics.BiometricManager
+import android.hardware.biometrics.BiometricPrompt
 import android.os.Bundle
 import android.os.Environment
 import android.util.Base64
@@ -42,7 +46,6 @@ import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.delay
 import permissions.dispatcher.ktx.constructPermissionsRequest
-import permissions.dispatcher.ktx.constructWriteSettingsPermissionRequest
 import java.io.File
 import java.nio.charset.Charset
 import java.util.*
@@ -167,6 +170,17 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
                    }
             })
         }
+
+        fingerprint.clickDelay {
+            userLoginPersenterImpl.fingerprintLogin { result, error ->
+                println("result=$result,error=$error")
+                if(!result){
+                    showError(error)
+                }else{
+                    goToMainActivity()
+                }
+            }
+        }
     }
 
     var  d1 :Disposable? = null
@@ -271,5 +285,14 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
             val  dir = FileUtils.getFolderName(imagePath)
              startActivity<TuyaTestActivity>(bundle = arrayOf(BaseTuYaActivity.KEY_PIC_NAME to name,BaseTuYaActivity.KEY_PIC_DIRECTORYPATH to dir))
         }
+    }
+
+    override fun showFingerprintDialog(): BiometricPrompt {
+       return BiometricPrompt.Builder(this).setTitle("指纹识别")
+               .setDescription("这是描述").setNegativeButton("取消",mainExecutor, { _, _ -> }).build()
+    }
+
+    override fun getContext(): Context {
+        return this
     }
 }

@@ -195,10 +195,19 @@
           android:layout_alignParentLeft="true"
           android:layout_marginLeft="20dp"
           android:text="注册新用户"
-          android:visibility="invisible"
+
           android:textColor="@color/md_blue_900"
           android:textSize="14dp" />
+      <TextView
+          android:id="@+id/fingerprint"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerHorizontal="true"
 
+          android:text="指纹登录"
+
+          android:textColor="@color/md_blue_900"
+          android:textSize="14dp" />
       <TextView
           android:id="@+id/forget_password"
           android:layout_width="wrap_content"
@@ -207,7 +216,7 @@
           android:layout_marginRight="20dp"
           android:layout_alignParentRight="true"
           android:text="@string/login_forget_pwd"
-          android:visibility="invisible"
+
           android:textColor="@color/md_red_900"
           android:textSize="14dp" />
     </RelativeLayout>

@@ -1,5 +1,7 @@
 package com.zlcdgroup.mrsei.presenter
 
+import android.content.Context
+import android.hardware.biometrics.BiometricPrompt
 import com.akingyin.base.IBaseView
 import com.akingyin.base.IPresenter
 import com.zlcdgroup.mrsei.data.entity.PersonEntity
@@ -19,6 +21,10 @@ interface UserLoginContract {
         fun   goToMainActivity()
 
         fun   setAppTheme(theme:String)
+
+        fun   showFingerprintDialog(): BiometricPrompt
+
+        fun   getContext():Context
     }
 
 
@@ -36,7 +42,7 @@ interface UserLoginContract {
 
         fun  saveAppTheme(theme:String)
 
-
+        fun  fingerprintLogin(callBack:(result:Boolean,error:String?)->Unit)
 
 
         fun cancelSubscribe()

@@ -13,7 +13,6 @@ package com.zlcdgroup.mrsei.ui
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.Gravity
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialdialogs.MaterialDialog
@@ -59,6 +58,7 @@ class HorizontalVerticalTestDialogActivity : AppCompatActivity() {
 
         btn_dialog.click {
 
+           // BottomSheet
           val dialog =  MaterialDialog(this).show {
 
                 customView(R.layout.dialog_test_hori_vertical, scrollable = true)
