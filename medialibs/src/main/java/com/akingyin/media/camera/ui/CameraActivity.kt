@@ -23,17 +23,14 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.NavHostFragment
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.config.AppFileConfig
-import com.akingyin.base.utils.RandomUtil
 import com.akingyin.media.R
 import com.akingyin.media.camera.CameraData
 import com.akingyin.media.camera.CameraManager
-import com.akingyin.media.camera.CameraParameBuild
 import com.akingyin.media.camerax.CameraxManager
 import com.akingyin.media.databinding.ActivityCameraNavBinding
-
 import com.akingyin.media.engine.LocationManagerEngine
 import com.akingyin.media.ui.fragment.MedialFileInfoFragmentDialog
-import java.io.File
+
 
 
 const val IMMERSIVE_FLAG_TIMEOUT = 500L
@@ -51,7 +48,7 @@ const val FLAGS_FULLSCREEN =
  * @ Date 2021/2/25 16:27
  * @version V1.0
  */
-class CameraActivity :SimpleActivity(){
+open class CameraActivity :SimpleActivity(){
     private  var  cameraData = CameraData()
 
 
@@ -153,22 +150,24 @@ class CameraActivity :SimpleActivity(){
         cameraxNavBinding = ActivityCameraNavBinding.inflate(layoutInflater)
         setContentView(cameraxNavBinding.root)
         photoDir = intent.getStringExtra(CameraxManager.KEY_CAMERA_PHOTO_DIR)?: AppFileConfig.APP_FILE_ROOT
-        val  photoName = intent.getStringExtra(CameraxManager.KEY_CAMERA_PHOTO_SINGLE_NAME)?: RandomUtil.randomUUID+".jpg"
-        val cameraParame = intent.getParcelableExtra("data")?: CameraParameBuild()
-        photoDir = cameraParame.saveFileDir
-        File(photoDir).mkdirs()
+
+        val cameraData = intent.getParcelableExtra("data")?: CameraData()
 
         val sharedPreferencesName = getSharedPreferencesName()
 
         cameraxNavBinding.fragmentContainer.post {
             supportFragmentManager.findFragmentById(R.id.fragment_container)?.let {
                 val navHostFragment = it  as NavHostFragment
-               // navHostFragment.navController.setGraph(R.navigation.nav_camerax_graph,PermissionsCameraFragmentArgs.Builder())
+                 navHostFragment.navController.setGraph(R.navigation.nav_camera_graph,PermissionsCameraFragmentArgs.Builder(cameraData,sharedPreferencesName).build().toBundle())
             }
             BaseCameraFragment.setCameraXLocationEngine(getLocationEngine())
         }
 
 
+    }
+
+    override fun close() {
+        super.close()
     }
 
     open  fun  getLocationEngine(): LocationManagerEngine? = null
@@ -215,6 +214,7 @@ class CameraActivity :SimpleActivity(){
 
     override fun onDestroy() {
         super.onDestroy()
+
         LocalBroadcastManager.getInstance(this).unregisterReceiver(cameraInfoBroadcastReceiver)
     }
 }

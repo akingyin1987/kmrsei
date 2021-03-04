@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.ble.ui.SearchDeviceListActivity
 import com.akingyin.base.config.AppFileConfig
+import com.akingyin.media.camera.CameraData
+import com.akingyin.media.camera.ui.CameraActivity
 import com.akingyin.media.camerax.ui.CameraxActivity
 import com.akingyin.media.model.*
 import com.akingyin.media.ui.MediaSelectDownloadViewPager2Activity
@@ -116,7 +118,13 @@ class TestFunActivity : SimpleActivity() {
 
                             }))
 
-                            add(FunModel("camera 测试",Intent(this@TestFunActivity,CameraTestActivity::class.java)))
+                            add(FunModel("camera 测试",Intent(this@TestFunActivity,CameraTestActivity::class.java).apply {
+                                putExtra("data",CameraData().apply {
+                                    supportMultiplePhoto = true
+                                    dirRootPath = AppFileConfig.APP_FILE_ROOT
+
+                                })
+                            }))
                             add(FunModel("Ble测试",Intent(this@TestFunActivity,SearchDeviceListActivity::class.java)))
                             add(FunModel("camerax 测试", Intent(this@TestFunActivity,CameraxActivity::class.java)))
                             add(FunModel("录音测试",Intent(this@TestFunActivity,TestRecordAudioActivity::class.java)))

@@ -161,6 +161,8 @@
         android:launchMode="singleTop"/>
     <activity android:name="com.akingyin.media.camerax.ui.CameraxActivity"
           android:screenOrientation="portrait"/>
+    <activity android:name="com.akingyin.media.camera.ui.CameraActivity"
+        android:screenOrientation="portrait"/>
     <activity android:name=".ui.TestRecordAudioActivity"/>
     <activity android:name=".ui.DropDownMenuActivity"/>
     <activity android:name=".ui.Viewpager2Activity"/>

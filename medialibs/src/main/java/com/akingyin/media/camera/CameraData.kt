@@ -29,6 +29,9 @@ class CameraData() : Parcelable {
 
     var  originalPath = ""
 
+    /** 多文件目录 */
+    var  dirRootPath = ""
+
     var  supportMultiplePhoto = false
 
     /** 多张照片 */
@@ -43,6 +46,7 @@ class CameraData() : Parcelable {
         mediaType = parcel.readInt()
         localPath = parcel.readString()?:""
         originalPath = parcel.readString()?:""
+        dirRootPath = parcel.readString()?:""
         supportMultiplePhoto = parcel.readByte() != 0.toByte()
         result = parcel.readByte() != 0.toByte()
         dataJson = parcel.readString()?:""
@@ -52,6 +56,7 @@ class CameraData() : Parcelable {
         parcel.writeInt(mediaType)
         parcel.writeString(localPath)
         parcel.writeString(originalPath)
+        parcel.writeString(dirRootPath)
         parcel.writeByte(if (supportMultiplePhoto) 1 else 0)
         parcel.writeByte(if (result) 1 else 0)
         parcel.writeString(dataJson)

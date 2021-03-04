@@ -12,30 +12,22 @@ package com.zlcdgroup.mrsei.ui
 import android.app.Activity
 import android.content.Intent
 
-import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.akingyin.base.SimpleActivity
-import com.akingyin.base.config.AppFileConfig
-import com.akingyin.base.ext.startActivity
+
 import com.akingyin.base.ext.startRegisterForActivityResult
-import com.akingyin.base.utils.FileUtils
-import com.akingyin.base.utils.RandomUtil
 import com.akingyin.bmap.BDLocationService
 import com.akingyin.bmap.BDMapManager
 import com.akingyin.bmap.PanoramaBaiduMapActivity
 import com.akingyin.bmap.SelectLocationBaiduActivity
 import com.akingyin.media.camera.CameraManager
-import com.akingyin.media.camera.CameraParameBuild
-import com.akingyin.media.camera.ui.BaseCameraFragment
-import com.akingyin.media.doodle.DoodleActivity
+import com.akingyin.media.camera.ui.CameraActivity
 import com.akingyin.media.engine.LocationEngine
+import com.akingyin.media.engine.LocationManagerEngine
 import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
-
-import com.zlcdgroup.mrsei.R
-import java.io.File
+import kotlin.properties.Delegates
 
 
 /**
@@ -45,35 +37,17 @@ import java.io.File
  * @version V1.0
  */
 @Suppress("DEPRECATION")
-class CameraTestActivity : SimpleActivity() {
+class CameraTestActivity : CameraActivity() {
 
-    override fun initInjection() {
-
-
+    override fun getLocationEngine(): LocationManagerEngine? {
+        return locationManagerEngine
     }
 
-    override fun getLayoutId() = R.layout.activity_camera
-
-    override fun initializationData(savedInstanceState: Bundle?) {
-
-    }
-
-    override fun onSaveInstanceData(outState: Bundle?) {
-
-    }
-
+    var  locationEngine:LocationEngine by Delegates.notNull()
+    var  locationManagerEngine:LocationManagerEngine?=null
     override fun initView() {
-        val fragment = BaseCameraFragment.newInstance(CameraParameBuild().apply {
-            saveFileDir = AppFileConfig.APP_FILE_ROOT
-            localPath = saveFileDir+ File.separator+RandomUtil.randomUUID+".jpg"
-        }, sharedPreferencesName = "app_camera_setting")
-        fragment.cameraLiveData.observe(this,  {
-            println("data->$it")
-            showSucces("拍照成功->$it")
-            startActivity<DoodleActivity>(bundle = arrayOf(DoodleActivity.FILE_DIR to FileUtils.getFolderName(it.localPath),DoodleActivity.FILE_OLDNAME to FileUtils.getFileName(it.localPath)))
-            finish()
-        })
-        fragment.locationEngine = object : LocationEngine {
+
+        locationEngine = object : LocationEngine {
 
             override fun getNewLocation(locType: String, locLat: Double?, locLng: Double?, call: (lat: Double, lng: Double, addr: String) -> Unit) {
                 if (null == locLat || locLat <= 0) {
@@ -114,8 +88,11 @@ class CameraTestActivity : SimpleActivity() {
 
             }
         }
-        supportFragmentManager.beginTransaction().add(R.id.container, fragment, "camera")
-                .commit()
+        locationManagerEngine = object :LocationManagerEngine{
+            override fun createEngine(): LocationEngine {
+               return locationEngine
+            }
+        }
 
     }
 

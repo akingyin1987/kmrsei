@@ -389,9 +389,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
             }, null, { data, _ ->
                 GlobalScope.launch(Main) {
                     try {
-
                         withIO {
-
                             CameraBitmapUtil.dataToJpgFile(data, FileUtils.getFolderName(cameraParameBuild.localPath),
                                     "base_" + FileUtils.getFileName(cameraParameBuild.localPath), 90)
                         }?.let {

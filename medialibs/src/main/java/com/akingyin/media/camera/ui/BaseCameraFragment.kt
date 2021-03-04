@@ -85,7 +85,7 @@ open class BaseCameraFragment : SimpleFragment() {
     lateinit var cameraSensorController: CameraSensorController
     var locationEngine :LocationEngine?=null
     var cameraParameBuild :CameraParameBuild  by Delegates.notNull()
-
+    var cameraData:CameraData by Delegates.notNull()
     var cameraLiveData: SingleLiveEvent<CameraData> = SingleLiveEvent()
 
     private  var  volumeKeyControlBroadcast :BroadcastReceiver = VolumeKeyControlBroadcast()
@@ -180,6 +180,7 @@ open class BaseCameraFragment : SimpleFragment() {
 
     override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View? {
         bindView = FragmentCameraBinding.inflate(inflater, container, false)
+        cameraData = args.cameraData
         locationIsEnable.observe(viewLifecycleOwner, {
             locationEngine = if(it){
                 locationEngineManager?.createEngine()
@@ -212,6 +213,11 @@ open class BaseCameraFragment : SimpleFragment() {
         cameraParameBuild = arguments?.getParcelable("data") ?: CameraParameBuild()
         initCameraParame(cameraParameBuild)
 
+        if(null != locationEngineManager){
+            locationEngine = locationEngineManager?.createEngine()
+            bindView.tvLocation.visiable()
+            getLocationInfo()
+        }
     }
 
     open    fun   initCameraParame(cameraParame: CameraParameBuild = cameraParameBuild, changeCameraParme:Boolean = false){
@@ -221,7 +227,6 @@ open class BaseCameraFragment : SimpleFragment() {
                 cameraManager.cameraCustomResolution = Point(it.x,it.y)
             }
         }
-
         netGrid = cameraParame.netGrid
         flashMode = cameraParame.flashModel
         shutterSound = cameraParame.shutterSound
@@ -279,6 +284,11 @@ open class BaseCameraFragment : SimpleFragment() {
             bindView.rulerView.visiable()
         }else{
             bindView.rulerView.gone()
+        }
+        if(cameraParameBuild.supportLocation){
+            bindView.tvLocation.visiable()
+        }else{
+            bindView.tvLocation.gone()
         }
         bindView.tvLocation.click {
             getLocationInfo()
@@ -422,29 +432,14 @@ open class BaseCameraFragment : SimpleFragment() {
     private  fun  captureImage(){
 
         cameraParameBuild.cameraAngle =cameraManager.cameraAngle
-        if (cameraParameBuild.supportMultiplePhoto) {
-            cameraParameBuild.localPath = cameraParameBuild.saveFileDir + File.separator + RandomUtil.randomUUID + ".jpg"
+        if (cameraData.supportMultiplePhoto) {
+            cameraData.localPath = cameraData.dirRootPath + File.separator + RandomUtil.randomUUID + ".jpg"
         }
+        cameraParameBuild.localPath = cameraData.localPath
         bindView.viewFinder.takePhoto { result, error ->
             if (result) {
                // CameraManager.startTypeCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel,bindView.rlTurn)
-                if(cameraParameBuild.supportAutoSavePhoto){
-                    if (cameraParameBuild.autoSavePhotoDelayTime == 0) {
-                        setGalleryThumbnail(Uri.parse(cameraParameBuild.localPath))
-                        cameraLiveData.value = CameraData().apply {
-                            if (cameraParameBuild.supportMultiplePhoto) {
-                                supportMultiplePhoto = true
-                                cameraPhotoDatas.add(cameraParameBuild.localPath)
-                            } else {
-                                supportMultiplePhoto = false
-                                mediaType = MediaConfig.TYPE_IMAGE
-                                localPath = cameraParameBuild.localPath
-                            }
-                        }
-                        return@takePhoto
-                    }
-                }
-                findNavController().navigate(BaseCameraFragmentDirections.actionCameraToPermissions(args.cameraData,args.sharedPreferencesName))
+                captureImageSuccess()
             } else {
                 countDownJob?.cancel()
 //                CameraManager.recoveryCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel,bindView.rlTurn)
@@ -463,6 +458,29 @@ open class BaseCameraFragment : SimpleFragment() {
                 }, ANIMATION_FAST_MILLIS)
             }, ANIMATION_SLOW_MILLIS)
         }
+    }
+
+
+
+    open fun  captureImageSuccess(){
+        if(cameraData.supportMultiplePhoto){
+            if (cameraParameBuild.autoSavePhotoDelayTime == 0) {
+                setGalleryThumbnail(Uri.parse(cameraParameBuild.localPath))
+                cameraData.cameraPhotoDatas.add(cameraParameBuild.localPath)
+                cameraLiveData.value = CameraData().apply {
+                    if (cameraParameBuild.supportMultiplePhoto) {
+                        supportMultiplePhoto = true
+                        cameraPhotoDatas.add(cameraParameBuild.localPath)
+                    } else {
+                        supportMultiplePhoto = false
+                        mediaType = MediaConfig.TYPE_IMAGE
+                        localPath = cameraParameBuild.localPath
+                    }
+                }
+               return
+            }
+        }
+        findNavController().navigate(BaseCameraFragmentDirections.actionCameraToPermissions(cameraData,args.sharedPreferencesName))
     }
 
     private fun setGalleryThumbnail(uri: Uri?) {
