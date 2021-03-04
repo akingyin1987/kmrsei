@@ -402,6 +402,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                                 try {
                                     val exifInterface = ExifInterface(cameraParameBuild.localPath)
                                     exifInterface.setDateTime(appServerTime)
+                                    println("")
                                     if(cameraParameBuild.lat>0 && cameraParameBuild.lng>0){
                                         exifInterface.setLatLong(cameraParameBuild.lat,cameraParameBuild.lng)
                                         exifInterface.setAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD,cameraParameBuild.locType)
@@ -414,8 +415,6 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                                 }catch (e : Exception){
                                     e.printStackTrace()
                                 }
-
-
                                 callBack(true, null)
                             }.no {
                                 callBack(false, "图片转换失败")

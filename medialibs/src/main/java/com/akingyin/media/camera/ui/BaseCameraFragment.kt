@@ -46,6 +46,7 @@ import androidx.navigation.fragment.navArgs
 import com.akingyin.base.SimpleFragment
 import com.akingyin.base.ext.*
 import com.akingyin.base.mvvm.SingleLiveEvent
+import com.akingyin.base.utils.HtmlUtils
 import com.akingyin.base.utils.PreferencesUtil
 import com.akingyin.base.utils.RandomUtil
 import com.akingyin.media.camera.*
@@ -281,7 +282,7 @@ open class BaseCameraFragment : SimpleFragment() {
             }
         }
         updateCameraUi()
-        bindView.tvTip.text = cameraParameBuild.tipContent
+        bindView.tvTip.text = HtmlUtils.getTextHtml(cameraParameBuild.tipContent)
         bindView.rulerView.valueFrom = cameraManager.cameraMinZoom.toFloat()
         bindView.rulerView.valueTo = cameraManager.cameraMaxZoom.toFloat()
         bindView.rulerView.value = cameraManager.cameraCurrentZoom

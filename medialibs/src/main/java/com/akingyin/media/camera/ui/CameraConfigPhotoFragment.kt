@@ -139,7 +139,8 @@ class CameraConfigPhotoFragment internal constructor(): SimpleFragment() {
             findNavController().navigateUp()
         }
         bindView.infoButton.click {
-            MedialFileInfoFragmentDialog.newInstance(args.filePath).show(childFragmentManager,"medialInfo")
+           val activity = (requireActivity() as CameraActivity)
+            MedialFileInfoFragmentDialog.newInstance(args.filePath,imageEngine = GlideEngine.getGlideEngineInstance(),locationEngine = activity.getLocationEngine()?.createEngine()).show(childFragmentManager,"medialInfo")
         }
         bindView.textCountDown.click {
             countDownJob?.cancel()

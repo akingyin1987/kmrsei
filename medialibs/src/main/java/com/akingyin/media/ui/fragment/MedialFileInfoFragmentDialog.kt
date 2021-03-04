@@ -35,6 +35,7 @@ import com.akingyin.util.MediaFileUtil
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import me.gujun.android.taggroup.TagGroup
+import java.nio.charset.Charset
 import kotlin.properties.Delegates
 
 
@@ -46,10 +47,9 @@ import kotlin.properties.Delegates
  */
 
 @Suppress("DEPRECATION")
-class MedialFileInfoFragmentDialog:BottomSheetDialogFragment() {
+class MedialFileInfoFragmentDialog( var locationEngine : LocationEngine?=null, var  imageEngine: ImageEngine?=null ):BottomSheetDialogFragment() {
 
-    var  imageEngine: ImageEngine?=null
-    var locationEngine : LocationEngine?=null
+
     /** 修改图片定位权限 */
     private   var   authEditLocation = false
 
@@ -183,7 +183,9 @@ class MedialFileInfoFragmentDialog:BottomSheetDialogFragment() {
                             bindView.ivAddLoc.gone()
                             bindView.ivRemoveLoc.gone()
                         }
-                        val tags = exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT) ?: ""
+                        val tags = String( exifInterface.getAttributeBytes(ExifInterface.TAG_USER_COMMENT)?: byteArrayOf(), Charset.forName("utf-8"))
+                       // val tags = exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT) ?: ""
+
                         if (authEditTag) {
                             bindView.tagGroup.gone()
                             bindView.tagGroupEdit.visiable()
@@ -269,15 +271,14 @@ class MedialFileInfoFragmentDialog:BottomSheetDialogFragment() {
     }
     companion object{
         const val KEY_MEDIAL_FILE_INFO_DIALOG_ACTION="medial.file.dialog.action"
-        fun newInstance(filePath: String, authEditLocation: Boolean = false, authEditTag: Boolean = false): MedialFileInfoFragmentDialog {
-            return MedialFileInfoFragmentDialog().apply {
+        fun newInstance(filePath: String, authEditLocation: Boolean = false, authEditTag: Boolean = false, locationEngine : LocationEngine?=null,  imageEngine: ImageEngine?=null): MedialFileInfoFragmentDialog {
+            return MedialFileInfoFragmentDialog(locationEngine,imageEngine).apply {
                 arguments = Bundle().apply {
-
                     putString("filePath", filePath)
                     putBoolean("authEditLocation", authEditLocation)
                     putBoolean("authEditTag", authEditTag)
-
                 }
+
             }
         }
     }
