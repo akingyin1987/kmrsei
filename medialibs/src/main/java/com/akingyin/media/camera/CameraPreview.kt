@@ -170,11 +170,13 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
 
         cameraManager.takePictrue(cameraParame) { result, error ->
             if(result){
-                cameraManager.stopPreview()
-                camera_img.visiable()
-                camera_img.setImageURI(Uri.parse(cameraParame.localPath))
+                println("cameraManager1=${cameraManager.getPreview()}")
+               // cameraManager.stopPreview()
+               // camera_img.visiable()
+               // camera_img.setImageURI(Uri.parse(cameraParame.localPath))
             }else{
-                cameraManager.startPreview()
+                println("cameraManager2=${cameraManager.getPreview()}")
+               // cameraManager.startPreview()
             }
 
             callBack.invoke(result, error)

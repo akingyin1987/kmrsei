@@ -42,6 +42,12 @@ class CameraData() : Parcelable {
     /** 其它信息 */
     var   dataJson=""
 
+    /**图片标签 */
+    var   imageTag=""
+
+    /** 图片提示内容 */
+    var   cameraContentTips=""
+
     constructor(parcel: Parcel) : this() {
         mediaType = parcel.readInt()
         localPath = parcel.readString()?:""
@@ -50,6 +56,8 @@ class CameraData() : Parcelable {
         supportMultiplePhoto = parcel.readByte() != 0.toByte()
         result = parcel.readByte() != 0.toByte()
         dataJson = parcel.readString()?:""
+        imageTag = parcel.readString()?:""
+        cameraContentTips = parcel.readString()?:""
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -60,6 +68,8 @@ class CameraData() : Parcelable {
         parcel.writeByte(if (supportMultiplePhoto) 1 else 0)
         parcel.writeByte(if (result) 1 else 0)
         parcel.writeString(dataJson)
+        parcel.writeString(imageTag)
+        parcel.writeString(cameraContentTips)
     }
 
     override fun describeContents(): Int {

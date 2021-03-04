@@ -12,9 +12,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/black"
-    tools:ignore="MissingDefaultResource"
     android:keepScreenOn="true"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:ignore="MissingDefaultResource">
   <com.akingyin.media.camera.CameraPreview
       android:id="@+id/viewFinder"
 
@@ -363,7 +363,7 @@
       app:layout_constraintLeft_toLeftOf="parent"
 
       app:layout_constraintBottom_toTopOf="@+id/rl_turn"
-      android:layout_marginBottom="30dp"
+      android:layout_marginBottom="165dp"
       android:id="@+id/tv_location"
       android:textColor="@android:color/white"
       android:textSize="14sp"

@@ -210,14 +210,11 @@ open class BaseCameraFragment : SimpleFragment() {
     override fun initEventAndData() {
         sharedPreferencesName = arguments?.getString("sharedPreferencesName", "app_setting")
             ?: "app_setting"
-        cameraParameBuild = arguments?.getParcelable("data") ?: CameraParameBuild()
+        cameraParameBuild =  CameraParameBuild()
         initCameraParame(cameraParameBuild)
+        cameraParameBuild.tipContent = cameraData.cameraContentTips
+        cameraParameBuild.imageTags = cameraData.imageTag
 
-        if(null != locationEngineManager){
-            locationEngine = locationEngineManager?.createEngine()
-            bindView.tvLocation.visiable()
-            getLocationInfo()
-        }
     }
 
     open    fun   initCameraParame(cameraParame: CameraParameBuild = cameraParameBuild, changeCameraParme:Boolean = false){
@@ -272,6 +269,14 @@ open class BaseCameraFragment : SimpleFragment() {
                     cameraManager.cameraUiAngle = cameraRotation
                     CameraManager.startCameraViewRoteAnimator((uiRotation).toFloat(),bindView.buttonShutter,bindView.buttonSetting,bindView.buttonFlash,
                             bindView.buttonGrid,bindView.textCountDown)
+                    thumbnail?.let {
+                        CameraManager.startCameraViewRoteAnimator((uiRotation).toFloat(),it)
+                    }
+                    cancelButton?.let {
+                        CameraManager.startCameraViewRoteAnimator((uiRotation).toFloat(),it)
+                    }
+
+
                 }
             }
         }
@@ -289,6 +294,15 @@ open class BaseCameraFragment : SimpleFragment() {
             bindView.tvLocation.visiable()
         }else{
             bindView.tvLocation.gone()
+        }
+
+        if(null != locationEngineManager){
+            locationEngine = locationEngineManager?.createEngine()
+            if(null != locationEngine){
+                bindView.tvLocation.visiable()
+                getLocationInfo()
+            }
+
         }
         bindView.tvLocation.click {
             getLocationInfo()
@@ -388,7 +402,7 @@ open class BaseCameraFragment : SimpleFragment() {
             CameraxManager.sendTakePhtotCancel(requireContext())
         }
         cancelButton = controls?.findViewById(R.id.camera_switch_button)
-        if (cameraParameBuild.supportMultiplePhoto) {
+        if (cameraData.supportMultiplePhoto) {
             cancelButton?.visiable()
             thumbnail?.visiable()
         } else {
@@ -445,7 +459,7 @@ open class BaseCameraFragment : SimpleFragment() {
 //                CameraManager.recoveryCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel,bindView.rlTurn)
 //                bindView.fabTakePicture.resetRecordAnim()
 //                bindView.fabTakePicture.isEnabled = true
-                bindView.viewFinder.onStartCameraView()
+                // bindView.viewFinder.onStartCameraView()
                 showError(error)
             }
         }
@@ -480,11 +494,11 @@ open class BaseCameraFragment : SimpleFragment() {
                return
             }
         }
-        findNavController().navigate(BaseCameraFragmentDirections.actionCameraToPermissions(cameraData,args.sharedPreferencesName))
+        findNavController().navigate(BaseCameraFragmentDirections.actionCameraToPhoto(cameraParameBuild.localPath,sharedPreferencesName,cameraData))
     }
 
     private fun setGalleryThumbnail(uri: Uri?) {
-        if (cameraParameBuild.supportMultiplePhoto) {
+        if (cameraData.supportMultiplePhoto) {
             thumbnail?.post {
                 thumbnail?.let {
                     it.setPadding(resources.getDimension(R.dimen.stroke_small).toInt())

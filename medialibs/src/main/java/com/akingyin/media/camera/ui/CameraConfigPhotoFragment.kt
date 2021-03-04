@@ -27,7 +27,6 @@ import com.akingyin.media.camera.CameraData
 import com.akingyin.media.camera.CameraManager
 import com.akingyin.media.camera.CameraParameBuild
 import com.akingyin.media.camerax.CameraxManager
-import com.akingyin.media.camerax.ui.CameraxConfigPhotoFragmentArgs
 import com.akingyin.media.databinding.FragmentConfigPhotoBinding
 import com.akingyin.media.glide.GlideEngine
 import com.akingyin.media.ui.fragment.MedialFileInfoFragmentDialog
@@ -37,6 +36,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
+import kotlin.properties.Delegates
 
 /**
  * 图片确认fragment
@@ -48,7 +48,8 @@ import java.io.File
 class CameraConfigPhotoFragment internal constructor(): SimpleFragment() {
 
     lateinit var  bindView: FragmentConfigPhotoBinding
-    private val args: CameraxConfigPhotoFragmentArgs by navArgs()
+    private val args: CameraConfigPhotoFragmentArgs by navArgs()
+    private  var  cameraData:CameraData by Delegates.notNull()
 
     override fun injection() {
 
@@ -65,6 +66,7 @@ class CameraConfigPhotoFragment internal constructor(): SimpleFragment() {
 
 
     override fun initEventAndData() {
+        cameraData = args.cameraData
         cameraParameBuild.apply {
             localPath = args.filePath
         }
@@ -74,7 +76,7 @@ class CameraConfigPhotoFragment internal constructor(): SimpleFragment() {
     var  cameraParameBuild: CameraParameBuild = CameraParameBuild()
     override fun initView() {
 
-        if(cameraParameBuild.supportMultiplePhoto){
+        if(cameraData.supportMultiplePhoto){
             bindView.btnCustom.visiable()
 
         }else{

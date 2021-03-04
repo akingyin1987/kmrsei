@@ -80,6 +80,9 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
     /** 是否在预览中 */
     private var previewing = false
 
+
+    fun   getPreview() = previewing
+
     //当前手机分辨率
     var theScreenResolution = Point()
 
@@ -394,10 +397,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                                     "base_" + FileUtils.getFileName(cameraParameBuild.localPath), 90)
                         }?.let {
                             withIO {
-
                                 CameraBitmapUtil.zipImageTo960x540(it, cameraParameBuild.cameraAngle,time = appServerTime,landscape = cameraParameBuild.horizontalPicture, fileDir = FileUtils.getFolderName(cameraParameBuild.localPath), fileName = FileUtils.getFileName(cameraParameBuild.localPath))
-
-
                             }.yes {
                                 try {
                                     val exifInterface = ExifInterface(cameraParameBuild.localPath)
@@ -405,6 +405,9 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                                     if(cameraParameBuild.lat>0 && cameraParameBuild.lng>0){
                                         exifInterface.setLatLong(cameraParameBuild.lat,cameraParameBuild.lng)
                                         exifInterface.setAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD,cameraParameBuild.locType)
+                                    }
+                                    if(cameraParameBuild.imageTags.isNotEmpty()){
+                                        exifInterface.setAttribute(ExifInterface.TAG_USER_COMMENT,cameraParameBuild.imageTags)
                                     }
 
                                     exifInterface.saveAttributes()

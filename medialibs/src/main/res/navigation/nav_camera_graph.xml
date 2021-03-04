@@ -40,6 +40,10 @@
     <action
         android:id="@+id/action_camera_to_permissions"
         app:destination="@id/permissions_fragment" />
+
+    <action
+        android:id="@+id/action_camera_to_photo"
+        app:destination="@id/config_photo_camera" />
     <argument
         android:name="sharedPreferencesName"
         app:argType="string" />
@@ -63,5 +67,7 @@
     <argument
         android:name="cameraData"
         app:argType="com.akingyin.media.camera.CameraData" />
+    <action android:id="@+id/config_photo_to_camera"
+            app:destination="@id/camera_fragment"/>
   </fragment>
 </navigation>

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.ble.ui.SearchDeviceListActivity
 import com.akingyin.base.config.AppFileConfig
+import com.akingyin.base.utils.HtmlUtils
 import com.akingyin.media.camera.CameraData
 import com.akingyin.media.camera.ui.CameraActivity
 import com.akingyin.media.camerax.ui.CameraxActivity
@@ -122,6 +123,8 @@ class TestFunActivity : SimpleActivity() {
                                 putExtra("data",CameraData().apply {
                                     supportMultiplePhoto = true
                                     dirRootPath = AppFileConfig.APP_FILE_ROOT
+                                    cameraContentTips=HtmlUtils.getBigRedHtml("这是测试文本说明")
+                                    imageTag = "测试"
 
                                 })
                             }))
