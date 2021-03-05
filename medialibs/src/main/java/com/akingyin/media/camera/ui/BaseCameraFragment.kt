@@ -163,6 +163,7 @@ open class BaseCameraFragment : SimpleFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        println("onAttach--->>>>>初始化机相管理")
         cameraManager = CameraManager(context) {
             showSucces("运动对焦成功！")
 
@@ -450,9 +451,11 @@ open class BaseCameraFragment : SimpleFragment() {
         if (cameraData.supportMultiplePhoto) {
             cameraData.localPath = cameraData.dirRootPath + File.separator + RandomUtil.randomUUID + ".jpg"
         }
+
         cameraParameBuild.localPath = cameraData.localPath
-        bindView.viewFinder.takePhoto { result, error ->
+        bindView.viewFinder.takePhoto(cameraParameBuild) { result, error ->
             if (result) {
+                "".md5()
                // CameraManager.startTypeCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel,bindView.rlTurn)
                 captureImageSuccess()
             } else {
@@ -655,6 +658,7 @@ open class BaseCameraFragment : SimpleFragment() {
     override fun onDestroy() {
         super.onDestroy()
         locationEngine = null
+        bindCameraInit = false
         cameraManager.closeDriver()
     }
 
@@ -717,6 +721,7 @@ open class BaseCameraFragment : SimpleFragment() {
         if(cameraParameBuild.lat<=0.0 && cameraParameBuild.supportLocation){
             getLocationInfo()
         }
+        println("camera->${cameraManager.getPreview()}")
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

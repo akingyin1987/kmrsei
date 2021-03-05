@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'  //kapt3插件
 apply plugin: "androidx.navigation.safeargs"
 android {
@@ -67,7 +67,7 @@ android {
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-  testImplementation 'junit:junit:4.13.1'
+  testImplementation 'junit:junit:4.13.2'
   implementation project(':androidutil')
   androidTestImplementation 'androidx.test.ext:junit:1.1.2'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -76,9 +76,9 @@ dependencies {
 
   implementation 'org.honorato.multistatetogglebutton:multistatetogglebutton:0.2.2'
 
-  api 'com.github.bumptech.glide:glide:4.11.0'
-  api "com.github.bumptech.glide:okhttp3-integration:4.11.0"
-  kapt  'com.github.bumptech.glide:compiler:4.11.0'
+  api 'com.github.bumptech.glide:glide:4.12.0'
+  api "com.github.bumptech.glide:okhttp3-integration:4.12.0"
+  kapt  'com.github.bumptech.glide:compiler:4.12.0'
 
   // 对超大图片的显示
   api 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
@@ -88,17 +88,17 @@ dependencies {
  // api 'com.shuyu:gsyVideoPlayer-java:7.1.8'
  // api 'com.shuyu:gsyVideoPlayer-armv7a:7.1.8'
 
-  api 'cn.jzvd:jiaozivideoplayer:7.5.0'
+  api 'cn.jzvd:jiaozivideoplayer:7.6.0'
   api 'com.danikula:videocache:2.7.1'
   // CameraX
   // CameraX
-  def camerax_version = "1.0.0-beta12"
+  def camerax_version = "1.1.0-alpha02"
   implementation "androidx.camera:camera-core:${camerax_version}"
   implementation "androidx.camera:camera-camera2:${camerax_version}"
   implementation "androidx.camera:camera-lifecycle:${camerax_version}"
 
-  def camerax_view_version = "1.0.0-alpha19"
-  def camerax_ext_version = "1.0.0-alpha19"
+  def camerax_view_version = "1.0.0-alpha22"
+  def camerax_ext_version = "1.0.0-alpha22"
   //other
   // If you to use the Camera View class
   implementation "androidx.camera:camera-view:$camerax_view_version"
@@ -107,7 +107,7 @@ dependencies {
 
   implementation "androidx.exifinterface:exifinterface:1.3.2"
 
-  implementation 'me.gujun.android.taggroup:library:1.4@aar'
+  implementation 'me.gujun.android.taggroup:library:1.5@aar'
 
    //录音相关
   implementation 'com.github.adrielcafe:AndroidAudioRecorder:0.3.0'

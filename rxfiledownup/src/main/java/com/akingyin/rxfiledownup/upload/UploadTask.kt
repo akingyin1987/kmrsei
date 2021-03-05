@@ -73,14 +73,14 @@ class UploadTask(var id: String = "", var filePath: String = "",
 
                   chunck++
               }else{
-                  return Result.Error(ApiException(msg="上传文件失败"))
+                  return Result.Failure(ApiException(msg="上传文件失败"))
               }
 
           }
-          Result.Success("", 0L)
+          Result.Success("")
         }catch (e: Exception){
             e.printStackTrace()
-          Result.Error(ApiException.handleException(e))
+          Result.Failure(ApiException.handleException(e))
         }
     }
     private val MEDIA_TYPE_File: MediaType = ("application/octet-stream").toMediaType()

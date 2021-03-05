@@ -11,7 +11,6 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.*
 import kotlin.experimental.and
-import kotlin.experimental.or
 
 /**
  * 数据转换工具类
@@ -294,8 +293,13 @@ class ConvertUtils private constructor() {
                 val array = md.digest(md5.toByteArray())
                 val sb = StringBuffer()
                 for (i in array.indices) {
-                    sb.append(Integer.toHexString((array[i] and 0xFF.toByte() or 0x100.toByte()).toInt())
-                            .substring(1, 3))
+                    sb.append((Integer.toHexString(array[i].toInt() and 0xFF)).let {
+                        if(it.length == 1){
+                            it+"0"
+                        }else{
+                            it
+                        }
+                    })
                 }
                 return sb.toString()
             } catch (e: NoSuchAlgorithmException) {
