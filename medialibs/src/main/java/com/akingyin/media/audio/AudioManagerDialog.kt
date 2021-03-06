@@ -17,9 +17,20 @@ import androidx.fragment.app.DialogFragment
  */
 abstract class AudioManagerDialog : DialogFragment(){
 
+
+    open    fun    useViewBind() = false
+    /**
+     * 初始化Viewbind
+     */
+    open   fun   initViewBind(inflater: LayoutInflater, container: ViewGroup?):View?{
+        return null
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val layoutID = getContentView()
         if (layoutID <= 0) throw NullPointerException("DialogFragment ContentView is not null")
+        if(useViewBind()){
+            return  initViewBind(inflater, container)
+        }
         return inflater.inflate(getContentView(), container, false)
     }
 

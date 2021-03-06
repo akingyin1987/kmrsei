@@ -17,8 +17,9 @@ import com.akingyin.base.ext.click
 import com.akingyin.media.MediaViewAndSelector
 import com.akingyin.media.R
 import com.akingyin.media.adapter.MediaViewpager2Adapter
+import com.akingyin.media.databinding.ActivityMediaTypeViewpager2Binding
 import com.akingyin.media.model.*
-import kotlinx.android.synthetic.main.activity_media_type_viewpager2.*
+
 
 
 /**
@@ -35,6 +36,16 @@ class MediaTypeViewpagerActivity : SimpleActivity() {
     }
 
     override fun getLayoutId() = R.layout.activity_media_type_viewpager2
+
+    override fun useViewBind()=true
+
+    lateinit var viewBinding:ActivityMediaTypeViewpager2Binding
+
+    override fun initViewBind() {
+        super.initViewBind()
+        viewBinding = ActivityMediaTypeViewpager2Binding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
+    }
 
     override fun initializationData(savedInstanceState: Bundle?) {
 
@@ -53,25 +64,25 @@ class MediaTypeViewpagerActivity : SimpleActivity() {
         data.items?.let {
             val listData = mutableListOf<MediaDataModel>()
             it.forEach { typeModel ->
-                tablayout.addTab(tablayout.newTab().setText(typeModel.text))
+                viewBinding.tablayout.addTab(viewBinding.tablayout.newTab().setText(typeModel.text))
                 typeModel.items?.let {datas->
                     listData.addAll(datas)
                 }
 
 
             }
-            for (index in 0..tablayout.tabCount) {
-                tablayout.getTabAt(index)?.view?.click {
+            for (index in 0..viewBinding.tablayout.tabCount) {
+                viewBinding.tablayout.getTabAt(index)?.view?.click {
                     val postion = getViewpagerPostionByTabPos(index)
-                    if (postion != viewpager.currentItem) {
-                        viewpager.currentItem = postion
+                    if (postion != viewBinding.viewpager.currentItem) {
+                        viewBinding.viewpager.currentItem = postion
                     }
                 }
             }
 
             mediaViewpager2Adapter = MediaViewpager2Adapter()
             mediaViewpager2Adapter.showChecked = false
-            viewpager.adapter = mediaViewpager2Adapter
+            viewBinding.viewpager.adapter = mediaViewpager2Adapter
             mediaViewpager2Adapter.setDiffCallback(object : DiffUtil.ItemCallback<MediaDataModel>() {
                 override fun areItemsTheSame(oldItem: MediaDataModel, newItem: MediaDataModel): Boolean {
                     return oldItem.objectId == newItem.objectId
@@ -82,14 +93,14 @@ class MediaTypeViewpagerActivity : SimpleActivity() {
                 }
             })
             mediaViewpager2Adapter.setDiffNewData(listData)
-            viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            viewBinding.viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     val index = getTablayPostionByViewpagerPos(position)
                     println("viewpager = $index")
-                    if (index != tablayout.selectedTabPosition) {
-                        tablayout.selectTab(tablayout.getTabAt(index))
+                    if (index != viewBinding.tablayout.selectedTabPosition) {
+                        viewBinding.tablayout.selectTab(viewBinding.tablayout.getTabAt(index))
                     }
 
                 }
@@ -134,7 +145,7 @@ class MediaTypeViewpagerActivity : SimpleActivity() {
     }
 
     fun switchFragment(position: Int) {
-        viewpager.currentItem = position
+        viewBinding.viewpager.currentItem = position
     }
 
 

@@ -24,7 +24,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.akingyin.media.R
-import kotlinx.android.synthetic.main.fragment_no_camera_permissions.*
+import com.akingyin.media.databinding.FragmentNoCameraPermissionsBinding
 import permissions.dispatcher.PermissionRequest
 import permissions.dispatcher.ktx.PermissionsRequester
 import permissions.dispatcher.ktx.constructPermissionsRequest
@@ -69,12 +69,16 @@ open class PermissionsCameraFragment : Fragment(){
 //        }
     }
 
+    lateinit var  viewBinding:FragmentNoCameraPermissionsBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-       return inflater.inflate(R.layout.fragment_no_camera_permissions,container,false)
+        viewBinding = FragmentNoCameraPermissionsBinding.inflate(inflater,container,false)
+
+       return viewBinding.root
     }
 
     private fun  gotoCameraFragment(){
@@ -82,7 +86,7 @@ open class PermissionsCameraFragment : Fragment(){
 
     }
     private fun onCameraDenied() {
-        tv_error.text = getString(R.string.permission_camera_denied)
+        viewBinding.tvError.text = getString(R.string.permission_camera_denied)
         Toast.makeText(requireContext(), R.string.permission_camera_denied, Toast.LENGTH_SHORT).show()
     }
 
@@ -91,7 +95,7 @@ open class PermissionsCameraFragment : Fragment(){
     }
 
     private fun onCameraNeverAskAgain() {
-        tv_error.text = getString(R.string.permission_camera_never_ask_again)
+        viewBinding.tvError.text = getString(R.string.permission_camera_never_ask_again)
         Toast.makeText(requireContext(), R.string.permission_camera_never_ask_again, Toast.LENGTH_SHORT).show()
     }
 

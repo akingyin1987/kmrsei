@@ -5,15 +5,12 @@ import android.os.Bundle
 
 import com.akingyin.base.BaseDaggerActivity
 
-import com.umeng.socialize.UMShareAPI
-import com.umeng.socialize.bean.SHARE_MEDIA
-import com.umeng.socialize.shareboard.SnsPlatform
+
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserAuthContract
 import com.zlcdgroup.mrsei.ui.adapter.AuthAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_auth.*
-import kotlinx.android.synthetic.main.include_toolbar.*
+
 import javax.inject.Inject
 
 
@@ -33,28 +30,16 @@ class AuthActivity :BaseDaggerActivity(),UserAuthContract.View{
     }
 
     override fun onSaveInstanceData(outState: Bundle?) {
-        UMShareAPI.get(this).onSaveInstanceState(outState)
+
     }
 
-   val list = arrayOf( SHARE_MEDIA.QQ,SHARE_MEDIA.WEIXIN)
 
     @Inject
     lateinit var  authAdapter :AuthAdapter
-    var platforms = ArrayList<SnsPlatform>()
+
 
     override fun initView() {
-        setToolBar(toolbar,"权限")
 
-
-        platforms.clear()
-        list.forEach {
-            if(!it.toString().equals(SHARE_MEDIA.GENERIC.toString())){
-                platforms.add(it.toSnsPlatform())
-            }
-        }
-
-        authAdapter.mutableList = platforms
-        recycle.adapter = authAdapter
     }
 
     override fun startRequest() {
@@ -62,11 +47,9 @@ class AuthActivity :BaseDaggerActivity(),UserAuthContract.View{
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        UMShareAPI.get(this).onActivityResult(requestCode,resultCode,data)
     }
 
     override fun onDestroy() {
-        UMShareAPI.get(this).release()
         super.onDestroy()
     }
 }

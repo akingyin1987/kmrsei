@@ -19,8 +19,9 @@ import com.akingyin.base.ext.messageFormat
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.media.DownloadFileUtil
 import com.akingyin.media.R
+import com.akingyin.media.databinding.ActivityMediaSelectDownloadViewpager2Binding
 import com.akingyin.media.model.MediaDataModel
-import kotlinx.android.synthetic.main.activity_media_select_download_viewpager2.*
+
 import java.io.File
 import java.util.ArrayList
 
@@ -36,19 +37,29 @@ class MediaSelectDownloadViewPager2Activity : MediaViewPager2Activity() {
 
     override fun getLayoutId()= R.layout.activity_media_select_download_viewpager2
 
+    override fun useViewBind()=true
+
+    lateinit var bindView:ActivityMediaSelectDownloadViewpager2Binding
+
+    override fun initViewBind() {
+        super.initViewBind()
+        bindView = ActivityMediaSelectDownloadViewpager2Binding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
+    }
+
     override fun onBindAdapter() {
         mediaViewpager2Adapter.showChecked = true
         mediaViewpager2Adapter.supportDownload = true
-        viewpager.adapter = mediaViewpager2Adapter
+        viewBinding.viewpager.adapter = mediaViewpager2Adapter
     }
 
     override fun initView() {
         super.initView()
-        button_back.click {
+        bindView.buttonBack.click {
             onBackPressed()
         }
 
-        button_apply.click {
+        bindView.buttonApply.click {
 
             setResult(Activity.RESULT_OK, Intent().apply {
                 putParcelableArrayListExtra("result",mediaViewpager2Adapter.data.filter {
@@ -60,7 +71,7 @@ class MediaSelectDownloadViewPager2Activity : MediaViewPager2Activity() {
     }
 
     override fun onCheckedItem(imageTextModel: MediaDataModel) {
-        button_apply.text="使用({0})".messageFormat(mediaViewpager2Adapter.getCheckedNum())
+        bindView.buttonApply.text="使用({0})".messageFormat(mediaViewpager2Adapter.getCheckedNum())
     }
 
     override fun downloadItemFile(imageTextModel: MediaDataModel) {

@@ -20,7 +20,7 @@ import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
 import com.tencent.bugly.crashreport.CrashReport
-import com.umeng.commonsdk.UMConfigure
+
 import com.zlcdgroup.mrsei.data.db.help.DbCore
 import com.zlcdgroup.mrsei.utils.RetrofitConfig
 import com.zlcdgroup.mrsei.utils.ThemeHelper
@@ -95,8 +95,7 @@ class MrmseiApp :Application() {
         }
 
         Constants.MODEL = Build.MODEL
-        UMConfigure.setLogEnabled(true)
-        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, "5cd152274ca357112b000a24")
+
         AppFileConfig.APP_FILE_ROOT = AppFileConfig.getAppFileRoot(this).absolutePath
     }
 

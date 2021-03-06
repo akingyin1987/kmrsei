@@ -6,12 +6,13 @@ import android.os.Handler
 import android.os.Message
 import android.os.SystemClock
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.SeekBar
 import com.akingyin.base.utils.FileUtils
-import com.akingyin.media.R
-import kotlinx.android.synthetic.main.dialog_audio_play_layout.view.*
+import com.akingyin.media.databinding.DialogAudioPlayLayoutBinding
+
 import java.lang.ref.WeakReference
 
 /**
@@ -22,13 +23,13 @@ import java.lang.ref.WeakReference
  * @version V1.0
  */
 class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable {
+
+
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    var  viewBinding : DialogAudioPlayLayoutBinding = DialogAudioPlayLayoutBinding.inflate(LayoutInflater.from(context),this,true)
 
-        View.inflate(context, R.layout.dialog_audio_play_layout, this)
-
-    }
 
     /** 音频路径 */
     var url: String = ""
@@ -54,27 +55,27 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
 
     private fun initView() {
         audioHandler = audioHandler ?:AudioHandler(this)
-        dialog_audio_play.setOnClickListener {
+        viewBinding.dialogAudioPlay.setOnClickListener {
             // 播放
             if (playerState == PAUSE) {
                 startPlay()
 
                 falgTime = SystemClock.elapsedRealtime()
-                beginTime = falgTime - dialog_audio_bar.progress
-                dialog_audio_nowTime.base = beginTime
-                dialog_audio_nowTime.start()
+                beginTime = falgTime - viewBinding.dialogAudioBar.progress
+                viewBinding.dialogAudioNowTime.base = beginTime
+                viewBinding.dialogAudioNowTime.start()
             } else initPlayer()
         }
-        dialog_audio_pause.setOnClickListener {
+        viewBinding.dialogAudioPause.setOnClickListener {
             pausePlay()
         }
-        dialog_audio_bar.setOnSeekBarChangeListener(this)
-        dialog_audio_name.text = FileUtils.getFileName(url)
+        viewBinding.dialogAudioBar.setOnSeekBarChangeListener(this)
+        viewBinding.dialogAudioName.text = FileUtils.getFileName(url)
     }
 
 
     fun  setPlayError(error:String){
-        dialog_audio_name.text = error
+        viewBinding.dialogAudioName.text = error
     }
 
     @Suppress("DEPRECATION")
@@ -85,7 +86,7 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
 
         override fun handleMessage(msg: Message) {
 
-            week.get()?.dialog_audio_bar?.progress = week.get()?.mediaPlayer?.currentPosition ?: 0
+            week.get()?.viewBinding?.dialogAudioBar?.progress = week.get()?.mediaPlayer?.currentPosition ?: 0
         }
     }
 
@@ -104,24 +105,24 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
 
             mediaPlayer?.setOnPreparedListener { play ->
 
-                dialog_audio_bar.max = play.duration
+                viewBinding.dialogAudioBar.max = play.duration
                 audioHandler?.post(this)
-                dialog_audio_countTime.text = secToTime(play.duration / 1000)
+                viewBinding.dialogAudioCountTime.text = secToTime(play.duration / 1000)
                 // 设置运动时间
                 falgTime = SystemClock.elapsedRealtime()
                 pauseTime = 0
                 startPlay()
-                dialog_audio_nowTime.base = falgTime
-                dialog_audio_nowTime.start()
+                viewBinding.dialogAudioNowTime.base = falgTime
+                viewBinding.dialogAudioNowTime.start()
             }
             mediaPlayer?.setOnCompletionListener {
 
                 stopPlay()
-                dialog_audio_bar.progress = 0
+                viewBinding.dialogAudioBar.progress = 0
 
-                dialog_audio_nowTime.base = SystemClock.elapsedRealtime()
-                dialog_audio_nowTime.start()
-                dialog_audio_nowTime.stop()
+                viewBinding.dialogAudioNowTime.base = SystemClock.elapsedRealtime()
+                viewBinding.dialogAudioNowTime.start()
+                viewBinding.dialogAudioNowTime.stop()
             }
         }
 
@@ -134,30 +135,30 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
             playerState = PAUSE
 
         }
-        dialog_audio_nowTime.stop()
+        viewBinding.dialogAudioNowTime.stop()
         pauseTime = SystemClock.elapsedRealtime()
-        dialog_audio_play.visibility = View.VISIBLE
-        dialog_audio_pause.visibility = View.GONE
-        dialog_audio_bar.isEnabled = false
+        viewBinding.dialogAudioPlay.visibility = View.VISIBLE
+        viewBinding.dialogAudioPause.visibility = View.GONE
+        viewBinding.dialogAudioBar.isEnabled = false
     }
 
     // 开始播放
     private fun startPlay() {
         mediaPlayer?.start()
         playerState = PLAY
-        dialog_audio_play.visibility = View.GONE
-        dialog_audio_pause.visibility = View.VISIBLE
-        dialog_audio_bar.isEnabled = true
+        viewBinding.dialogAudioPlay.visibility = View.GONE
+        viewBinding.dialogAudioPause.visibility = View.VISIBLE
+        viewBinding.dialogAudioBar.isEnabled = true
     }
 
     // 停止播放
     private fun stopPlay() {
-        dialog_audio_play.visibility = View.VISIBLE
-        dialog_audio_pause.visibility = View.GONE
+        viewBinding.dialogAudioPlay.visibility = View.VISIBLE
+        viewBinding.dialogAudioPause.visibility = View.GONE
         mediaPlayer?.release()
         mediaPlayer = null
         playerState = UNIT
-        dialog_audio_bar.isEnabled = false
+        viewBinding.dialogAudioBar.isEnabled = false
     }
 
 
@@ -166,8 +167,8 @@ class AudioPlayView : RelativeLayout, SeekBar.OnSeekBarChangeListener, Runnable 
             mediaPlayer?.seekTo(progress)
             falgTime = SystemClock.elapsedRealtime()
             beginTime = falgTime - seekBar!!.progress
-            dialog_audio_nowTime.base = beginTime
-            dialog_audio_nowTime.start()
+            viewBinding.dialogAudioNowTime.base = beginTime
+            viewBinding.dialogAudioNowTime.start()
         }
     }
 

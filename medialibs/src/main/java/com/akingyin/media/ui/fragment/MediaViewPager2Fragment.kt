@@ -10,16 +10,19 @@
 package com.akingyin.media.ui.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.akingyin.base.SimpleFragment
 import com.akingyin.media.R
 import com.akingyin.media.adapter.MediaViewpager2Adapter
+import com.akingyin.media.databinding.FragmentMedialViewpager2Binding
 import com.akingyin.media.model.MediaDataListModel
 import com.akingyin.media.model.MediaDataModel
 import com.akingyin.media.ui.MediaTypeViewpagerActivity
-import kotlinx.android.synthetic.main.activity_media_type_viewpager2.*
-import kotlinx.android.synthetic.main.fragment_medial_viewpager2.*
+
 import timber.log.Timber
 
 /**
@@ -37,6 +40,13 @@ class MediaViewPager2Fragment :SimpleFragment(){
 
     }
 
+    override fun useViewBind()=true
+    lateinit var viewBinding:FragmentMedialViewpager2Binding
+    override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View {
+        viewBinding = FragmentMedialViewpager2Binding.inflate(inflater,container,false)
+        return viewBinding.root
+    }
+
     /** 父viewpager2 */
     lateinit var  mainViewPager:ViewPager2
     var imageTextList:MediaDataListModel?= null
@@ -47,7 +57,7 @@ class MediaViewPager2Fragment :SimpleFragment(){
     }
 
     override fun initView() {
-        mainViewPager = (activity as MediaTypeViewpagerActivity).viewpager
+        mainViewPager = (activity as MediaTypeViewpagerActivity).viewBinding.viewpager
         mediaViewpager2Adapter = MediaViewpager2Adapter()
         mediaViewpager2Adapter.setDiffCallback(object :DiffUtil.ItemCallback<MediaDataModel>(){
             override fun areItemsTheSame(oldItem: MediaDataModel, newItem: MediaDataModel): Boolean {
@@ -58,8 +68,8 @@ class MediaViewPager2Fragment :SimpleFragment(){
                 return oldItem.toString() == newItem.toString()
             }
         })
-        fragment_viewpager.adapter = mediaViewpager2Adapter
-        fragment_viewpager.registerOnPageChangeCallback(object :ViewPager2.OnPageChangeCallback(){
+        viewBinding.fragmentViewpager.adapter = mediaViewpager2Adapter
+        viewBinding.fragmentViewpager.registerOnPageChangeCallback(object :ViewPager2.OnPageChangeCallback(){
             private   var currentPosition = 0
             private  var oldPositon = 0
 

@@ -18,10 +18,10 @@ import cn.jzvd.Jzvd
 import com.akingyin.base.SimpleActivity
 import com.akingyin.media.R
 import com.akingyin.media.adapter.MediaViewpager2Adapter
+import com.akingyin.media.databinding.ActivityMediaViewpager2InfoBinding
 import com.akingyin.media.model.MediaDataListModel
 import com.akingyin.media.model.MediaDataModel
 
-import kotlinx.android.synthetic.main.activity_media_viewpager2_info.*
 
 
 /**
@@ -39,6 +39,16 @@ open class MediaViewPager2Activity : SimpleActivity() {
     }
 
     override fun getLayoutId() = R.layout.activity_media_viewpager2_info
+
+    override fun useViewBind()=true
+
+    lateinit var viewBinding:ActivityMediaViewpager2InfoBinding
+
+    override fun initViewBind() {
+        super.initViewBind()
+        viewBinding = ActivityMediaViewpager2InfoBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
+    }
 
     override fun initializationData(savedInstanceState: Bundle?) {
 
@@ -74,9 +84,9 @@ open class MediaViewPager2Activity : SimpleActivity() {
             mediaViewpager2Adapter.setDiffNewData(it.toMutableList())
             val post = intent.getIntExtra("postion",0)
             if(post>0){
-                viewpager.currentItem = post
+                viewBinding.viewpager.currentItem = post
             }
-            viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            viewBinding.viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
                 override fun onPageSelected(position: Int) {
                     Jzvd.releaseAllVideos()
                 }
@@ -93,7 +103,7 @@ open class MediaViewPager2Activity : SimpleActivity() {
      * 绑定适配器
      */
     open fun onBindAdapter() {
-        viewpager.adapter = mediaViewpager2Adapter
+        viewBinding.viewpager.adapter = mediaViewpager2Adapter
 
     }
 
