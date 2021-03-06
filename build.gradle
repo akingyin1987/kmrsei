@@ -4,7 +4,7 @@ apply from: "config.gradle"
 //在项目的根目录下执行以下命令  ./gradlew dependencyUpdates 检查依赖库的版本更新
 apply from: './checkVersions.gradle'
 buildscript {
-  ext.kotlin_version = '1.4.20'
+  ext.kotlin_version = '1.4.31'
   repositories {
     maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
     google()

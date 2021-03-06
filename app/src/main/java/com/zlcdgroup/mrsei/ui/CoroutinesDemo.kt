@@ -7,10 +7,10 @@ import com.akingyin.base.ext.currentTimeMillis
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.db.dao.NoticeDao
 import com.zlcdgroup.mrsei.data.entity.NoticeEntity
+import com.zlcdgroup.mrsei.databinding.ActivityCoroutlinesBinding
 import com.zlcdgroup.mrsei.utils.RetrofitConfig
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_coroutlines.*
-import kotlinx.android.synthetic.main.include_toolbar.*
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.GlobalScope
@@ -31,9 +31,17 @@ class CoroutinesDemo :BaseDaggerActivity() {
      @Inject
     lateinit var noticeDao :NoticeDao
 
+    lateinit var bindView: ActivityCoroutlinesBinding
+
     override fun getLayoutId() = R.layout.activity_coroutlines
 
+    override fun useViewBind()=true
 
+    override fun initViewBind() {
+        super.initViewBind()
+        bindView = ActivityCoroutlinesBinding.inflate(layoutInflater)
+        setContentView(bindView.root)
+    }
 
     override fun initializationData(savedInstanceState: Bundle?) {
     }
@@ -42,18 +50,19 @@ class CoroutinesDemo :BaseDaggerActivity() {
     }
 
     override fun initView() {
+
         setToolBar(toolbar,"协程测试")
 
 
         GlobalScope.launch (IO){
-            var  noticeEntity = NoticeEntity().apply {
+            val noticeEntity = NoticeEntity().apply {
                 name="name"
                 demo="demo"
                 time= currentTimeMillis
             }
             noticeDao.insertNotice(noticeEntity)
         }
-        btn_test.click {
+        bindView.btnTest.click {
             showLoading()
 
          GlobalScope.launch(IO) {

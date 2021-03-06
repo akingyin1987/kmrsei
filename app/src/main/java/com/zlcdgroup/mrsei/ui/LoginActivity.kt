@@ -4,17 +4,13 @@ import android.Manifest
 import android.app.Activity
 import android.content.ClipData
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.hardware.biometrics.BiometricManager
 import android.hardware.biometrics.BiometricPrompt
 import android.os.Bundle
 import android.os.Environment
 import android.util.Base64
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
-
-
 import autodispose2.ScopeProvider
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider
 import autodispose2.autoDispose
@@ -28,10 +24,10 @@ import com.akingyin.tuya.BaseTuYaActivity
 import com.alibaba.fastjson.JSONObject
 import com.baidu.mapapi.model.LatLng
 import com.baidu.mapapi.utils.AreaUtil
-
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.db.dao.UserEntityDao
+import com.zlcdgroup.mrsei.databinding.ActivityLoginBinding
 import com.zlcdgroup.mrsei.di.module.ViewModelModule
 import com.zlcdgroup.mrsei.presenter.UserLoginContract
 import com.zlcdgroup.mrsei.presenter.impl.UserLoginPersenterImpl
@@ -42,7 +38,6 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
 
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.delay
 import permissions.dispatcher.ktx.constructPermissionsRequest
@@ -71,6 +66,8 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
     @Inject
     lateinit var  userEntityDao: UserEntityDao
 
+
+
      // 默认创建工厂为无参构造函数
     //ViewModelProvider.Factory getDefaultViewModelProviderFactory()
    //  val  viewModel2 :LoginViewModel by  viewModels()
@@ -80,8 +77,18 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
          ViewModelModule.LoginViewModelFactory(userEntityDao)
      }
 
+    lateinit var  bindView:ActivityLoginBinding
 
     override fun getLayoutId(): Int = R.layout.activity_login
+
+
+    override fun useViewBind()=true
+
+    override fun initViewBind() {
+        super.initViewBind()
+        bindView = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(bindView.root)
+    }
 
     override fun initializationData(savedInstanceState: Bundle?) {
         userLoginPersenterImpl.attachView(this)
@@ -99,12 +106,12 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
         val person = userLoginPersenterImpl.getLastPerson()
         person?.let {
 
-            et_mobile.setText(it.personAccount.isEmptyOrNull())
-            et_password.setText(it.personPassword.isEmptyOrNull())
+            bindView.etMobile.setText(it.personAccount.isEmptyOrNull())
+            bindView.etPassword.setText(it.personPassword.isEmptyOrNull())
         }
-       et_password.setOnEditorActionListener { _, actionId, _ ->
+        bindView.etPassword.setOnEditorActionListener { _, actionId, _ ->
            if(actionId == EditorInfo.IME_ACTION_GO){
-               userLoginPersenterImpl.login(et_mobile.text.toString(),et_password.text.toString())
+               userLoginPersenterImpl.login(bindView.etMobile.text.toString(),bindView.etPassword.text.toString())
 
                return@setOnEditorActionListener  true
            }
@@ -112,10 +119,10 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
        }
         println("btn_login2")
 
-        btn_login.click {
+        bindView.btnLogin.click {
             testCameraAuth()
 
-            userLoginPersenterImpl.login(et_mobile.text.toString(),et_password.text.toString())
+            userLoginPersenterImpl.login(bindView.etMobile.text.toString(),bindView.etPassword.text.toString())
         }
 
 
@@ -141,19 +148,21 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
         }
         println("222222222${Thread.currentThread().name}")
         var  day_time = 0L
-        date_picker_actions.click {
+
+        bindView.datePickerActions.click {
             TimePickerDialog.newInstance({ view, hourOfDay, minute, second ->
                  val  calendar  = Calendar.getInstance()
                  calendar.set(Calendar.HOUR_OF_DAY,hourOfDay)
                  calendar.set(Calendar.MINUTE,minute)
                  calendar.set(Calendar.SECOND,second)
                   day_time = calendar.time.time
-                  date_picker_actions.text = DateUtil.millis2String(day_time)
+                bindView.datePickerActions.text = DateUtil.millis2String(day_time)
             },true).show(supportFragmentManager,"time-fragment")
 
         }
-        btn_create_code.click {
-            val  keywork = edit_keywork.text.toString()
+
+        bindView.btnCreateCode.click {
+            val  keywork = bindView.editKeywork.text.toString()
             if(keywork.isEmpty() || day_time<= 0){
                 showError("数据不正确")
                 return@click
@@ -171,7 +180,7 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
             })
         }
 
-        fingerprint.clickDelay {
+        bindView.fingerprint.clickDelay {
             userLoginPersenterImpl.fingerprintLogin { result, error ->
                 println("result=$result,error=$error")
                 if(!result){
@@ -262,17 +271,17 @@ class LoginActivity  : BaseDaggerActivity() ,UserLoginContract.View{
     override fun setAppTheme(theme: String) {
         when(theme){
             ThemeHelper.LIGHT_MODE -> {
-                app_theme.setText("Light")
-                app_theme.isChecked = false
+                bindView.appTheme.text = "Light"
+                bindView.appTheme.isChecked = false
             }
 
             ThemeHelper.DARK_MODE ->{
-                app_theme.setText("DARK")
-                app_theme.isChecked = true
+                bindView.appTheme.text = "DARK"
+                bindView.appTheme.isChecked = true
             }
             else ->{
-                app_theme.setText("DEFAULT")
-                app_theme.isChecked = false
+                bindView.appTheme.text = "DEFAULT"
+                bindView.appTheme.isChecked = false
             }
         }
     }
