@@ -16,10 +16,10 @@ import com.akingyin.base.ext.visiable
 import com.akingyin.bmap.adapter.BaiduPoiListAdapter
 import com.akingyin.bmap.vo.PoiInfoVo
 import com.akingyin.map.R
-
+import com.akingyin.map.databinding.ActivitySelectBaiduLocationBinding
 import com.baidu.mapapi.map.*
 import com.baidu.mapapi.model.LatLng
-import kotlinx.android.synthetic.main.activity_select_baidu_location.*
+
 
 
 
@@ -35,6 +35,7 @@ class SelectLocationBaiduActivity :SimpleActivity() {
     private  lateinit var   baiduPoiListAdapter: BaiduPoiListAdapter
 
 
+    lateinit var  viewBinding:ActivitySelectBaiduLocationBinding
 
 
     override fun initInjection() {
@@ -42,9 +43,17 @@ class SelectLocationBaiduActivity :SimpleActivity() {
     }
 
     override fun getLayoutId() = R.layout.activity_select_baidu_location
+    override fun useViewBind() = true
+
+    override fun initViewBind() {
+        super.initViewBind()
+        viewBinding = ActivitySelectBaiduLocationBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
+    }
 
     override fun initializationData(savedInstanceState: Bundle?) {
-        bdMapManager = BDMapManager(map_content.map,map_content,this,true)
+
+        bdMapManager = BDMapManager( viewBinding.mapContent.map, viewBinding.mapContent,this,true)
         bdMapManager.onCreate(savedInstanceState)
         bdMapManager.initMapConfig()
         bdMapManager.getUiSetting().apply {
@@ -60,7 +69,8 @@ class SelectLocationBaiduActivity :SimpleActivity() {
         },onChangeStart = {
               if(!searchPoiIng){
                   baiduPoiListAdapter.setDiffNewData(null)
-                  progress_bar.visiable()
+
+                  viewBinding.progressBar.visiable()
               }
 
         },onChange = {
@@ -85,12 +95,12 @@ class SelectLocationBaiduActivity :SimpleActivity() {
 
          setToolBar(findViewById(R.id.toolbar),"位置发送")
 
-        rcv_poi_list.itemAnimator = DefaultItemAnimator()
+        viewBinding.rcvPoiList.itemAnimator = DefaultItemAnimator()
         baiduPoiListAdapter=BaiduPoiListAdapter()
-        baiduPoiListAdapter.onAttachedToRecyclerView(rcv_poi_list)
+        baiduPoiListAdapter.onAttachedToRecyclerView(viewBinding.rcvPoiList)
         baiduPoiListAdapter.setEmptyView(R.layout.empty_view)
-        rcv_poi_list.adapter = baiduPoiListAdapter
-        location.showNext()
+        viewBinding.rcvPoiList.adapter = baiduPoiListAdapter
+        viewBinding.location.showNext()
         bdMapManager.onMapLoad {
             println("onLoad->")
 
@@ -104,7 +114,7 @@ class SelectLocationBaiduActivity :SimpleActivity() {
                 bdMapManager.setMapCenter(it.latitude,it.longitude,19F)
 
                 fristLoc = true
-                location.showNext()
+                viewBinding.location.showNext()
                 if(null == marker){
                     marker =bdMapManager.addSingleMarker(MarkerOptions().apply {
                         position(LatLng(it.latitude,it.longitude))
@@ -146,14 +156,15 @@ class SelectLocationBaiduActivity :SimpleActivity() {
             baiduPoiListAdapter.notifyDataSetChanged()
 
         }
-        location_icon.click {
-            location.showNext()
+
+        viewBinding.locationIcon.click {
+            viewBinding.location.showNext()
             fristLoc = false
         }
 
-        location_progress.click {
+        viewBinding.locationProgress.click {
             fristLoc = true
-            location.showNext()
+            viewBinding.location.showNext()
 
         }
     }
@@ -174,11 +185,11 @@ class SelectLocationBaiduActivity :SimpleActivity() {
             searchPoiIng = false
             return
         }
-        progress_bar.visiable()
+        viewBinding.progressBar.visiable()
 
         bdMapManager.searchRoundPoiByGeoCoder(latLng.latitude,latLng.longitude){
             data, e ->
-            progress_bar.gone()
+            viewBinding.progressBar.gone()
 
             data?.let {
                 result->

@@ -16,7 +16,7 @@ import androidx.constraintlayout.widget.Group
 import com.akingyin.base.R
 import com.akingyin.base.ble.BleDevice
 import com.akingyin.base.ble.BleManager
-import com.akingyin.base.ext.gone
+
 import com.akingyin.base.ext.visiable
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder

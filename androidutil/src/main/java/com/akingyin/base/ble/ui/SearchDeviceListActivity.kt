@@ -21,6 +21,7 @@ import android.view.View
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import com.akingyin.base.R
@@ -31,12 +32,13 @@ import com.akingyin.base.ble.callback.BleGattCallback
 import com.akingyin.base.ble.callback.BleNotifyCallback
 import com.akingyin.base.ble.callback.BleScanCallback
 import com.akingyin.base.ble.exception.BleException
+import com.akingyin.base.databinding.ActivitySearchBleDevicesBinding
 import com.akingyin.base.dialog.MaterialDialogUtil
 import com.akingyin.base.ext.click
 import com.akingyin.base.ext.gone
 import com.akingyin.base.ext.visiable
 import com.akingyin.base.utils.ConvertUtils
-import kotlinx.android.synthetic.main.activity_search_ble_devices.*
+
 import permissions.dispatcher.ktx.constructPermissionsRequest
 import kotlin.experimental.xor
 import kotlin.properties.Delegates
@@ -53,12 +55,14 @@ class SearchDeviceListActivity :SimpleActivity(){
 
     lateinit var bleDeviceListAdapter: BleDeviceListAdapter
 
+    lateinit var viewBind:ActivitySearchBleDevicesBinding
+
 
     private var search  :Boolean by Delegates.observable(false){ _, _, newValue ->
         if(newValue){
            // progressWheel.visiable()
         }else{
-            progressWheel.gone()
+            viewBind.progressWheel.gone()
         }
         invalidateOptionsMenu()
     }
@@ -78,11 +82,18 @@ class SearchDeviceListActivity :SimpleActivity(){
 
     }
 
+    override fun useViewBind() = true
+
+    override fun initViewBind() {
+        super.initViewBind()
+        viewBind = ActivitySearchBleDevicesBinding.inflate(layoutInflater)
+        setContentView(viewBind.root)
+    }
 
     override fun initView() {
-        setToolBar(toolbar, "Ble设备")
-        recycler_view.itemAnimator = DefaultItemAnimator()
-        recycler_view.adapter = bleDeviceListAdapter
+        setToolBar(viewBind.toolbar, "Ble设备")
+        viewBind.recyclerView.itemAnimator = DefaultItemAnimator()
+        viewBind.recyclerView.adapter = bleDeviceListAdapter
 
         bleDeviceListAdapter.setEmptyView(R.layout.empty_view)
         bleDeviceListAdapter.emptyLayout?.click {
@@ -174,11 +185,11 @@ class SearchDeviceListActivity :SimpleActivity(){
 
    private  fun  checkPermissionsAndSearchBleDevice(){
          println("搜索蓝牙设备")
-         if(progressWheel.isVisible){
+         if(viewBind.progressWheel.isVisible){
              showTips("正常在搜索设备中,请稍候再试！")
              return
          }
-         progressWheel.visiable()
+       viewBind.progressWheel.visiable()
          if(!BleManager.getInstance().isBlueEnable()){
              MaterialDialogUtil.showConfigDialog(this, message = "当前蓝牙未打开!", positive = "打开蓝牙"){
                  if(it){
@@ -226,7 +237,7 @@ class SearchDeviceListActivity :SimpleActivity(){
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_search_ble, menu)
-        menu?.findItem(R.id.action_search)?.isVisible = !progressWheel.isVisible
+        menu?.findItem(R.id.action_search)?.isVisible = !viewBind.progressWheel.isVisible
         return true
     }
 

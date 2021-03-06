@@ -16,12 +16,13 @@ import com.akingyin.base.SimpleActivity
 import com.akingyin.base.dialog.MaterialDialogUtil
 import com.akingyin.base.ext.click
 import com.akingyin.map.R
+import com.akingyin.map.databinding.ActivityBaidumapOfflineBinding
 import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationListener
 import com.amap.api.maps.offlinemap.OfflineMapManager
 import com.amap.api.maps.offlinemap.OfflineMapProvince
 import com.amap.api.maps.offlinemap.OfflineMapStatus
-import kotlinx.android.synthetic.main.activity_baidumap_offline.*
+
 
 /**
  * @ Description:
@@ -30,6 +31,8 @@ import kotlinx.android.synthetic.main.activity_baidumap_offline.*
  * @version V1.0
  */
 class AMapOfflineActivity : SimpleActivity(),OfflineMapManager.OfflineMapDownloadListener {
+
+    lateinit var  viewBinding:ActivityBaidumapOfflineBinding
 
     override fun initInjection() {
 
@@ -49,11 +52,20 @@ class AMapOfflineActivity : SimpleActivity(),OfflineMapManager.OfflineMapDownloa
     private lateinit var  aMapLocationListener: AMapLocationListener
     private lateinit var  aLocationService: ALocationService
     private lateinit var  offlineMapManager: OfflineMapManager
+
+    override fun useViewBind()=true
+
+    override fun initViewBind() {
+        super.initViewBind()
+        viewBinding = ActivityBaidumapOfflineBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
+    }
+
     override fun initView() {
-        setToolBar(toolbar,"高德地图离线下载")
-        recycler.itemAnimator = DefaultItemAnimator()
+        setToolBar(viewBinding.toolbar,"高德地图离线下载")
+        viewBinding.recycler.itemAnimator = DefaultItemAnimator()
         offineListAdapter = AmapOffineListAdapter()
-        recycler.adapter = offineListAdapter
+        viewBinding.recycler.adapter = offineListAdapter
         offlineMapManager = OfflineMapManager(this,this)
         offineListAdapter.setNewInstance(offlineMapManager.offlineMapProvinceList)
 
@@ -87,7 +99,8 @@ class AMapOfflineActivity : SimpleActivity(),OfflineMapManager.OfflineMapDownloa
            }
        }
        aLocationService.registerListener(aMapLocationListener)
-       fab_loc.click {
+
+        viewBinding.fabLoc.click {
            aLocationService.start()
        }
     }

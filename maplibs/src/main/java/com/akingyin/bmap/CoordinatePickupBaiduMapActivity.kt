@@ -13,11 +13,12 @@ import com.akingyin.base.ext.gone
 import com.akingyin.base.ext.visiable
 import com.akingyin.bmap.vo.PickupLatLngVo
 import com.akingyin.map.R
+import com.akingyin.map.databinding.ActivityBdmapCoordinatePickupBinding
 import com.baidu.location.BDLocation
 import com.baidu.mapapi.map.*
 import com.baidu.mapapi.model.LatLng
 import com.zlcdgroup.nfcsdk.RfidInterface
-import kotlinx.android.synthetic.main.activity_bdmap_coordinate_pickup.*
+
 import java.text.MessageFormat
 import kotlin.math.abs
 
@@ -37,7 +38,7 @@ class CoordinatePickupBaiduMapActivity : BaseBDMapActivity(){
     }
 
     lateinit var  pickupLatLng: PickupLatLngVo
-
+    lateinit var  viewBinding : ActivityBdmapCoordinatePickupBinding
 
     override fun getLocationBitmap(): BitmapDescriptor? {
        return null
@@ -63,6 +64,14 @@ class CoordinatePickupBaiduMapActivity : BaseBDMapActivity(){
 
     private   var    locationNum = 0
     private   var    stepLen = 30
+    override fun useViewBind()=true
+
+    override fun initViewBind() {
+        super.initViewBind()
+        viewBinding = ActivityBdmapCoordinatePickupBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
+    }
+
     override fun initView() {
         super.initView()
          pickupLatLng = intent.getSerializableExtra(PICKUP_DATA_KEY)?.let {
@@ -80,8 +89,8 @@ class CoordinatePickupBaiduMapActivity : BaseBDMapActivity(){
         val totalBar  = findViewById<Toolbar>(R.id.toolbar)
 
         setToolBar(totalBar,"百度坐标拾取")
-        rl_dir.visibility = if(pickupLatLng.onlysee){ View.GONE}else{View.VISIBLE}
-        latlng_step.visibility=if(pickupLatLng.onlysee){ View.GONE}else{View.VISIBLE}
+        viewBinding.rlDir.visibility = if(pickupLatLng.onlysee){ View.GONE}else{View.VISIBLE}
+        viewBinding.latlngStep.visibility=if(pickupLatLng.onlysee){ View.GONE}else{View.VISIBLE}
         bdMapManager.setMapStatusChange (onChangeLocation = {
             if(stepLen == -1){
                 it?.let {
@@ -92,21 +101,21 @@ class CoordinatePickupBaiduMapActivity : BaseBDMapActivity(){
             }
         },onChangeFinish = {
             if(stepLen == -1){
-                latlng_step.visiable()
-                rl_dir.visiable()
+                viewBinding.latlngStep.visiable()
+                viewBinding.rlDir.visiable()
             }
 
         },onChangeStart = {
             if(stepLen == -1){
-                latlng_step.gone()
-                rl_dir.gone()
+                viewBinding.latlngStep.gone()
+                viewBinding.rlDir.gone()
             }
 
         })
-        rb_step_map.click {
+        viewBinding.rbStepMap.click {
 
             if(pickupLatLng.currentLat<=0 || pickupLatLng.currentLng<=0){
-                rb_step_map.isChecked = false
+                viewBinding.rbStepMap.isChecked = false
                 stepLen = 0
                 showError("当前没有定位信息，无法通过拖动移动坐标！")
                 return@click
@@ -114,7 +123,7 @@ class CoordinatePickupBaiduMapActivity : BaseBDMapActivity(){
             bdMapManager.setMapCenter(pickupLatLng.currentLat,pickupLatLng.currentLng,bdMapManager.getCurrentZoomLevel())
 
         }
-        rg_step.setOnCheckedChangeListener { _, checkedId ->
+        viewBinding.rgStep.setOnCheckedChangeListener { _, checkedId ->
 
            stepLen =  when(checkedId){
                 R.id.rb_step_one-> 1
@@ -148,7 +157,7 @@ class CoordinatePickupBaiduMapActivity : BaseBDMapActivity(){
 
             override fun onMarkerDrag(p0: Marker?) {
                 p0?.let {
-                    tv_lalnginfo.text =MessageFormat.format("当前坐标: {0,number,#.######}/{1,number,#.######}",
+                    viewBinding.tvLalnginfo.text =MessageFormat.format("当前坐标: {0,number,#.######}/{1,number,#.######}",
                             it.position.latitude,it.position.longitude)
                 }
 
@@ -240,8 +249,8 @@ class CoordinatePickupBaiduMapActivity : BaseBDMapActivity(){
         pickupLatLng.currentLat = lat
         pickupLatLng.currentLng = lng
         pickupLatLng.locationAddr = addr
-        tv_lalnginfo.post {
-            tv_lalnginfo.text =MessageFormat.format("当前坐标: {0,number,#.######}/{1,number,#.######}",lat,lng)
+        viewBinding.tvLalnginfo.post {
+            viewBinding.tvLalnginfo.text =MessageFormat.format("当前坐标: {0,number,#.######}/{1,number,#.######}",lat,lng)
         }
 
         marker=if(null == marker){

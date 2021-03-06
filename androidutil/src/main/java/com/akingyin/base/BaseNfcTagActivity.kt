@@ -49,7 +49,7 @@ import java.lang.ref.WeakReference
    mAdapter = NfcAdapter.getDefaultAdapter(this)
    mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
    if(!packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)){
-    isSupportBle = false
+       isSupportBle = false
    }
    if(null == mAdapter){
     showWarning("当前终端不支持NFC")
@@ -102,8 +102,7 @@ import java.lang.ref.WeakReference
 
  override fun onResume() {
   if(useAndroidNfc()){
-   mAdapter?.enableForegroundDispatch(this,mPendingIntent,mFilters,mTechLists)
-
+      mAdapter?.enableForegroundDispatch(this,mPendingIntent,mFilters,mTechLists)
   }
 
   super.onResume()
@@ -112,7 +111,7 @@ import java.lang.ref.WeakReference
 
  override fun onPause() {
   if(useAndroidNfc()){
-   mAdapter?.disableForegroundDispatch(this)
+     mAdapter?.disableForegroundDispatch(this)
   }
 
 

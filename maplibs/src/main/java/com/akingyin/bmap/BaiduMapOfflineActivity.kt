@@ -18,10 +18,11 @@ import com.akingyin.base.ext.no
 import com.akingyin.base.ext.yes
 import com.akingyin.bmap.adapter.BaiduOffineListAdapter
 import com.akingyin.map.R
+import com.akingyin.map.databinding.ActivityBaidumapOfflineBinding
 import com.baidu.mapapi.map.offline.MKOLUpdateElement
 import com.baidu.mapapi.map.offline.MKOfflineMap
 import com.baidu.mapapi.map.offline.MKOfflineMapListener
-import kotlinx.android.synthetic.main.activity_baidumap_offline.*
+
 
 /**
  * 百度地图 离线下载
@@ -31,6 +32,8 @@ import kotlinx.android.synthetic.main.activity_baidumap_offline.*
  * @version V1.0
  */
 class BaiduMapOfflineActivity : SimpleActivity(), MKOfflineMapListener {
+
+    lateinit var  viewBinding:ActivityBaidumapOfflineBinding
 
 
     override fun initInjection() {
@@ -51,14 +54,23 @@ class BaiduMapOfflineActivity : SimpleActivity(), MKOfflineMapListener {
     private lateinit var  mkOfflineMap:MKOfflineMap
     private lateinit var  bdLocationService: BDLocationService
     private lateinit var  myLocationListenner: BDLocationService.MyLocationListenner
+
+    override fun useViewBind()=true
+
+    override fun initViewBind() {
+        super.initViewBind()
+        viewBinding = ActivityBaidumapOfflineBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
+    }
+
     override fun initView() {
-         setToolBar(toolbar,"百度地图离线下载")
+         setToolBar(viewBinding.toolbar,"百度地图离线下载")
          mkOfflineMap = MKOfflineMap()
          mkOfflineMap.init(this)
-         recycler.itemAnimator = DefaultItemAnimator()
+         viewBinding.recycler.itemAnimator = DefaultItemAnimator()
          offineListAdapter = BaiduOffineListAdapter()
          bdLocationService = BDLocationService.getLocationServer(this)
-         recycler.adapter = offineListAdapter
+         viewBinding.recycler.adapter = offineListAdapter
          offineListAdapter.setNewInstance(mkOfflineMap.allUpdateInfo)
          offineListAdapter.addChildClickViewIds(R.id.download,R.id.remove)
          offineListAdapter.setOnItemChildClickListener { _, view, position ->
@@ -85,7 +97,8 @@ class BaiduMapOfflineActivity : SimpleActivity(), MKOfflineMapListener {
              bdLocationService.stop()
          }
          bdLocationService.registerListener(myLocationListenner)
-        fab_loc.click {
+
+        viewBinding.fabLoc.click {
 
             bdLocationService.start()
         }

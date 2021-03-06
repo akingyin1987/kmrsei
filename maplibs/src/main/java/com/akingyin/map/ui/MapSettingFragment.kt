@@ -18,7 +18,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.akingyin.map.R
-import kotlinx.android.synthetic.*
+
 
 /**
  * @ Description:

@@ -9,10 +9,10 @@
 
 package com.akingyin.base.ext
 
-
+import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
-import androidx.datastore.preferences.createDataStore
+import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -27,8 +27,10 @@ import java.io.IOException
  * @ Date 2021/1/7 10:51
  * @version V1.0
  */
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app_dataStore")
 private inline val dataStore: DataStore<Preferences>
- get() = app.createDataStore("app_dataStore")
+ get() = app.dataStore
 
 @Suppress("UNCHECKED_CAST")
 fun <U> getSyncData(key: String, default: U): U {
@@ -90,14 +92,16 @@ fun readBooleanFlow(key: String, default: Boolean = false): Flow<Boolean> =
                         throw it
                     }
                 }.map {
-                    it[preferencesKey(key)] ?: default
+
+                    it[booleanPreferencesKey(key)]?:default
+
                 }
 
 fun readBooleanData(key: String, default: Boolean = false): Boolean {
     var value = false
     runBlocking {
         dataStore.data.first {
-            value = it[preferencesKey(key)] ?: default
+            value = it[booleanPreferencesKey(key)] ?: default
             true
         }
     }
@@ -114,14 +118,14 @@ fun readIntFlow(key: String, default: Int = 0): Flow<Int> =
                         throw it
                     }
                 }.map {
-                    it[preferencesKey(key)] ?: default
+                    it[intPreferencesKey(key)] ?: default
                 }
 
 fun readIntData(key: String, default: Int = 0): Int {
     var value = 0
     runBlocking {
         dataStore.data.first {
-            value = it[preferencesKey(key)] ?: default
+            value = it[intPreferencesKey(key)] ?: default
             true
         }
     }
@@ -138,14 +142,14 @@ fun readStringFlow(key: String, default: String = ""): Flow<String> =
                         throw it
                     }
                 }.map {
-                    it[preferencesKey(key)] ?: default
+                    it[stringPreferencesKey(key)] ?: default
                 }
 
 fun readStringData(key: String, default: String = ""): String {
     var value = ""
     runBlocking {
         dataStore.data.first {
-            value = it[preferencesKey(key)] ?: default
+            value = it[stringPreferencesKey(key)] ?: default
             true
         }
     }
@@ -162,14 +166,14 @@ fun readFloatFlow(key: String, default: Float = 0f): Flow<Float> =
                         throw it
                     }
                 }.map {
-                    it[preferencesKey(key)] ?: default
+                    it[floatPreferencesKey(key)] ?: default
                 }
 
 fun readFloatData(key: String, default: Float = 0f): Float {
     var value = 0f
     runBlocking {
         dataStore.data.first {
-            value = it[preferencesKey(key)] ?: default
+            value = it[floatPreferencesKey(key)] ?: default
             true
         }
     }
@@ -186,7 +190,7 @@ fun readLongFlow(key: String, default: Long = 0L): Flow<Long> =
                         throw it
                     }
                 }.map {
-                    it[preferencesKey(key)] ?: default
+                    it[longPreferencesKey(key)] ?: default
                 }
 
 fun readLongData(key: String, default: Long = 0L): Long {
@@ -194,7 +198,7 @@ fun readLongData(key: String, default: Long = 0L): Long {
     runBlocking {
         dataStore.data.first {
 
-            value = it[preferencesKey(key)] ?: default
+            value = it[longPreferencesKey(key)] ?: default
             true
         }
     }
@@ -203,7 +207,7 @@ fun readLongData(key: String, default: Long = 0L): Long {
 
 suspend fun saveBooleanData(key: String, value: Boolean) {
     dataStore.edit { mutablePreferences ->
-        mutablePreferences[preferencesKey(key)] = value
+        mutablePreferences[booleanPreferencesKey(key)] = value
     }
 }
 
@@ -212,7 +216,7 @@ fun saveSyncBooleanData(key: String, value: Boolean) =
 
 suspend fun saveIntData(key: String, value: Int) {
     dataStore.edit { mutablePreferences ->
-        mutablePreferences[preferencesKey(key)] = value
+        mutablePreferences[intPreferencesKey(key)] = value
     }
 }
 
@@ -220,7 +224,7 @@ fun saveSyncIntData(key: String, value: Int) = runBlocking { saveIntData(key, va
 
 suspend fun saveStringData(key: String, value: String) {
     dataStore.edit { mutablePreferences ->
-        mutablePreferences[preferencesKey(key)] = value
+        mutablePreferences[stringPreferencesKey(key)] = value
     }
 }
 
@@ -228,7 +232,7 @@ fun saveSyncStringData(key: String, value: String) = runBlocking { saveStringDat
 
 suspend fun saveFloatData(key: String, value: Float) {
     dataStore.edit { mutablePreferences ->
-        mutablePreferences[preferencesKey(key)] = value
+        mutablePreferences[floatPreferencesKey(key)] = value
     }
 }
 
@@ -236,7 +240,7 @@ fun saveSyncFloatData(key: String, value: Float) = runBlocking { saveFloatData(k
 
 suspend fun saveLongData(key: String, value: Long) {
     dataStore.edit { mutablePreferences ->
-        mutablePreferences[preferencesKey(key)] = value
+        mutablePreferences[longPreferencesKey(key)] = value
     }
 }
 

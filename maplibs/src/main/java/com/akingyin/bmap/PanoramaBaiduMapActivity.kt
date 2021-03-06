@@ -6,11 +6,12 @@ import com.akingyin.base.SimpleActivity
 import com.akingyin.base.ext.no
 import com.akingyin.base.ext.yes
 import com.akingyin.map.R
+import com.akingyin.map.databinding.ActivityBaiduPanoramaBinding
 import com.baidu.lbsapi.panoramaview.ImageMarker
 import com.baidu.lbsapi.panoramaview.PanoramaView
 import com.baidu.lbsapi.panoramaview.PanoramaViewListener
 import com.baidu.lbsapi.tools.Point
-import kotlinx.android.synthetic.main.activity_baidu_panorama.*
+
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -50,9 +51,19 @@ class PanoramaBaiduMapActivity : SimpleActivity() {
 
     }
 
+    lateinit var viewBinding:ActivityBaiduPanoramaBinding
+
+    override fun useViewBind()=true
+
+    override fun initViewBind() {
+        super.initViewBind()
+        viewBinding = ActivityBaiduPanoramaBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
+    }
+
     override fun initView() {
-        panorama.setPanoramaImageLevel(PanoramaView.ImageDefinition.ImageDefinitionHigh)
-        panorama.setShowTopoLink(false)
+        viewBinding.panorama.setPanoramaImageLevel(PanoramaView.ImageDefinition.ImageDefinitionHigh)
+        viewBinding.panorama.setShowTopoLink(false)
         val imageMarker = ImageMarker().apply {
             setMarkerPosition(Point(lat,lng))
             setMarker(ContextCompat.getDrawable(this@PanoramaBaiduMapActivity,R.drawable.icon_openmap_mark))
@@ -60,8 +71,8 @@ class PanoramaBaiduMapActivity : SimpleActivity() {
         imageMarker.setOnTabMarkListener {
             showTips(addr.isEmpty().yes { "这是目标位置" }.no { addr })
         }
-        panorama.addMarker(imageMarker)
-        panorama.setPanoramaViewListener(object :PanoramaViewListener{
+        viewBinding.panorama.addMarker(imageMarker)
+        viewBinding.panorama.setPanoramaViewListener(object :PanoramaViewListener{
             override fun onCustomMarkerClick(p0: String?) {
 
             }
@@ -100,7 +111,7 @@ class PanoramaBaiduMapActivity : SimpleActivity() {
         GlobalScope.launch(IO){
             println("thread="+Thread.currentThread().name+"-"+Thread.currentThread().id)
 
-            panorama.setPanorama(lng,lat)
+            viewBinding.panorama.setPanorama(lng,lat)
         }
     }
 
@@ -110,17 +121,17 @@ class PanoramaBaiduMapActivity : SimpleActivity() {
 
     override fun onResume() {
         super.onResume()
-        panorama.onResume()
+        viewBinding.panorama.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        panorama.onPause()
+        viewBinding.panorama.onPause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        panorama.destroy()
+        viewBinding.panorama.destroy()
     }
 }
 

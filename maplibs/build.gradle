@@ -14,7 +14,11 @@ android {
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     consumerProguardFiles 'consumer-rules.pro'
   }
-
+  buildFeatures{
+    //dataBinding = true
+    // for view binding :
+    viewBinding = true
+  }
   lintOptions {
     disable 'GoogleAppIndexingWarning'
     abortOnError false

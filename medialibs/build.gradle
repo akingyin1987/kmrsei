@@ -107,7 +107,7 @@ dependencies {
 
   implementation "androidx.exifinterface:exifinterface:1.3.2"
 
-  implementation 'me.gujun.android.taggroup:library:1.5@aar'
+  implementation 'me.gujun.android.taggroup:library:1.4@aar'
 
    //录音相关
   implementation 'com.github.adrielcafe:AndroidAudioRecorder:0.3.0'

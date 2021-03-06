@@ -17,6 +17,12 @@ android {
     consumerProguardFiles 'proguard-rules.pro'
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
+
+  buildFeatures{
+    //dataBinding = true
+    // for view binding :
+    viewBinding = true
+  }
   kotlinOptions {
     jvmTarget = "1.8"
   }
