@@ -18,7 +18,6 @@ import com.zlcdgroup.mrsei.databinding.ActivityDropdownMenuBinding
 import com.zlcdgroup.mrsei.ui.adapter.DropMenuAdapter
 import com.zlcdgroup.mrsei.viewModel.DropDownMenuViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.include_toolbar.*
 import javax.inject.Inject
 
 /**
@@ -46,7 +45,7 @@ class DropDownMenuActivity :BaseVMActivity<ActivityDropdownMenuBinding, DropDown
     }
 
     override fun initView() {
-       setToolBar(toolbar, "测试筛选")
+       setToolBar(mDataBind.bar.toolbar, "测试筛选")
 
         mDataBind.dropDownMenu.setMenuAdapter(dropMenuAdapter)
     }

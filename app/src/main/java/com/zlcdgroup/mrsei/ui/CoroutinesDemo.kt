@@ -51,7 +51,7 @@ class CoroutinesDemo :BaseDaggerActivity() {
 
     override fun initView() {
 
-        setToolBar(toolbar,"协程测试")
+        setToolBar( bindView.topBar.toolbar,"协程测试")
 
 
         GlobalScope.launch (IO){

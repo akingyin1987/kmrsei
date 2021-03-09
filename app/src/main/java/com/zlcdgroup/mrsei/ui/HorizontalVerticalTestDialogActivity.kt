@@ -16,11 +16,12 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.bottomsheets.BottomSheet
+
 import com.afollestad.materialdialogs.customview.customView
 import com.akingyin.base.ext.click
 import com.zlcdgroup.mrsei.R
-import kotlinx.android.synthetic.main.activity_horizontal_vertical_test.*
+import com.zlcdgroup.mrsei.databinding.ActivityHorizontalVerticalTestBinding
+
 
 
 /**
@@ -31,18 +32,21 @@ import kotlinx.android.synthetic.main.activity_horizontal_vertical_test.*
  */
 class HorizontalVerticalTestDialogActivity : AppCompatActivity() {
 
+    lateinit var viewBinding : ActivityHorizontalVerticalTestBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_horizontal_vertical_test)
-        btn_change.click {
+        viewBinding = ActivityHorizontalVerticalTestBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
+        viewBinding.btnChange.click {
             when(resources.configuration.orientation){
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    tv_info.text = "当前为竖屏"
+                    viewBinding.tvInfo.text = "当前为竖屏"
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
                 }
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    tv_info.text = "当前为横屏"
+                    viewBinding.tvInfo.text = "当前为横屏"
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
                 }
@@ -56,7 +60,7 @@ class HorizontalVerticalTestDialogActivity : AppCompatActivity() {
             }
         }
 
-        btn_dialog.click {
+        viewBinding.btnDialog.click {
 
            // BottomSheet
           val dialog =  MaterialDialog(this).show {
@@ -89,10 +93,10 @@ class HorizontalVerticalTestDialogActivity : AppCompatActivity() {
         super.onResume()
         when(resources.configuration.orientation){
             Configuration.ORIENTATION_LANDSCAPE -> {
-                tv_info.text = "当前为横屏"
+                viewBinding.tvInfo.text = "当前为横屏"
             }
             Configuration.ORIENTATION_PORTRAIT -> {
-                tv_info.text = "当前为竖屏"
+                viewBinding.tvInfo.text = "当前为竖屏"
             }
 
             Configuration.ORIENTATION_SQUARE -> {

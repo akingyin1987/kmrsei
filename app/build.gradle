@@ -177,8 +177,9 @@ dependencies {
   implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
   // paging
   def paging_version = "3.0.0-beta01"
-
   implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+  // optional - RxJava3 support
+  implementation "androidx.paging:paging-rxjava3:$paging_version"
 
 
   implementation 'androidx.multidex:multidex:2.0.1'
@@ -219,6 +220,16 @@ dependencies {
   implementation project(path: ':medialibs')
   implementation project(path: ':fitterlib')
 
+  implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+  // kotlin 多维数组
+  implementation "org.jetbrains.kotlinx:multik-api:0.0.1"
+  implementation "org.jetbrains.kotlinx:multik-default:0.0.1"
+
+//  //企业反馈
+//  def enterprise_version = "1.1.0"
+//  implementation "androidx.enterprise:enterprise-feedback:$enterprise_version"
+//  // For testing enterprise feedback in isolation
+//  implementation "androidx.enterprise:enterprise-feedback-testing:$enterprise_version"
 
 
   // alternatively - without Android dependencies for tests

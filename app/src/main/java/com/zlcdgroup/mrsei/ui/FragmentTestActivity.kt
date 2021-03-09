@@ -7,9 +7,9 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.akingyin.base.SimpleActivity
 import com.google.android.material.tabs.TabLayout
 import com.zlcdgroup.mrsei.R
+import com.zlcdgroup.mrsei.databinding.ActivityFragmentsBinding
 import com.zlcdgroup.mrsei.ui.fragment.FragmentLayzTest
 import com.zlcdgroup.mrsei.ui.fragment.FragmentViewPager
-import kotlinx.android.synthetic.main.activity_fragments.*
 
 /**
  * 测试 Fragment+Viewpager 懒加载问题
@@ -24,6 +24,16 @@ class FragmentTestActivity : SimpleActivity() {
     }
 
     override fun getLayoutId()= R.layout.activity_fragments
+
+    lateinit var viewBinding : ActivityFragmentsBinding
+
+    override fun useViewBind()=true
+
+    override fun initViewBind() {
+        super.initViewBind()
+        viewBinding = ActivityFragmentsBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
+    }
 
     override fun initializationData(savedInstanceState: Bundle?) {
     }
@@ -41,8 +51,8 @@ class FragmentTestActivity : SimpleActivity() {
             fragments.add(FragmentLayzTest.newInstance("frag-data$i"))
         }
 
-        viewpager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
-        tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+        viewBinding.viewpager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(viewBinding.tabLayout))
+        viewBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
 
@@ -51,12 +61,12 @@ class FragmentTestActivity : SimpleActivity() {
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    viewpager.currentItem = it.position
+                    viewBinding.viewpager.currentItem = it.position
                 }
             }
         })
-        viewpager.adapter = FragmentListAdapter(fragments,titles,supportFragmentManager)
-        tab_layout.setupWithViewPager(viewpager)
+        viewBinding.viewpager.adapter = FragmentListAdapter(fragments,titles,supportFragmentManager)
+        viewBinding.tabLayout.setupWithViewPager(viewBinding.viewpager)
 
 
     }

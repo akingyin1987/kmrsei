@@ -14,7 +14,8 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import com.akingyin.base.SimpleActivity
 import com.akingyin.base.ext.click
 import com.zlcdgroup.mrsei.R
-import kotlinx.android.synthetic.main.benchmark_motion_layout.*
+import com.zlcdgroup.mrsei.databinding.BenchmarkMotionLayoutBinding
+
 
 /**
  * @ Description:
@@ -26,7 +27,15 @@ class MotionTestActivity : SimpleActivity(){
     override fun initInjection() {
     }
 
+    lateinit var viewBinding :BenchmarkMotionLayoutBinding
     override fun getLayoutId()= R.layout.benchmark_motion_layout
+    override fun useViewBind()=true
+
+    override fun initViewBind() {
+        super.initViewBind()
+        viewBinding = BenchmarkMotionLayoutBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
+    }
 
     override fun initializationData(savedInstanceState: Bundle?) {
 
@@ -39,17 +48,18 @@ class MotionTestActivity : SimpleActivity(){
 
 
     override fun initView() {
-        save.click {
+
+        viewBinding.save.click {
            if(it.text == "保存"){
-               motion_layout.transitionToEnd()
+               viewBinding.motionLayout.transitionToEnd()
                onCardCollapsed()
            }else{
-               motion_layout.transitionToStart()
+               viewBinding.motionLayout.transitionToStart()
                onCardExpanded()
            }
 
         }
-        motion_layout.setTransitionListener(object :MotionLayout.TransitionListener{
+        viewBinding.motionLayout.setTransitionListener(object :MotionLayout.TransitionListener{
             override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
 
             }
@@ -75,24 +85,24 @@ class MotionTestActivity : SimpleActivity(){
 
 
     private fun onCardExpanded() {
-        save.setText(R.string.save)
+        viewBinding.save.setText(R.string.save)
 
-        ground_truth_lat_text.isEnabled = true
-        ground_truth_long_text.isEnabled = true
-        ground_truth_alt_text.isEnabled = true
-        ground_truth_lat_text.isFocusable = true
-        ground_truth_long_text.isFocusable = true
-        ground_truth_alt_text.isFocusable = true
+        viewBinding.groundTruthAltText.isEnabled = true
+        viewBinding.groundTruthLongText.isEnabled = true
+        viewBinding.groundTruthAltText.isEnabled = true
+        viewBinding.groundTruthLatText.isFocusable = true
+        viewBinding.groundTruthLongText.isFocusable = true
+        viewBinding.groundTruthLatText.isFocusable = true
     }
 
     private fun onCardCollapsed() {
-        save.setText(R.string.edit)
-        ground_truth_lat_text.isEnabled = false
-        ground_truth_long_text.isEnabled = false
-        ground_truth_alt_text.isEnabled = false
-        ground_truth_lat_text.isFocusable = false
-        ground_truth_long_text.isFocusable = false
-        ground_truth_alt_text.isFocusable = false
+        viewBinding.save.setText(R.string.edit)
+        viewBinding.groundTruthAltText.isEnabled = false
+        viewBinding.groundTruthLongText.isEnabled = false
+        viewBinding.groundTruthAltText.isEnabled = false
+        viewBinding.groundTruthLatText.isFocusable = false
+        viewBinding.groundTruthLongText.isFocusable = false
+        viewBinding.groundTruthLatText.isFocusable = false
     }
 
 
