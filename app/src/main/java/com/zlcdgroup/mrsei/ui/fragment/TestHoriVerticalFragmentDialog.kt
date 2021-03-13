@@ -9,17 +9,14 @@
 
 package com.zlcdgroup.mrsei.ui.fragment
 
-import android.content.pm.ActivityInfo
+
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
-import com.umeng.socialize.utils.DeviceConfig
 import com.zlcdgroup.mrsei.R
-import kotlinx.coroutines.withTimeoutOrNull
+
 
 /**
  * @ Description:

@@ -6,13 +6,13 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.zlcdgroup.stms.di
-
-import com.squareup.inject.assisted.dagger2.AssistedModule
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
-import dagger.hilt.android.components.FragmentComponent
+//package com.zlcdgroup.mrsei.di.module
+//
+//import com.squareup.inject.assisted.dagger2.AssistedModule
+//import dagger.Module
+//import dagger.hilt.InstallIn
+//import dagger.hilt.android.components.ActivityComponent
+//import dagger.hilt.android.components.FragmentComponent
 
 /**
  * @ Description:
@@ -25,9 +25,13 @@ import dagger.hilt.android.components.FragmentComponent
 // We need to make a decision about where to install it.
 // In this case, as we only need it in fragments, we install it there.
 // source: https://gist.github.com/manuelvicnt/437668cda3a891d347e134b1de29aee1
-@InstallIn(ActivityComponent::class,FragmentComponent::class)
-@AssistedModule
-//@Module(includes = [AssistedInject_AssistedInjectModule::class])
-@Module
-// Needed until AssistedInject is incorporated into Dagger
-interface AssistedInjectModule
+
+
+
+
+//@InstallIn(ActivityComponent::class,FragmentComponent::class)
+//@AssistedModule
+////@Module(includes = [AssistedInject_AssistedInjectModule::class])
+//@Module
+//// Needed until AssistedInject is incorporated into Dagger
+//interface AssistedInjectModule

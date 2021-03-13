@@ -1,12 +1,16 @@
 package com.zlcdgroup.mrsei.ui.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.akingyin.base.SimpleFragment
 import com.akingyin.base.ext.currentTimeMillis
 import com.akingyin.base.utils.DateUtil
 import com.akingyin.base.utils.RandomUtil
 import com.zlcdgroup.mrsei.R
-import kotlinx.android.synthetic.main.fragment_test.*
+import com.zlcdgroup.mrsei.databinding.FragmentTestBinding
+
 
 /**
  *
@@ -18,7 +22,16 @@ import kotlinx.android.synthetic.main.fragment_test.*
  */
 class FragmentLayzTest : SimpleFragment() {
 
+    lateinit var bindView:FragmentTestBinding
     override fun getLayoutId()= R.layout.fragment_test
+    override fun useViewBind()=true
+
+    override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View {
+        return FragmentTestBinding.inflate(inflater,container,false).also {
+            bindView = it
+        }.root
+    }
+
     override fun initView() {
 
     }
@@ -34,7 +47,7 @@ class FragmentLayzTest : SimpleFragment() {
     }
 
     override fun initEventAndData() {
-        tv_info.text = arguments?.getString("data")?:TAG
+        bindView.tvInfo.text = arguments?.getString("data")?:TAG
         println("initEventAndData->${arguments?.getString("data")}")
     }
 

@@ -3,6 +3,7 @@ package com.zlcdgroup.mrsei.ui.fragment
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import com.afollestad.materialdialogs.MaterialDialog
 import com.akingyin.base.BaseFragment
@@ -14,13 +15,12 @@ import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.entity.UserEntity
+import com.zlcdgroup.mrsei.databinding.FragmentUserlistBinding
 import com.zlcdgroup.mrsei.presenter.UserListFragmentContract
 import com.zlcdgroup.mrsei.presenter.impl.UserListFragmentPresenterImpl
 import com.zlcdgroup.mrsei.ui.adapter.UserListAdapter
 import com.zlcdgroup.mrsei.ui.adapter.UserViewHolder
 import dagger.hilt.android.AndroidEntryPoint
-
-import kotlinx.android.synthetic.main.fragment_userlist.*
 import java.util.*
 import javax.inject.Inject
 
@@ -50,7 +50,15 @@ class  UserListFragment  :BaseFragment() ,UserListFragmentContract.View , Blocki
     lateinit   var  onNavigationBarListener:OnNavigationBarListener
 
 
+    lateinit var bindView:FragmentUserlistBinding
 
+    override fun useViewBind()=true
+
+    override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View? {
+        return FragmentUserlistBinding.inflate(inflater,container,false).also {
+            bindView = it
+        }.root
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -137,9 +145,9 @@ class  UserListFragment  :BaseFragment() ,UserListFragmentContract.View , Blocki
 
         userListFragmentPresenterImpl.attachView(this)
 
-        recycle.layoutManager= androidx.recyclerview.widget.LinearLayoutManager(requireContext())
-        recycle.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
-        recycle.adapter = userListAdapter
+        bindView.recycle.layoutManager= androidx.recyclerview.widget.LinearLayoutManager(requireContext())
+        bindView.recycle.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
+        bindView.recycle.adapter = userListAdapter
         userListAdapter.setOnItemClickListener{
             _, _, position ->
             showModifyUser(userListAdapter.getItem(position),position)
@@ -150,7 +158,7 @@ class  UserListFragment  :BaseFragment() ,UserListFragmentContract.View , Blocki
              true
 
         }
-        fab.setOnClickListener {
+        bindView.fab.setOnClickListener {
              showAddUserDialog()
 
         }

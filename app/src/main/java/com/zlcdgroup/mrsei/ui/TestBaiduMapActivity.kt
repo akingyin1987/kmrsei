@@ -32,8 +32,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.model.BdModel
+import com.zlcdgroup.mrsei.databinding.ActivityTestBaiduMarkerBinding
 import com.zlcdgroup.nfcsdk.RfidInterface
-import kotlinx.android.synthetic.main.activity_test_baidu_marker.*
+
 
 
 
@@ -110,7 +111,7 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
         super.initView()
         val bar = findViewById<Toolbar>(R.id.toolbar)
         setToolBar(bar,"百度地图marker测试")
-        behavior = from(bottom_sheet_view)
+        behavior = from(bindView.bottomSheetView)
         behavior.state = STATE_HIDDEN
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -138,6 +139,18 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
     }
 
     override fun getLayoutId()= R.layout.activity_test_baidu_marker
+
+
+    override fun useViewBind() = true
+
+    lateinit var bindView:ActivityTestBaiduMarkerBinding
+
+    override fun initViewBind() {
+        super.initViewBind()
+        bindView = ActivityTestBaiduMarkerBinding.inflate(layoutInflater)
+        setContentView(bindView.root)
+
+    }
 
     override fun onSaveInstanceData(outState: Bundle?) {
 
@@ -220,12 +233,13 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
         if(supportMapCluster()){
             behavior.state = STATE_HIDDEN
         }
-        if (drawer_view.isDrawerOpen(GravityCompat.END)) {
+
+        if (bindView.drawerView.isDrawerOpen(GravityCompat.END)) {
             println("---------isDrawerOpen---------")
-            drawer_view.closeDrawer(GravityCompat.END)
+            bindView.drawerView.closeDrawer(GravityCompat.END)
         }else{
             println("openDrawer---------")
-            drawer_view.openDrawer(GravityCompat.END,true)
+            bindView.drawerView.openDrawer(GravityCompat.END,true)
         }
 
     }
@@ -251,8 +265,9 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
             initClickMarkerIcon(marker)
             if(null == viewPager2Adapter){
                 viewPager2Adapter = MarkerInfoListRecycleAdapter()
-                recycler.adapter = viewPager2Adapter
-                recycler.itemAnimator = DefaultItemAnimator()
+
+                bindView.recycler.adapter = viewPager2Adapter
+                bindView.recycler.itemAnimator = DefaultItemAnimator()
             }
             viewPager2Adapter?.setNewInstance(it.items.toMutableList())
             behavior.state = STATE_COLLAPSED
@@ -271,8 +286,8 @@ class TestBaiduMapActivity : AbstractBaiduMapMarkersActivity<BdModel>(){
             behavior.state = STATE_HIDDEN
             return
         }
-        if(drawer_view.isDrawerOpen(GravityCompat.END)){
-            drawer_view.closeDrawer(GravityCompat.END)
+        if(bindView.drawerView.isDrawerOpen(GravityCompat.END)){
+            bindView.drawerView.closeDrawer(GravityCompat.END)
             return
         }
         super.onBackPressed()

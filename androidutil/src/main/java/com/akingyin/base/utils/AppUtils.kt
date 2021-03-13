@@ -16,6 +16,7 @@ import android.content.Context
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
+
 import java.io.File
 import java.lang.Exception
 import java.util.*
@@ -311,7 +312,12 @@ class AppUtils private constructor() {
             } else try {
                 val pm = Utils.getApp().packageManager
                 val pi = pm.getPackageInfo(packageName!!, 0)
-                pi?.longVersionCode?.toInt() ?: -1
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    pi?.longVersionCode?.toInt() ?: -1
+                } else {
+                   pi.versionCode
+                }
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
                 -1
@@ -428,6 +434,7 @@ class AppUtils private constructor() {
          * @param pi 包的信息
          * @return AppInfo类
          */
+
         private fun getBean(pm: PackageManager?, pi: PackageInfo?): AppInfo? {
             if (pm == null || pi == null) {
                 return null
@@ -438,7 +445,11 @@ class AppUtils private constructor() {
             val icon = ai.loadIcon(pm)
             val packagePath = ai.sourceDir
             val versionName = pi.versionName
-            val versionCode = pi.longVersionCode.toInt()
+            val versionCode =  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                pi.longVersionCode.toInt()
+            } else {
+                pi.versionCode
+            }
             val isSystem = ApplicationInfo.FLAG_SYSTEM and ai.flags != 0
             return AppInfo(packageName, name, icon, packagePath, versionName, versionCode, isSystem)
         }// 获取系统中安装的所有软件信息

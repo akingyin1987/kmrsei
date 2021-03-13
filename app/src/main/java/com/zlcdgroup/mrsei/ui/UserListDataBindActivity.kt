@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.widget.EditText
 import androidx.annotation.Nullable
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
@@ -12,12 +11,12 @@ import com.akingyin.base.BaseDaggerActivity
 import com.akingyin.base.ext.click
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.entity.UserEntity
+import com.zlcdgroup.mrsei.databinding.ActivityUserlistBinding
 import com.zlcdgroup.mrsei.presenter.UserListContract
 import com.zlcdgroup.mrsei.presenter.impl.UserListPresenterImpl
 import com.zlcdgroup.mrsei.ui.adapter.DataBindUserListAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_userlist.*
-import kotlinx.android.synthetic.main.include_toolbar.*
+
 import javax.inject.Inject
 
 /**
@@ -39,20 +38,27 @@ class UserListDataBindActivity :BaseDaggerActivity(), UserListContract.View{
 
     override fun getLayoutId() = R.layout.activity_userlist
 
+    lateinit var bindView : ActivityUserlistBinding
+    override fun initDataBindView() {
+        super.initDataBindView()
+
+        bindView = DataBindingUtil.setContentView(this,getLayoutId())
+    }
+
     override fun initializationData(savedInstanceState: Bundle?) {
-       DataBindingUtil.setContentView<ViewDataBinding>(this,getLayoutId())
-       recycle.layoutManager = LinearLayoutManager(this)
-       recycle.itemAnimator = DefaultItemAnimator()
-       recycle.adapter = userListAdapter
+
+       bindView.recycle.layoutManager = LinearLayoutManager(this)
+        bindView.recycle.itemAnimator = DefaultItemAnimator()
+        bindView.recycle.adapter = userListAdapter
        userListAdapter.setNewInstance(userListPresenterImpl.getUserList()?.toMutableList())
        userListPresenterImpl.attachView(this)
-        setToolBar(toolbar,"dataBind")
-       fab.click {
+        setToolBar(bindView.topBar.toolbar,"dataBind")
+       bindView.fab.click {
            showAddOrModifyUser(UserEntity(),-1)
        }
         userListAdapter.setOnItemClickListener { _, _, position ->
             val userEntity = userListAdapter.getItem(position)
-            showAddOrModifyUser(userEntity!!,position)
+            showAddOrModifyUser(userEntity,position)
         }
     }
 

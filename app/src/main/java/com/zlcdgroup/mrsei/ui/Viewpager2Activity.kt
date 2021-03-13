@@ -16,17 +16,25 @@ import androidx.viewpager2.adapter.FragmentViewHolder
 import androidx.viewpager2.widget.ViewPager2
 import com.akingyin.base.SimpleActivity
 import com.zlcdgroup.mrsei.R
+import com.zlcdgroup.mrsei.databinding.ActivityViewpager2Binding
 import com.zlcdgroup.mrsei.ui.fragment.FragmentLayzTest
-import kotlinx.android.synthetic.main.activity_viewpager2.*
-import kotlinx.android.synthetic.main.include_toolbar.*
+
 
 class Viewpager2Activity :SimpleActivity() {
 
     override fun initInjection() {
 
     }
+    lateinit var bindView:ActivityViewpager2Binding
 
     override fun getLayoutId() = R.layout.activity_viewpager2
+    override fun useViewBind() = true
+
+    override fun initViewBind() {
+        super.initViewBind()
+        bindView = ActivityViewpager2Binding.inflate(layoutInflater)
+        setContentView(bindView.root)
+    }
 
     override fun initializationData(savedInstanceState: Bundle?) {
 
@@ -38,13 +46,13 @@ class Viewpager2Activity :SimpleActivity() {
 
     private  var  selectPostion = 0
     override fun initView() {
-       setToolBar(toolbar, "")
-         var  adapter = FragmentListAdapter()
-        viewpager.adapter = adapter
-        viewpager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        viewpager.isUserInputEnabled = true
+       setToolBar(bindView.topBar.toolbar, "")
+         val adapter = FragmentListAdapter()
+        bindView.viewpager.adapter = adapter
+        bindView.viewpager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        bindView.viewpager.isUserInputEnabled = true
 
-        viewpager.registerOnPageChangeCallback(object :ViewPager2.OnPageChangeCallback(){
+        bindView.viewpager.registerOnPageChangeCallback(object :ViewPager2.OnPageChangeCallback(){
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
                 println("onPageScrolled=$position,$positionOffset,$positionOffsetPixels")
@@ -52,15 +60,15 @@ class Viewpager2Activity :SimpleActivity() {
 
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                viewpager.isUserInputEnabled = false
+                bindView.viewpager.isUserInputEnabled = false
                 if(selectPostion<position){
                     if(!adapter.getItemFragment(selectPostion).isComplete()){
-                        viewpager.currentItem = selectPostion
+                        bindView.viewpager.currentItem = selectPostion
                     }
                 }
                 selectPostion = position
 
-                viewpager.isUserInputEnabled = true
+                bindView.viewpager.isUserInputEnabled = true
             }
 
             override fun onPageScrollStateChanged(state: Int) {

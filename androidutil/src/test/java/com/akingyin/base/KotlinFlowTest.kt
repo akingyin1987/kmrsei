@@ -9,11 +9,13 @@
 
 package com.akingyin.base
 
+import android.os.Build
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import org.junit.Before
 import org.junit.Test
 
@@ -128,6 +130,28 @@ class KotlinFlowTest {
        }
 
        Thread.sleep(15000)
+    }
+
+
+    @Test
+    fun  test5(){
+      var job = GlobalScope.launch {
+
+          var child = launch {
+              delay(Long.MAX_VALUE)
+          }
+          yield()
+          println("cancel child")
+          child.cancel()
+          child.join()
+          yield()
+          println("parent is not cancel")
+      }
+      GlobalScope.launch {
+          job.join()
+      }
+
+
     }
 
 

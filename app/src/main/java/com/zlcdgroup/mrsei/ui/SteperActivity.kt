@@ -7,12 +7,10 @@ import com.akingyin.base.BaseDaggerActivity
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
 import com.zlcdgroup.mrsei.R
+import com.zlcdgroup.mrsei.databinding.ActivityStepperBinding
 import com.zlcdgroup.mrsei.ui.adapter.SampleStepAdapter
 import com.zlcdgroup.mrsei.ui.fragment.OnNavigationBarListener
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_stepper.*
-import kotlinx.android.synthetic.main.include_toolbar.*
-import javax.inject.Inject
 
 /**
  * @ Description:
@@ -35,16 +33,26 @@ class SteperActivity : BaseDaggerActivity() , StepperLayout.StepperListener, OnN
 
     override fun initializationData(savedInstanceState: Bundle?) {
         sampleStepAdapter = SampleStepAdapter(this,supportFragmentManager)
-        stepperLayout.adapter = sampleStepAdapter
+        bindView.stepperLayout.adapter = sampleStepAdapter
 
-        stepperLayout.setListener(this)
+        bindView.stepperLayout.setListener(this)
+    }
+
+    override fun useViewBind()=true
+
+    lateinit var bindView : ActivityStepperBinding
+
+    override fun initViewBind() {
+        super.initViewBind()
+        bindView = ActivityStepperBinding.inflate(layoutInflater)
+        setContentView(bindView.root)
     }
 
     override fun onSaveInstanceData(outState: Bundle?) {
     }
 
     override fun initView() {
-       setToolBar(toolbar,"测试2")
+       setToolBar(bindView.topBar.toolbar,"测试2")
     }
 
     override fun startRequest() {
@@ -69,14 +77,14 @@ class SteperActivity : BaseDaggerActivity() , StepperLayout.StepperListener, OnN
     }
 
     override fun onChangeEndButtonsEnabled(enabled: Boolean) {
-        stepperLayout.setNextButtonVerificationFailed(!enabled)
-        stepperLayout.setCompleteButtonVerificationFailed(!enabled)
+        bindView.stepperLayout.setNextButtonVerificationFailed(!enabled)
+        bindView.stepperLayout.setCompleteButtonVerificationFailed(!enabled)
     }
 
     override fun onBackPressed() {
-        val currentStepPosition = stepperLayout.currentStepPosition
+        val currentStepPosition = bindView.stepperLayout.currentStepPosition
         if (currentStepPosition > 0) {
-            stepperLayout.onBackClicked()
+            bindView.stepperLayout.onBackClicked()
         } else {
             super.onBackPressed()
         }

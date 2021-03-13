@@ -1,13 +1,17 @@
 package com.zlcdgroup.mrsei.ui.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.akingyin.base.SimpleFragment
 import com.google.android.material.tabs.TabLayout
 import com.zlcdgroup.mrsei.R
-import kotlinx.android.synthetic.main.fragment_tab_viewpager.*
+import com.zlcdgroup.mrsei.databinding.FragmentTabViewpagerBinding
+
 
 /**
  * @ Description:
@@ -17,24 +21,33 @@ import kotlinx.android.synthetic.main.fragment_tab_viewpager.*
  */
 class FragmentViewPager : SimpleFragment(){
 
+    lateinit var bindView:FragmentTabViewpagerBinding
+
+    override fun useViewBind()=true
+
+    override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View {
+        return FragmentTabViewpagerBinding.inflate(inflater,container,false).also {
+            bindView = it
+        }.root
+    }
 
     override fun initView() {
         val  data = mutableListOf<Fragment>()
-        println("null==${null == tab_layout}")
+
         for (i in 1..8){
             data.add(FragmentLayzTest.newInstance("ViewPager2-$i"))
-            tab_layout.addTab(TabLayout.Tab().apply {
+            bindView.tabLayout.addTab(TabLayout.Tab().apply {
                 text="page$i"
             })
         }
-        viewpager.adapter = MyFragmentStateAdapter(this,data)
-        viewpager.registerOnPageChangeCallback(object :ViewPager2.OnPageChangeCallback(){
+        bindView.viewpager.adapter = MyFragmentStateAdapter(this,data)
+        bindView.viewpager.registerOnPageChangeCallback(object :ViewPager2.OnPageChangeCallback(){
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                tab_layout.selectTab(tab_layout.getTabAt(position))
+                bindView.tabLayout.selectTab(bindView.tabLayout.getTabAt(position))
             }
         })
-        tab_layout.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
+        bindView.tabLayout.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
 
@@ -43,7 +56,7 @@ class FragmentViewPager : SimpleFragment(){
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    viewpager.currentItem = it.position
+                    bindView.viewpager.currentItem = it.position
                 }
             }
         })

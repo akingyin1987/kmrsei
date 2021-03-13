@@ -18,7 +18,6 @@ import com.akingyin.base.ble.ui.SearchDeviceListActivity
 import com.akingyin.base.config.AppFileConfig
 import com.akingyin.base.utils.HtmlUtils
 import com.akingyin.media.camera.CameraData
-import com.akingyin.media.camera.ui.CameraActivity
 import com.akingyin.media.camerax.ui.CameraxActivity
 import com.akingyin.media.model.*
 import com.akingyin.media.ui.MediaSelectDownloadViewPager2Activity
@@ -27,8 +26,8 @@ import com.akingyin.media.ui.MediaViewPager2Activity
 import com.akingyin.util.MediaIntentUtil
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.data.model.FunModel
+import com.zlcdgroup.mrsei.databinding.ActivityTestFunBinding
 import com.zlcdgroup.mrsei.ui.adapter.FunListAdapter
-import kotlinx.android.synthetic.main.activity_test_fun.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -49,6 +48,17 @@ class TestFunActivity : SimpleActivity() {
 
     override fun getLayoutId() = R.layout.activity_test_fun
 
+    lateinit var bindView : ActivityTestFunBinding
+
+
+    override fun useViewBind() = true
+
+    override fun initViewBind() {
+        super.initViewBind()
+        bindView = ActivityTestFunBinding.inflate(layoutInflater)
+        setContentView(bindView.root)
+    }
+
     override fun initializationData(savedInstanceState: Bundle?) {
 
     }
@@ -61,9 +71,9 @@ class TestFunActivity : SimpleActivity() {
     override fun initView() {
        val  toolbar  = findViewById<Toolbar>(R.id.toolbar)
         setToolBar(toolbar,"功能测试")
-        recycler.itemAnimator = DefaultItemAnimator()
+        bindView.recycler.itemAnimator = DefaultItemAnimator()
         funListAdapter = FunListAdapter()
-        recycler.adapter = funListAdapter
+        bindView.recycler.adapter = funListAdapter
         GlobalScope.launch (Main){
             funListAdapter.setNewInstance(
                     withContext(IO){

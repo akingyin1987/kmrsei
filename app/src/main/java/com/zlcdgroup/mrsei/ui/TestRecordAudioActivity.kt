@@ -14,8 +14,8 @@ import com.akingyin.base.SimpleActivity
 import com.akingyin.base.ext.click
 import com.akingyin.base.utils.CallLogUtil
 import com.zlcdgroup.mrsei.R
-import kotlinx.android.synthetic.main.activity_record_audio.*
-import kotlinx.android.synthetic.main.include_toolbar.*
+import com.zlcdgroup.mrsei.databinding.ActivityRecordAudioBinding
+
 
 /**
  * @ Description:
@@ -31,6 +31,16 @@ class TestRecordAudioActivity :SimpleActivity() {
 
     override fun getLayoutId() = R.layout.activity_record_audio
 
+    lateinit var bindView:ActivityRecordAudioBinding
+
+    override fun useViewBind()=true
+
+    override fun initViewBind() {
+        super.initViewBind()
+        bindView = ActivityRecordAudioBinding.inflate(layoutInflater)
+        setContentView(bindView.root)
+    }
+
     override fun initializationData(savedInstanceState: Bundle?) {
 
     }
@@ -40,8 +50,8 @@ class TestRecordAudioActivity :SimpleActivity() {
     }
 
     override fun initView() {
-        setToolBar(toolbar,"测试录音")
-        btn_tel.click {
+        setToolBar(bindView.bar.toolbar,"测试录音")
+        bindView.tvTel.click {
             CallLogUtil.findCurrentTel(this)
         }
     }
