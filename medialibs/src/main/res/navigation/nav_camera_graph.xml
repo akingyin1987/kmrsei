@@ -20,6 +20,7 @@
       tools:layout="@layout/fragment_no_camera_permissions">
     <action
         android:id="@+id/action_permissions_to_camera"
+
         app:destination="@id/camera_fragment"
         app:popUpTo="@id/permissions_fragment"
         app:popUpToInclusive="true" />

@@ -235,7 +235,7 @@ dependencies {
   // alternatively - without Android dependencies for tests
   testImplementation "androidx.paging:paging-common-ktx:$paging_version"
 
-
+  testImplementation  "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
   debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
   // Test helpers
   testImplementation "androidx.room:room-testing:$room_version"

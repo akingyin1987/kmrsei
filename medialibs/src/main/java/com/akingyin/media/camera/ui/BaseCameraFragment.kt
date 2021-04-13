@@ -91,6 +91,26 @@ open class BaseCameraFragment : SimpleFragment() {
 
     private  var  volumeKeyControlBroadcast :BroadcastReceiver = VolumeKeyControlBroadcast()
 
+    private  var  cameraInfoBroadcastReceiver : BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let {
+                when(it.action){
+                    CameraxManager.KEY_CAMERA_PHOTO_ADD_ACTION->{
+                        val complete = it.getBooleanExtra("complete",false)
+                        val  filePath = it.getStringExtra("filePath")?:""
+                        if(!complete){
+                            cameraData.cameraPhotoDatas.add(filePath)
+                            setGalleryThumbnail(Uri.parse(filePath))
+                        }
+
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
     inner  class  VolumeKeyControlBroadcast :BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
            intent?.let {
@@ -164,6 +184,9 @@ open class BaseCameraFragment : SimpleFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         println("onAttach--->>>>>初始化机相管理")
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(cameraInfoBroadcastReceiver,IntentFilter().apply {
+            addAction(CameraxManager.KEY_CAMERA_PHOTO_ADD_ACTION)
+        })
         cameraManager = CameraManager(context) {
             showSucces("运动对焦成功！")
 
@@ -298,14 +321,7 @@ open class BaseCameraFragment : SimpleFragment() {
             bindView.tvLocation.gone()
         }
 
-        if(null != locationEngineManager){
-            locationEngine = locationEngineManager?.createEngine()
-            if(null != locationEngine){
-                bindView.tvLocation.visiable()
-                getLocationInfo()
-            }
 
-        }
         bindView.tvLocation.click {
             getLocationInfo()
         }
@@ -455,7 +471,6 @@ open class BaseCameraFragment : SimpleFragment() {
         cameraParameBuild.localPath = cameraData.localPath
         bindView.viewFinder.takePhoto(cameraParameBuild) { result, error ->
             if (result) {
-                "".md5()
                // CameraManager.startTypeCaptureAnimator(bindView.fabTakePicture, bindView.btnConfig, bindView.btnCancel,bindView.rlTurn)
                 captureImageSuccess()
             } else {
@@ -498,8 +513,12 @@ open class BaseCameraFragment : SimpleFragment() {
                return
             }
         }
+        cameraManager.stopPreview()
+        cameraManager.closeDriver()
+        bindCameraInit = false
         findNavController().navigate(BaseCameraFragmentDirections.actionCameraToPhoto(cameraParameBuild.localPath,sharedPreferencesName,cameraData))
     }
+
 
     private fun setGalleryThumbnail(uri: Uri?) {
         if (cameraData.supportMultiplePhoto) {
@@ -657,6 +676,8 @@ open class BaseCameraFragment : SimpleFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        println("$TAG->onDestory")
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(cameraInfoBroadcastReceiver)
         locationEngine = null
         bindCameraInit = false
         cameraManager.closeDriver()
@@ -686,7 +707,7 @@ open class BaseCameraFragment : SimpleFragment() {
     private  var bindCameraInit = false
     override fun onResume() {
         super.onResume()
-
+        println("onCamera->>>>>>")
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(volumeKeyControlBroadcast, IntentFilter().apply {
             addAction(KEYDOWN_VOLUME_KEY_ACTION)
         })
@@ -716,12 +737,24 @@ open class BaseCameraFragment : SimpleFragment() {
                 showCameraZoomBar(zoom)
             })
 
+        }else{
+            if(!cameraManager.getPreview()){
+                cameraManager.startPreview()
+            }
         }
         bindCameraInit = true
         if(cameraParameBuild.lat<=0.0 && cameraParameBuild.supportLocation){
-            getLocationInfo()
+            if(null != locationEngineManager){
+                locationEngine = locationEngineManager?.createEngine()
+                if(null != locationEngine){
+                    bindView.tvLocation.visiable()
+                    getLocationInfo()
+                }
+
+            }
+
         }
-        println("camera->${cameraManager.getPreview()}")
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -743,6 +776,9 @@ open class BaseCameraFragment : SimpleFragment() {
         super.onPause()
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(volumeKeyControlBroadcast)
         cameraSensorController.onPause()
+        if(bindCameraInit && cameraManager.getPreview()){
+            cameraManager.stopPreview()
+        }
     }
     // Check for the permissions
     private fun allPermissionsGranted() = cameraPermissions.all {

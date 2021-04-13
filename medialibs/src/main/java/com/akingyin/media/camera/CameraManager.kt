@@ -355,8 +355,6 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
      */
     @Synchronized
     fun stopPreview() {
-
-
         if (camera != null && previewing) {
             camera?.stopPreview()
             previewing = false
@@ -450,11 +448,10 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
      */
     @Synchronized
     fun closeDriver() {
+
         if (camera != null) {
             camera?.release()
             camera = null
-
-
         }
     }
 

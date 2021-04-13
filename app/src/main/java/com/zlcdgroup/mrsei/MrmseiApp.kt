@@ -2,7 +2,6 @@ package com.zlcdgroup.mrsei
 
 import android.app.Application
 import android.content.Context
-import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
 import android.text.TextUtils
 import android.widget.Toast
@@ -61,6 +60,7 @@ class MrmseiApp :Application() {
 
     override fun onCreate() {
         super.onCreate()
+
         Ext.with(this)
         DbCore.init(this)
         Utils.init(this)

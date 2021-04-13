@@ -63,17 +63,14 @@ open class CameraActivity :SimpleActivity(){
 
             intent?.let {
                 when(it.action){
-
                     CameraxManager.KEY_CAMERA_PHOTO_COMPLETE_ACTION->{
                         setResultOk(Intent().apply {
                             putExtra("cameraData",it.getParcelableExtra<CameraData>("cameraData"))
                         })
                     }
-
                     CameraxManager.KEY_CAMERA_PHOTO_ADD_ACTION->{
 
                         val complete = it.getBooleanExtra("complete",false)
-
                         val  filePath = it.getStringExtra("filePath")?:""
                         cameraData.localPath = filePath
                         cameraData.cameraPhotoDatas.add(filePath)

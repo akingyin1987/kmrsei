@@ -8,10 +8,10 @@ import com.akingyin.base.BaseDaggerActivity
 
 import com.zlcdgroup.mrsei.R
 import com.zlcdgroup.mrsei.presenter.UserAuthContract
-import com.zlcdgroup.mrsei.ui.adapter.AuthAdapter
+
 import dagger.hilt.android.AndroidEntryPoint
 
-import javax.inject.Inject
+
 
 
 /**
@@ -34,8 +34,7 @@ class AuthActivity :BaseDaggerActivity(),UserAuthContract.View{
     }
 
 
-    @Inject
-    lateinit var  authAdapter :AuthAdapter
+
 
 
     override fun initView() {

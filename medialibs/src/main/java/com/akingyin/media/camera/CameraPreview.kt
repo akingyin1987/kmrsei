@@ -166,17 +166,18 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
 
 
     fun takePhoto(cameraParame: CameraParameBuild = cameraParameBuild, callBack: (result: Boolean, error: String?) -> Unit) {
+        println("cameraParame=$cameraParame,cameraParameBuild=$cameraParameBuild")
         cameraParameBuild.cameraAngle = cameraManager.cameraAngle
 
         cameraManager.takePictrue(cameraParame) { result, error ->
             if(result){
                 println("cameraManager1=${cameraManager.getPreview()}")
-               // cameraManager.stopPreview()
+                cameraManager.stopPreview()
                // camera_img.visiable()
                // camera_img.setImageURI(Uri.parse(cameraParame.localPath))
             }else{
                 println("cameraManager2=${cameraManager.getPreview()}")
-               // cameraManager.startPreview()
+                cameraManager.startPreview()
             }
 
             callBack.invoke(result, error)
@@ -209,4 +210,8 @@ class CameraPreview @JvmOverloads constructor(context: Context, attrs: Attribute
 
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        println("cameraView 销毁")
+    }
 }

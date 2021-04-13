@@ -9,6 +9,9 @@
 
 package com.zlcdgroup.mrsei
 
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import org.junit.Test
 
 /**
@@ -18,7 +21,7 @@ import org.junit.Test
  * @version V1.0
  */
 class FlowTest {
-
+    private val mainThreadSurrogate = newSingleThreadContext("UI thread")
     @Test
     fun  test1(){
         val ints  = sequence {
@@ -29,17 +32,24 @@ class FlowTest {
             }
         }
         println(ints)
-
+        for (value in ints) {
+            println("value=$value")
+        }
     }
 
+    @InternalCoroutinesApi
     @Test
     fun  test2(){
-        val ints  = sequence {
+        val intFlow  = flow {
             (1..5).forEach {
-                yield(it)
+                emit(it)
                 println(it)
-
+                delay(100)
             }
+        }
+
+        GlobalScope.launch(Dispatchers.IO) {
+
         }
     }
 }
