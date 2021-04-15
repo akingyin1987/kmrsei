@@ -400,13 +400,14 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                                 try {
                                     val exifInterface = ExifInterface(cameraParameBuild.localPath)
                                     exifInterface.setDateTime(appServerTime)
-                                    println("")
+
                                     if(cameraParameBuild.lat>0 && cameraParameBuild.lng>0){
                                         exifInterface.setLatLong(cameraParameBuild.lat,cameraParameBuild.lng)
                                         exifInterface.setAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD,cameraParameBuild.locType)
                                     }
                                     if(cameraParameBuild.imageTags.isNotEmpty()){
-                                        exifInterface.setAttribute(ExifInterface.TAG_USER_COMMENT,cameraParameBuild.imageTags)
+                                        Timber.tag("tag").d(cameraParameBuild.imageTags)
+                                        exifInterface.setAttribute(ExifInterface.TAG_USER_COMMENT, String(cameraParameBuild.imageTags.toByteArray()))
                                     }
 
                                     exifInterface.saveAttributes()

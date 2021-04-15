@@ -26,6 +26,8 @@ fun String.md5() = encrypt(this, "MD5")
 
 fun String.sha1() = encrypt(this, "SHA-1")
 
+fun ByteArray.sha1() = encrypt(this,"SHA-1")
+
 fun String.isIdcard(): Boolean {
     val p18 = "^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]\$".toRegex()
     val p15 = "^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{2}[0-9Xx]\$".toRegex()
@@ -53,6 +55,11 @@ fun String.equalsIgnoreCase(other: String) = this.toLowerCase(Locale.ROOT).conte
 
 private fun encrypt(string: String, type: String): String {
     val bytes = MessageDigest.getInstance(type).digest(string.toByteArray())
+    return bytes2Hex(bytes)
+}
+
+private fun encrypt(data: ByteArray, type: String):String{
+    val bytes = MessageDigest.getInstance(type).digest(data)
     return bytes2Hex(bytes)
 }
 fun String.messageFormat(vararg arguments:Any):String{

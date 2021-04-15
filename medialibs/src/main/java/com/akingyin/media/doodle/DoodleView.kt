@@ -450,7 +450,7 @@ class DoodleView @JvmOverloads constructor(context: Context, attrs: AttributeSet
                 onStickerOperationListener?.onTouchDown()
                 mDownEventTimestamp = System.currentTimeMillis()
                 if (!onTouchDown(event)) {
-                    println("返回什么--->")
+
                     mCurrentY = 0
                     mCurrentX = 0
                     onStickerOperationListener?.onTouchUp()
@@ -478,7 +478,7 @@ class DoodleView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
             //当最后一个触点松开时被触发。
             MotionEvent.ACTION_UP -> {
-                println("onAction-up")
+
                 onTouchUp(event)
                 mCurrentY = 0
                 mCurrentX = 0
@@ -487,7 +487,7 @@ class DoodleView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
             //当屏幕上有多个点被按住，松开其中一个点时触发（即非最后一个点被放开时）触发
             MotionEvent.ACTION_POINTER_UP -> {
-                println("onAction-ACTION_POINTER_UP")
+
                 handlingSticker?.let {
                     if (currentMode == ActionMode.ZOOM_WITH_TWO_FINGER) {
                         //  onStickerOperationListener?.onStickerZoomFinished(it)
@@ -736,7 +736,7 @@ class DoodleView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     private fun findHandlingSticker(): IDoodleShape? {
         for (i in stickers.indices.reversed()) {
             if (isInStickerArea(stickers[i], downX, downY)) {
-                println("选中已画的图---->")
+
                 return stickers[i]
             }
         }
@@ -950,7 +950,7 @@ class DoodleView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
 
     private fun addShapeImmediately(iDoodleShape: IDoodleShape, @Sticker.Position position: Int) {
-        println("addShapeImmediately")
+
         setShapePosition(iDoodleShape, position)
         if (null == iDoodleShape.getTranslateOffset()) {
             iDoodleShape.getDrawable()?.let {

@@ -18,4 +18,6 @@ public class Utils {
     final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
     return (int) (spVal * fontScale + 0.5f);
   }
+
+
 }

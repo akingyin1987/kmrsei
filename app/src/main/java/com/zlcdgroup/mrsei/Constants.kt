@@ -14,5 +14,26 @@ object Constants {
      var  MODEL:String =""
 
 
+     var  IMSI :String =""
+
+     var  AndroidId:String=""
+
+     /** 设备序号 */
+     var  SERIAL:String=""
+
+     /**制造商 */
+     var  MANUFACTURER :String =""
+
+     /** 品牌 */
+     var  BRAND :String=""
+
+     /** 设备名 */
+     var  DEVICE:String=""
+
+     /** token */
+     var  token:String=""
+
+     /** apk 签名 */
+     var  apkSign:String=""
 
 }

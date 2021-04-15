@@ -5,9 +5,9 @@ import android.content.Context
 import android.os.Bundle
 import com.akingyin.base.net.exception.ApiException
 import com.akingyin.base.net.okhttp.OkHttpUtils
-import com.akingyin.base.utils.ConvertUtils
 import com.akingyin.map.IMapManager
 import com.akingyin.map.IMarker
+import com.akingyin.map.TestUtil
 import com.akingyin.map.base.Weak
 
 import com.alibaba.fastjson.JSON
@@ -20,7 +20,6 @@ import com.baidu.mapapi.search.core.PoiInfo
 import com.baidu.mapapi.search.core.SearchResult
 import com.baidu.mapapi.search.geocode.*
 import com.baidu.mapapi.search.poi.*
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
@@ -501,6 +500,7 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: C
         const val BAIDU_STATIC_BASE_URL="http://api.map.baidu.com/"
         const val BAIDU_AK="0ppzKkGXRpDcG9zt6ASrhtbKm2PGG9b6"
         const val BAIDU_SK="nrS5YfWW6n9PA540uhNG9dTLFU645qRa"
+        const val BAIDU_ANDROID_AK="O2004x7joH0QXVZ8wZPgkvQDgCuchmjd"
 
         fun   testSn(){
             val paramsMap= LinkedHashMap<String, String>()
@@ -514,13 +514,15 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: C
             // 对上面wholeStr再作utf8编码
 
             // 对上面wholeStr再作utf8编码
+            println("wholeStr=$wholeStr")
             val tempStr = URLEncoder.encode(wholeStr, "UTF-8")
-            println("testSn=${ConvertUtils.MD5(tempStr)}")
+            println("testSn=${(tempStr)},sn=${TestUtil.MD5(tempStr)}")
+
         }
 
         @JvmStatic
         fun  getBdMapGeocoderAddr(lat: Double,lng: Double,localType: String):String{
-            testSn()
+
             val  sn  = LinkedHashMap<String,String>().apply {
 
                 put("output","json")
@@ -530,14 +532,16 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: C
 
             }.run {
                 val wholeStr ="/reverse_geocoding/v3/?" + toQueryString(this) + BAIDU_SK
-                ConvertUtils.MD5(URLEncoder.encode(wholeStr, "UTF-8"))
+                println("wholeStr=$wholeStr")
+                MD5(URLEncoder.encode(wholeStr, "UTF-8"))
             }?:""
             println("sn=$sn")
             val  url =BAIDU_STATIC_BASE_URL+"reverse_geocoding/v3/?output=json&location=$lat,$lng&coordtype=$localType&ak=$BAIDU_AK&sn=$sn"
             println("url--->$url")
             val  request = Request.Builder().url(url).build()
             try {
-                val  response = OkHttpClient.Builder().build().newCall(request).execute()
+
+                val  response = OkHttpUtils.mOkHttpClient.newCall(request).execute()
                 if(response.isSuccessful){
                     val result  = response.body?.string()?:"{}"
                     return JSON.parseObject(result).let {
@@ -556,25 +560,33 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: C
         }
 
         @JvmStatic
-        fun  getBdMapStaticImageUrl(lat: Double,lng: Double,localType:String):String{
-            val  sn  = LinkedHashMap<String,String>().apply {
+        fun  getBdMapStaticImageUrl(lat: Double,lng: Double,localType:String,mcode:String=""):String{
+            println("code->$mcode")
+            val  params  = LinkedHashMap<String,String>().apply {
+                put("ak", BAIDU_ANDROID_AK)
                 put("width","512")
                 put("height","384")
                 put("markers","$lng,$lat")
                 put("zoom","18")
+                put("mcode",mcode)
                 put("dpiType","ph")
                 put("coordtype",localType)
                 put("markerStyles","l,A,0xff0000")
-                put("ak", BAIDU_AK)
-            }.run {
+
+            }
+            val sn = params.run {
 
                 val wholeStr ="/staticimage/v2/?" + toQueryString(this) + BAIDU_SK
                 println("wholeStr=${wholeStr}")
-                ConvertUtils.MD5(URLEncoder.encode(wholeStr, "UTF-8"))
+                MD5(URLEncoder.encode(wholeStr, "utf-8"))
             }?:""
-
-          return  BAIDU_STATIC_BASE_URL+"staticimage/v2/?width=512&height=384&markers=$lng,$lat&zoom=18&dpiType=ph&" +
-                  "coordtype=$localType&markerStyles=l,A,0xff0000&ak=$BAIDU_AK&sn=$sn"
+            val paramsStr = StringBuffer()
+            for ((key, value) in params) {
+                paramsStr.append("$key=")
+                paramsStr.append(value).append("&")
+            }
+            paramsStr.deleteCharAt(paramsStr.length - 1)
+            return  BAIDU_STATIC_BASE_URL+"staticimage/v2/?$paramsStr&sn=$sn"
         }
 
         // 对Map内所有value作utf8编码，拼接返回结果
@@ -583,7 +595,18 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: C
             val queryString = StringBuffer()
             for ((key, value) in data) {
                 queryString.append("$key=")
-                queryString.append(URLEncoder.encode(value ,"UTF-8").toString() + "&")
+                value.split(",").let {values->
+                    if(values.size>1){
+                        values.forEach {
+                            queryString.append(URLEncoder.encode(it ,"UTF-8") + ",")
+                        }
+                        queryString.deleteCharAt(queryString.length - 1)
+                        queryString.append("&")
+                    }else{
+                        queryString.append(URLEncoder.encode(value ,"UTF-8") + "&")
+                    }
+                }
+
             }
             if (queryString.isNotEmpty()) {
                 queryString.deleteCharAt(queryString.length - 1)
@@ -592,7 +615,7 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: C
         }
 
         // 来自stackoverflow的MD5计算方法，调用了MessageDigest库函数，并把byte数组结果转换成16进制
-        fun MD5(md5: String): String? {
+        private fun MD5(md5: String): String? {
             try {
                 val md = MessageDigest.getInstance("MD5")
                 val array = md.digest(md5.toByteArray())

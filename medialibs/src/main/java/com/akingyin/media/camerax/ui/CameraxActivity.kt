@@ -90,6 +90,14 @@ open  class CameraxActivity : SimpleActivity() {
                         }
                     }
 
+                    CameraxManager.KEY_CAMERA_PHOTO_DELECT_ACTION->{
+                        val  filePath = it.getStringExtra("filePath")?:""
+                        if(cameraData.localPath == filePath){
+                            cameraData.localPath = ""
+                        }
+                        cameraData.cameraPhotoDatas.remove(filePath)
+                    }
+
                     CameraxManager.KEY_CAMERA_PHOTO_CANCEL_ACTION->{
                         setResult(Activity.RESULT_CANCELED)
                         finish()

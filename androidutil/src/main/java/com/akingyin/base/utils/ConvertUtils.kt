@@ -286,6 +286,7 @@ class ConvertUtils private constructor() {
         }
 
         // 来自stackoverflow的MD5计算方法，调用了MessageDigest库函数，并把byte数组结果转换成16进制
+        @JvmStatic
         fun MD5(md5: String): String? {
             try {
                 val md = MessageDigest
@@ -294,6 +295,7 @@ class ConvertUtils private constructor() {
                 val sb = StringBuffer()
                 for (i in array.indices) {
                     sb.append((Integer.toHexString(array[i].toInt() and 0xFF)).let {
+
                         if(it.length == 1){
                             it+"0"
                         }else{

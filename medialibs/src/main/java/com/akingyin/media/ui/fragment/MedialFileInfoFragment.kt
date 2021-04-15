@@ -147,6 +147,10 @@ open class MedialFileInfoFragment :SimpleFragment(){
                             bindView.ivRemoveLoc.gone()
                         }
                         val tags =  exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT)?:""
+                        println("tags=$tags")
+                        exifInterface.getAttributeBytes(ExifInterface.TAG_USER_COMMENT)?.let {
+                            println("tag->${String(it)}")
+                        }
                         if(authEditTag){
                             bindView.tagGroup.gone()
                             bindView.tagGroupEdit.visiable()
@@ -172,9 +176,12 @@ open class MedialFileInfoFragment :SimpleFragment(){
                                 }
                             })
                         }else{
-                            bindView.tagGroup.setTags(tags.split("@").filter {
-                                it.isNotEmpty()
-                            })
+                            if(tags.isNotEmpty()){
+                                bindView.tagGroup.setTags(tags.split("@").filter {
+                                    it.isNotEmpty()
+                                })
+                            }
+
                             bindView.tagGroup.visiable()
                             bindView.tagGroupEdit.gone()
                         }

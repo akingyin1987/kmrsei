@@ -27,6 +27,9 @@ import com.akingyin.media.engine.LocationEngine
 import com.akingyin.media.engine.LocationManagerEngine
 import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
+import com.zlcdgroup.mrsei.BuildConfig
+import com.zlcdgroup.mrsei.Constants
+import java.util.*
 import kotlin.properties.Delegates
 
 
@@ -77,7 +80,9 @@ class CameraTestActivity : CameraActivity() {
 
 
             override fun getLocationImageUrl(lat: Double, lng: Double, locType: String, localImagePath: String?): String {
-                return BDMapManager.getBdMapStaticImageUrl(lat,lng,locType)
+                val code = Constants.apkSign.chunked(2).joinToString(":").toUpperCase(Locale.ROOT)+";"+BuildConfig.APPLICATION_ID
+                println("code=$code")
+                return BDMapManager.getBdMapStaticImageUrl(lat,lng,locType,code)
             }
 
             override fun getLocationAddr(lat: Double, lng: Double, locType: String): String {

@@ -1,24 +1,25 @@
 package com.akingyin.base.utils
 
 import android.Manifest
-import com.akingyin.base.utils.FileUtils.isFileExist
-import android.graphics.drawable.Drawable
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.pm.PackageManager
-import android.content.pm.PackageInfo
-import android.content.pm.ApplicationInfo
 import android.app.ActivityManager
 import android.app.ActivityManager.RunningAppProcessInfo
-import androidx.core.app.ActivityCompat
-import android.telephony.TelephonyManager
-import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.content.pm.Signature
+import android.graphics.drawable.Drawable
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
-
+import android.telephony.TelephonyManager
+import androidx.core.app.ActivityCompat
+import com.akingyin.base.ext.sha1
+import com.akingyin.base.utils.FileUtils.isFileExist
 import java.io.File
-import java.lang.Exception
+
 import java.util.*
 
 /**
@@ -43,7 +44,7 @@ class AppUtils private constructor() {
      * @param isSystem    是否系统应用
      */
     data class AppInfo(var packageName: String?, var name: String?, var icon: Drawable?, var packagePath: String?,
-                 var  versionName: String?, var versionCode: Int, var isSystem: Boolean) {
+                       var versionName: String?, var versionCode: Int, var isSystem: Boolean) {
 
         override fun toString(): String {
             return """
@@ -660,6 +661,19 @@ class AppUtils private constructor() {
                 e.printStackTrace()
             }
             return false
+        }
+
+        @SuppressLint("PackageManagerGetSignatures")
+        fun getSingInfo(context: Context, packName: String):String {
+            try {
+                val packageInfo = context.packageManager.getPackageInfo(packName, PackageManager.GET_SIGNATURES)
+                val signs: Array<Signature> = packageInfo.signatures
+                val sign: Signature = signs[0]
+                return sign.toByteArray().sha1()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return ""
         }
     }
 

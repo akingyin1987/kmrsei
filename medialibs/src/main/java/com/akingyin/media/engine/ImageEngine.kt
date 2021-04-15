@@ -90,6 +90,13 @@ interface ImageEngine {
      */
     fun  clearMemory(context: Context)
 
+    /**
+     *
+     * @param context Context
+     * @param path String
+     */
+    fun  clearDiskCacheByPath(context: Context,path:String)
+
 
     /**
      * 清除硬盘缓存

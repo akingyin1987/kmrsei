@@ -56,7 +56,7 @@ class MedialFileInfoFragmentDialog( var locationEngine : LocationEngine?=null, v
     /** 编辑标签权限*/
     private   var   authEditTag = false
     lateinit var  bindView: FragmentMedialFileInfoBinding
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
        bindView = FragmentMedialFileInfoBinding.inflate(inflater, container, false)
         return  bindView.root
     }
@@ -184,6 +184,7 @@ class MedialFileInfoFragmentDialog( var locationEngine : LocationEngine?=null, v
                             bindView.ivRemoveLoc.gone()
                         }
                         val tags = String( exifInterface.getAttributeBytes(ExifInterface.TAG_USER_COMMENT)?: byteArrayOf(), Charset.forName("utf-8"))
+                        println("tags=$tags,${exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT)}")
                        // val tags = exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT) ?: ""
 
                         if (authEditTag) {

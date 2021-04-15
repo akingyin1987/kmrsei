@@ -12,6 +12,7 @@ import com.akingyin.base.ext.Ext
 import com.akingyin.base.ext.spGetString
 import com.akingyin.base.ext.spSetString
 import com.akingyin.base.net.mode.ApiHost
+import com.akingyin.base.utils.AppUtils
 import com.akingyin.map.BdMapApp
 import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.Utils
@@ -95,7 +96,9 @@ class MrmseiApp :Application() {
         }
 
         Constants.MODEL = Build.MODEL
-
+        Constants.apkSign = AppUtils.getSingInfo(this,BuildConfig.APPLICATION_ID)
+        Constants.apkSign = Constants.apkSign.replace("(.{2})","$1:")
+        println("签名：${Constants.apkSign}")
         AppFileConfig.APP_FILE_ROOT = AppFileConfig.getAppFileRoot(this).absolutePath
     }
 

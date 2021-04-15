@@ -31,6 +31,7 @@ import com.akingyin.media.databinding.FragmentConfigPhotoBinding
 import com.akingyin.media.glide.GlideEngine
 import com.akingyin.media.ui.fragment.MedialFileInfoFragmentDialog
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -59,11 +60,10 @@ class CameraConfigPhotoFragment internal constructor(): SimpleFragment() {
     override fun onUseActivityBackCallBack() = true
 
     override fun getLayoutId() = R.layout.fragment_config_photo
-    override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View? {
+    override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View {
         bindView = FragmentConfigPhotoBinding.inflate(inflater,container,false)
         return bindView.root
     }
-
 
     override fun initEventAndData() {
         cameraData = args.cameraData
@@ -87,8 +87,11 @@ class CameraConfigPhotoFragment internal constructor(): SimpleFragment() {
                 saveTakePhoto()
             }
         }
+
         Glide.with(bindView.cameraPhoto).apply {
-            load(cameraParameBuild.localPath).fitCenter()
+            load(cameraParameBuild.localPath).skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .fitCenter()
                     .into(bindView.cameraPhoto)
         }
 
@@ -104,6 +107,8 @@ class CameraConfigPhotoFragment internal constructor(): SimpleFragment() {
         }
         bindView.backButton.click {
             findNavController().navigateUp()
+
+
         }
         bindView.btnConfig.click {
             CameraxManager.sendAddTakePhoto(args.filePath,requireContext(),true)
@@ -161,13 +166,18 @@ class CameraConfigPhotoFragment internal constructor(): SimpleFragment() {
         File(cameraParameBuild.localPath).exists().yes {
             lifecycleScope.launch(Dispatchers.Main){
                 withIO {
-                    CameraBitmapUtil.rotateBitmap(degree,cameraParameBuild.localPath, appServerTime)
+                    CameraBitmapUtil.rotateBitmap(degree,cameraParameBuild.localPath,cameraParameBuild.localPath, appServerTime)
                 }.yes {
                     showSucces("图片旋转成功")
-
                     bindView.cameraPhoto.setImageURI(null)
                     GlideEngine.getGlideEngineInstance().clearCacheByImageView(bindView.cameraPhoto)
-                    GlideEngine.getGlideEngineInstance().loadImage(requireContext(),cameraParameBuild.localPath,bindView.cameraPhoto)
+
+                    GlideEngine.getGlideEngineInstance().clearDiskCacheByPath(requireContext(),cameraParameBuild.localPath)
+                    Glide.with(bindView.cameraPhoto).apply {
+                        load(cameraParameBuild.localPath).skipMemoryCache(true)
+                                .fitCenter()
+                                .into(bindView.cameraPhoto)
+                    }
 
                 }.no {
                     showError("图片旋转失败")

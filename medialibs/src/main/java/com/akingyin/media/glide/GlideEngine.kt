@@ -52,6 +52,7 @@ class GlideEngine :ImageEngine{
             if(null == callBack){
                 load(url).fitCenter()
                         .applyDefaultImage()
+
                         .into(imageView)
             }else{
                 asBitmap().load(url)
@@ -236,11 +237,16 @@ class GlideEngine :ImageEngine{
     }
 
     override fun clearCacheByImageView(imageView: ImageView) {
+
        GlideApp.with(imageView).clear(imageView)
     }
 
     override fun clearMemory(context: Context) {
         GlideApp.get(context).clearMemory()
+    }
+
+    override fun clearDiskCacheByPath(context: Context, path: String) {
+        GlideApp.getPhotoCacheDir(context,path)?.delete()
     }
 
     override fun clearDiskCache(context: Context) {

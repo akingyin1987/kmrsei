@@ -61,7 +61,7 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
     override fun onUseActivityBackCallBack() = true
 
     override fun getLayoutId() = R.layout.fragment_config_photo
-    override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View? {
+    override fun initViewBind(inflater: LayoutInflater, container: ViewGroup?): View {
         bindView = FragmentConfigPhotoBinding.inflate(inflater,container,false)
         return bindView.root
     }
@@ -162,12 +162,15 @@ class CameraxConfigPhotoFragment internal constructor(): SimpleFragment() {
         File(cameraParameBuild.localPath).exists().yes {
             lifecycleScope.launch(Dispatchers.Main){
                 withIO {
-                    CameraBitmapUtil.rotateBitmap(degree,cameraParameBuild.localPath, appServerTime)
+                    CameraBitmapUtil.rotateBitmap(degree,cameraParameBuild.localPath,cameraParameBuild.localPath,appServerTime)
                 }.yes {
                     showSucces("图片旋转成功")
 
                     bindView.cameraPhoto.setImageURI(null)
+
                     GlideEngine.getGlideEngineInstance().clearCacheByImageView(bindView.cameraPhoto)
+                    GlideEngine.getGlideEngineInstance().clearMemory(requireContext())
+                    GlideEngine.getGlideEngineInstance().clearDiskCacheByPath(bindView.cameraPhoto.context,cameraParameBuild.localPath)
                     GlideEngine.getGlideEngineInstance().loadImage(requireContext(),cameraParameBuild.localPath,bindView.cameraPhoto)
 
                 }.no {

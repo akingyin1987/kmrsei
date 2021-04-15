@@ -9,6 +9,7 @@
 
 package com.akingyin.media.camera
 
+import android.annotation.SuppressLint
 import android.graphics.*
 
 import android.text.TextPaint
@@ -326,17 +327,33 @@ object CameraBitmapUtil {
     /**
      * 旋转图片文件
      */
-    fun rotateBitmap(degree: Int, localPath: String, time: Long) :Boolean{
+    @SuppressLint("RestrictedApi")
+    fun rotateBitmap(degree: Int, originalPath:String, localPath: String, time: Long) :Boolean{
         var bitmap: Bitmap? = null
         try {
-            bitmap = BitmapFactory.decodeFile(localPath)
+            bitmap = BitmapFactory.decodeFile(originalPath)
+            val oldExifInterface = ExifInterface(originalPath)
+
             val matrix = Matrix()
             matrix.postRotate(degree.toFloat())
             val resizeBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
             val savebmp = saveBitmapToPath(resizeBitmap, localPath)
             if (savebmp) {
                 imgSdf.get()?.let {
-                    saveExifinterAttr(localPath, ExifInterface.TAG_DATETIME, it.format(Date(time)))
+                    val exifInterface = ExifInterface(localPath)
+                    exifInterface.setDateTime(appServerTime)
+                    oldExifInterface.latLong?.let {
+                        exifInterface.setLatLong(it[0],it[1])
+                    }
+                    oldExifInterface.getAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD)?.let {
+                        exifInterface.setAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD,it)
+                    }
+                    oldExifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT)?.let {
+                        exifInterface.setAttribute(ExifInterface.TAG_USER_COMMENT,it)
+                    }
+                    exifInterface.saveAttributes()
+
+
                 }
 
             }
