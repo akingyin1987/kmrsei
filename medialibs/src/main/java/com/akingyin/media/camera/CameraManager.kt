@@ -407,7 +407,7 @@ class CameraManager(content: Context, autoFouceCall: () -> Unit) {
                                     }
                                     if(cameraParameBuild.imageTags.isNotEmpty()){
                                         Timber.tag("tag").d(cameraParameBuild.imageTags)
-                                        exifInterface.setAttribute(ExifInterface.TAG_USER_COMMENT, String(cameraParameBuild.imageTags.toByteArray()))
+                                        exifInterface.setAttribute(ExifInterface.TAG_USER_COMMENT, cameraParameBuild.imageTags)
                                     }
 
                                     exifInterface.saveAttributes()

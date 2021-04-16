@@ -58,7 +58,7 @@ class MediaViewPager2Fragment :SimpleFragment(){
 
     override fun initView() {
         mainViewPager = (activity as MediaTypeViewpagerActivity).viewBinding.viewpager
-        mediaViewpager2Adapter = MediaViewpager2Adapter()
+        mediaViewpager2Adapter = MediaViewpager2Adapter(fragmentManager = childFragmentManager)
         mediaViewpager2Adapter.setDiffCallback(object :DiffUtil.ItemCallback<MediaDataModel>(){
             override fun areItemsTheSame(oldItem: MediaDataModel, newItem: MediaDataModel): Boolean {
                 return oldItem.objectId == newItem.objectId

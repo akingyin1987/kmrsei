@@ -9,8 +9,10 @@
 
 package com.akingyin.media.adapter
 
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import cn.jzvd.JzvdStd
 import com.akingyin.media.audio.AudioPlayView
 import com.akingyin.base.ext.click
@@ -19,11 +21,14 @@ import com.akingyin.base.ext.visiable
 import com.akingyin.base.mvvm.SingleLiveEvent
 import com.akingyin.base.utils.FileUtils
 import com.akingyin.media.R
+import com.akingyin.media.engine.ImageEngine
+import com.akingyin.media.engine.LocationEngine
 import com.akingyin.media.glide.GlideEngine
 import com.akingyin.media.glide.GlideImageView
 import com.akingyin.media.glide.OnProgressListener
 import com.akingyin.media.glide.progress.CircleProgressView
 import com.akingyin.media.model.MediaDataModel
+import com.akingyin.media.ui.fragment.MedialFileInfoFragmentDialog
 import com.akingyin.media.widget.CheckView
 import com.akingyin.util.VideoCacheProxy
 
@@ -40,7 +45,9 @@ import java.text.MessageFormat
  * @ Date 2020/7/2 16:29
  * @version V1.0
  */
-class MediaViewpager2Adapter : BaseQuickAdapter<MediaDataModel,BaseViewHolder>(R.layout.item_media_viewpager) {
+class MediaViewpager2Adapter(var imageEngine: ImageEngine= GlideEngine.getGlideEngineInstance(),
+                             var locationEngine: LocationEngine?=null,
+                             var fragmentManager: FragmentManager?=null) : BaseQuickAdapter<MediaDataModel,BaseViewHolder>(R.layout.item_media_viewpager) {
 
     /** 选中或被选中消息 */
     var  liveEvent : SingleLiveEvent<Int> = SingleLiveEvent()
@@ -79,6 +86,20 @@ class MediaViewpager2Adapter : BaseQuickAdapter<MediaDataModel,BaseViewHolder>(R
                    gone()
                }
            }
+           if(FileUtils.isFileExist(item.localPath)){
+               getView<ImageButton>(R.id.info_button).apply {
+                   visiable()
+                   click {
+                       fragmentManager?.let {
+                           MedialFileInfoFragmentDialog.newInstance(item.localPath,locationEngine = locationEngine,imageEngine = imageEngine).show(it,"media-info")
+                       }
+
+                   }
+               }
+           }else{
+               getView<ImageButton>(R.id.info_button).gone()
+           }
+
            setText(R.id.tv_page, MessageFormat.format("{0}/{1}",bindingAdapterPosition+1,getDefItemCount()))
            val downloadView :ImageView = getView(R.id.iv_download)
            downloadView.click {
@@ -115,7 +136,7 @@ class MediaViewpager2Adapter : BaseQuickAdapter<MediaDataModel,BaseViewHolder>(R
                    glideImageView.let {
                        it.visiable()
                        if(FileUtils.isFileExist(item.localPath)){
-                           GlideEngine.getGlideEngineInstance().loadImage(it.context,item.localPath,it)
+                           imageEngine.loadImage(it.context,item.localPath,it)
                        }else{
                            if(item.haveNetServer){
                                circleProgressView.visiable()
@@ -143,12 +164,12 @@ class MediaViewpager2Adapter : BaseQuickAdapter<MediaDataModel,BaseViewHolder>(R
                        visiable()
                        if(FileUtils.isFileExist(item.localPath)){
                            setUp("file://${item.localPath}",FileUtils.getFileName(item.localPath))
-                           GlideEngine.getGlideEngineInstance().loadImage(context,"file://${item.localPath}",posterImageView,null,null)
+                           imageEngine.loadImage(context,"file://${item.localPath}",posterImageView,null,null)
                        }else{
 
                            if(item.haveNetServer){
                                setUp(VideoCacheProxy.getProxy(context).getProxyUrl(item.serverPath),FileUtils.getFileName(item.serverPath))
-                               GlideEngine.getGlideEngineInstance().loadImage(context,item.serverPath,posterImageView,null,null)
+                               imageEngine.loadImage(context,item.serverPath,posterImageView,null,null)
                            }else{
                               posterImageView.setImageResource(R.drawable.ic_img_loading_error)
                            }

@@ -9,6 +9,7 @@
 
 package com.akingyin.media.ui
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -143,6 +144,12 @@ open class MediaViewPager2Activity : SimpleActivity() {
         if (Jzvd.backPress()) {
             return
         }
+
+        setResult(Activity.RESULT_OK,Intent().apply {
+            putExtra("result",mediaViewpager2Adapter.data.filter {
+                it.checked
+            }.toTypedArray())
+        })
         super.onBackPressed()
     }
 

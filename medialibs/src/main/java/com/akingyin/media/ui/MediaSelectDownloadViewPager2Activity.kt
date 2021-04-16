@@ -42,7 +42,7 @@ class MediaSelectDownloadViewPager2Activity : MediaViewPager2Activity() {
     lateinit var bindView:ActivityMediaSelectDownloadViewpager2Binding
 
     override fun initViewBind() {
-        super.initViewBind()
+
         bindView = ActivityMediaSelectDownloadViewpager2Binding.inflate(layoutInflater)
         setContentView(viewBinding.root)
     }
@@ -78,7 +78,7 @@ class MediaSelectDownloadViewPager2Activity : MediaViewPager2Activity() {
         showLoading()
 
         val  filePath = AppFileConfig.APP_FILE_ROOT+ File.separator+FileUtils.getFileName(imageTextModel.serverPath)
-        println("filepath=$filePath")
+
         if(FileUtils.isFileExist(filePath)){
             imageTextModel.localPath = filePath
             hideLoadDialog()

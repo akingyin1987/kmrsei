@@ -10,7 +10,8 @@ package com.akingyin.media.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.akingyin.media.MediaConfig
-import com.akingyin.media.MediaMimeType
+
+
 
 /**
  * 图文数据
@@ -21,6 +22,7 @@ import com.akingyin.media.MediaMimeType
  *
  *
  */
+
 class MediaDataModel() :  Parcelable {
 
     var localPath: String = ""

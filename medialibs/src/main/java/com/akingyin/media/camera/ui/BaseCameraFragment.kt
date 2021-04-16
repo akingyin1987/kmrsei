@@ -50,6 +50,7 @@ import com.akingyin.base.utils.PreferencesUtil
 import com.akingyin.base.utils.RandomUtil
 import com.akingyin.media.camera.*
 import com.akingyin.media.MediaConfig
+import com.akingyin.media.MediaMimeType
 import com.akingyin.media.R
 import com.akingyin.media.camera.CameraManager.Companion.KEYDOWN_VOLUME_KEY_ACTION
 import com.akingyin.media.camera.CameraManager.Companion.KEY_CAMERA_FLASH
@@ -59,6 +60,9 @@ import com.akingyin.media.camerax.CameraxManager
 import com.akingyin.media.databinding.FragmentCameraBinding
 import com.akingyin.media.engine.LocationEngine
 import com.akingyin.media.engine.LocationManagerEngine
+import com.akingyin.media.model.MediaDataListModel
+import com.akingyin.media.model.MediaDataModel
+import com.akingyin.media.ui.MediaSelectDownloadViewPager2Activity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
@@ -183,9 +187,22 @@ open class BaseCameraFragment : SimpleFragment() {
             }
         })
     }
-
+    lateinit var activityForResultLauch: ActivityResultLauncher<Intent>
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        activityForResultLauch = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            if (activityResult.resultCode == Activity.RESULT_OK) {
+                activityResult.data?.getParcelableArrayListExtra<MediaDataModel>("result")?.let { list ->
+                    cameraData.cameraPhotoDatas.clear()
+                    list.forEach {
+                        cameraData.cameraPhotoDatas.add(it.localPath)
+                    }
+                    setGalleryThumbnail(cameraData.cameraPhotoDatas.last())
+
+                }
+            }
+
+        }
 
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(cameraInfoBroadcastReceiver, IntentFilter().apply {
             addAction(CameraxManager.KEY_CAMERA_PHOTO_ADD_ACTION)
@@ -417,7 +434,22 @@ open class BaseCameraFragment : SimpleFragment() {
         thumbnail = controls.findViewById(R.id.photo_view_button)
         CameraxManager.getTakePhotoPath(requireContext())
         controls.findViewById<ImageButton>(R.id.photo_view_button).click {
-            CameraxManager.getTakePhotoPath(requireContext(), true)
+            MediaDataListModel().apply {
+                items = cameraData.cameraPhotoDatas.map {
+                    MediaDataModel().apply {
+                        localPath = it
+                        multimediaType = MediaMimeType.ofImage()
+                        checked = true
+                    }
+                }
+
+            }.let {data->
+                activityForResultLauch.launch(Intent(requireContext(), MediaSelectDownloadViewPager2Activity::class.java).apply {
+                    putExtra("data",data)
+                })
+            }
+
+
         }
         controls?.findViewById<ImageButton>(R.id.camera_switch_button)?.click {
             CameraxManager.sendTakePhtotCancel(requireContext())
@@ -452,7 +484,7 @@ open class BaseCameraFragment : SimpleFragment() {
             countDownStop()
             if (cameraParameBuild.focesedAutoPhotoDelayTime > 0) {
 
-                countDownStart(cameraParameBuild.focesedAutoPhotoDelayTime, "自动拍照") {
+                countDownStart(cameraParameBuild.focesedAutoPhotoDelayTime) {
                     captureImage()
                 }
             } else {
@@ -602,8 +634,8 @@ open class BaseCameraFragment : SimpleFragment() {
     /**
      * 开始倒计时
      */
-    private fun countDownStart(count: Int, tip: String = "自动拍照", call: () -> Unit) {
-        bindView.textCountDownTip.text = tip
+    private fun countDownStart(count: Int, call: () -> Unit) {
+        bindView.textCountDownTip.text = "自动拍照"
         countDownJob = lifecycleScope.launch(Main) {
             for (i in count downTo 1) {
                 bindView.textCountDown.text = i.toString()
@@ -625,23 +657,6 @@ open class BaseCameraFragment : SimpleFragment() {
         countDownJob?.cancel()
     }
 
-//    private fun  rotateTakePhotoBitmap(degree:Int){
-//        File(cameraParameBuild.localPath).exists().yes {
-//            lifecycleScope.launch(Main){
-//                withIO {
-//                    CameraBitmapUtil.rotateBitmap(degree,cameraParameBuild.localPath, appServerTime)
-//                }.yes {
-//                    showSucces("图片旋转成功")
-//                    bindView.viewFinder.camera_img.setImageURI(null)
-//                    bindView.viewFinder.camera_img.setImageURI(Uri.parse(cameraParameBuild.localPath))
-//                }.no {
-//                    showError("图片旋转失败")
-//                }
-//            }
-//        }.no {
-//            showError("文件不存在，无法旋转")
-//        }
-//    }
 
     /** 音量键*/
     private fun keyVolumeDown() {
@@ -759,7 +774,7 @@ open class BaseCameraFragment : SimpleFragment() {
 
         }
 
-        if(cameraData.supportMultiplePhoto && cameraData.cameraPhotoDatas.isNotEmpty()){
+        if (cameraData.supportMultiplePhoto && cameraData.cameraPhotoDatas.isNotEmpty()) {
 
             setGalleryThumbnail(cameraData.cameraPhotoDatas.last())
         }
