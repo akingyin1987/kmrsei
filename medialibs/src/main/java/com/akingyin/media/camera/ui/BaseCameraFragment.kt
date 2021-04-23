@@ -70,6 +70,7 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 import java.util.concurrent.CancellationException
 import kotlin.properties.Delegates
@@ -192,12 +193,13 @@ open class BaseCameraFragment : SimpleFragment() {
         super.onAttach(context)
         activityForResultLauch = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             if (activityResult.resultCode == Activity.RESULT_OK) {
+                Timber.tag(TAG).d("返回数据=${activityResult.data}")
                 activityResult.data?.getParcelableArrayListExtra<MediaDataModel>("result")?.let { list ->
                     cameraData.cameraPhotoDatas.clear()
                     list.forEach {
                         cameraData.cameraPhotoDatas.add(it.localPath)
                     }
-                    setGalleryThumbnail(cameraData.cameraPhotoDatas.last())
+                    setGalleryThumbnail(cameraData.cameraPhotoDatas.lastOrNull())
 
                 }
             }

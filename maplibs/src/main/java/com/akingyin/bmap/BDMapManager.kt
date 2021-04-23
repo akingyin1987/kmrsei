@@ -535,7 +535,7 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: C
                 println("wholeStr=$wholeStr")
                 MD5(URLEncoder.encode(wholeStr, "UTF-8"))
             }?:""
-            println("sn=$sn")
+
             val  url =BAIDU_STATIC_BASE_URL+"reverse_geocoding/v3/?output=json&location=$lat,$lng&coordtype=$localType&ak=$BAIDU_AK&sn=$sn"
             println("url--->$url")
             val  request = Request.Builder().url(url).build()
@@ -557,6 +557,32 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: C
             }
 
             return "未知"
+        }
+
+        @JvmStatic
+        fun  getBdMapStaticImageUrlBySn(lat: Double,lng: Double,localType:String):String{
+            val  params  = LinkedHashMap<String,String>().apply {
+              //  put("ak", BAIDU_AK)
+                put("width","512")
+                put("height","384")
+                put("markers","$lng,$lat")
+                put("zoom","18")
+                put("dpiType","ph")
+                put("coordtype",localType)
+                put("markerStyles","l,A,0xff0000")
+
+            }
+            val sn = params.run {
+                val wholeStr ="/staticimage/v2?" + toQueryString(this) + BAIDU_SK
+                MD5(URLEncoder.encode(wholeStr, "utf-8"))
+            }?:""
+            val paramsStr = StringBuffer()
+            for ((key, value) in params) {
+                paramsStr.append("$key=")
+                paramsStr.append(value).append("&")
+            }
+            paramsStr.delete(paramsStr.length - 1,paramsStr.length)
+            return  BAIDU_STATIC_BASE_URL+"staticimage/v2/?$paramsStr&sn=$sn"
         }
 
         @JvmStatic
@@ -585,7 +611,7 @@ class BDMapManager(var baiduMap: BaiduMap, var mapView: MapView, var activity: C
                 paramsStr.append("$key=")
                 paramsStr.append(value).append("&")
             }
-            paramsStr.deleteCharAt(paramsStr.length - 1)
+            paramsStr.delete(paramsStr.length - 1,paramsStr.length)
             return  BAIDU_STATIC_BASE_URL+"staticimage/v2/?$paramsStr&sn=$sn"
         }
 

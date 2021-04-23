@@ -9,10 +9,7 @@
 
 package com.akingyin.media.ui
 
-import android.app.Activity
-import android.content.Intent
-import android.os.Parcelable
-
+import androidx.viewpager2.widget.ViewPager2
 import com.akingyin.base.config.AppFileConfig
 import com.akingyin.base.ext.click
 import com.akingyin.base.ext.messageFormat
@@ -21,9 +18,8 @@ import com.akingyin.media.DownloadFileUtil
 import com.akingyin.media.R
 import com.akingyin.media.databinding.ActivityMediaSelectDownloadViewpager2Binding
 import com.akingyin.media.model.MediaDataModel
-
 import java.io.File
-import java.util.ArrayList
+
 
 
 /**
@@ -44,13 +40,13 @@ class MediaSelectDownloadViewPager2Activity : MediaViewPager2Activity() {
     override fun initViewBind() {
 
         bindView = ActivityMediaSelectDownloadViewpager2Binding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        setContentView(bindView.root)
     }
 
     override fun onBindAdapter() {
         mediaViewpager2Adapter.showChecked = true
         mediaViewpager2Adapter.supportDownload = true
-        viewBinding.viewpager.adapter = mediaViewpager2Adapter
+        bindView.viewpager.adapter = mediaViewpager2Adapter
     }
 
     override fun initView() {
@@ -61,17 +57,29 @@ class MediaSelectDownloadViewPager2Activity : MediaViewPager2Activity() {
 
         bindView.buttonApply.click {
 
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putParcelableArrayListExtra("result",mediaViewpager2Adapter.data.filter {
-                    it.checked
-                }.toMutableList() as ArrayList<out Parcelable>)
-            })
-            finish()
+           onBackPressed()
         }
     }
 
     override fun onCheckedItem(imageTextModel: MediaDataModel) {
         bindView.buttonApply.text="使用({0})".messageFormat(mediaViewpager2Adapter.getCheckedNum())
+    }
+
+    override fun initMediaData(data: List<MediaDataModel>): MutableList<MediaDataModel> {
+
+        return data.map {
+            it.checked = true
+            it
+        }.toMutableList()
+    }
+
+    override fun initMediaDataAfter() {
+        bindView.buttonApply.text="使用({0})".messageFormat(mediaViewpager2Adapter.getCheckedNum())
+
+    }
+
+    override fun getViewPageView(): ViewPager2 {
+        return bindView.viewpager
     }
 
     override fun downloadItemFile(imageTextModel: MediaDataModel) {

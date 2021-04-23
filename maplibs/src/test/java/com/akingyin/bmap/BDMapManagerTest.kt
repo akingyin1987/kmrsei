@@ -9,14 +9,10 @@
 
 package com.akingyin.bmap
 
-import com.akingyin.base.utils.ConvertUtils
 import com.akingyin.map.TestUtil
 import org.junit.After
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import java.net.URLEncoder
-import java.util.*
 
 /**
  * @author king

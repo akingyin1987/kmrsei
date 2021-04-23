@@ -13,6 +13,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import cn.jzvd.Jzvd
@@ -20,6 +21,7 @@ import com.akingyin.base.SimpleActivity
 import com.akingyin.media.R
 import com.akingyin.media.adapter.MediaViewpager2Adapter
 import com.akingyin.media.databinding.ActivityMediaViewpager2InfoBinding
+import com.akingyin.media.engine.LocationEngine
 import com.akingyin.media.model.MediaDataListModel
 import com.akingyin.media.model.MediaDataModel
 
@@ -63,7 +65,8 @@ open class MediaViewPager2Activity : SimpleActivity() {
     override fun initView() {
         data = intent.getParcelableExtra("data")?:MediaDataListModel()
         data.items?.let {
-            mediaViewpager2Adapter = MediaViewpager2Adapter()
+            mediaViewpager2Adapter = MediaViewpager2Adapter(fragmentManager = supportFragmentManager,locationEngine = getLocationEngine())
+
             onBindAdapter()
 
             mediaViewpager2Adapter.downloadLiveEvent.observe(this,  { postion ->
@@ -82,16 +85,19 @@ open class MediaViewPager2Activity : SimpleActivity() {
                     return oldItem.toString() == newItem.toString()
                 }
             })
-            mediaViewpager2Adapter.setDiffNewData(it.toMutableList())
+            mediaViewpager2Adapter.setDiffNewData(initMediaData(it))
+
             val post = intent.getIntExtra("postion",0)
             if(post>0){
-                viewBinding.viewpager.currentItem = post
+                getViewPageView().currentItem = post
             }
-            viewBinding.viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            getViewPageView().registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
                 override fun onPageSelected(position: Int) {
                     Jzvd.releaseAllVideos()
                 }
             })
+
+            initMediaDataAfter()
         } ?: finish()
     }
 
@@ -99,6 +105,17 @@ open class MediaViewPager2Activity : SimpleActivity() {
 
     }
 
+    open  fun  initMediaDataAfter(){
+
+    }
+
+    open  fun  getViewPageView():ViewPager2{
+        return viewBinding.viewpager
+    }
+
+    open  fun  initMediaData(data:List<MediaDataModel>):MutableList<MediaDataModel>{
+        return data.toMutableList()
+    }
 
     /**
      * 绑定适配器
@@ -106,6 +123,10 @@ open class MediaViewPager2Activity : SimpleActivity() {
     open fun onBindAdapter() {
         viewBinding.viewpager.adapter = mediaViewpager2Adapter
 
+    }
+
+    open fun getLocationEngine():LocationEngine?{
+        return null
     }
 
     /**
@@ -146,9 +167,9 @@ open class MediaViewPager2Activity : SimpleActivity() {
         }
 
         setResult(Activity.RESULT_OK,Intent().apply {
-            putExtra("result",mediaViewpager2Adapter.data.filter {
+            putParcelableArrayListExtra("result",mediaViewpager2Adapter.data.filter {
                 it.checked
-            }.toTypedArray())
+            }.toMutableList()  as ArrayList<out Parcelable >)
         })
         super.onBackPressed()
     }

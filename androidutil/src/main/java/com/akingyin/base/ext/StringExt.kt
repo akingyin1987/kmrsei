@@ -2,6 +2,8 @@ package com.akingyin.base.ext
 
 import android.text.TextUtils
 import java.math.BigDecimal
+import java.net.URLDecoder
+import java.net.URLEncoder
 import java.security.MessageDigest
 import java.text.MessageFormat
 import java.util.*
@@ -21,6 +23,10 @@ fun String.isEmptyOrNull():String{
 }
 
 fun String.toast(isShortToast: Boolean = true) = toast(this, isShortToast)
+
+fun String.urlDecoder():String = URLDecoder.decode(this,"utf-8")
+
+fun String.urlEncoder(): String = URLEncoder.encode(this,"utf-8")
 
 fun String.md5() = encrypt(this, "MD5")
 

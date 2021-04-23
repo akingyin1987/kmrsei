@@ -35,7 +35,6 @@ import com.akingyin.util.MediaFileUtil
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import me.gujun.android.taggroup.TagGroup
-import java.nio.charset.Charset
 import kotlin.properties.Delegates
 
 
@@ -93,6 +92,8 @@ class MedialFileInfoFragmentDialog( var locationEngine : LocationEngine?=null, v
         dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, maxHeight)
         dialog?.window?.setGravity(Gravity.BOTTOM)
     }
+
+
 
     private fun getBottomSheetBehavior(): BottomSheetBehavior<View>? {
         val view: View? = dialog?.findViewById(com.google.android.material.R.id.design_bottom_sheet)
@@ -183,7 +184,7 @@ class MedialFileInfoFragmentDialog( var locationEngine : LocationEngine?=null, v
                             bindView.ivAddLoc.gone()
                             bindView.ivRemoveLoc.gone()
                         }
-                        val tags = String( exifInterface.getAttributeBytes(ExifInterface.TAG_USER_COMMENT)?: byteArrayOf(), Charset.forName("utf-8"))
+                        val tags = exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT)?.urlDecoder()?:""
                         println("tags=$tags,${exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT)}")
                        // val tags = exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT) ?: ""
 

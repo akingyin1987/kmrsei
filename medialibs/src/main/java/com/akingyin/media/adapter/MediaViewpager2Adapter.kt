@@ -75,6 +75,7 @@ class MediaViewpager2Adapter(var imageEngine: ImageEngine= GlideEngine.getGlideE
 
            getView<CheckView>(R.id.check_view).run {
                if(showChecked){
+                  setChecked(item.checked)
                   click {
                       checkView ->
                       checkView.setCountable(false)
